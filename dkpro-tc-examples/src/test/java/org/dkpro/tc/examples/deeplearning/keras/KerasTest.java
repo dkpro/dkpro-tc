@@ -42,16 +42,14 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
-import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTestBase;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.jfree.util.Log;
@@ -291,6 +289,9 @@ public class KerasTest {
 	}
 
 	public void runTrainTest() throws Exception {
+	    String property = System.getProperty("DKPRO_HOME");
+	    System.err.println("DKPRO_HOME pointing to " + property);
+	    System.clearProperty("DKPRO_HOME");
 		System.setProperty("DKPRO_HOME", tempDkproHome.getAbsolutePath());
 		System.err.println("Setting DKPRO_HOME to [" + tempDkproHome.getAbsolutePath() + "]");
 
