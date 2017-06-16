@@ -172,9 +172,14 @@ public class KerasTest {
 		ExecCreation execCreation = docker.execCreate(id, command, DockerClient.ExecCreateParam.attachStdout(),
 				DockerClient.ExecCreateParam.attachStderr());
 		LogStream output = docker.execStart(execCreation.id());
-		String readFully = output.readFully();
-		System.err.println("[" + readFully + "]");
-		Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
+		try{
+		    String readFully = output.readFully();
+		    System.err.println("[" + readFully + "]");
+		    Logger.getLogger(getClass()).info("Keras Docker output [" + readFully + "]");
+		}catch(Exception e){
+		    //ignore - connection reset by peer exception might occur
+		    //https://github.com/spotify/docker-client/issues/513
+		}
 
 		docker.stopContainer(id, 10);
 	}
