@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
@@ -289,11 +290,17 @@ public class KerasTest {
 	}
 
 	public void runTrainTest() throws Exception {
+	    
 	    String property = System.getProperty("DKPRO_HOME");
 	    System.err.println("DKPRO_HOME pointing to " + property);
 	    System.clearProperty("DKPRO_HOME");
 		System.setProperty("DKPRO_HOME", tempDkproHome.getAbsolutePath());
 		System.err.println("Setting DKPRO_HOME to [" + tempDkproHome.getAbsolutePath() + "]");
+		
+		Properties properties = System.getProperties();
+        for(Object s : properties.keySet()){
+            System.err.println(s + " " + properties.get(s));
+        }
 
 		DeepLearningExperimentTrainTestBase batch = new DeepLearningExperimentTrainTestBase("KerasSeq2Seq", KerasAdapter.class);
 		batch.setParameterSpace(getParameterSpace());
