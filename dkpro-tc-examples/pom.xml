@@ -251,12 +251,6 @@
 			<artifactId>fastutil</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.spotify</groupId>
-			<artifactId>docker-client</artifactId>
-			<classifier>shaded</classifier>
-			<version>8.7.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
 		</dependency>
