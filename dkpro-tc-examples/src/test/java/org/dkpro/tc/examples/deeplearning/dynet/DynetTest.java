@@ -104,7 +104,7 @@ public class DynetTest {
 		System.err.println("Experiment prepared");
 
 		runCode();
-		Logger.getLogger(getClass()).info("unCode() completed");
+		Logger.getLogger(getClass()).info("runCode() completed");
 		System.err.println("Experiment executed");
 
 		sanityCheckPredictionFile(retrievePredictions());
@@ -164,6 +164,8 @@ public class DynetTest {
 
 		String[] command = { "bash", "-c",
 				"python3 /root/dynetPoStagger.py --dynet-mem 256 --dynet-seed 123456 "+trainVec+" "+ trainOut +" " + testVec + " " + testOut + " " + embedding + " " + PREDICTION_FILE };
+		
+		System.err.println("Command: [" + command[2] + "]");
 
 		ExecCreation execCreation = docker.execCreate(id, command, DockerClient.ExecCreateParam.attachStdout(),
 				DockerClient.ExecCreateParam.attachStderr());
@@ -242,7 +244,7 @@ public class DynetTest {
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "src/test/resources/wordvector/glove.6B.50d_250.txt"),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true), Dimension.create(
+				Dimension.create(
 						DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/seq/posTaggingLstm.py"));
 
 		return pSpace;
