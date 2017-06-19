@@ -204,7 +204,7 @@ public class KerasTest {
 
 	@After
 	public void cleanUp() throws Exception {
-		docker.killContainer(id);
+//		docker.killContainer(id);
 		docker.removeContainer(id);
 		docker.close();
 	}
