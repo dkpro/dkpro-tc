@@ -66,9 +66,6 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 		setAttribute(TC_TASK_TYPE, TcTaskType.EVALUATION.toString());
 	}
 
-	// TODO: Introduce new attributes or reuse existing ? Becomes confusing with
-	// some being used for DL setups only
-
 	/**
 	 * Initializes the experiment. This is called automatically before
 	 * execution. It's not done directly in the constructor, because we want to
@@ -104,11 +101,13 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 		preparationTask.setMachineLearningAdapter(mlAdapter);
 		preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
 		preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, PreparationTask.INPUT_KEY_TEST);
-		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.PREPARATION.toString());
 
 		embeddingTask = new EmbeddingTask();
 		embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
 		embeddingTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, EmbeddingTask.INPUT_MAPPING);
+		embeddingTask.setAttribute(TC_TASK_TYPE, TcTaskType.EMBEDDING.toString());
+		
 
 		// feature extraction on training data
 		vectorizationTrainTask = new VectorizationTask();
@@ -118,7 +117,7 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 				VectorizationTask.DATA_INPUT_KEY);
 		vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
-		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TRAIN.toString());
 
 		// feature extraction on test data
 		vectorizationTestTask = new VectorizationTask();
@@ -127,7 +126,7 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 		vectorizationTestTask.addImport(initTaskTest, InitTaskDeep.OUTPUT_KEY_TEST, VectorizationTask.DATA_INPUT_KEY);
 		vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
-		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
+		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TEST.toString());
 		
 		learningTask = mlAdapter.getTestTask();
 		learningTask.setType(learningTask.getType() + "-" + experimentName);

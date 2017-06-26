@@ -19,6 +19,7 @@ package org.dkpro.tc.ml.report;
 
 public enum TcTaskType
 {
+	//Shallow tasks
     INIT_TRAIN,
     INIT_TEST,
     COLLECTION,
@@ -28,5 +29,11 @@ public enum TcTaskType
     MACHINE_LEARNING_ADAPTER, 
     EVALUATION,
     CROSS_VALIDATION,
-    NO_TYPE
+    NO_TYPE,
+    
+	//Deep tasks
+    PREPARATION,
+    VECTORIZATION_TRAIN,
+    VECTORIZATION_TEST,
+    EMBEDDING
 }

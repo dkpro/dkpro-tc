@@ -208,11 +208,12 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
 		preparationTask.setMachineLearningAdapter(mlAdapter);
 		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
-		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.PREPARATION.toString());
 
 		embeddingTask = new EmbeddingTask();
 		embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
 		embeddingTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, EmbeddingTask.INPUT_MAPPING);
+		embeddingTask.setAttribute(TC_TASK_TYPE, TcTaskType.EMBEDDING.toString());
 
 		// feature extraction on training data
 		vectorizationTrainTask = new VectorizationTask();
@@ -220,7 +221,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		vectorizationTrainTask.setTesting(false);
 		vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
-		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TRAIN.toString());
 
 		// feature extraction on test data
 		vectorizationTestTask = new VectorizationTask();
@@ -228,7 +229,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		vectorizationTestTask.setTesting(true);
 		vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
 				VectorizationTask.MAPPING_INPUT_KEY);
-		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
+		vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TEST.toString());
 
 		// test task operating on the models of the feature extraction train and
 		// test tasks
