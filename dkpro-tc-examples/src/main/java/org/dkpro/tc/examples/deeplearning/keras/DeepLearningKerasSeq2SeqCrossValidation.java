@@ -72,6 +72,7 @@ public class DeepLearningKerasSeq2SeqCrossValidation implements Constants {
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),

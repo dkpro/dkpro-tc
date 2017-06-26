@@ -82,6 +82,7 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
 						"src/test/resources/wordvector/glove.6B.50d_250.txt"),

@@ -86,6 +86,7 @@ public class DeepLearningKerasDocumentTrainTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
@@ -93,7 +94,8 @@ public class DeepLearningKerasDocumentTrainTest
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt")
+                );
 
         return pSpace;
     }
