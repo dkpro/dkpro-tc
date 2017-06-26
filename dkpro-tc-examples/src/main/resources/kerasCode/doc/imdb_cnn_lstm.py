@@ -66,7 +66,6 @@ def numpyizeDataVector(vec):
 	file = open(vec, 'r')
 	for l in file.readlines():
 		l = l.strip()
-		l = l[1:-1] # strip the brackets
 		trainVecNump.append(np.fromstring(l, dtype=int, sep=' '))
 	file.close()
 	return trainVecNump
