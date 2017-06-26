@@ -80,12 +80,16 @@ public class BatchBasicResultReport
             pa.setProperty("Root Mean Squared Error:", "" + rootMeanSquaredError);
             pa.setProperty("Pearson Correlation:", "" + pearson);
             pa.setProperty("Spearman Correlation:", "" + spearman);
-        }
-        else if (learningMode.equals(LM_SINGLE_LABEL) || learningMode.equals(LM_MULTI_LABEL)) {
+        } else if (learningMode.equals(LM_SINGLE_LABEL)) {
             Double acc = get(Accuracy.class, createEvaluator);
             Double microF1 = get(MicroFScore.class, createEvaluator);
             Double macroF1 = get(MacroFScore.class, createEvaluator);
             pa.setProperty("Accuracy:", "" + acc);
+            pa.setProperty("Micro F1:", "" + microF1);
+            pa.setProperty("Macro F1:", "" + macroF1);
+        } else if (learningMode.equals(LM_MULTI_LABEL)){
+            Double microF1 = get(MicroFScore.class, createEvaluator);
+            Double macroF1 = get(MacroFScore.class, createEvaluator);
             pa.setProperty("Micro F1:", "" + microF1);
             pa.setProperty("Macro F1:", "" + macroF1);
         }
