@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.factory.JCasFactory;
@@ -87,7 +88,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = CollectionReaderFactory.createReaderDescription(
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
                 documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",

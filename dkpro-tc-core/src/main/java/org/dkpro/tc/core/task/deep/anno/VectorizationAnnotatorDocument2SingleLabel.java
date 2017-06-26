@@ -43,7 +43,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase {
+public class VectorizationAnnotatorDocument2SingleLabel extends JCasAnnotator_ImplBase {
 	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
 	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
 	protected File targetFolder;
@@ -180,7 +180,7 @@ public class VectorizationAnnotatorDocument2Label extends JCasAnnotator_ImplBase
 	@Override
 	public void collectionProcessComplete() {
 		try {
-			writerOutcome.write(outcomeVector.toString().trim() + "]");
+			writerOutcome.write(outcomeVector.toString().trim());
 		} catch (IOException e) {
 			throw new UnsupportedOperationException(e);
 		}

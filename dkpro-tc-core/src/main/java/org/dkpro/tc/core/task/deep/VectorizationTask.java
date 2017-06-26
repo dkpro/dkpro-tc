@@ -35,7 +35,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2Label;
+import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2SingleLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorSequence2SequenceOfLabel;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -56,7 +56,9 @@ public class VectorizationTask
     @Discriminator(name = DIM_FILES_VALIDATION)
     private Collection<String> files_validation;
     @Discriminator(name = DIM_FEATURE_MODE)
-    private String mode;
+    private String featureMode;
+    @Discriminator(name = DIM_LEARNING_MODE)
+    private String learningMode;    
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private int maximumLength;
     
@@ -84,27 +86,34 @@ public class VectorizationTask
             File mappingDir)
                 throws ResourceInitializationException
     {
-        if (mode == null) {
+        if (featureMode == null) {
             throw new ResourceInitializationException(
                     new IllegalStateException("Learning model is [null]"));
         }
 
-        switch (mode) {
+        switch (featureMode) {
         case Constants.FM_DOCUMENT:
-            return AnalysisEngineFactory.createEngineDescription(
-                    VectorizationAnnotatorDocument2Label.class,
-                    VectorizationAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, outputDir,
-                    VectorizationAnnotatorDocument2Label.PARAM_PREPARATION_DIRECTORY, mappingDir,
-                    VectorizationAnnotatorDocument2Label.PARAM_TO_INTEGER, integerVectorization);
+            switch (learningMode) {
+            case Constants.LM_SINGLE_LABEL:
+            case Constants.LM_REGRESSION:
+                return AnalysisEngineFactory.createEngineDescription(
+                        VectorizationAnnotatorDocument2SingleLabel.class,
+                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2SingleLabel.PARAM_PREPARATION_DIRECTORY,
+                        mappingDir, VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER,
+                        integerVectorization);
+            case Constants.LM_MULTI_LABEL:
+                
+            }
         case Constants.FM_SEQUENCE:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
-                    VectorizationAnnotatorDocument2Label.PARAM_TO_INTEGER, integerVectorization);
+                    VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER, integerVectorization);
         default:
             throw new ResourceInitializationException(
-                    new IllegalStateException("Mode [" + mode + "] not defined"));
+                    new IllegalStateException("Mode [" + featureMode + "] not defined"));
         }
 
     }
