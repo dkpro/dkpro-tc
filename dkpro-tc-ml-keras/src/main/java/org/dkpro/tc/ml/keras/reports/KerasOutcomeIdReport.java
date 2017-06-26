@@ -49,6 +49,8 @@ public class KerasOutcomeIdReport extends ReportBase {
 	public static final String SEPARATOR_CHAR = ";";
 
 	private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+	
+	int counter=0;
 
 	@Override
 	public void execute() throws Exception {
@@ -90,7 +92,8 @@ public class KerasOutcomeIdReport extends ReportBase {
 				continue;
 			}
 
-			String id = nameOfTargets.get(i - shift);
+            String id = (!nameOfTargets.isEmpty() && nameOfTargets.contains(i - shift))
+                    ? nameOfTargets.get(i - shift) : ("" + (counter++));
 
 			String[] split = p.split("\t");
 

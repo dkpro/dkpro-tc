@@ -42,8 +42,8 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
-import org.dkpro.tc.core.task.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
+import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
@@ -76,12 +76,11 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	 */
 	public DeepLearningExperimentCrossValidation(String aExperimentName,
 			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds) throws TextClassificationException {
-		this(aExperimentName, null, aNumFolds, null);
-		try {
-			this.mlAdapter = mlAdapter.newInstance();
-		} catch (Exception e) {
-			throw new TextClassificationException();
-		}
+	    setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
+        setNumFolds(aNumFolds);
+        // set name of overall batch task
+        setType("Evaluation-" + experimentName);
 	}
 
 	/**
@@ -207,6 +206,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		// get some meta data depending on the whole document collection
 		preparationTask = new PreparationTask();
 		preparationTask.setType(preparationTask.getType() + "-" + experimentName);
+		preparationTask.setMachineLearningAdapter(mlAdapter);
 		preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, PreparationTask.INPUT_KEY_TRAIN);
 		preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 

@@ -41,160 +41,177 @@ import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetOutcomeIdReport extends ReportBase {
+public class DynetOutcomeIdReport
+    extends ReportBase
+{
 
-	/**
-	 * Character that is used for separating fields in the output file
-	 */
-	public static final String SEPARATOR_CHAR = ";";
+    /**
+     * Character that is used for separating fields in the output file
+     */
+    public static final String SEPARATOR_CHAR = ";";
 
-	private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+    private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
 
-	@Override
-	public void execute() throws Exception {
+    int counter = 0;
 
-		String string = getDiscriminators()
-				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER);
-		boolean isIntegerMode = Boolean.valueOf(string);
+    @Override
+    public void execute()
+        throws Exception
+    {
 
-		Map<String, String> map = loadMap(isIntegerMode);
+        String string = getDiscriminators().get(PreparationTask.class.getName() + "|"
+                + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER);
+        boolean isIntegerMode = Boolean.valueOf(string);
 
-		StringBuilder header = new StringBuilder();
-		header.append("labels ");
-		List<String> sortedKeys = new ArrayList<>(map.keySet());
-		Collections.sort(sortedKeys);
-		for (String m : sortedKeys) {
-			Integer val = Integer.valueOf(map.get(m));
-			header.append(val + "=" + m + " ");
-		}
+        Map<String, String> map = loadMap(isIntegerMode);
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
+        StringBuilder header = new StringBuilder();
+        header.append("labels ");
+        List<String> sortedKeys = new ArrayList<>(map.keySet());
+        Collections.sort(sortedKeys);
+        for (String m : sortedKeys) {
+            Integer val = Integer.valueOf(map.get(m));
+            header.append(val + "=" + m + " ");
+        }
 
-		List<String> nameOfTargets = getNameOfTargets();
+        File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+        List<String> predictions = getPredictions(file);
 
-		Properties prop = new SortedKeyProperties();
+        List<String> nameOfTargets = getNameOfTargets();
 
-		int shift = 0;
-		for (int i = 0; i < predictions.size(); i++) {
+        Properties prop = new SortedKeyProperties();
 
-			String p = predictions.get(i);
-			if (p.startsWith("#Gold")) {
-				// header line exists in the prediction file and in the name of
-				// targets files
-				continue;
-			}
-			if (p.isEmpty()) {
-				shift++;
-				continue;
-			}
+        int shift = 0;
+        for (int i = 0; i < predictions.size(); i++) {
 
-			String id = nameOfTargets.get(i - shift);
+            String p = predictions.get(i);
+            if (p.startsWith("#Gold")) {
+                // header line exists in the prediction file and in the name of
+                // targets files
+                continue;
+            }
+            if (p.isEmpty()) {
+                shift++;
+                continue;
+            }
 
-			String[] split = p.split("\t");
+            String id = (!nameOfTargets.isEmpty() && nameOfTargets.contains(i - shift))
+                    ? nameOfTargets.get(i - shift) : ("" + (counter++));
 
-			String gold = null;
-			String prediction = null;
-			if (isIntegerMode) {
-				Integer v = Integer.valueOf(Integer.valueOf(split[0]));
-				gold = v.toString();
-				v = Integer.valueOf(Integer.valueOf(split[1]));
-				prediction = v.toString();
-			} else {
-				// we have non-integer labels so we have to map them to integers
-				// for creating the id2outcome data format
-				gold = map.get(split[0]).toString();
-				prediction = map.get(split[1]).toString();
-			}
-			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
-		}
+            String[] split = p.split("\t");
 
-		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
-		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-		prop.store(fos, header.toString());
-		fos.close();
-	}
+            String gold = null;
+            String prediction = null;
+            if (isIntegerMode) {
+                Integer v = Integer.valueOf(Integer.valueOf(split[0]));
+                gold = v.toString();
+                v = Integer.valueOf(Integer.valueOf(split[1]));
+                prediction = v.toString();
+            }
+            else {
+                // we have non-integer labels so we have to map them to integers
+                // for creating the id2outcome data format
+                gold = map.get(split[0]).toString();
+                prediction = map.get(split[1]).toString();
+            }
+            prop.setProperty("" + id,
+                    prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
+        }
 
-	private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
+        File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
+        OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+        prop.store(fos, header.toString());
+        fos.close();
+    }
 
-		Map<String, String> m = new HashMap<>();
+    private Map<String, String> loadMap(boolean isIntegerMode)
+        throws IOException
+    {
 
-		if (isIntegerMode) {
+        Map<String, String> m = new HashMap<>();
 
-			File prepFolder = getContext().getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-			File mapping = new File(prepFolder, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+        if (isIntegerMode) {
 
-			List<String> outcomeMappings = FileUtils.readLines(mapping, "utf-8");
-			for (String s : outcomeMappings) {
-				String[] split = s.split("\t");
-				m.put(split[0], split[1]);
-			}
-			return m;
-		}
+            File prepFolder = getContext().getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
+                    AccessMode.READONLY);
+            File mapping = new File(prepFolder, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> readLines = FileUtils.readLines(file);
+            List<String> outcomeMappings = FileUtils.readLines(mapping, "utf-8");
+            for (String s : outcomeMappings) {
+                String[] split = s.split("\t");
+                m.put(split[0], split[1]);
+            }
+            return m;
+        }
 
-		Set<String> keys = new HashSet<>();
-		
-		int mapIdx = 0;
-		for (int i = 1; i < readLines.size(); i++) {
-			String l = readLines.get(i);
-			if (l.isEmpty()) {
-				continue;
-			}
-			String[] e = l.split("\t");
-		
-			keys.add(e[0]);
-			keys.add(e[1]);
-		}
-		
-		List<String> sortedKeys = new ArrayList<String>(keys);
-		Collections.sort(sortedKeys);
+        File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+        List<String> readLines = FileUtils.readLines(file);
 
-		for(String k : sortedKeys){
-			String string = m.get(k);
-			if (string == null) {
-				m.put(k, "" + (mapIdx++));
-			}
-		}
+        Set<String> keys = new HashSet<>();
 
-		return m;
-	}
+        int mapIdx = 0;
+        for (int i = 1; i < readLines.size(); i++) {
+            String l = readLines.get(i);
+            if (l.isEmpty()) {
+                continue;
+            }
+            String[] e = l.split("\t");
 
+            keys.add(e[0]);
+            keys.add(e[1]);
+        }
 
-	private List<String> getPredictions(File file) throws IOException {
-		List<String> readLines = FileUtils.readLines(file, "utf-8");
-		return readLines.subList(1, readLines.size());// ignore first-line with
-														// comments
-	}
+        List<String> sortedKeys = new ArrayList<String>(keys);
+        Collections.sort(sortedKeys);
 
-	private List<String> getNameOfTargets() throws IOException {
-		File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING,
-				AccessMode.READONLY);
-		File targetIdMappingFile = new File(targetIdMappingFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
+        for (String k : sortedKeys) {
+            String string = m.get(k);
+            if (string == null) {
+                m.put(k, "" + (mapIdx++));
+            }
+        }
 
-		List<String> t = new ArrayList<>();
+        return m;
+    }
 
-		List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
-		for (String s : readLines) {
-			if (s.startsWith("#")) {
-				continue;
-			}
-			if (s.isEmpty()) {
-				t.add("");
-				continue;
-			}
+    private List<String> getPredictions(File file)
+        throws IOException
+    {
+        List<String> readLines = FileUtils.readLines(file, "utf-8");
+        return readLines.subList(1, readLines.size());// ignore first-line with
+                                                      // comments
+    }
 
-			String[] split = s.split("\t");
-			if (split[0].contains("_")) {
-				t.add(s.replaceAll("\t", "_"));
-			} else {
-				t.add(split[1]);
-			}
-		}
+    private List<String> getNameOfTargets()
+        throws IOException
+    {
+        File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING,
+                AccessMode.READONLY);
+        File targetIdMappingFile = new File(targetIdMappingFolder,
+                DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
 
-		return t;
-	}
+        List<String> t = new ArrayList<>();
+
+        List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
+        for (String s : readLines) {
+            if (s.startsWith("#")) {
+                continue;
+            }
+            if (s.isEmpty()) {
+                t.add("");
+                continue;
+            }
+
+            String[] split = s.split("\t");
+            if (split[0].contains("_")) {
+                t.add(s.replaceAll("\t", "_"));
+            }
+            else {
+                t.add(split[1]);
+            }
+        }
+
+        return t;
+    }
 
 }
