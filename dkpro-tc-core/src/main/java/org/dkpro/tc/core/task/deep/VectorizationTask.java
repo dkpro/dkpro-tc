@@ -35,7 +35,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2SingleLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2MultiLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorSequence2SequenceOfLabel;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -97,23 +97,28 @@ public class VectorizationTask
             case Constants.LM_SINGLE_LABEL:
             case Constants.LM_REGRESSION:
                 return AnalysisEngineFactory.createEngineDescription(
-                        VectorizationAnnotatorDocument2SingleLabel.class,
-                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY, outputDir,
-                        VectorizationAnnotatorDocument2SingleLabel.PARAM_PREPARATION_DIRECTORY,
-                        mappingDir, VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER,
+                        VectorizationAnnotatorDocument2MultiLabel.class,
+                        VectorizationAnnotatorDocument2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2MultiLabel.PARAM_PREPARATION_DIRECTORY,
+                        mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
                         integerVectorization);
             case Constants.LM_MULTI_LABEL:
-                
+                return AnalysisEngineFactory.createEngineDescription(
+                        VectorizationAnnotatorDocument2MultiLabel.class,
+                        VectorizationAnnotatorDocument2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2MultiLabel.PARAM_PREPARATION_DIRECTORY,
+                        mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
+                        integerVectorization);
             }
         case Constants.FM_SEQUENCE:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
                     VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
-                    VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER, integerVectorization);
+                    VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
         default:
             throw new ResourceInitializationException(
-                    new IllegalStateException("Mode [" + featureMode + "] not defined"));
+                    new IllegalStateException("Feature mode [" + featureMode + "] not defined"));
         }
 
     }
