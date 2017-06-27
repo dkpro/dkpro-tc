@@ -45,6 +45,7 @@ public class DeepLearningKerasDocumentMultiLabel
     public static final String LANGUAGE_CODE = "en";
 
     static String documentTrainFolderReuters = "src/main/resources/data/reuters/training";
+    static String documentTestFolderReuters = "src/main/resources/data/reuters/test";
     static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
 
     public static void main(String[] args)
@@ -76,7 +77,7 @@ public class DeepLearningKerasDocumentMultiLabel
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentTestFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
@@ -84,6 +85,7 @@ public class DeepLearningKerasDocumentMultiLabel
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_MULTI_LABEL),
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, 0.5),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,

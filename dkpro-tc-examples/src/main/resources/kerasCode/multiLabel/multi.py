@@ -47,6 +47,18 @@ def loadEmbeddings(emb):
 		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
 	return matrix, dim
 
+def prepareOutcomes(rawOutcomes, dimX, dimY):
+	y_ = np.zeros((dimX, dimY))
+	for i in range(0, len(rawOutcomes)):
+		inner = y_[i]
+		for j in range(0, len(rawOutcomes[i])):
+			if rawOutcomes[i][j] > 0:
+				idx = rawOutcomes[i][j] - 1
+				inner[idx]=1
+			y_[i]=inner
+	return y_
+	
+
 def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
 
 	trainVecNump = numpyizeVector(trainVec)
@@ -64,14 +76,8 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	y_test = testOutcome
 	maxLabel = max(x for s in trainOutcome+testOutcome for x in s)
 	
-	y_train = np.zeros((x_train.shape[0], maxLabel))
-	for i in range(0, len(trainOutcome)):
-		inner = y_train[i]
-		for j in range(0, len(trainOutcome[i])):
-			if trainOutcome[i][j] > 0:
-				idx = trainOutcome[i][j] - 1
-				inner[idx]=1
-		y_train[i]=inner
+	y_train = prepareOutcomes(trainOutcome, x_train.shape[0], maxLabel)
+
 
 	print("X  : ", x_train.shape)
 	print("Y  : ", y_train.shape)
@@ -96,26 +102,28 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	model.compile(loss='binary_crossentropy',
               optimizer='rmsprop')
 
-	model.fit(x_train, y_train, epochs=50, shuffle=True)
+	model.fit(x_train, y_train, epochs=1, shuffle=True)
 
-	# Everything below 0.5 is 'not set'	
 	preds = model.predict(x_test)
-	preds[preds>=0.5] = 1
-	preds[preds<0.5] = 0
+	#preds[preds>=0.5] = 1
+	#preds[preds<0.5] = 0
+	
+	y_test = prepareOutcomes(testOutcome, x_test.shape[0], maxLabel)
 	
 	predictionFile = open(predictionOut, 'w')
 	predictionFile.write("#Gold\tPrediction\n")
-	print(preds)
-	for i in range(0, len(testOutcome)):
-		txt=""
+	for i in range(0, len(preds)):
+		for j in range(0, len(y_test[i])):
+			predictionFile.write(str(y_test[i][j]))
+			if j+1 < len(y_test[i]):
+				predictionFile.write(" ")
+		predictionFile.write("\t")		
 		for j in range(0, len(preds[i])):
-			if preds[i][j]==1:
-				txt+=str((j+1))+ " "
-		g=""
-		for x in testOutcome[i]:
-			g+=str(x)+" "
-		g=g.strip()
-		predictionFile.write(g+"\t" + txt.strip()+"\n")
+			predictionFile.write(str(preds[i][j]))
+			if j+1 < len(preds[i]):
+				predictionFile.write(" ")					
+		predictionFile.write("\n")					
+
 	predictionFile.close()
 
 

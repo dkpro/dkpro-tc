@@ -38,6 +38,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.deep.PreparationTask;
+import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.keras.KerasTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -54,22 +55,24 @@ public class KerasOutcomeIdReport extends ReportBase {
 
 	@Override
 	public void execute() throws Exception {
-
-		String string = getDiscriminators()
-				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER);
-		boolean isIntegerMode = Boolean.valueOf(string);
+	    
+	    boolean isMultiLabel= getDiscriminators().get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(Constants.LM_MULTI_LABEL);
+	    
+		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
+                .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
 		Map<String, String> map = loadMap(isIntegerMode);
 
 		StringBuilder header = new StringBuilder();
-		header.append("labels ");
+		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
-		List<String> sortedKeys = new ArrayList<>(map.keySet());
-		Collections.sort(sortedKeys);
-		for (String m : sortedKeys) {
-			Integer val = Integer.valueOf(map.get(m));
-			header.append(val + "=" + m + " ");
-		}
+        List<String> k = new ArrayList<>(map.keySet());
+        for (int i = 0; i < k.size(); i++) {
+            header.append(i + "=" + k.get(i));
+            if (i + 1 < k.size()) {
+                header.append(" ");
+            }
+        }
 
 		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
@@ -96,6 +99,11 @@ public class KerasOutcomeIdReport extends ReportBase {
                     ? nameOfTargets.get(i - shift) : ("" + (counter++));
 
 			String[] split = p.split("\t");
+			
+            if (isMultiLabel) {
+                multilabelReport(id, split,isIntegerMode, prop, map);
+                continue;
+            }
 
 			String gold = null;
 			String prediction = null;
@@ -123,7 +131,54 @@ public class KerasOutcomeIdReport extends ReportBase {
 		fos.close();
 	}
 
-	private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
+	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop, Map<String, String> map)
+    {
+
+        String gold = null;
+        String prediction = null;
+        if (isIntegerMode) {
+            String[] s = split[0].split(" ");
+            gold = double2String(s);
+            
+            s = split[1].split(" ");
+            prediction = double2String(s);
+        } else {
+            String[] s = split[0].split(" ");
+            gold = label2String(s, map);
+            
+            s = split[1].split(" ");
+            prediction = label2String(s, map);
+        }
+        prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "0.5");
+    }
+	
+	private String label2String(String[] val, Map<String, String> map)
+    {
+	    StringBuilder sb = new StringBuilder();
+        for(int i=0; i < val.length; i++){
+            String e = val[i];
+            sb.append(map.get(e.toString()));
+            if(i+1 < val.length){
+                sb.append(",");
+            }
+        }
+        return sb.toString().trim();        
+    }
+
+    public String double2String(String[] val){
+	    StringBuilder sb = new StringBuilder();
+	    for(int i=0; i < val.length; i++){
+	        String e = val[i];
+	        Double v = Double.valueOf(e);
+            sb.append(v.toString());
+            if(i+1 < val.length){
+                sb.append(",");
+            }
+        }
+	    return sb.toString().trim();
+	}
+
+    private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
 
 		Map<String, String> m = new HashMap<>();
 
