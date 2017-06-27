@@ -79,7 +79,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 	vocabSize = max(x for s in trainVecNump+testVecNump for x in s)
 
-	print("Building model")
+	print("Building arbitrary model")
 	model = Sequential()
 	model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
 	model.add(Conv1D(16,
@@ -91,31 +91,31 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	model.add(LSTM(128, return_sequences=True))
 	model.add(LSTM(128, go_backwards=True))	
 	model.add(Dense(maxLabel))
-	model.add(Activation('sigmoid'))
+	model.add(Activation('sigmoid')) #sigmoid helps 
 
-	# try using different optimizers and different optimizer configs
 	model.compile(loss='binary_crossentropy',
               optimizer='rmsprop')
 
 	model.fit(x_train, y_train, epochs=50, shuffle=True)
-	
+
+	# Everything below 0.5 is 'not set'	
 	preds = model.predict(x_test)
 	preds[preds>=0.5] = 1
 	preds[preds<0.5] = 0
 	
-	print(preds)
-
-	prediction = model.predict_classes(x_test)
-
 	predictionFile = open(predictionOut, 'w')
 	predictionFile.write("#Gold\tPrediction\n")
-#	for i in range(0, len(prediction)):
-#		predictionEntry = prediction[i]
-#		for j in range(0, len(y_test[i])):
-#			if y_test[i][j]==0:
-#				break #we reached the padded area - zero is reserved
-#			predictionFile.write(str(y_test[i][j]) +"\t" + str(predictionEntry[j])+ "\n")
-#		predictionFile.write("\n")
+	print(preds)
+	for i in range(0, len(testOutcome)):
+		txt=""
+		for j in range(0, len(preds[i])):
+			if preds[i][j]==1:
+				txt+=str((j+1))+ " "
+		g=""
+		for x in testOutcome[i]:
+			g+=str(x)+" "
+		g=g.strip()
+		predictionFile.write(g+"\t" + txt.strip()+"\n")
 	predictionFile.close()
 
 

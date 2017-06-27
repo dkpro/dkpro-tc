@@ -87,7 +87,7 @@ public class DeepLearningKerasDocumentMultiLabel
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/multi/multi.py"),
+                        "src/main/resources/kerasCode/multiLabel/multi.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,

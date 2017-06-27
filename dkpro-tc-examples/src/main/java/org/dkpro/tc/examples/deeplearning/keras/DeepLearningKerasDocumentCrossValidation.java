@@ -74,7 +74,7 @@ public class DeepLearningKerasDocumentCrossValidation implements Constants {
 				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
 				Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-						"src/main/resources/kerasCode/doc/imdb_cnn_lstm.py"),
+						"src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
 				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
 				Dimension.create(
