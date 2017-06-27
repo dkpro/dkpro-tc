@@ -147,6 +147,9 @@ public class VectorizationAnnotatorDocument2MultiLabel extends JCasAnnotator_Imp
 			} else {
 				outcomeVector.append(outcome);
 			}
+			if(i + 1 < outcomes.size()){
+			    outcomeVector.append(" ");
+			}
 		}
 		outcomeVector.append("\n");
 	}
