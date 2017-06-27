@@ -57,7 +57,7 @@ public class FilterVocabularyByEmbeddingAnnotator
         super.initialize(context);
 
         if (embedding == null) {
-            return;
+            throw new ResourceInitializationException("The provided embedding file is null", null);
         }
 
         String line = null;
