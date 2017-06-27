@@ -136,6 +136,7 @@ public class InitTaskDeep
             builder.add(createEngineDescription(FilterVocabularyByEmbeddingAnnotator.class,
                     FilterVocabularyByEmbeddingAnnotator.PARAM_EMBEDDING, embedding));
         }
+        builder.add(createEngineDescription(AssignIdConnector.class));
         builder.add(emptyProblemChecker);
         builder.add(preprocessing);
         builder.add(xmiWriter);
