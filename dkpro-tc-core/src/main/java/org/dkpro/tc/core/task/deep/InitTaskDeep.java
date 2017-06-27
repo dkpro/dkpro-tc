@@ -19,6 +19,7 @@ package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.dkpro.tc.core.Constants.*;
+import static org.dkpro.tc.core.DeepLearningConstants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
-import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.FilterVocabularyByEmbeddingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
@@ -52,10 +52,12 @@ public class InitTaskDeep
     protected CollectionReaderDescription readerTest;
     @Discriminator(name = DIM_FEATURE_MODE)
     private String mode;
-    @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+    @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
-    @Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
+    @Discriminator(name = DIM_PRETRAINED_EMBEDDINGS)
     private File embedding;
+    @Discriminator(name = DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING)
+    private boolean dropVocabWithoutEmbedding;
 
     private boolean isTesting = false;
 
@@ -126,30 +128,23 @@ public class InitTaskDeep
             }
             preprocessing = builder.createAggregateDescription();
         }
+        
+        
+        AggregateBuilder builder = new AggregateBuilder();
+        
+        if(dropVocabWithoutEmbedding){
+            builder.add(createEngineDescription(FilterVocabularyByEmbeddingAnnotator.class,
+                    FilterVocabularyByEmbeddingAnnotator.PARAM_EMBEDDING, embedding));
+        }
+        builder.add(emptyProblemChecker);
+        builder.add(preprocessing);
+        builder.add(xmiWriter);
+        builder.add(createEngineDescription(IdentificationCollector.class,
+                IdentificationCollector.PARAM_TARGET_DIRECTORY, folder,
+                IdentificationCollector.PARAM_MODE, mode,
+                IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
 
-        return createEngineDescription(
-                createEngine(FilterVocabularyByEmbeddingAnnotator.class,
-                        FilterVocabularyByEmbeddingAnnotator.PARAM_EMBEDDING, embedding),
-                // assign each CAS an unique id
-                createEngineDescription(AssignIdConnector.class),
-
-        // FIXME: Pre-Validity checks for deep learning ?
-                emptyProblemChecker,
-
-        // user preprocessing
-                preprocessing,
-
-        // tc post validity check
-        // FIXME: Post-Validity checks for deep learning ?
-
-        // write CAS to HDD
-                xmiWriter,
-
-        // identity tracker to know later on that document N is file ABC.txt
-                createEngine(IdentificationCollector.class,
-                        IdentificationCollector.PARAM_TARGET_DIRECTORY, folder,
-                        IdentificationCollector.PARAM_MODE, mode,
-                        IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
+        return builder.createAggregateDescription();
     }
 
     public void setTesting(boolean isTesting)
