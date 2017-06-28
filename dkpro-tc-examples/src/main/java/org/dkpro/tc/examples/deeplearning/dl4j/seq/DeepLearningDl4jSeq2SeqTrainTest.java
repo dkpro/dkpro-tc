@@ -85,7 +85,8 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
 						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), 
+				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
+				Dimension.create(DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING, true),
 				Dimension
 						.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jSeq2SeqUserCode()));
 
