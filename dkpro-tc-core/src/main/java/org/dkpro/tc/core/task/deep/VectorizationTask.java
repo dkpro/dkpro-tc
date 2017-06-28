@@ -123,7 +123,7 @@ public class VectorizationTask
                     VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
         default:
             throw new ResourceInitializationException(
-                    new IllegalStateException("Feature mode [" + featureMode + "] not defined"));
+                    new IllegalStateException("Combination of feature mode [" + featureMode + "] with learning mode ["+ learningMode +"] not defined"));
         }
 
     }
