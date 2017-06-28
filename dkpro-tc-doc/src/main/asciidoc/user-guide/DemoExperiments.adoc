@@ -47,7 +47,7 @@ can be found in the package
 
 [source,java]
 ----
-de.tudarmstadt.ukp.dkpro.tc.examples.single.document
+org.dkpro.tc.examples.single.document
 ----
 
 as it demonstrates a single-label classification experiment with entire documents (tweets) as classification objects. For an explanation of feature and learning modes, please see below. 
@@ -60,8 +60,8 @@ If you don't know where to start, go with the WekaTwitterSentimentDemo first, as
 
 There are two ways to run the experiment:
    
-* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
-* `de.tudarmstadt.ukp.dkpro.tc.groovyexamples.single.document.WekaTwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
+* `org.dkpro.tc.groovyexamples.single.document.TwitterSentimentDemo.groovy` (Groovy configuration, `dkpro-tc-examples-groovy` module)
+* `org.dkpro.tc.groovyexamples.single.document.WekaTwitterSentimentDemo.java` (Java configuration, `dkpro-tc-examples` module)
 
 In this tutorial, we will follow the Groovy version of the experiment, which is easier to read. The Java configuration is very similar.
 
@@ -75,7 +75,7 @@ The configuration takes care of
 * evaluating classifiers (either with designated train/test sets or using cross-validation)
 * writing results (which reports to use)
 
-The Twitter Sentiment Groovy Experiment uses `import de.tudarmstadt.ukp.dkpro.tc.ml.ExperimentCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation.
+The Twitter Sentiment Groovy Experiment uses `org.dkpro.tc.ml.ExperimentCrossValidation` to configure the experiment. This overall setup will do a cross-validation evaluation.
 
 [source,java]
 ----
