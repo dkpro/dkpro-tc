@@ -18,7 +18,11 @@
 package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.*;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
+import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
+import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
+import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +40,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2MultiLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2SingleLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorSequence2SequenceOfLabel;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
@@ -97,10 +102,10 @@ public class VectorizationTask
             case Constants.LM_SINGLE_LABEL:
             case Constants.LM_REGRESSION:
                 return AnalysisEngineFactory.createEngineDescription(
-                        VectorizationAnnotatorDocument2MultiLabel.class,
-                        VectorizationAnnotatorDocument2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
-                        VectorizationAnnotatorDocument2MultiLabel.PARAM_PREPARATION_DIRECTORY,
-                        mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
+                        VectorizationAnnotatorDocument2SingleLabel.class,
+                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2SingleLabel.PARAM_PREPARATION_DIRECTORY,
+                        mappingDir, VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER,
                         integerVectorization);
             case Constants.LM_MULTI_LABEL:
                 return AnalysisEngineFactory.createEngineDescription(
