@@ -138,7 +138,7 @@ public class KerasOutcomeIdReport extends ReportBase {
         String prediction = null;
         if (isIntegerMode) {
             String[] s = split[0].split(" ");
-            gold = double2String(s);
+            gold = integer2String(s);
             
             s = split[1].split(" ");
             prediction = double2String(s);
@@ -177,6 +177,19 @@ public class KerasOutcomeIdReport extends ReportBase {
         }
 	    return sb.toString().trim();
 	}
+    
+    public String integer2String(String[] val){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i < val.length; i++){
+            String e = val[i];
+            Integer v = Double.valueOf(e).intValue();
+            sb.append(v.toString());
+            if(i+1 < val.length){
+                sb.append(",");
+            }
+        }
+        return sb.toString().trim();
+    }
 
     private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
 

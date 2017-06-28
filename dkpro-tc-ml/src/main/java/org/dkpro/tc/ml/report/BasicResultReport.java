@@ -28,6 +28,7 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
+import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
@@ -45,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.statistics.correlation.PearsonCorrelation;
  * A result report which creates a few basic measures and writes them to the output folder of a run to
  * provide by default at least some result values.
  */
-public class BatchBasicResultReport
+public class BasicResultReport
     extends ReportBase
     implements Constants
 {
@@ -65,6 +66,13 @@ public class BatchBasicResultReport
                 .retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY,
                         new PropertiesAdapter())
                 .getMap().get(ExtractFeaturesTask.class.getName() + "|" + DIM_LEARNING_MODE);
+        
+        if (learningMode == null) {
+            learningMode = store
+                    .retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY,
+                            new PropertiesAdapter())
+                    .getMap().get(VectorizationTask.class.getName() + "|" + DIM_LEARNING_MODE);
+        }
 
         Id2Outcome o = new Id2Outcome(id2outcomeFile, learningMode);
 

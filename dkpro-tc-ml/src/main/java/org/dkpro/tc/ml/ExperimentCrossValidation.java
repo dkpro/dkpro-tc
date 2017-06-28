@@ -48,7 +48,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-import org.dkpro.tc.ml.report.BatchBasicResultReport;
+import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
@@ -263,7 +263,7 @@ public class ExperimentCrossValidation
 
         // always add OutcomeIdReport
         testTask.addReport(mlAdapter.getOutcomeIdReportClass());
-        testTask.addReport(BatchBasicResultReport.class);
+        testTask.addReport(BasicResultReport.class);
 
         testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);

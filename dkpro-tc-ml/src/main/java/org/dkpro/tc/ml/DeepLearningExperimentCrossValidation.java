@@ -47,7 +47,7 @@ import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
-import org.dkpro.tc.ml.report.DeeplearningBasicResultReport;
+import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.report.TcTaskType;
 
@@ -246,7 +246,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		// // always add OutcomeIdReport
 		learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
 		learningTask.addReport(mlAdapter.getMetaCollectionReport());
-		learningTask.addReport(DeeplearningBasicResultReport.class);
+		learningTask.addReport(BasicResultReport.class);
 		learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, TcDeepLearningAdapter.PREPARATION_FOLDER);
 		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
 				Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
