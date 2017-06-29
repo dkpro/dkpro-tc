@@ -189,10 +189,9 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
 
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
-        assertEquals(3, outcomes.size());
-        assertEquals("earn", outcomes.get(0).getOutcome());
-        assertEquals("acq", outcomes.get(1).getOutcome());
-        assertEquals("crude", outcomes.get(2).getOutcome());
+        assertEquals(2, outcomes.size());
+        assertEquals("acq", outcomes.get(0).getOutcome());
+        assertEquals("crude", outcomes.get(1).getOutcome());
 
     }
 
