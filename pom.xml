@@ -228,7 +228,7 @@
 			<dependency>
 				<groupId>nz.ac.waikato.cms.weka</groupId>
 				<artifactId>weka-dev</artifactId>
-				<version>3.7.11</version>
+				<version>3.9.1</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.meka</groupId>
