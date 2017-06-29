@@ -125,11 +125,6 @@ public class NewsIterator implements DataSetIterator {
 	        List<List<String>> allTokens = new ArrayList<>(news.size());
 	        maxLength = 0;
 	        for (String s : news) {
-//	            List<String> tokens = tokenizerFactory.create(s).getTokens();
-//	            List<String> tokensFiltered = new ArrayList<>();
-//	            for (String t : tokens) {
-//	                if (wordVectors.hasWord(t)) tokensFiltered.add(t);
-//	            }
 	            List<String> asList = Arrays.asList(s.replaceAll(" 0", "").split(" "));
 	            maxLength = maxLength < asList.size() ? asList.size() : maxLength;
 	            allTokens.add(asList);
@@ -247,9 +242,7 @@ public class NewsIterator implements DataSetIterator {
 			list.add(v);
 			m.put(o, list);
 			
-//			Pair<String, String> tempPair = Pair.of(outcomes.charAt(i)+"", v);
 			this.totalNews++;
-//			this.categoryData.add(tempPair);
 		}
 		
 		for(String k : m.keySet()){
@@ -257,30 +250,6 @@ public class NewsIterator implements DataSetIterator {
 			this.categoryData.add(tempPair);
 		}
 
-//		File categories = new File(this.dataDirectory + File.separator + "categories.txt");
-//
-//		try (BufferedReader brCategories = new BufferedReader(new FileReader(categories))) {
-//			String temp = "";
-//			while ((temp = brCategories.readLine()) != null) {
-//				String curFileName = train == true
-//						? this.dataDirectory + File.separator + "train" + File.separator + temp.split(",")[0] + ".txt"
-//						: this.dataDirectory + File.separator + "test" + File.separator + temp.split(",")[0] + ".txt";
-//				File currFile = new File(curFileName);
-//				BufferedReader currBR = new BufferedReader((new FileReader(currFile)));
-//				String tempCurrLine = "";
-//				List<String> tempList = new ArrayList<>();
-//				while ((tempCurrLine = currBR.readLine()) != null) {
-//					tempList.add(tempCurrLine);
-//					this.totalNews++;
-//				}
-//				currBR.close();
-//				Pair<String, List<String>> tempPair = Pair.of(temp, tempList);
-//				this.categoryData.add(tempPair);
-//			}
-//			brCategories.close();
-//		} catch (Exception e) {
-//			System.out.println("Exception in reading file :" + e.getMessage());
-//		}
 	}
 
 	@Override
