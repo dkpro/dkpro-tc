@@ -390,7 +390,7 @@
 			<dependency>
 				<groupId>com.datumbox</groupId>
 				<artifactId>libsvm</artifactId>
-				<version>3.21</version>
+				<version>3.22</version>
 			</dependency>
 			<dependency>
 				<groupId>org.deeplearning4j</groupId>
