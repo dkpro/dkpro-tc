@@ -49,7 +49,7 @@ public class KerasOutcomeIdReport extends ReportBase {
 	 */
 	public static final String SEPARATOR_CHAR = ";";
 
-	private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+	private static String THRESHOLD = "-1";
 	
 	int counter=0;
 
@@ -57,6 +57,10 @@ public class KerasOutcomeIdReport extends ReportBase {
 	public void execute() throws Exception {
 	    
 	    boolean isMultiLabel= getDiscriminators().get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(Constants.LM_MULTI_LABEL);
+	    if(isMultiLabel){
+	        THRESHOLD = getDiscriminators()
+            .get(KerasTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
+	    }
 	    
 		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
                 .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
@@ -122,7 +126,7 @@ public class KerasOutcomeIdReport extends ReportBase {
 				gold = map.get(split[0]).toString();
 				prediction = map.get(split[1]).toString();
 			}
-			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
+			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}
 
 		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
@@ -138,7 +142,7 @@ public class KerasOutcomeIdReport extends ReportBase {
         String prediction = null;
         if (isIntegerMode) {
             String[] s = split[0].split(" ");
-            gold = integer2String(s);
+            gold = double2String(s);
             
             s = split[1].split(" ");
             prediction = double2String(s);
@@ -178,19 +182,6 @@ public class KerasOutcomeIdReport extends ReportBase {
 	    return sb.toString().trim();
 	}
     
-    public String integer2String(String[] val){
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i < val.length; i++){
-            String e = val[i];
-            Integer v = Double.valueOf(e).intValue();
-            sb.append(v.toString());
-            if(i+1 < val.length){
-                sb.append(",");
-            }
-        }
-        return sb.toString().trim();
-    }
-
     private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
 
 		Map<String, String> m = new HashMap<>();

@@ -47,6 +47,9 @@ public class KerasTestTask
     
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
+    
+    @Discriminator(name = Constants.DIM_BIPARTITION_THRESHOLD)
+    private Double biPartitionMultiLabel;
 
     @Override
     public void execute(TaskContext aContext)
