@@ -17,11 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.uima;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
 
 public class AssignIdConnector
@@ -33,7 +33,7 @@ public class AssignIdConnector
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        getLogger().log(Level.INFO, "--- validating CAS with id [" + jcasId + "] ---");
+        LogFactory.getLog(getClass()).info("--- validating CAS with id [" + jcasId + "] ---");
 
         boolean exists = JCasUtil.exists(aJCas, JCasId.class);
         if (!exists) {
