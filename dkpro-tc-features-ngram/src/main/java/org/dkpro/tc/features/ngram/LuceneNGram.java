@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -84,7 +85,7 @@ public class LuceneNGram
     @Override
     protected void logSelectionProcess(long N)
     {
-        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
+        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
                 + "]-GRAMS (" + caseSensitivity() + ")");
     }
 

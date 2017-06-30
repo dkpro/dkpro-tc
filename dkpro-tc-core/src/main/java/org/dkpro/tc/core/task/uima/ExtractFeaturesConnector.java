@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -126,7 +127,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		getLogger().log(Level.INFO, "--- feature extraction for CAS with id ["
+		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
 				+ JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
 
 		if (featureNames == null) {
