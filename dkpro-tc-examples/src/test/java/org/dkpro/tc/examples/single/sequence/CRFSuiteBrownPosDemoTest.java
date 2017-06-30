@@ -57,10 +57,10 @@ public class CRFSuiteBrownPosDemoTest
     public void testJavaCrossValidation()
         throws Exception
     {
+        //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON }));
+		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new String[] { CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
                 Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
