@@ -65,9 +65,10 @@ public class CRFSuiteBrownPosDemoTest extends JavaDemosTest_Base {
 	@SuppressWarnings("unchecked")
 	public Double runTrainTestNoFilter() throws Exception {
 		// Random parameters for demonstration!
+        //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
 		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
-		ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
+				asList(new String[] { CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
 		ContextMemoryReport.key = CRFSuiteTestTask.class.getName();

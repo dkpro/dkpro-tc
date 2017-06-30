@@ -100,7 +100,6 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
                 new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),
                         TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
-            
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
         ParameterSpace pSpace;
         if(dimFilters!=null){
