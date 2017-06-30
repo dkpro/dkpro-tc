@@ -292,6 +292,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
         possibleOutcomes.add("JJ");
         possibleOutcomes.add("VBD");
         possibleOutcomes.add("NNS");
+        possibleOutcomes.add("VBN");
         possibleOutcomes.add("IN");
         possibleOutcomes.add("CC");
         possibleOutcomes.add("NN");

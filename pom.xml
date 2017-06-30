@@ -398,6 +398,11 @@
 				<version>3.22</version>
 			</dependency>
 			<dependency>
+				<groupId>de.bwaldvogel</groupId>
+				<artifactId>liblinear</artifactId>
+				<version>1.95</version>
+			</dependency>			
+			<dependency>
 				<groupId>org.deeplearning4j</groupId>
 				<artifactId>deeplearning4j-core</artifactId>
 				<version>${deeplearning4j}</version>

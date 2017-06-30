@@ -23,12 +23,12 @@ import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -45,7 +45,6 @@ import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.writer.FeatureNodeArrayEncoder;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 import de.bwaldvogel.liblinear.Feature;
@@ -53,6 +52,7 @@ import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
+import groovyjarjarantlr.StringUtils;
 
 public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
@@ -88,7 +88,8 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
 	}
 
-	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
+
+    private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
 		Map<String, Integer> map = new HashMap<>();
 		List<String> readLines = FileUtils
 				.readLines(new File(tcModelLocation, LiblinearAdapter.getFeatureNameMappingFilename()));
@@ -110,32 +111,55 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 		return map;
 	}
 	
+	 private Double toValue(Object value)
+	    {
+	        double v;
+	        if (value instanceof Number) {
+	            v = ((Number) value).doubleValue();
+	        }
+	        else {
+	            v = 1.0;
+	        }
+
+	        return v;
+	    }
+	
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
-			List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
+			List<Instance> instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
 					new LiblinearAdapter().useSparseFeatures());
-
-			FeatureNodeArrayEncoder encoder = new FeatureNodeArrayEncoder(featureMapping);
-			FeatureNode[][] nodes = encoder.featueStore2FeatureNode(inst, null);
-
+			
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < nodes.length; i++) {
-				List<String> elements = new ArrayList<String>();
-				for (int j = 0; j < nodes[i].length; j++) {
-					FeatureNode node = nodes[i][j];
-					int index = node.getIndex();
-					double value = node.getValue();
+			  for (Instance inst : instances) {
+		            Map<Integer, Double> entry = new HashMap<>();
+		            for (org.dkpro.tc.api.features.Feature f : inst.getFeatures()) {
+		                Integer id = featureMapping.get(f.getName());
+		                Double val = toValue(f.getValue());
 
-					// write sparse values, i.e. skip zero values
-					if (Math.abs(value) > 0.00000000001) {
-						elements.add(index + ":" + value);
-					}
-				}
-				sb.append("-1"); // DUMMY value for our outcome
-				sb.append("\t");
-				sb.append(StringUtils.join(elements, "\t"));
-				sb.append("\n");
+		                if (Math.abs(val) < 0.00000001) {
+		                    // skip zero values
+		                    continue;
+		                }
+
+		                entry.put(id, val);
+		            }
+		            List<Integer> keys = new ArrayList<Integer>(entry.keySet());
+		            Collections.sort(keys);
+		            
+		            sb.append("-1\t"); // dummy label
+		            
+		            sb.append("1:1.0\t"); //bias entry
+		            
+		            for (int i = 0; i < keys.size(); i++) {
+		                Integer key = keys.get(i);
+		                Double value = entry.get(key);
+		                sb.append("" + key.toString() + ":" + value.toString());
+		                if (i + 1 < keys.size()) {
+		                    sb.append("\t");
+		                }
+		            }
+		            sb.append("\n");
 			}
 
 			File inputData = File.createTempFile("libLinearePrediction",
