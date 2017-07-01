@@ -87,7 +87,7 @@ public class LiblinearTwentyNewsgroupsTest
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
-        assertEquals(0.75, result, 0.0001);
+        assertEquals(0.875, result, 0.0001);
     }
 
     @Test
