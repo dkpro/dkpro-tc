@@ -100,7 +100,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
                         RandomForest.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3),
                 TcFeatureFactory.create(NrOfChars.class)));
 
@@ -190,8 +190,8 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
         assertEquals(2, outcomes.size());
-        assertEquals("crude", outcomes.get(0).getOutcome());
-        assertEquals("acq", outcomes.get(1).getOutcome());
+        assertEquals("grain", outcomes.get(0).getOutcome());
+        assertEquals("corn", outcomes.get(1).getOutcome());
 
     }
 

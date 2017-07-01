@@ -52,13 +52,6 @@ public class LiblinearBrownUnitPosDemoTest extends JavaDemosTest_Base
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
-        javaExperiment.runCrossValidation(pSpace);
-    }
-    
-    @Test
     public void testTrainTest()
         throws Exception
     {

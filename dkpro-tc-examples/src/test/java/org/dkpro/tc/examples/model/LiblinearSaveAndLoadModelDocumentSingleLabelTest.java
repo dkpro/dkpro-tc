@@ -103,7 +103,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
         ParameterSpace pSpace;
@@ -216,7 +216,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
         }
         else {
             assertEquals(4, outcomes.size());
-            assertEquals("neutral", outcomes.get(0).getOutcome());
+            assertEquals("emotional", outcomes.get(0).getOutcome());
             assertEquals("emotional", outcomes.get(1).getOutcome());
             assertEquals("emotional", outcomes.get(2).getOutcome());
             assertEquals("emotional", outcomes.get(3).getOutcome());

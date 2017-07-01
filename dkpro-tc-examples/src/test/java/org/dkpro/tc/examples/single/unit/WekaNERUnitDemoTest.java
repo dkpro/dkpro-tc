@@ -52,13 +52,6 @@ public class WekaNERUnitDemoTest extends JavaDemosTest_Base
     }
 
     @Test
-    public void testJavaCrossvalidation()
-        throws Exception
-    {
-        javaExperiment.runCrossValidation(pSpace);
-    }
-    
-    @Test
     public void testJavaTrainTest()
         throws Exception
     {
