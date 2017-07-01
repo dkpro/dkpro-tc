@@ -81,7 +81,7 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 	@Discriminator(name = DIM_LEARNING_MODE)
 	private String learningMode;
 
-	public static String SEPARATOR_CHAR = ";";
+	public static final String SEPARATOR_CHAR = ";";
 	public static final double EPISILON_DEFAULT = 0.01;
 	public static final double PARAM_C_DEFAULT = 1.0;
 

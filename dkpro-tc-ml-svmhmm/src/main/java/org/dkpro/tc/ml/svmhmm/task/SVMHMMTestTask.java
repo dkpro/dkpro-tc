@@ -55,7 +55,7 @@ public class SVMHMMTestTask
     /*
      * for svm_hmm debugging purposes
      */
-    public static boolean PRINT_STD_OUT = false;
+    public static final boolean PRINT_STD_OUT = false;
 
     private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/ml/svmhmm/";
 
@@ -371,7 +371,7 @@ public class SVMHMMTestTask
 
             // re-read the output and debug it
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(tmpOutLog)));
+                    new InputStreamReader(new FileInputStream(tmpOutLog),"utf-8"));
             String line;
             while ((line = br.readLine()) != null) {
                 log.debug(line);

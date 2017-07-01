@@ -36,7 +36,7 @@ public class CommentsIterator implements Iterator<List<String>> {
 	
 	public CommentsIterator(File f) throws IOException{
 		br = new BufferedReader(
-				new InputStreamReader(new FileInputStream(f)));
+				new InputStreamReader(new FileInputStream(f), "utf-8"));
 	
 	}
 		@Override

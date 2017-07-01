@@ -21,8 +21,9 @@ import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class LoadModelConnectorSvmhmm
 
         // avoid holding all predictions in RAM (might use a lot of RAM if a few million predictions
         // are being made)
-        BufferedReader br = new BufferedReader(new FileReader(predictionsFile));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("utf-8"), "utf-8"));
         String line = null;
         while ((line = br.readLine()) != null) {
             Integer i = Integer.valueOf(line);

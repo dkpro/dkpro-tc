@@ -60,7 +60,7 @@ public class SVMHMMRandomTestTask
                 AccessMode.READWRITE);
 
         // number of expected outcomes
-        List<String> strings = FileUtils.readLines(testFile);
+        List<String> strings = FileUtils.readLines(testFile, "utf-8");
         int numberOfTestInstances = strings.size();
 
         PrintWriter pw = new PrintWriter(new FileWriter(predictionsFile.getAbsolutePath()));

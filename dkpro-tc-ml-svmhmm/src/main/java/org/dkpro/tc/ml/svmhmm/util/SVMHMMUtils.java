@@ -22,11 +22,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -113,9 +114,9 @@ public final class SVMHMMUtils
     {
         File result = new File(featureVectorsFile.getParent(),
                 "mappedLabelsToInt_" + featureVectorsFile.getName());
-        PrintWriter pw = new PrintWriter(new FileOutputStream(result));
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(result), "utf-8"));
 
-        BufferedReader br = new BufferedReader(new FileReader(featureVectorsFile));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(featureVectorsFile), "utf-8"));
 
         String line = null;
         while ((line = br.readLine()) != null) {
@@ -157,7 +158,7 @@ public final class SVMHMMUtils
     public static void saveMappingTextFormat(BidiMap mapping, File outputFile)
         throws IOException
     {
-        PrintWriter pw = new PrintWriter(new FileOutputStream(outputFile));
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "utf-8"));
 
         // sort values (feature indexes)
         @SuppressWarnings("unchecked")
@@ -197,7 +198,7 @@ public final class SVMHMMUtils
         throws IOException
     {
         List<String> result = new ArrayList<>();
-        List<String> lines = FileUtils.readLines(featureVectorsFile);
+        List<String> lines = FileUtils.readLines(featureVectorsFile, "utf-8");
         for (String line : lines) {
             String label = line.split("\\s")[0];
 
@@ -254,7 +255,7 @@ public final class SVMHMMUtils
     {
         List<String> result = new ArrayList<>();
 
-        for (String line : FileUtils.readLines(predictionsFile)) {
+        for (String line : FileUtils.readLines(predictionsFile, "utf-8")) {
             Integer intLabel = Integer.valueOf(line);
 
             String outcomeLabel = (String) labelsToIntegersMapping.getKey(intLabel);
