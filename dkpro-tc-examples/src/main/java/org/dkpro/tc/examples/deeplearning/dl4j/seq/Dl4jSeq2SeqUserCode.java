@@ -125,8 +125,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 	private String[] getOutcomes(File trainOutcome, File testOutcome) throws IOException {
 
-		List<String> trainOutcomes = FileUtils.readLines(trainOutcome);
-		List<String> testOutcomes = FileUtils.readLines(testOutcome);
+		List<String> trainOutcomes = FileUtils.readLines(trainOutcome, "utf-8");
+		List<String> testOutcomes = FileUtils.readLines(testOutcome, "utf-8");
 
 		Set<String> s = new HashSet<>();
 		trainOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
@@ -136,8 +136,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 	}
 
 	private int getLongestSentence(File trainVec, File testVec) throws IOException {
-		List<String> trainSent = FileUtils.readLines(trainVec);
-		List<String> testSent = FileUtils.readLines(testVec);
+		List<String> trainSent = FileUtils.readLines(trainVec, "utf-8");
+		List<String> testSent = FileUtils.readLines(testVec, "utf-8");
 
 		int maxTrain = trainSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
 		int maxTest = testSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
@@ -180,8 +180,8 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen, int numOutcomes, File embedding)
 			throws IOException {
 
-		List<String> sentences = FileUtils.readLines(trainVec);
-		List<String> outcomes = FileUtils.readLines(trainOutcome);
+		List<String> sentences = FileUtils.readLines(trainVec, "utf-8");
+		List<String> outcomes = FileUtils.readLines(trainOutcome, "utf-8");
 
 		@SuppressWarnings("deprecation")
 		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);

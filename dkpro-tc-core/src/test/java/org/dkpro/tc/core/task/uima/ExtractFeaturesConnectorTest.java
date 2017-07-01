@@ -93,10 +93,10 @@ public class ExtractFeaturesConnectorTest
         Gson gson = new Gson();
 
         System.out.println(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
 
         List<String> lines = FileUtils
-                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
         List<Instance> instances = new ArrayList<>();
 
         for (String l : lines) {
@@ -205,7 +205,7 @@ public class ExtractFeaturesConnectorTest
         assertEquals("0.45", instances.get(0).getOutcome());
 
         System.out.println(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME)));
+                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
     }
 
     private int getUniqueOutcomes(List<Instance> instances)

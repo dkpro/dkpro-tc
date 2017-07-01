@@ -87,7 +87,7 @@ public class WeightedTwentyNewsgroupsCorpusReader
     	super.initialize(context);
     	List<String> lines = new ArrayList<String>();
         try {
-			lines = FileUtils.readLines(new File(weightFile));
+			lines = FileUtils.readLines(new File(weightFile), "utf-8");
 		} catch (IOException e) {
             throw new ResourceInitializationException(e);
 		}

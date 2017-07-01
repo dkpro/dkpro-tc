@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.deeplearning.dynet;
+package org.dkpro.tc.examples.deeplearning.keras;
 
+import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
@@ -34,34 +36,29 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
-import org.dkpro.tc.ml.dynet.DynetAdapter;
+import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
+import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
+public class KerasSeq2SeqCrossValidation implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
 	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
-	public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
-	
+
 	public static void main(String[] args) throws Exception {
 
-		// This is used to ensure that the required DKPRO_HOME environment
-		// variable is set.
-		// Ensures that people can run the experiments even if they haven't read
-		// the setup
-		// instructions first :)
 		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
 		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
 		ParameterSpace pSpace = getParameterSpace();
 
-		DeepLearningDynetSeq2SeqTrainTest experiment = new DeepLearningDynetSeq2SeqTrainTest();
-		experiment.runTrainTest(pSpace);
+		KerasSeq2SeqCrossValidation experiment = new KerasSeq2SeqCrossValidation();
+		experiment.runCrossValidation(pSpace);
 	}
 
 	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
@@ -70,25 +67,17 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 
 		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "*.xml");
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
 		dimReaders.put(DIM_READER_TRAIN, train);
-
-		// Careful - we need at least 2 sequences in the testing file otherwise
-		// things will crash
-		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				TeiReader.PARAM_PATTERNS, "*.xml");
-		dimReaders.put(DIM_READER_TEST, test);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
 				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
 				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
-				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
-				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
+				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
+				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+				Dimension
+						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
 
 		return pSpace;
 	}
@@ -97,11 +86,13 @@ public class DeepLearningDynetSeq2SeqTrainTest implements Constants {
 		return createEngineDescription(SequenceOutcomeAnnotator.class);
 	}
 
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DynetSeq2Seq", DynetAdapter.class);
+	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
+		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasSeq2SeqCv",
+				KerasAdapter.class, 2);
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
 
 		Lab.getInstance().run(batch);
 	}

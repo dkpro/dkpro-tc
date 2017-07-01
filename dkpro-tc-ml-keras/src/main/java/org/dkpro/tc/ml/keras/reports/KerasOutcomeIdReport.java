@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
@@ -142,10 +143,10 @@ public class KerasOutcomeIdReport extends ReportBase {
         String prediction = null;
         if (isIntegerMode) {
             String[] s = split[0].split(" ");
-            gold = double2String(s);
+            gold = StringUtils.join(s, ",");
             
             s = split[1].split(" ");
-            prediction = double2String(s);
+            prediction = StringUtils.join(s, ",");
         } else {
             String[] s = split[0].split(" ");
             gold = label2String(s, map);
@@ -169,19 +170,6 @@ public class KerasOutcomeIdReport extends ReportBase {
         return sb.toString().trim();        
     }
 
-    public String double2String(String[] val){
-	    StringBuilder sb = new StringBuilder();
-	    for(int i=0; i < val.length; i++){
-	        String e = val[i];
-	        Double v = Double.valueOf(e);
-            sb.append(v.toString());
-            if(i+1 < val.length){
-                sb.append(",");
-            }
-        }
-	    return sb.toString().trim();
-	}
-    
     private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
 
 		Map<String, String> m = new HashMap<>();
@@ -200,7 +188,7 @@ public class KerasOutcomeIdReport extends ReportBase {
 		}
 
 		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> readLines = FileUtils.readLines(file);
+		List<String> readLines = FileUtils.readLines(file, "utf-8");
 
 		Set<String> keys = new HashSet<>();
 

@@ -20,7 +20,6 @@ package org.dkpro.tc.examples.deeplearning.keras;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,19 +33,20 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningKerasDocumentTrainTest
+public class KerasDocumentMultiLabel
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    static String documentTrainFolderReuters = "src/main/resources/data/reuters/training";
+    static String documentTestFolderReuters = "src/main/resources/data/reuters/test";
+    static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
 
     public static void main(String[] args)
         throws Exception
@@ -57,7 +57,7 @@ public class DeepLearningKerasDocumentTrainTest
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningKerasDocumentTrainTest experiment = new DeepLearningKerasDocumentTrainTest();
+        KerasDocumentMultiLabel experiment = new KerasDocumentMultiLabel();
         experiment.runTrainTest(pSpace);
     }
 
@@ -69,29 +69,28 @@ public class DeepLearningKerasDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                documentTestFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_MULTI_LABEL),
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, 0.5),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
                         "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
+                        "src/main/resources/kerasCode/multiLabel/multi.py"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "src/test/resources/wordvector/glove.6B.50d_250.txt")
@@ -105,7 +104,7 @@ public class DeepLearningKerasDocumentTrainTest
         throws Exception
     {
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTest",
+        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTestMultiLabel",
                 KerasAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);

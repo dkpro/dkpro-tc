@@ -67,7 +67,7 @@ public class MultiLabelOutcomeAnnotator
         try {
             URL resourceUrl = ResourceUtils.resolveLocation(goldLabelFile, this, context);
 
-            for (String line : FileUtils.readLines(new File(resourceUrl.toURI()))) {
+            for (String line : FileUtils.readLines(new File(resourceUrl.toURI()), "utf-8")) {
                 String[] parts = line.split(" ");
 
                 if (parts.length < 2) {

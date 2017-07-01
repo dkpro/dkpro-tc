@@ -46,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DeepLearningKerasSeq2SeqTrainTest
+public class KerasSeq2SeqTrainTest
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -57,7 +57,7 @@ public class DeepLearningKerasSeq2SeqTrainTest
         throws Exception
     {
         ParameterSpace pSpace = getParameterSpace();
-        DeepLearningKerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
+        KerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
     }
 
     public static ParameterSpace getParameterSpace()
@@ -105,7 +105,7 @@ public class DeepLearningKerasSeq2SeqTrainTest
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
         if(dkproHome == null){
-        	DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqTrainTest.class.getSimpleName());
+        	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
         }else{
             System.setProperty("DKPRO_HOME", dkproHome.getAbsolutePath());
             System.err.println("Setting DKPRO_HOME to ["+dkproHome.getAbsolutePath()+"]");

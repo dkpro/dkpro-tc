@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.deeplearning.dl4j.doc;
+package org.dkpro.tc.examples.deeplearning.keras;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,19 +34,19 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
-import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
+import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningDl4jDocumentTrainTest
+public class KerasDocumentTrainTest
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/LabelledNews/train";
-    public static final String corpusFilePathTest = "src/main/resources/data/LabelledNews/test";
+    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
     public static void main(String[] args)
         throws Exception
@@ -56,7 +57,7 @@ public class DeepLearningDl4jDocumentTrainTest
 
         ParameterSpace pSpace = getParameterSpace();
 
-        DeepLearningDl4jDocumentTrainTest experiment = new DeepLearningDl4jDocumentTrainTest();
+        KerasDocumentTrainTest experiment = new KerasDocumentTrainTest();
         experiment.runTrainTest(pSpace);
     }
 
@@ -68,41 +69,44 @@ public class DeepLearningDl4jDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class,
-                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class,
-                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
+                TwentyNewsgroupsCorpusReader.class,
+                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
+                        "/usr/local/bin/python3"),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        new Dl4jDocumentUserCode()),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),
+                        "src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt")
+                );
 
         return pSpace;
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
+    protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-    	
-    	DemoUtils.setDkproHome(DeepLearningDl4jDocumentTrainTest.class.getSimpleName());
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DeepLearning",
-                Deeplearning4jAdapter.class);
+        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTest",
+                KerasAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

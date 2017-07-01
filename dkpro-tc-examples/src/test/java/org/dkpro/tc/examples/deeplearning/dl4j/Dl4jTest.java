@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearningDl4jDocumentTrainTest;
+import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearning4jDocumentTrainTest;
 import org.dkpro.tc.examples.deeplearning.dl4j.seq.DeepLearningDl4jSeq2SeqTrainTest;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.junit.Before;
@@ -165,7 +165,7 @@ public class Dl4jTest
     public void runDocumentTest()
         throws Exception
     {
-        DeepLearningDl4jDocumentTrainTest dl4j = new DeepLearningDl4jDocumentTrainTest();
-        dl4j.runTrainTest(DeepLearningDl4jDocumentTrainTest.getParameterSpace());
+        DeepLearning4jDocumentTrainTest dl4j = new DeepLearning4jDocumentTrainTest();
+        dl4j.runTrainTest(DeepLearning4jDocumentTrainTest.getParameterSpace());
     }
 }

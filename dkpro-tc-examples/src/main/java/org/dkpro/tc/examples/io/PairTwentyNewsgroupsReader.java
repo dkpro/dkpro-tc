@@ -139,7 +139,7 @@ public class PairTwentyNewsgroupsReader
 			throws TextClassificationException
 	{
 		try {
-			return FileUtils.readFileToString(doc1);
+			return FileUtils.readFileToString(doc1, "utf-8");
 		} catch (IOException e) {
 			throw new TextClassificationException(e);
 		}
@@ -150,7 +150,7 @@ public class PairTwentyNewsgroupsReader
 			throws TextClassificationException
 	{
 		try {
-			return FileUtils.readFileToString(doc2);
+			return FileUtils.readFileToString(doc2, "utf-8");
 		} catch (IOException e) {
 			throw new TextClassificationException(e);
 		}
@@ -184,7 +184,7 @@ public class PairTwentyNewsgroupsReader
         
         File fileLocation = new File(fileLocationString);
         List<List<String>> returnList = new ArrayList<List<String>>();
-        for(String line : FileUtils.readLines(fileLocation)) {
+        for(String line : FileUtils.readLines(fileLocation, "utf-8")) {
             line = line.replace("\n", "");
             List<String> lineList = new ArrayList<String>();
             for(String word: line.split("\t")){

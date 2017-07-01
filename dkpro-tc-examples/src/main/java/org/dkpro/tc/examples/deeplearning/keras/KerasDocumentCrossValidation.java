@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class DeepLearningKerasDocumentCrossValidation implements Constants {
+public class KerasDocumentCrossValidation implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
 	public static final String corpusFilePath = "src/main/resources/data/twentynewsgroups/bydate-train";
@@ -52,7 +52,7 @@ public class DeepLearningKerasDocumentCrossValidation implements Constants {
 
 		ParameterSpace pSpace = getParameterSpace();
 
-		DeepLearningKerasDocumentCrossValidation experiment = new DeepLearningKerasDocumentCrossValidation();
+		KerasDocumentCrossValidation experiment = new KerasDocumentCrossValidation();
 		experiment.runCrossValidation(pSpace);
 	}
 

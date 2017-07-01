@@ -78,7 +78,7 @@ public class STSReader
         golds = new ArrayList<Double>();
 
         try {
-            for (String line : FileUtils.readLines(inputFile)) {
+            for (String line : FileUtils.readLines(inputFile, "utf-8")) {
                 String parts[] = line.split("\t");
 
                 if (parts.length != 2) {
@@ -90,7 +90,7 @@ public class STSReader
                 texts2.add(parts[1]);
             }
 
-            for (String line : FileUtils.readLines(goldFile)) {
+            for (String line : FileUtils.readLines(goldFile, "utf-8")) {
                 try {
                     double goldValue = Double.parseDouble(line);
                     golds.add(goldValue);
