@@ -254,7 +254,7 @@ public class ReportUtils
             Map<List<String>, Double> aggregateMap, File matrix)
         throws IOException
     {
-        List<String> confMatrixLines = FileUtils.readLines(matrix);
+        List<String> confMatrixLines = FileUtils.readLines(matrix, "utf-8");
         StrTokenizer l = StrTokenizer.getCSVInstance(confMatrixLines.get(0));
         l.setDelimiterChar(',');
         String[] headline = l.getTokenArray();

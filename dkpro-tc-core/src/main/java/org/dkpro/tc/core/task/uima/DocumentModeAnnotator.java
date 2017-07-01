@@ -34,7 +34,7 @@ public class DocumentModeAnnotator
     extends JCasAnnotator_ImplBase
     implements Constants
 {
-    public static String PARAM_FEATURE_MODE = "PARAM_FEATURE_MODE";
+    public static final String PARAM_FEATURE_MODE = "PARAM_FEATURE_MODE";
     @ConfigurationParameter(name = "PARAM_FEATURE_MODE", mandatory = true)
     private String featureMode;
 

@@ -277,7 +277,7 @@ public class SaveModelUtils
     {
         // as a marker for the type, write the name of the ml adapter class
         // write feature extractors
-        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta);
+        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta, "utf-8");
     }
 
     public static void writeFeatureClassFiles(File modelFolder, List<TcFeature> featureSet)
@@ -459,7 +459,7 @@ public class SaveModelUtils
         throws Exception
     {
         File modelMeta = new File(tcModelLocation, MODEL_META);
-        String fileContent = FileUtils.readFileToString(modelMeta);
+        String fileContent = FileUtils.readFileToString(modelMeta, "utf-8");
         Class<?> classObj = Class.forName(fileContent);
         return (TcShallowLearningAdapter) classObj.newInstance();
     }
@@ -544,7 +544,7 @@ public class SaveModelUtils
         URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI().toURL() });
 
         File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
-        for (String l : FileUtils.readLines(file)) {
+        for (String l : FileUtils.readLines(file, "utf-8")) {
             String[] split = l.split("\t");
             String name = split[0];
             Object[] parameters = getParameters(split);

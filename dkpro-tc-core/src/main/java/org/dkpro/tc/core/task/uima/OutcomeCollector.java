@@ -35,7 +35,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 
 public class OutcomeCollector extends JCasAnnotator_ImplBase implements Constants {
-	public static String PARAM_TARGET_FOLDER = "PARAM_TARGET_FOLDER";
+	
+	public static final String PARAM_TARGET_FOLDER = "PARAM_TARGET_FOLDER";
 	@ConfigurationParameter(name = "PARAM_TARGET_FOLDER", mandatory = true)
 	private String targetFolder;
 

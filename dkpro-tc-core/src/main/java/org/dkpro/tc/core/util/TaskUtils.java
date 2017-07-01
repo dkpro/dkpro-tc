@@ -84,7 +84,7 @@ public class TaskUtils {
 	 *             in case of an error
 	 */
 	public static JSONObject getConfigFromJSON(String path) throws IOException {
-		String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(path).getFile()));
+		String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(path).getFile()), "utf-8");
 		return (JSONObject) JSONSerializer.toJSON(jsonPath);
 	}
 

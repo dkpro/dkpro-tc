@@ -55,7 +55,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	 * Public name of the folder where meta information will be stored within
 	 * the task
 	 */
-	public static String INPUT_MAPPING = "mappingInput";
+	public static final String INPUT_MAPPING = "mappingInput";
 
 	@Discriminator(name = Constants.DIM_LEARNING_MODE)
 	private String learningMode;

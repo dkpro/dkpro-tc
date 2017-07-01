@@ -70,8 +70,8 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 				continue;
 			}
 			String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
-			int pred = Integer.valueOf(split[0]);
-			int gold = Integer.valueOf(split[1]);
+			int pred = Integer.parseInt(split[0]);
+			int gold = Integer.parseInt(split[1]);
 
 			String key = index2instanceIdMap.get(lineCounter + "");
 			prop.setProperty(key, pred + LiblinearTestTask.SEPARATOR_CHAR + gold + LiblinearTestTask.SEPARATOR_CHAR
@@ -114,7 +114,7 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 	private List<String> readPredictions() throws IOException {
 		File predFolder = getContext().getFolder("", AccessMode.READWRITE);
 		String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile);
-		return FileUtils.readLines(new File(predFolder, predFileName));
+		return FileUtils.readLines(new File(predFolder, predFileName), "utf-8");
 	}
 
 	private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
@@ -148,7 +148,7 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 		File file = new File(mappingFolder, fileName);
 		Map<Integer, String> map = new HashMap<Integer, String>();
 
-		List<String> lines = FileUtils.readLines(file);
+		List<String> lines = FileUtils.readLines(file, "utf-8");
 		for (String line : lines) {
 			String[] split = line.split("\t");
 			map.put(Integer.valueOf(split[1]), split[0]);

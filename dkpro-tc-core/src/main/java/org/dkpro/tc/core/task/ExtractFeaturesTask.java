@@ -76,7 +76,7 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 	 * task
 	 */
 	public static final String INPUT_KEY = "input";
-    public static String COLLECTION_INPUT_KEY = "collectionInput";
+    public static final String COLLECTION_INPUT_KEY = "collectionInput";
 
 	@Discriminator(name = DIM_FEATURE_FILTERS)
 	private List<String> featureFilters = Collections.<String> emptyList();

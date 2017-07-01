@@ -63,7 +63,7 @@ public class FilterVocabularyByEmbeddingAnnotator
         String line = null;
         try {
             BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(embedding)));
+                    new InputStreamReader(new FileInputStream(embedding), "utf-8"));
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
                 vocab.add(split[0]);

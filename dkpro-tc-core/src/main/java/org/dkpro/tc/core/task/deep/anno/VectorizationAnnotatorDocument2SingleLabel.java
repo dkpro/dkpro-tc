@@ -110,7 +110,7 @@ public class VectorizationAnnotatorDocument2SingleLabel extends JCasAnnotator_Im
 	private int getMaximumLength() throws IOException {
 		String text = FileUtils
 				.readFileToString(new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
-		return Integer.valueOf(text);
+		return Integer.parseInt(text);
 	}
 
 	private void loadMapping(Map<String, Integer> m, String f) throws IOException {
