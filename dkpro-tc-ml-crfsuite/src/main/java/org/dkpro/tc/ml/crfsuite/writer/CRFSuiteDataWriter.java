@@ -50,7 +50,6 @@ public class CRFSuiteDataWriter implements DataWriter {
 	private BufferedWriter bw = null;
 	private Gson gson = new Gson();
 	private File classifierFormatOutputFile;
-    private String[] outcomes;
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -135,7 +134,6 @@ public class CRFSuiteDataWriter implements DataWriter {
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
 		this.applyWeigthing = applyWeighting;
-        this.outcomes = outcomes;
 
 		classifierFormatOutputFile = new File(outputDirectory,
 				CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
@@ -171,7 +169,6 @@ public class CRFSuiteDataWriter implements DataWriter {
     public void close()
         throws Exception
     {
-        // TODO Auto-generated method stub
         
     }
 
