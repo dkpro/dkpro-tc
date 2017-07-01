@@ -135,7 +135,7 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 		}
 		File mappingFile = new File(aContext.getFolder("", AccessMode.READWRITE),
 				LiblinearAdapter.getOutcomeMappingFilename());
-		FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));
+		FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping), "utf-8");
 	}
 
 	private File getTestFile(TaskContext aContext) {

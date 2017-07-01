@@ -89,7 +89,7 @@ public class LibsvmModelSerializationDescription
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
 
-        for (String s : FileUtils.readLines(trainFile)) {
+        for (String s : FileUtils.readLines(trainFile, "utf-8")) {
             if (s.isEmpty()) {
                 continue;
             }
