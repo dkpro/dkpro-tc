@@ -149,9 +149,13 @@ public class MappingAnnotator
         List<String> keys = new ArrayList<>(map.keySet());
         Collections.sort(keys);
 
-        for (String key : keys) {
-            sb.append(key + "\t" + map.get(key) + System.lineSeparator());
-        }
+		for (int i = 0; i < keys.size(); i++) {
+			String key = keys.get(i);
+			sb.append(key + "\t" + map.get(key));
+			if (i + 1 < keys.size()) {
+				sb.append(System.lineSeparator());
+			}
+		}
 
         return sb.toString();
     }

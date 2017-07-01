@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -111,21 +113,23 @@ public class IdentificationCollector extends JCasAnnotator_ImplBase {
 			Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
 			for (AnnotationFS s : sequences) {
 
-				Collection<TextClassificationTarget> targets = JCasUtil.selectCovered(aJCas,
-						TextClassificationTarget.class, s);
+				List<TextClassificationTarget> targets = new ArrayList<TextClassificationTarget>(JCasUtil.selectCovered(aJCas,
+						TextClassificationTarget.class, s));
 
-				int i = 0;
-				for (TextClassificationTarget tco : targets) {
+				for (int i = 0; i < targets.size(); i++) {
+					TextClassificationTarget tco = targets.get(i);
 					// This formatted identification will allow sorting the
 					// information in sequence. This
 					// leads to a human readable id2outcome report
 					String identification = String.format("%06d_%06d_%06d", jcasId, seqId, i);
-					writer.write(identification + "\t" + tco.getCoveredText() + System.lineSeparator());
+					writer.write(identification + "\t" + tco.getCoveredText());
+					if (i + 1 < targets.size()) {
+						writer.write(System.lineSeparator());
+					}
 
 					if (maximumLength != null && i + 1 >= maximumLength) {
 						break;
 					}
-					i++;
 				}
 				writer.write("\n");
 				seqId++;

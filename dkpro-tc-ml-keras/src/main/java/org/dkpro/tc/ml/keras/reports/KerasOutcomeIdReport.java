@@ -95,14 +95,20 @@ public class KerasOutcomeIdReport extends ReportBase {
 				// targets files
 				continue;
 			}
-			if (p.isEmpty()) {
+			if (p.trim().isEmpty()) {
 				shift++;
 				continue;
 			}
 
             String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift))
                     ? nameOfTargets.get(i - shift) : ("" + (counter++));
+                    System.out.println(id);
 
+             if(id.isEmpty()){
+            	 int a=0;
+            	 a++;
+             }
+                    
 			String[] split = p.split("\t");
 			
             if (isMultiLabel) {
@@ -115,10 +121,8 @@ public class KerasOutcomeIdReport extends ReportBase {
 			if (isIntegerMode) {
 				// Keras starts counting at 1 for 'content' - zero is reserved
 				// as padding value - we have to shift-correct the index
-				Integer v = Integer.valueOf(split[0]) - 1;
-				gold = v.toString();
-				v = Integer.valueOf(split[1]) - 1;
-				prediction = v.toString();
+				gold = split[0];
+				prediction = split[1];
 			} else {
 				// we have non-integer labels so we have to map them to integers
 				// for creating the id2outcome data format

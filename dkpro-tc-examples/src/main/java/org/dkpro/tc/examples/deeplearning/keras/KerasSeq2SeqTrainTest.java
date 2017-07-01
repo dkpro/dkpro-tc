@@ -104,12 +104,11 @@ public class KerasSeq2SeqTrainTest
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-        if(dkproHome == null){
-        	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
-        }else{
-            System.setProperty("DKPRO_HOME", dkproHome.getAbsolutePath());
-            System.err.println("Setting DKPRO_HOME to ["+dkproHome.getAbsolutePath()+"]");
-        }
+//        if(dkproHome == null){
+//        	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
+//        }else{
+            System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
+//        }
         
         DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
                 KerasAdapter.class);

@@ -92,7 +92,9 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 		for j in range(0, len(y_test[i])):
 			if y_test[i][j]==0:
 				break #we reached the padded area - zero is reserved
-			predictionFile.write(str(y_test[i][j]) +"\t" + str(predictionEntry[j])+ "\n")
+			predictionFile.write(str(y_test[i][j]) +"\t" + str(predictionEntry[j]))
+			if j+1 < len(y_test[i]):
+				predictionFile.write("\n")
 		predictionFile.write("\n")
 	predictionFile.close()
 
