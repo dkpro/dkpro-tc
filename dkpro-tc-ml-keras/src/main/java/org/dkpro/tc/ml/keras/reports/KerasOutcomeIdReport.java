@@ -66,21 +66,24 @@ public class KerasOutcomeIdReport extends ReportBase {
 		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
                 .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
+		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		List<String> predictions = getPredictions(file);
+		
 		Map<String, String> map = loadMap(isIntegerMode);
+		List<String> labelsInPrediction = getTestGoldLabels();
 
 		StringBuilder header = new StringBuilder();
 		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
         List<String> k = new ArrayList<>(map.keySet());
-        for (int i = 0; i < k.size(); i++) {
-            header.append(i + "=" + k.get(i));
+        for (int i = 0; i < labelsInPrediction.size(); i++) {
+            header.append(i + "=" + labelsInPrediction.get(i));
             if (i + 1 < k.size()) {
                 header.append(" ");
             }
         }
 
-		File file = getContext().getFile(KerasTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
+		
 
 		List<String> nameOfTargets = getNameOfTargets();
 
@@ -102,13 +105,7 @@ public class KerasOutcomeIdReport extends ReportBase {
 
             String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift))
                     ? nameOfTargets.get(i - shift) : ("" + (counter++));
-                    System.out.println(id);
 
-             if(id.isEmpty()){
-            	 int a=0;
-            	 a++;
-             }
-                    
 			String[] split = p.split("\t");
 			
             if (isMultiLabel) {
@@ -136,6 +133,21 @@ public class KerasOutcomeIdReport extends ReportBase {
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
+	}
+
+	private List<String> getTestGoldLabels() throws Exception {
+		Set<String> labels = new HashSet<>();
+		
+		File testVectorizationFolder = getContext().getFolder(TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT, AccessMode.READONLY);
+		File f = new File(testVectorizationFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+		List<String> readLines = FileUtils.readLines(f, "utf-8");
+		for(String s : readLines){
+			for(String x : s.split(" ")){
+				labels.add(x);
+			}
+		}
+		
+		return new ArrayList<String>(labels);
 	}
 
 	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop, Map<String, String> map)

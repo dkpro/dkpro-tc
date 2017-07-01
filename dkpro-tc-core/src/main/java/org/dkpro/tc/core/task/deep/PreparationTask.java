@@ -106,8 +106,8 @@ public class PreparationTask extends UimaTaskBase {
 
 		if (integerVectorization) {
 			builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
-					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX,
-					mlDeepLearningAdapter.lowestIndex()));
+					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX_INSTANCES,
+					mlDeepLearningAdapter.lowestIndex(),MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
 		}else{
 			builder.add(AnalysisEngineFactory.createEngineDescription(VocabularyOutcomeCollector.class,
 					VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));

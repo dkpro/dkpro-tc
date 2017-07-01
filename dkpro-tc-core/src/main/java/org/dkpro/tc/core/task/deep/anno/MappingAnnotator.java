@@ -52,9 +52,13 @@ public class MappingAnnotator
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
     
-    public static final String PARAM_START_INDEX = "startIndexMllowestIdx";
-    @ConfigurationParameter(name = PARAM_START_INDEX, mandatory = true)
-    protected int startIndex;
+    public static final String PARAM_START_INDEX_INSTANCES = "startIndexInstances";
+    @ConfigurationParameter(name = PARAM_START_INDEX_INSTANCES, mandatory = true)
+    protected int startIndexInstances;
+    
+    public static final String PARAM_START_INDEX_OUTCOMES = "startIndexOutcomes";
+    @ConfigurationParameter(name = PARAM_START_INDEX_OUTCOMES, mandatory = true)
+    protected int startIndexOutcomes;
 
     TreeSet<String> token;
 
@@ -75,8 +79,8 @@ public class MappingAnnotator
     {
         super.initialize(context);
         
-        instanceIdx = startIndex;
-        outcomeIdx = startIndex;
+        instanceIdx = startIndexInstances;
+        outcomeIdx = startIndexOutcomes;
 
         instanceMappingFile = new File(targetFolder,
                 DeepLearningConstants.FILENAME_INSTANCE_MAPPING);

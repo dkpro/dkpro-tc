@@ -91,7 +91,6 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds, Comparator<String> aComparator)
 					throws TextClassificationException {
 		setExperimentName(aExperimentName);
-		//FIXME
 		setMachineLearningAdapter(mlAdapter);
 		setNumFolds(aNumFolds);
 		setComparator(aComparator);
@@ -254,6 +253,8 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 				Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
 		learningTask.addImport(initTask, InitTaskDeep.OUTPUT_KEY_TRAIN, TcDeepLearningAdapter.TARGET_ID_MAPPING);
 		learningTask.addImport(embeddingTask, EmbeddingTask.OUTPUT_KEY, TcDeepLearningAdapter.EMBEDDING_FOLDER);
+		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.VECTORIZIATION_TRAIN_OUTPUT);
+		learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT);
 
 		// ================== CONFIG OF THE INNER BATCH TASK
 		// =======================
