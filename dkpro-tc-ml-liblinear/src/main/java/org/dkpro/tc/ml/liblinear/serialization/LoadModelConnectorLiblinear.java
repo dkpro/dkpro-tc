@@ -48,11 +48,9 @@ import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 import de.bwaldvogel.liblinear.Feature;
-import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
-import groovyjarjarantlr.StringUtils;
 
 public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
@@ -92,7 +90,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
     private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
 		Map<String, Integer> map = new HashMap<>();
 		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, LiblinearAdapter.getFeatureNameMappingFilename()));
+				.readLines(new File(tcModelLocation, LiblinearAdapter.getFeatureNameMappingFilename()), "utf-8");
 		for (String l : readLines) {
 			String[] split = l.split("\t");
 			map.put(split[0],Integer.valueOf(split[1]));
@@ -103,7 +101,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 	private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation) throws IOException {
 		Map<Integer, String> map = new HashMap<>();
 		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, LiblinearAdapter.getOutcomeMappingFilename()));
+				.readLines(new File(tcModelLocation, LiblinearAdapter.getOutcomeMappingFilename()), "utf-8");
 		for (String l : readLines) {
 			String[] split = l.split("\t");
 			map.put(Integer.valueOf(split[1]), split[0]);
@@ -164,7 +162,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
 			File inputData = File.createTempFile("libLinearePrediction",
 					LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
-			FileUtils.writeStringToFile(inputData, sb.toString());
+			FileUtils.writeStringToFile(inputData, sb.toString(), "utf-8");
 
 			Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
 
