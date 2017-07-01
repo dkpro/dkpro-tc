@@ -28,10 +28,10 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
@@ -50,204 +50,251 @@ import com.google.gson.Gson;
  * 
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
-public class LibsvmDataWriter implements DataWriter {
-	private File outputDirectory;
+public class LibsvmDataWriter
+    implements DataWriter
+{
+    public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
+    File outputDirectory;
+    boolean useSparse;
+    String learningMode;
+    boolean applyWeighting;
+    File classifierFormatOutputFile;
+    BufferedWriter bw = null;
+    Map<String, String> index2instanceId;
 
-	private File classifierFormatOutputFile;
-	private BufferedWriter bw;
-	public static final String INDEX2INSTANCEID = "index2InstanceId.txt";
-	Gson gson = new Gson();
-	private TreeSet<String> featureNames;
-	int idx = 0;
-	Map<String, String> index2instanceId = new HashMap<>();
-	Map<String, Integer> featureNameMap = new HashMap<>();
+    Gson gson = new Gson();
+    private int maxId = 0;
 
-    private String[] outcomes;
+    Map<String, Integer> featureNames2id;
 
+    @Override
+    public void writeGenericFormat(Collection<Instance> instances)
+        throws Exception
+    {
+        initGeneric();
 
-	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
-		initGeneric();
+        // bulk-write - in sequence mode this keeps the instances together that
+        // belong to the same sequence!
+        Instance[] array = instances.toArray(new Instance[0]);
+        bw.write(gson.toJson(array) + System.lineSeparator());
 
-		// bulk-write - in sequence mode this keeps the instances together that
-		// belong to the same sequence!
-		Instance[] array = instances.toArray(new Instance[0]);
-		bw.write(gson.toJson(array) + System.lineSeparator());
+        bw.close();
+        bw = null;
+    }
 
-		bw.close();
-		bw = null;
-	}
+    private void initGeneric()
+        throws IOException
+    {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(
+                                new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
+                        "utf-8"));
+    }
 
-	private void initGeneric() throws IOException {
-		if (bw != null) {
-			return;
-		}
-		bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
-	}
+    @Override
+    public void transformFromGeneric()
+        throws Exception
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
+                "utf-8"));
 
-	@Override
-	public void transformFromGeneric() throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            Instance[] instance = gson.fromJson(line, Instance[].class);
+            List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+            writeClassifierFormat(ins, false);
+        }
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			Instance[] instance = gson.fromJson(line, Instance[].class);
-			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
-			writeClassifierFormat(ins, false);
-		}
+        reader.close();
+        FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
+    }
 
-		reader.close();
-		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
-	}
+    @Override
+    public void writeClassifierFormat(Collection<Instance> in, boolean compress)
+        throws Exception
+    {
 
-	@Override
-	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
-		if (featureNames == null) {
-			//create feature name mapping and serialize it at first pass-through
-			loadFeatureNames();
-			initFeatureNameMap();
-			writeFeatureName2idMapping(outputDirectory, LibsvmAdapter.getFeatureNameMappingFilename(), featureNameMap);
-		}
+        if (featureNames2id == null) {
+            createFeatureNameMap();
+        }
 
-		initClassifierFormat();
+        initClassifierFormat();
 
-		for (Instance i : instances) {
-			recordInstanceId(i, idx++, index2instanceId);
-			String outcome = i.getOutcome();
-			bw.write(outcome);
-			for (Feature f : i.getFeatures()) {
-				if (!sanityCheckValue(f)) {
-					continue;
-				}
-				bw.write("\t");
-				bw.write(featureNameMap.get(f.getName()) + ":" + f.getValue());
-			}
-			bw.write("\n");
-		}
+        List<Instance> instances = new ArrayList<>(in);
 
-		bw.close();
-		bw = null;
+        for (Instance inst : instances) {
+            Map<Integer, Double> entry = new HashMap<>();
+            recordInstanceId(inst, maxId++, index2instanceId);
+            for (Feature f : inst.getFeatures()) {
+                Integer id = featureNames2id.get(f.getName());
+                Double val = toValue(f.getValue());
 
-		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+                if (Math.abs(val) < 0.00000001) {
+                    // skip zero values
+                    continue;
+                }
 
-	}
+                entry.put(id, val);
+            }
+            List<Integer> keys = new ArrayList<Integer>(entry.keySet());
+            Collections.sort(keys);
 
-	private void initFeatureNameMap() {
-		List<String> fm = new ArrayList<>(featureNames);
-		for (int i = 0; i < fm.size(); i++) {
-			featureNameMap.put(fm.get(i), i + 2);
-		}		
-	}
+            bw.append(inst.getOutcome() + "\t");
+            for (int i = 0; i < keys.size(); i++) {
+                Integer key = keys.get(i);
+                Double value = entry.get(key);
+                bw.append("" + key.toString() + ":" + value.toString());
+                if (i + 1 < keys.size()) {
+                    bw.append("\t");
+                }
+            }
+            bw.append("\n");
+        }
 
-	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
-			Map<String, Integer> stringToInt) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		for (String k : stringToInt.keySet()) {
-			sb.append(k + "\t" + stringToInt.get(k) + "\n");
-		}
-		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
-	}
+        bw.close();
+        bw = null;
 
-	private void initClassifierFormat() throws Exception {
-		if (bw != null) {
-			return;
-		}
+        writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+        writeFeatureName2idMapping(outputDirectory,
+                LibsvmAdapter.getFeatureNameMappingFilename(), featureNames2id);
+    }
 
-		bw = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
-	}
+    private Double toValue(Object value)
+    {
+        double v;
+        if (value instanceof Number) {
+            v = ((Number) value).doubleValue();
+        }
+        else {
+            v = 1.0;
+        }
 
-	private void loadFeatureNames() throws IOException {
-		List<String> readLines = FileUtils.readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
-		featureNames = new TreeSet<>();
-		for (String l : readLines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			featureNames.add(l);
-		}
-	}
+        return v;
+    }
 
-	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
-			throws Exception {
-		this.outputDirectory = outputDirectory;
-        this.outcomes = outcomes;
-		classifierFormatOutputFile = new File(outputDirectory,
-				LibsvmAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+    private void createFeatureNameMap()
+        throws IOException
+    {
+        featureNames2id = new HashMap<>();
+        List<String> readLines = FileUtils
+                .readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
+        
+        // add a "bias" feature node; otherwise LIBLINEAR is unable to predict
+        // the majority class for
+        // instances consisting entirely of features never seen during training
+        featureNames2id.put("x.BIAS", 1);
+        
+        Integer i = 2;
+        for (String l : readLines) {
+            if (l.isEmpty()) {
+                continue;
+            }
+            featureNames2id.put(l, i++);
+        }
+    }
 
-		// Caution: DKPro Lab imports (aka copies!) the data of the train task
-		// as test task. We use
-		// appending mode for streaming. We might append the old training file
-		// with
-		// testing data!
-		// Force delete the old training file to make sure we start with a
-		// clean, empty file
-		if (classifierFormatOutputFile.exists()) {
-			FileUtils.forceDelete(classifierFormatOutputFile);
-		}
-	}
+    private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+            Map<String, Integer> stringToInt)
+                throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String k : stringToInt.keySet()) {
+            sb.append(k + "\t" + stringToInt.get(k) + "\n");
+        }
+        FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2),
+                sb.toString(), "utf-8");
+    }
 
-	@Override
-	public boolean canStream() {
-		return true;
-	}
+    private void initClassifierFormat()
+        throws Exception
+    {
+        if (bw != null) {
+            return;
+        }
 
-	@Override
-	public boolean classiferReadsCompressed() {
-		return false;
-	}
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+    }
 
-	@Override
-	public String getGenericFileName() {
-		return Constants.GENERIC_FEATURE_FILE;
-	}
+    @Override
+    public void init(File outputDirectory, boolean useSparse, String learningMode,
+            boolean applyWeighting, String[] outcomes)
+                throws Exception
+    {
+        this.outputDirectory = outputDirectory;
+        this.useSparse = useSparse;
+        this.learningMode = learningMode;
+        this.applyWeighting = applyWeighting;
+        classifierFormatOutputFile = new File(outputDirectory, LibsvmAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 
-	// build a map between the dkpro instance id and the index in the file
-	private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId) {
-		Collection<Feature> features = instance.getFeatures();
-		for (Feature f : features) {
-			if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
-				continue;
-			}
-			index2instanceId.put(i + "", f.getValue() + "");
-			return;
-		}
-	}
+        index2instanceId = new HashMap<>();
 
-	private boolean sanityCheckValue(Feature f) {
-		if (f.getValue() instanceof Number) {
-			return true;
-		}
-		if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
-			return false;
-		}
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task
+        // as test task. We use
+        // appending mode for streaming. We might append the old training file
+        // with
+        // testing data!
+        // Force delete the old training file to make sure we start with a
+        // clean, empty file
+        if (classifierFormatOutputFile.exists()) {
+            FileUtils.forceDelete(classifierFormatOutputFile);
+        }
+    }
 
-		try {
-			Double.valueOf((String) f.getValue());
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]", e);
-		}
-		return false;
-	}
+    @Override
+    public boolean canStream()
+    {
+        return true;
+    }
 
-	private void writeMapping(File outputDirectory, String fileName, Map<String, String> index2instanceId)
-			throws IOException {
-		StringBuilder sb = new StringBuilder();
-		sb.append("#Index\tDkProInstanceId\n");
-		for (String k : index2instanceId.keySet()) {
-			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
-		}
-		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
-	}
+    @Override
+    public boolean classiferReadsCompressed()
+    {
+        return false;
+    }
+
+    @Override
+    public String getGenericFileName()
+    {
+        return Constants.GENERIC_FEATURE_FILE;
+    }
+
+    private void writeMapping(File outputDirectory, String fileName,
+            Map<String, String> index2instanceId)
+                throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Index\tDkProInstanceId\n");
+        for (String k : index2instanceId.keySet()) {
+            sb.append(k + "\t" + index2instanceId.get(k) + "\n");
+        }
+        FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
+    }
+
+    // build a map between the dkpro instance id and the index in the file
+    private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
+    {
+        Collection<Feature> features = instance.getFeatures();
+        for (Feature f : features) {
+            if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
+                continue;
+            }
+            index2instanceId.put(i + "", f.getValue() + "");
+            return;
+        }
+    }
 
     @Override
     public void close()
         throws Exception
     {
+
     }
 
 }

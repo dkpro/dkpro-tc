@@ -134,9 +134,12 @@ public class LibsvmBrownUnitPosDemo
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new String[] { "-c", "10" }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                Constants.DIM_FEATURE_SET, new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension
+				.create(Constants.DIM_FEATURE_SET,
+						new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+								TcFeatureFactory.create(LuceneCharacterNGram.class,
+										LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
+										LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

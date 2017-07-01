@@ -110,7 +110,7 @@ public class LibsvmTestTask
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
 
-        for (String s : FileUtils.readLines(trainFile)) {
+        for (String s : FileUtils.readLines(trainFile, "utf-8")) {
             if (s.isEmpty()) {
                 continue;
             }
@@ -197,8 +197,8 @@ public class LibsvmTestTask
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
 
-        List<String> gold = pickGold(FileUtils.readLines(fileTest));
-        List<String> pred = FileUtils.readLines(predTmp);
+        List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
+        List<String> pred = FileUtils.readLines(predTmp, "utf-8");
         bw.write("#PREDICTION;GOLD" + "\n");
         for (int i = 0; i < gold.size(); i++) {
             String p = pred.get(i); 

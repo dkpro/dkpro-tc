@@ -54,12 +54,6 @@ public class LiblinearRegressionDemoTest extends JavaDemosTest_Base
 
 
     @Test
-    public void testCrossvalidation() throws Exception{
-        ContextMemoryReport.key = LiblinearTestTask.class.getName();
-        experiment.runCrossValidation(pSpace);
-    }
-    
-    @Test
     public void testTrainTest() throws Exception{
         ContextMemoryReport.key = LiblinearTestTask.class.getName();
         experiment.runTrainTest(pSpace);

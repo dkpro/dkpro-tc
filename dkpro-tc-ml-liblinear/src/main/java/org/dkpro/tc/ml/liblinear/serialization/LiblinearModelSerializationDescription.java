@@ -72,7 +72,7 @@ public class LiblinearModelSerializationDescription
         Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(outcomeFile, isRegression);
         File mappedTrainFile = LiblinearUtils.replaceOutcome(fileTrain, outcomeMapping);
         File mappingFile = new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename());
-        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping));
+        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping), "utf-8");
 
         File featureNameFile = new File(aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY),LiblinearAdapter.getFeatureNameMappingFilename()); 

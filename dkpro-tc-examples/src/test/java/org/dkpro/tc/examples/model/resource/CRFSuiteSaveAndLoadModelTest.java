@@ -179,7 +179,7 @@ public class CRFSuiteSaveAndLoadModelTest implements Constants {
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-				TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
+				TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50,
 						LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 1, LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
 				// This is the only model store/load demo at the moment that
 				// makes use of a

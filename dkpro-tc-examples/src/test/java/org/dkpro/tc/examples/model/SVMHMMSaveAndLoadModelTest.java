@@ -134,7 +134,7 @@ public class SVMHMMSaveAndLoadModelTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3),
                 TcFeatureFactory.create(NrOfChars.class)));
 

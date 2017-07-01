@@ -51,13 +51,6 @@ public class CRFSuiteNERSequenceDemoTest extends JavaDemosTest_Base
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
-    {
-        javaExperiment.runCrossValidation(pSpace);
-    }
-    
-    @Test
     public void testTrainTestWithResults() throws Exception{
         ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);

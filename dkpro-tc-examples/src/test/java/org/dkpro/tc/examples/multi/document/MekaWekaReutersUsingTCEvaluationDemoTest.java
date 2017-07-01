@@ -49,6 +49,7 @@ public class MekaWekaReutersUsingTCEvaluationDemoTest extends JavaDemosTest_Base
     {
         javaExperiment.runCrossValidation(pSpace);
     }
+    
     @Test
     public void testJavaTrainTest()
         throws Exception

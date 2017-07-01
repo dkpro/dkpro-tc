@@ -103,7 +103,7 @@ public class LoadModelConnectorLibsvm
 	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
 		Map<String, Integer> map = new HashMap<>();
 		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, LibsvmAdapter.getFeatureNameMappingFilename()));
+				.readLines(new File(tcModelLocation, LibsvmAdapter.getFeatureNameMappingFilename()), "utf-8");
 		for (String l : readLines) {
 			String[] split = l.split("\t");
 			map.put(split[0],Integer.valueOf(split[1]));
@@ -116,7 +116,7 @@ public class LoadModelConnectorLibsvm
     {
         Map<String, String> map = new HashMap<>();
         List<String> readLines = FileUtils
-                .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()));
+                .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()), "utf-8");
         for (String l : readLines) {
             String[] split = l.split("\t");
             map.put(split[1], split[0]);
@@ -134,7 +134,7 @@ public class LoadModelConnectorLibsvm
             File prediction = runPrediction(tempFile);
 
             List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
-            List<String> writtenPredictions = FileUtils.readLines(prediction);
+            List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
 
             checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
                     writtenPredictions);
