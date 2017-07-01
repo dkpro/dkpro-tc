@@ -20,9 +20,10 @@ package org.dkpro.tc.evaluation;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -99,7 +100,7 @@ public class Id2Outcome
         this.outcomes = new HashSet<SingleOutcome>();
         this.learningMode = learningMode;
 
-        BufferedReader br = new BufferedReader(new FileReader(id2outcomeFile));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(id2outcomeFile), "utf-8"));
         String line = "";
         List<String> labelList = null;
         while ((line = br.readLine()) != null) {
