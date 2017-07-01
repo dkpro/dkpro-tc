@@ -129,7 +129,7 @@ public class LoadModelConnectorCRFSuite
         pb.redirectError(Redirect.INHERIT);
         pb.command(command);
         Process process = pb.start();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
         writer.write(buffer.toString());
         writer.close();
         return CRFSuiteTestTask.captureProcessOutput(process);

@@ -171,7 +171,7 @@ public class LibsvmPredict
         }
         if (i >= argv.length - 2)
             exit_with_help();
-        BufferedReader input = new BufferedReader(new FileReader(argv[i]));
+        BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(argv[i]), "utf-8"));
         DataOutputStream output = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(argv[i + 2])));
         svm_model model = svm.svm_load_model(argv[i + 1]);

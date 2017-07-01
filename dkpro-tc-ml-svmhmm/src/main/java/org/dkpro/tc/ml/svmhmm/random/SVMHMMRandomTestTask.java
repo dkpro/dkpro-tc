@@ -19,7 +19,8 @@
 package org.dkpro.tc.ml.svmhmm.random;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class SVMHMMRandomTestTask
         List<String> strings = FileUtils.readLines(testFile, "utf-8");
         int numberOfTestInstances = strings.size();
 
-        PrintWriter pw = new PrintWriter(new FileWriter(predictionsFile.getAbsolutePath()));
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(predictionsFile.getAbsolutePath()), "utf-8"));
 
         for (int i = 0; i < numberOfTestInstances; i++) {
             pw.println(getRandomOutcome());

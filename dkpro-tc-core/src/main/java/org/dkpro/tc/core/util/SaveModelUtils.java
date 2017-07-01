@@ -507,9 +507,7 @@ public class SaveModelUtils
                 convertedParameters.add(parameter.toString());
             }
         }
-        else {
-            parameters = new ArrayList<Object>();
-        }
+         
         return convertedParameters;
     }
 
