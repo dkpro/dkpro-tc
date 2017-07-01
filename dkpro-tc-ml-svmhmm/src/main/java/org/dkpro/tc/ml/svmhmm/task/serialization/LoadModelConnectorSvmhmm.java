@@ -154,7 +154,7 @@ public class LoadModelConnectorSvmhmm
 
         // avoid holding all predictions in RAM (might use a lot of RAM if a few million predictions
         // are being made)
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("utf-8"), "utf-8"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(predictionsFile), "utf-8"));
         String line = null;
         while ((line = br.readLine()) != null) {
             Integer i = Integer.valueOf(line);
