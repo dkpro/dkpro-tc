@@ -214,7 +214,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 	private int getEmbeddingsSize(File embedding) throws Exception {
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(embedding)));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(embedding), "utf-8"));
 		String readLine = br.readLine();
 		br.close();
 		return readLine.split(" ").length - 1;
