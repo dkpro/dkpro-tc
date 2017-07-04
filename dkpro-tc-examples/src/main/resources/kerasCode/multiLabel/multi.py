@@ -53,7 +53,7 @@ def prepareOutcomes(rawOutcomes, dimX, dimY):
 		inner = y_[i]
 		for j in range(0, len(rawOutcomes[i])):
 			if rawOutcomes[i][j] > 0:
-				idx = rawOutcomes[i][j] - 1
+				idx = rawOutcomes[i][j]
 				inner[idx]=1
 			y_[i]=inner
 	return y_
@@ -74,10 +74,9 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	x_test = sequence.pad_sequences(testVecNump, maxlen=longest_sequence)
 	
 	y_test = testOutcome
-	maxLabel = max(x for s in trainOutcome+testOutcome for x in s)
+	maxLabel = max(x for s in trainOutcome+testOutcome for x in s) + 1 # label start at zero 
 	
 	y_train = prepareOutcomes(trainOutcome, x_train.shape[0], maxLabel)
-
 
 	print("X  : ", x_train.shape)
 	print("Y  : ", y_train.shape)
@@ -102,7 +101,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	model.compile(loss='binary_crossentropy',
               optimizer='rmsprop')
 
-	model.fit(x_train, y_train, epochs=1, shuffle=True)
+	model.fit(x_train, y_train, epochs=10, shuffle=True)
 
 	preds = model.predict(x_test)
 	#preds[preds>=0.5] = 1
