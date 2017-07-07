@@ -77,7 +77,7 @@ public class KerasDocumentMultiLabel
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
-                documentTestFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
