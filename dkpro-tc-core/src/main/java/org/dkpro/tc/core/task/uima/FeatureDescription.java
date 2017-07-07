@@ -27,7 +27,7 @@ public class FeatureDescription
     }
     
     public void setEnumType(@SuppressWarnings("rawtypes") Enum e){
-        enumType = e.getClass().getSimpleName();
+        enumType = e.getClass().getName();
     }
     
     public String getEnumType(){
