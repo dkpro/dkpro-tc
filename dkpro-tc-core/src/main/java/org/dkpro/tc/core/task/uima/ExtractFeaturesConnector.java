@@ -199,7 +199,12 @@ public class ExtractFeaturesConnector extends ConnectorBase {
             List<String> keyList = new ArrayList<String>(featDesc.keySet());
             Collections.sort(keyList);
             for (String k : keyList) {
-                sb.append(k + "\t" + featDesc.get(k).getDescription() + "\n");
+                FeatureDescription fd = featDesc.get(k);
+                sb.append(k + "\t" + fd.getDescription());
+                if(fd.getEnumType() != null){
+                    sb.append("\t" + fd.getEnumType());
+                }
+                sb.append(System.lineSeparator());
             }
             FileUtils.writeStringToFile(
                     new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION), sb.toString(), "utf-8");
