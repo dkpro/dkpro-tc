@@ -98,12 +98,15 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 
     model = Sequential()
     model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
-    model.add(LSTM(128, return_sequences=False, dropout=0.2, recurrent_dropout=0.2))
+    model.add(Dropout(0.2))
+    model.add(LSTM(128, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
+    model.add(Dropout(0.2))
+    model.add(LSTM(128, return_sequences=False, dropout=0.2, recurrent_dropout=0.2, go_backwards=True))
     model.add(Dropout(0.2))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(x_train, y_train, epochs=1, shuffle=True)
+    model.compile(loss='mean_squared_error', optimizer='sgd')
+    model.fit(x_train, y_train, epochs=10, shuffle=True)
 
     prediction = transformBack(model.predict(x_test), max, min)
 
