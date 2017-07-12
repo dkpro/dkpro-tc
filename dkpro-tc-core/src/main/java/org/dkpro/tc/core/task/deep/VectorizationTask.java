@@ -40,6 +40,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2MultiLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2Regression;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2SingleLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorSequence2SequenceOfLabel;
 
@@ -99,11 +100,18 @@ public class VectorizationTask
         switch (featureMode) {
         case Constants.FM_DOCUMENT:
             switch (learningMode) {
-            case Constants.LM_SINGLE_LABEL:
             case Constants.LM_REGRESSION:
                 return AnalysisEngineFactory.createEngineDescription(
+                        VectorizationAnnotatorDocument2Regression.class,
+                        VectorizationAnnotatorDocument2Regression.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2Regression.PARAM_PREPARATION_DIRECTORY,
+                        mappingDir, VectorizationAnnotatorDocument2Regression.PARAM_TO_INTEGER,
+                        integerVectorization);
+            case Constants.LM_SINGLE_LABEL:
+                return AnalysisEngineFactory.createEngineDescription(
                         VectorizationAnnotatorDocument2SingleLabel.class,
-                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY, outputDir,
+                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY,
+                        outputDir,
                         VectorizationAnnotatorDocument2SingleLabel.PARAM_PREPARATION_DIRECTORY,
                         mappingDir, VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER,
                         integerVectorization);
@@ -118,12 +126,15 @@ public class VectorizationTask
         case Constants.FM_SEQUENCE:
             return AnalysisEngineFactory.createEngineDescription(
                     VectorizationAnnotatorSequence2SequenceOfLabel.class,
-                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
-                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
-                    VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
+                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY,
+                    outputDir,
+                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY,
+                    mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
+                    integerVectorization);
         default:
             throw new ResourceInitializationException(
-                    new IllegalStateException("Combination of feature mode [" + featureMode + "] with learning mode ["+ learningMode +"] not defined"));
+                    new IllegalStateException("Combination of feature mode [" + featureMode
+                            + "] with learning mode [" + learningMode + "] not defined"));
         }
 
     }
