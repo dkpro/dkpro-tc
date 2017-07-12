@@ -34,6 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.EssayScoreReader;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
@@ -53,8 +54,7 @@ public class KerasDocumentRegression
 
         ParameterSpace pSpace = getParameterSpace();
 
-        KerasDocumentRegression experiment = new KerasDocumentRegression();
-        experiment.runTrainTest(pSpace);
+        KerasDocumentRegression.runTrainTest(pSpace);
     }
 
     public static ParameterSpace getParameterSpace()
@@ -92,7 +92,7 @@ public class KerasDocumentRegression
     }
 
     // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
+    protected static void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
 
@@ -100,13 +100,14 @@ public class KerasDocumentRegression
                 KerasAdapter.class);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
+        batch.addReport(ContextMemoryReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
         Lab.getInstance().run(batch);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
+    protected static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createEngineDescription(BreakIteratorSegmenter.class);
