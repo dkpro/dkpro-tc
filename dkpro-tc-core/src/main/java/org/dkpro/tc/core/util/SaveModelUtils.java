@@ -539,7 +539,8 @@ public class SaveModelUtils
         List<ExternalResourceDescription> erd = new ArrayList<>();
 
         File classFile = new File(tcModelLocation + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-        URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI().toURL() });
+        URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { classFile.toURI().toURL() },
+                Thread.currentThread().getContextClassLoader());
 
         File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
         for (String l : FileUtils.readLines(file, "utf-8")) {
