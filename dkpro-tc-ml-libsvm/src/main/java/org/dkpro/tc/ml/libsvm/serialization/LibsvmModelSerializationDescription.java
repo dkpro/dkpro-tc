@@ -85,7 +85,8 @@ public class LibsvmModelSerializationDescription
     private File replaceOutcomeByIntegers(File trainFile)
         throws IOException
     {
-        File createTempFile = FileUtil.createTempFile("libsvmTrainFile", ".tmp_libsvm");
+    	File parentFile = trainFile.getParentFile();
+        File createTempFile = new File(parentFile, "libsvmTrainFile.libsvm");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
 
