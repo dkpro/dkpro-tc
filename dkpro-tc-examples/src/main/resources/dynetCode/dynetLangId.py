@@ -118,7 +118,7 @@ def create_network_return_best(inputs):
     net_output = dy.softmax( (W*net_input) + b)
     return np.argmax(net_output.npvalue())
     
-for epoch in range(0,250): #increase iterations for better results
+for epoch in range(0,5): #increase iterations for better results
     random.shuffle(train)
     for tupel in train:
         loss = create_network_return_loss(tupel[1], tupel[0])
