@@ -18,13 +18,70 @@
 
 package org.dkpro.tc.ml.dynet.report;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.ml.dynet.DynetTestTask;
+import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 public class DynetMetaReport extends ReportBase {
 
 	@Override
 	public void execute() throws Exception {
+		String python = getDiscriminators()
+				.get(DynetTestTask.class.getName() + "|" + DeepLearningConstants.DIM_PYTHON_INSTALLATION);
 
+		String dynetVersion = getDyNetVersion(python);
+		String numpyVersion = getNumpyVersion(python);
+
+		Properties p = new SortedKeyProperties();
+		p.setProperty("NumpyVersion", numpyVersion);
+		p.setProperty("DynetVersion", dynetVersion);
+
+		File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
+		FileOutputStream fos = new FileOutputStream(file);
+		p.store(fos, "Version information");
+		fos.close();
+	}
+
+	private String getDyNetVersion(String python) throws IOException, InterruptedException {
+		return getVersion(python, "import dynet as dy; print(dy.__version__)");
+	}
+
+	private String getNumpyVersion(String python) throws IOException, InterruptedException {
+		return getVersion(python, "import numpy; print(numpy.__version__)");
+	}
+
+	private String getVersion(String python, String cmd) throws IOException, InterruptedException {
+		List<String> command = new ArrayList<>();
+		command.add(python);
+		command.add("-c");
+		command.add(cmd);
+
+		ProcessBuilder pb = new ProcessBuilder(command).command(command);
+		Process start = pb.start();
+		start.waitFor();
+
+		InputStream inputStream = start.getInputStream();
+		List<String> output = new ArrayList<>();
+		BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+		String l = null;
+		while ((l = r.readLine()) != null) {
+			output.add(l);
+		}
+		r.close();
+
+		return output.get(output.size() - 1);
 	}
 
 }
