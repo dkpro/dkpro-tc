@@ -9,8 +9,8 @@ import numpy as np
 # Rather primitive example for a language identification using word-level information
 # meant as show case
 
-documentLength=50
-embDimension=300
+documentLength=40
+embDimension=25  
 
 if  __name__ =='__main__':
 
@@ -118,7 +118,7 @@ def create_network_return_best(inputs):
     net_output = dy.softmax( (W*net_input) + b)
     return np.argmax(net_output.npvalue())
     
-for epoch in range(0,2): #increase iterations for better results
+for epoch in range(0,250): #increase iterations for better results
     random.shuffle(train)
     for tupel in train:
         loss = create_network_return_loss(tupel[1], tupel[0])
