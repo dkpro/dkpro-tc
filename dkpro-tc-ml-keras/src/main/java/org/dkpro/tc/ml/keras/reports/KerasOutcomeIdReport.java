@@ -50,7 +50,7 @@ public class KerasOutcomeIdReport extends ReportBase {
 	 */
 	public static final String SEPARATOR_CHAR = ";";
 
-	private static String THRESHOLD = "-1";
+	private String THRESHOLD = "-1";
 	
 	int counter=0;
 

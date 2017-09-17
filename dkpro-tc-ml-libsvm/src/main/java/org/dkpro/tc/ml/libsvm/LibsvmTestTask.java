@@ -26,7 +26,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +110,8 @@ public class LibsvmTestTask
     private File replaceOutcomeByIntegers(File trainFile)
         throws IOException
     {
-        File createTempFile = FileUtil.createTempFile("libsvmTrainFile", ".tmp_libsvm");
+        File parentFile = trainFile.getParentFile();
+        File createTempFile = new File(parentFile, "libsvmTrainFile.libsvm");
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
 
@@ -226,7 +231,13 @@ public class LibsvmTestTask
     private File createTemporaryPredictionFile(TaskContext aContext)
         throws IOException
     {
-        return FileUtil.createTempFile("libsvmPrediction" + System.nanoTime(), ".libsvmtmp");
+        DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
+        Date today = Calendar.getInstance().getTime();        
+        String now = df.format(today);
+        
+        File createTempFile = FileUtil.createTempFile("libsvmPrediction" + now, ".libsvm");
+        createTempFile.deleteOnExit();
+        return createTempFile;
     }
 
     private File getPredictionFile(TaskContext aContext)

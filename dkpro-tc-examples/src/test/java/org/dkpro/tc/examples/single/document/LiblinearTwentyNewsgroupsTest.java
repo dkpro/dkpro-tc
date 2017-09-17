@@ -19,7 +19,7 @@
 package org.dkpro.tc.examples.single.document;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class LiblinearTwentyNewsgroupsTest
         EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
         Double result = createEvaluator.calculateEvaluationMeasures()
                 .get(Accuracy.class.getSimpleName());
-        assertEquals(0.75, result, 0.0001);
+        assertTrue(result >= 0.7);
     }
 
     @Test

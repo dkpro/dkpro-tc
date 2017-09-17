@@ -18,13 +18,10 @@
 package org.dkpro.tc.ml.libsvm;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,29 +80,5 @@ public class LibsvmUtils
         }
         br.close();
         return outcomes;
-    }
-
-    public static File replaceOutcomeByIntegerValue(File file, Map<String, Integer> outcomeMapping)
-        throws IOException
-    {
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), "utf-8"));
-        File outFile = File.createTempFile("liblinear" + System.nanoTime(), ".tmp");
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
-
-        String line = null;
-        while (((line = br.readLine()) != null)) {
-            if (line.isEmpty()) {
-                continue;
-            }
-            int firstTabIdx = line.indexOf("\t");
-            Integer id = outcomeMapping.get(line.substring(0, firstTabIdx));
-            bw.write(id + line.substring(firstTabIdx) + "\n");
-        }
-        br.close();
-        bw.close();
-
-        return outFile;
     }
 }

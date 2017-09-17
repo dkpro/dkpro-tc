@@ -162,6 +162,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 
 			File inputData = File.createTempFile("libLinearePrediction",
 					LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+			inputData.deleteOnExit();
 			FileUtils.writeStringToFile(inputData, sb.toString(), "utf-8");
 
 			Problem predictionProblem = Problem.readFromFile(inputData, 1.0);
