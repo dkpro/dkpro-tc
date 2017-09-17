@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.LoadModelConnectorWeka;
 import org.dkpro.tc.ml.weka.task.serialization.WekaModelSerializationDescription;
-import org.dkpro.tc.ml.weka.writer.MekaDataWriterFast;
+import org.dkpro.tc.ml.weka.writer.MekaDataWriter;
 
 public class MekaClassificationAdapter 
 	implements TcShallowLearningAdapter
@@ -70,7 +70,7 @@ public class MekaClassificationAdapter
 	public String getFrameworkFilename(AdapterNameEntries name) {
 
         switch (name) {
-            case featureVectorsFile:  return "training-data.arff";
+            case featureVectorsFile:  return "training-data.arff.gz";
             case predictionsFile      :  return "predictions.arff";
             case featureSelectionFile :  return "attributeEvaluationResults.txt";
         }
@@ -80,7 +80,7 @@ public class MekaClassificationAdapter
 	
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return MekaDataWriterFast.class;
+		return MekaDataWriter.class;
 	}
 	
 	@Override
