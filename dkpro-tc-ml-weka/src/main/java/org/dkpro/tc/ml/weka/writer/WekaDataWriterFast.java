@@ -196,7 +196,7 @@ public class WekaDataWriterFast
         switch (type) {
         case STRING:
         case ENUM:
-            return Utils.quote(object.toString());
+            return object.toString();
         case NUMERIC:
             return object.toString();
         case BOOLEAN:
