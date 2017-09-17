@@ -41,8 +41,13 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.util.AttributeStore;
 
 import com.google.gson.Gson;
+
+import weka.core.Attribute;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 
 /*
  * Datawriter for the Weka machine learning tool.
@@ -57,6 +62,10 @@ public class WekaDataWriterFast
     private File arffTarget;
     boolean isRegression;
 
+    AttributeStore attributeStore;
+    Attribute outcomeAttribute;
+    ArffSaver saver;
+    Instances masterInstance;
     private String[] outcomes;
     
     private boolean isAlreadyInitialized;
@@ -214,7 +223,7 @@ public class WekaDataWriterFast
     private String initArffOutput() throws IOException
     {
         if(isAlreadyInitialized){
-            return null;
+            return "";
         }
         
         name2featureType = new HashMap<>();
