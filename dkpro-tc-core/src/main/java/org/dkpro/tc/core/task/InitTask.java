@@ -165,11 +165,6 @@ public class InitTask
                         DocumentModeAnnotator.PARAM_FEATURE_MODE, featureMode),
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
-                
-                //collects the outcomes
-                createEngineDescription(OutcomeCollector.class,
-                        OutcomeCollector.PARAM_TARGET_FOLDER,
-                        aContext.getFolder(output, AccessMode.READWRITE)),
 
         // tc pre validity check
                 getPreValidityCheckEngine(aContext), emptyProblemChecker,
@@ -179,6 +174,10 @@ public class InitTask
 
         // tc post validity check
                 getPostValidityCheckEngine(aContext),
+                
+		// collects the outcomes
+				createEngineDescription(OutcomeCollector.class, OutcomeCollector.PARAM_TARGET_FOLDER,
+						aContext.getFolder(output, AccessMode.READWRITE)),                
 
         // write CAS to HDD
                 xmiWriter);
