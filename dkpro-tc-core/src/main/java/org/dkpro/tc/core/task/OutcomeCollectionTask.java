@@ -45,9 +45,6 @@ public class OutcomeCollectionTask
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
 
-    @Discriminator(name = DIM_FILES_TRAINING)
-    private Collection<String> files_training;
-
     /**
      * Public name of the task key
      */
