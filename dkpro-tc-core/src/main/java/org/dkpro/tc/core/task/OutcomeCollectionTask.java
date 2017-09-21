@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.task;
 
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
+import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -39,6 +41,9 @@ import org.dkpro.tc.core.Constants;
 public class OutcomeCollectionTask
     extends ExecutableTaskBase
 {
+    
+    @Discriminator(name = DIM_READER_TEST)
+    protected CollectionReaderDescription readerTest;
 
     @Discriminator(name = DIM_FILES_TRAINING)
     private Collection<String> files_training;
@@ -72,7 +77,7 @@ public class OutcomeCollectionTask
 
     private boolean isCrossValidation()
     {
-        return files_training != null;
+        return readerTest == null;
     }
 
 }
