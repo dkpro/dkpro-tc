@@ -24,7 +24,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.CollectionTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -43,7 +43,7 @@ public class ExperimentSaveModel
 
     // tasks
     private InitTask initTask;
-    private CollectionTask collectionTask;
+    private OutcomeCollectionTask collectionTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
     private ModelSerializationTask saveModelTask;
@@ -88,7 +88,7 @@ public class ExperimentSaveModel
         initTask.setType(initTask.getType() + "-Train-" + experimentName);
         initTask.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
         
-        collectionTask = new CollectionTask();
+        collectionTask = new OutcomeCollectionTask();
 		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
 		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
 		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
@@ -108,7 +108,7 @@ public class ExperimentSaveModel
         featuresTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
-        featuresTrainTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+        featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
 
         // feature extraction and prediction on test data
@@ -118,7 +118,7 @@ public class ExperimentSaveModel
 			saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
 			saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
 					Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-			saveModelTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+			saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 			saveModelTask.setOutputFolder(outputFolder);
 			saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 

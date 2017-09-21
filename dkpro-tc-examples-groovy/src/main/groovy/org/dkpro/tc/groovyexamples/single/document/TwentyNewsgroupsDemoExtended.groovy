@@ -34,7 +34,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.core.task.ExtractFeaturesTask
 import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
-import org.dkpro.tc.core.task.CollectionTask
+import org.dkpro.tc.core.task.OutcomeCollectionTask
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
@@ -134,7 +134,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 			mlAdapter: WekaClassificationAdapter.instance
         ]
 
-        CollectionTask collectionTask = [
+        OutcomeCollectionTask collectionTask = [
             type: "CollectionTask-TwentyNewsgroups-TrainTest",
         ]
         
@@ -169,11 +169,11 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY)
         featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY)
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
-        featuresTrainTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, ExtractFeaturesTask.COLLECTION_INPUT_KEY);
+        featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY)
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY, MetaInfoTask.META_KEY)
         featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY)
-        featuresTestTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, ExtractFeaturesTask.COLLECTION_INPUT_KEY);
+        featuresTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TEST_DATA)
 

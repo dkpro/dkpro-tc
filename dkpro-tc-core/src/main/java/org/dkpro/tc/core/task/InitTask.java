@@ -50,6 +50,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
+import org.dkpro.tc.core.task.uima.OutcomeCollector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
@@ -95,7 +96,7 @@ public class InitTask
      * the task
      */
     public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
-
+    
     private List<String> operativeViews;
 
     private TcShallowLearningAdapter mlAdapter;
@@ -164,6 +165,11 @@ public class InitTask
                         DocumentModeAnnotator.PARAM_FEATURE_MODE, featureMode),
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
+                
+                //collects the outcomes
+                createEngineDescription(OutcomeCollector.class,
+                        OutcomeCollector.PARAM_TARGET_FOLDER,
+                        aContext.getFolder(output, AccessMode.READWRITE)),
 
         // tc pre validity check
                 getPreValidityCheckEngine(aContext), emptyProblemChecker,

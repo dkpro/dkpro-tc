@@ -22,7 +22,7 @@ import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.CollectionTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -40,7 +40,7 @@ public class ExperimentTrainTest
 
     protected InitTask initTaskTrain;
     protected InitTask initTaskTest;
-    protected CollectionTask collectionTask;
+    protected OutcomeCollectionTask collectionTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask featuresTrainTask;
     protected ExtractFeaturesTask featuresTestTask;
@@ -98,7 +98,7 @@ public class ExperimentTrainTest
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
         initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
         
-		collectionTask = new CollectionTask();
+		collectionTask = new OutcomeCollectionTask();
 		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
 		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
 		collectionTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
@@ -121,7 +121,7 @@ public class ExperimentTrainTest
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
-        featuresTrainTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+        featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
@@ -134,7 +134,7 @@ public class ExperimentTrainTest
         featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-        featuresTestTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+        featuresTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
@@ -157,7 +157,7 @@ public class ExperimentTrainTest
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);

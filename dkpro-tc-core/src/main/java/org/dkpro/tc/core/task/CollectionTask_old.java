@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Iterates over all documents - train and test together - and collects general
  * information about the entire data set
  */
-public class CollectionTask extends UimaTaskBase {
+public class CollectionTask_old extends UimaTaskBase {
 
 	@Discriminator(name = DIM_FILES_TRAINING)
 	private Collection<String> files_training;

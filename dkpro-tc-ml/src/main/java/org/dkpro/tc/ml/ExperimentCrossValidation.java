@@ -43,7 +43,7 @@ import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.CollectionTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -63,7 +63,7 @@ public class ExperimentCrossValidation
     protected int numFolds = 10;
 
     protected InitTask initTask;
-    protected CollectionTask collectionTask;
+    protected OutcomeCollectionTask collectionTask;
     protected MetaInfoTask metaTask;
     protected ExtractFeaturesTask extractFeaturesTrainTask;
     protected ExtractFeaturesTask extractFeaturesTestTask;
@@ -213,7 +213,7 @@ public class ExperimentCrossValidation
         // ================== SUBTASKS OF THE INNER BATCH TASK =======================
 
         // collecting meta features only on the training data (numFolds times)
-        collectionTask = new CollectionTask();
+        collectionTask = new OutcomeCollectionTask();
 		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
 		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
 		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
@@ -232,7 +232,7 @@ public class ExperimentCrossValidation
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
-        extractFeaturesTrainTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+        extractFeaturesTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
@@ -246,7 +246,7 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
         extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
-        extractFeaturesTestTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY,
+        extractFeaturesTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
@@ -269,7 +269,7 @@ public class ExperimentCrossValidation
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, CollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
