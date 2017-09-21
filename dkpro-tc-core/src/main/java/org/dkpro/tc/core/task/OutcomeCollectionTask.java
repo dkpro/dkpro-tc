@@ -58,7 +58,7 @@ public class OutcomeCollectionTask
         File trainOutcomes = new File(trainFolder, Constants.FILENAME_OUTCOMES);
         outcomes.addAll(FileUtils.readLines(trainOutcomes, "utf-8"));
 
-        if (!isCrossValidation()) {
+        if (isTrainTest(aContext)) {
             File testFolder = aContext.getFolder(InitTask.OUTPUT_KEY_TEST, AccessMode.READONLY);
             File testOutcomes = new File(testFolder, Constants.FILENAME_OUTCOMES);
             outcomes.addAll(FileUtils.readLines(testOutcomes, "utf-8"));
@@ -70,9 +70,12 @@ public class OutcomeCollectionTask
 
     }
 
-    private boolean isCrossValidation()
+    private boolean isTrainTest(TaskContext aContext)
     {
-        return readerTest == null;
+        File testOutputLocation = null;
+        testOutputLocation  = aContext.getFolder(InitTask.OUTPUT_KEY_TEST, AccessMode.READONLY);
+        File testOutcomes = new File(testOutputLocation, Constants.FILENAME_OUTCOMES);
+        return testOutcomes.exists();
     }
 
 }
