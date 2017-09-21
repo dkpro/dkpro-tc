@@ -17,11 +17,9 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task;
 
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
