@@ -424,5 +424,11 @@ public interface Constants
      * on how the cross validation will be performed
      */
     public static final String DIM_CROSS_VALIDATION_MANUAL_FOLDS = "useCrossValidationManualFolds";
+    
+    /**
+     * Allows to skip the sanity checks that ensures that each classification target corresponds to an outcome.
+     * Setting this flag should speed up experiment execution considerably for larger amounts of data.
+     */
+    public static final String DIM_SKIP_SANITY_CHECKS = "skipSanityChecks";
 
 }

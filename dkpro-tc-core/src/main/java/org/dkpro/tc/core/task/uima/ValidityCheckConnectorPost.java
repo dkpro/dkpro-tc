@@ -50,6 +50,9 @@ public class ValidityCheckConnectorPost
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
+    @ConfigurationParameter(name = Constants.DIM_SKIP_SANITY_CHECKS, mandatory = true, defaultValue = "False")
+    private boolean skipSanityChecks;
+
     private int featureModeI;
     private int learningModeI;
 
@@ -58,27 +61,34 @@ public class ValidityCheckConnectorPost
         throws AnalysisEngineProcessException
     {
 
-        if (featureModeI == 0) {
-            featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
+        if (runSanityCheck()) {
+
+            if (featureModeI == 0) {
+                featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
+            }
+
+            if (learningModeI == 0) {
+                learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
+            }
+
+            List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                    JCasUtil.select(jcas, TextClassificationOutcome.class));
+            List<TextClassificationTarget> classificationUnits = new ArrayList<>(
+                    JCasUtil.select(jcas, TextClassificationTarget.class));
+
+            // whether outcome annotation are present at all
+            checkErrorConditionZeroOutcomes(outcomes);
+
+            checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(jcas, outcomes);
+
+            checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(jcas,
+                    classificationUnits, outcomes);
         }
+    }
 
-        if (learningModeI == 0) {
-            learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
-        }
-
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
-        List<TextClassificationTarget> classificationUnits = new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationTarget.class));
-
-        // whether outcome annotation are present at all
-        checkErrorConditionZeroOutcomes(outcomes);
-
-        checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(jcas, outcomes);
-
-        checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(jcas, classificationUnits,
-                outcomes);
-
+    private boolean runSanityCheck()
+    {
+        return skipSanityChecks == false;
     }
 
     private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(JCas jcas,
