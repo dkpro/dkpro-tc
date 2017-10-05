@@ -73,11 +73,17 @@ public class LibsvmOutcomeIdReport
                 continue;
             }
             String[] split = line.split(";");
-            int pred = Double.valueOf(split[0]).intValue();
-            int gold = Double.valueOf(split[1]).intValue();
             String key = index2instanceIdMap.get(lineCounter+"");
-            prop.setProperty(key,
-                    pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+            
+            if (isRegression){
+                prop.setProperty(key,
+                    split[0] + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
+            }else{
+                int pred = Double.valueOf(split[0]).intValue();
+                int gold = Double.valueOf(split[1]).intValue();
+                prop.setProperty(key,
+                        pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+            }
             lineCounter++;
         }
 

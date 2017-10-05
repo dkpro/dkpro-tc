@@ -70,12 +70,18 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 				continue;
 			}
 			String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
-			int pred = Integer.parseInt(split[0]);
-			int gold = Integer.parseInt(split[1]);
-
 			String key = index2instanceIdMap.get(lineCounter + "");
-			prop.setProperty(key, pred + LiblinearTestTask.SEPARATOR_CHAR + gold + LiblinearTestTask.SEPARATOR_CHAR
-					+ THRESHOLD_CONSTANT);
+			
+			if (isRegression){
+                prop.setProperty(key,
+                    split[0] + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
+            }else{
+                int pred = Double.valueOf(split[0]).intValue();
+                int gold = Double.valueOf(split[1]).intValue();
+                prop.setProperty(key,
+                        pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+            }
+			
 			lineCounter++;
 		}
 
