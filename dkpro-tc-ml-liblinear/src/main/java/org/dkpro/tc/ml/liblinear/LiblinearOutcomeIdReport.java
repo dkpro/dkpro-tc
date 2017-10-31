@@ -34,6 +34,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -58,7 +59,7 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 				.equals(Constants.LM_REGRESSION);
 		
 		boolean isDocumentMode = getDiscriminators()
-				.get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
+				.get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
 				.equals(Constants.FM_DOCUMENT);
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
