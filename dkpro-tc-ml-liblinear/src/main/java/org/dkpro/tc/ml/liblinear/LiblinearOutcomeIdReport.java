@@ -56,12 +56,16 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 		boolean isRegression = getDiscriminators()
 				.get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
 				.equals(Constants.LM_REGRESSION);
+		
+		boolean isDocumentMode = getDiscriminators()
+				.get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
+				.equals(Constants.FM_DOCUMENT);
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 		String header = buildHeader(id2label, isRegression);
 
 		List<String> predictions = readPredictions();
-		Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
+		Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap(isDocumentMode);
 
 		Properties prop = new SortedKeyProperties();
 		int lineCounter = 0;
@@ -93,12 +97,20 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 
 	}
 
-	private Map<String, String> getIndex2InstanceIdMap() throws IOException {
-		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-				LiblinearDataWriter.INDEX2INSTANCEID);
+	private Map<String, String> getIndex2InstanceIdMap(boolean isDocumentMode) throws IOException {
+		
+		File f;
+		if (isDocumentMode) {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		} else {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					LiblinearDataWriter.INDEX2INSTANCEID);
+		}
 
 		Map<String, String> m = new HashMap<>();
 
+		int idx=0;
 		for (String l : FileUtils.readLines(f, "utf-8")) {
 			if (l.startsWith("#")) {
 				continue;
@@ -107,7 +119,14 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 				continue;
 			}
 			String[] split = l.split("\t");
-			m.put(split[0], split[1]);
+			
+			if(isDocumentMode){
+				m.put(idx+"", split[0]);
+				idx++;
+			}else{
+				m.put(split[0], split[1]);
+			}
+			
 		}
 		return m;
 	}
