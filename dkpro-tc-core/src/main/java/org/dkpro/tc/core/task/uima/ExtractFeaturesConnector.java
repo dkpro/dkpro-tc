@@ -116,7 +116,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 		super.initialize(context);
 		try {
 			
-			documentIdLogger = initDocumentMetaDataLogger();
+			initDocumentMetaDataLogger();
 
 			if (isTesting) {
 				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
@@ -135,15 +135,14 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 		}
 	}
 
-	private BufferedWriter initDocumentMetaDataLogger() throws Exception {
-		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+	private void initDocumentMetaDataLogger() throws Exception {
+		documentIdLogger = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG))));
 		documentIdLogger.write(
 				"# Order in which JCas documents have been processed and their information from DocumentMetaData");
 		documentIdLogger.write("\n");
 		documentIdLogger.write("#ID\tTitle");
 		documentIdLogger.write("\n");
-		return bufferedWriter;
 	}
 
 	@Override
