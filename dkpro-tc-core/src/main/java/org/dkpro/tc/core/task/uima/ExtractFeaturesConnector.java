@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.uima;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,6 +49,8 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.util.TaskUtils;
 
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
  * the feature extractors on each CAS.
@@ -70,9 +75,9 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
 	private String[] featureFilters;
-	
+
 	@ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
-    private String[] outcomes;
+	private String[] outcomes;
 
 	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
 	private boolean useSparseFeatures;
@@ -103,10 +108,15 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	TreeSet<String> featureNames;
 	boolean writeFeatureNames = true;
 
+	BufferedWriter documentIdLogger; // writes the document ids stored in the
+										// DocumentMetaData object
+
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 		try {
+			
+			documentIdLogger = initDocumentMetaDataLogger();
 
 			if (isTesting) {
 				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
@@ -125,10 +135,30 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 		}
 	}
 
+	private BufferedWriter initDocumentMetaDataLogger() throws Exception {
+		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG))));
+		documentIdLogger.write(
+				"# Order in which JCas documents have been processed and their information from DocumentMetaData");
+		documentIdLogger.write("\n");
+		documentIdLogger.write("#ID\tTitle");
+		documentIdLogger.write("\n");
+		return bufferedWriter;
+	}
+
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
 				+ JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+		
+		DocumentMetaData dmd = null;
+		try{
+			dmd = JCasUtil.selectSingle(jcas, DocumentMetaData.class);
+			documentIdLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
+			documentIdLogger.write("\n");
+		}catch(Exception e){
+			//annotation missing
+		}
 
 		if (featureNames == null) {
 			getFeatureNames(jcas);
@@ -182,59 +212,56 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 						addInstanceId, false));
 			}
 
-            Map<String, FeatureDescription> featDesc = new HashMap<>();
-            featureNames = new TreeSet<>();
-            for (Feature f : instances.get(0).getFeatures()) {
-                featureNames.add(f.getName());
+			Map<String, FeatureDescription> featDesc = new HashMap<>();
+			featureNames = new TreeSet<>();
+			for (Feature f : instances.get(0).getFeatures()) {
+				featureNames.add(f.getName());
 
-                if (!featDesc.containsKey(f.getName())) {
-                    featDesc.put(f.getName(), determineType(f));
-                }
-            }
+				if (!featDesc.containsKey(f.getName())) {
+					featDesc.put(f.getName(), determineType(f));
+				}
+			}
 
-            FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8",
-                    featureNames);
+			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
 
-            StringBuilder sb = new StringBuilder();
-            List<String> keyList = new ArrayList<String>(featDesc.keySet());
-            Collections.sort(keyList);
-            for (String k : keyList) {
-                FeatureDescription fd = featDesc.get(k);
-                sb.append(k + "\t" + fd.getDescription());
-                if(fd.getEnumType() != null){
-                    sb.append("\t" + fd.getEnumType());
-                }
-                sb.append(System.lineSeparator());
-            }
-            FileUtils.writeStringToFile(
-                    new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION), sb.toString(), "utf-8");
+			StringBuilder sb = new StringBuilder();
+			List<String> keyList = new ArrayList<String>(featDesc.keySet());
+			Collections.sort(keyList);
+			for (String k : keyList) {
+				FeatureDescription fd = featDesc.get(k);
+				sb.append(k + "\t" + fd.getDescription());
+				if (fd.getEnumType() != null) {
+					sb.append("\t" + fd.getEnumType());
+				}
+				sb.append(System.lineSeparator());
+			}
+			FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION),
+					sb.toString(), "utf-8");
 
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 
+	@SuppressWarnings("rawtypes")
+	private FeatureDescription determineType(Feature f) {
+		Object value = f.getValue();
+		if (value instanceof Double) {
+			return new FeatureDescription(FeatureType.NUM_FLOATING_POINT);
+		} else if (value instanceof Integer) {
+			return new FeatureDescription(FeatureType.NUM_INTEGER);
+		} else if (value instanceof Number) {
+			return new FeatureDescription(FeatureType.NUM);
+		} else if (value instanceof Enum) {
+			FeatureDescription featureDescription = new FeatureDescription(FeatureType.ENUM);
+			featureDescription.setEnumType((Enum) value);
+			return featureDescription;
+		} else if (value instanceof Boolean) {
+			return new FeatureDescription(FeatureType.BOOLEAN);
+		}
 
-	private FeatureDescription determineType(Feature f)
-    {
-	    Object value = f.getValue();
-	    if(value instanceof Double){
-	        return new FeatureDescription(FeatureType.NUM_FLOATING_POINT);
-	    }else if (value instanceof Integer){
-	        return new FeatureDescription(FeatureType.NUM_INTEGER);
-	    }else if (value instanceof Number){
-	        return new FeatureDescription(FeatureType.NUM);
-        }else if (value instanceof Enum){
-            FeatureDescription featureDescription = new FeatureDescription(FeatureType.ENUM);
-            featureDescription.setEnumType((Enum)value);
-            return featureDescription;
-        }else if (value instanceof Boolean){
-            return new FeatureDescription(FeatureType.BOOLEAN);
-        }
-
-	    return new FeatureDescription(FeatureType.UNKNOWN);
-    }
+		return new FeatureDescription(FeatureType.UNKNOWN);
+	}
 
 	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
 		if (!isTesting) {
@@ -277,9 +304,11 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 				// the generic file into the classifier-specific data format
 				dsw.transformFromGeneric();
 			}
-			
+
 			dsw.close();
 			
+			documentIdLogger.close();
+
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
