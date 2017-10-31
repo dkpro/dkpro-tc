@@ -81,7 +81,7 @@ public class OutcomeIDReportTest
     public void testGenerateOutcomeIdPropertiesSingleLabel() throws ClassNotFoundException, IOException
     {
         List<String> labels = WekaUtils.getClassLabels(singleLabelData, false);
-        Properties props = WekaOutcomeIDReport.generateSlProperties(singleLabelData, false, labels);
+        Properties props = new WekaOutcomeIDReport().generateSlProperties(singleLabelData, false, false, labels);
         String header = WekaOutcomeIDReport.generateHeader(labels);
         List<String> labelsFromProps = Id2Outcome.getLabels(header);
 
@@ -140,7 +140,7 @@ public class OutcomeIDReportTest
 	@Test
     public void testGenerateOutcomeIdPropertiesRegression() throws ClassNotFoundException, IOException
     {
-        Properties props = WekaOutcomeIDReport.generateSlProperties(regressionData, true, null);
+        Properties props = new WekaOutcomeIDReport().generateSlProperties(regressionData, true, false, null);
 
         assertEquals(376, props.size());
         assertEquals(3.44168, getPrediction(props.getProperty("STS.input.MSRpar.txt-1")).get(0), 0.0001);

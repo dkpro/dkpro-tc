@@ -23,16 +23,19 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
@@ -76,6 +79,9 @@ public class WekaOutcomeIDReport
         boolean regression = getDiscriminators()
                 .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
                 .equals(Constants.LM_REGRESSION);
+        boolean isDocumentMode = getDiscriminators()
+                .get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
+                .equals(Constants.FM_DOCUMENT);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
 
@@ -88,7 +94,7 @@ public class WekaOutcomeIDReport
         	props = generateMlProperties(predictions, labels, r);
         }
         else{
-        	props = generateSlProperties(predictions, regression, labels);
+        	props = generateSlProperties(predictions, regression, isDocumentMode, labels);
         }
         
 
@@ -156,10 +162,12 @@ public class WekaOutcomeIDReport
     }
     
     
-    protected static Properties generateSlProperties(Instances predictions,
-            boolean isRegression, List<String> labels)
+    protected Properties generateSlProperties(Instances predictions,
+            boolean isRegression, boolean isDocumentMode, List<String> labels)
                 throws ClassNotFoundException, IOException
     {
+    	Map<Integer, String> documentIdMap = loadDocumentMode(isDocumentMode);
+    	
         Properties props = new SortedKeyProperties();
         String[] classValues = new String[predictions.numClasses()];
 
@@ -189,6 +197,9 @@ public class WekaOutcomeIDReport
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                 
                 String stringValue = inst.stringValue(attOffset);
+                if(isDocumentMode){
+                	stringValue = documentIdMap.get(Integer.valueOf(stringValue));
+                }
                 props.setProperty(stringValue, predictionAsNumber
                         + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
             }
@@ -201,4 +212,27 @@ public class WekaOutcomeIDReport
         }
         return props;
     }
+
+	private Map<Integer, String> loadDocumentMode(boolean isDocumentMode) throws IOException {
+		
+		Map<Integer, String> documentIdMap = new HashMap<>();
+		
+		if(isDocumentMode){
+			File f = new File(getContext().getFolder(Constants.TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+			List<String> readLines = FileUtils.readLines(f, "utf-8");
+			
+			int idx=0;
+			for(String l : readLines){
+				if(l.startsWith("#")){
+					continue;
+				}
+				String[] split = l.split("\t");
+				documentIdMap.put(idx, split[0]);
+				idx++;
+			}
+		}
+		
+		return documentIdMap;
+	}
 }
