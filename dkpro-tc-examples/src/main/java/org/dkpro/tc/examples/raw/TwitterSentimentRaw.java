@@ -24,6 +24,8 @@ import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDe
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
+import java.io.File;
+
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.io.LabeledTweetReader;
@@ -48,7 +50,8 @@ public class TwitterSentimentRaw
         throws Exception
     {
         String corpusFilePathTrain = "src/main/resources/data/twitter/train/*/*.txt";
-        String outputPath = "target/ts_raw_output";
+        String outputPath = "target/ts_raw_output/";
+        new File(outputPath).mkdirs();
 
         runPipeline(
                 // Reader
