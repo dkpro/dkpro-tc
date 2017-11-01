@@ -177,6 +177,7 @@ public class WekaOutcomeIDReport
 
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index(); 
    
+        int idx=0;
         for (Instance inst : predictions) {
             Double gold;
             try {
@@ -198,7 +199,7 @@ public class WekaOutcomeIDReport
                 
                 String stringValue = inst.stringValue(attOffset);
                 if(isDocumentMode){
-                	stringValue = documentIdMap.get(Integer.valueOf(stringValue));
+                	stringValue = documentIdMap.get(idx++);
                 }
                 props.setProperty(stringValue, predictionAsNumber
                         + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
