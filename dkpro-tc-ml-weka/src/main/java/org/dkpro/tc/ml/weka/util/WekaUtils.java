@@ -1019,7 +1019,7 @@ public class WekaUtils
 		// Write the results of attribute selection
 		File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile,
 				AccessMode.READWRITE);
-		FileUtils.writeStringToFile(file, selector.toResultsString());
+		FileUtils.writeStringToFile(file, selector.toResultsString(), "utf-8");
 		return selector;
 
 	}
@@ -1069,7 +1069,7 @@ public class WekaUtils
                         + attributeSelectionFilter.evaluateAttribute(att.index()
                                 - mulanInstances.getNumLabels()) + "\n");
             }
-            FileUtils.writeStringToFile(fsResultsFile, evalFile.toString());
+            FileUtils.writeStringToFile(fsResultsFile, evalFile.toString(), "utf-8");
 
             // create a filter to reduce the dimension of the attributes
             int[] toKeep = new int[numLabelsToKeep + mulanInstances.getNumLabels()];
