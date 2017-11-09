@@ -34,46 +34,55 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
+import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Creates id 2 outcome report
  */
-public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
-
-	// constant dummy value for setting as threshold which is an expected field
-	// in the evaluation
-	// module but is not needed/provided by liblinear
-	private static final String THRESHOLD_CONSTANT = "-1";
-	
+public class LiblinearOutcomeIdReport
+    extends ReportBase
+    implements Constants
+{
+    // constant dummy value for setting as threshold which is an expected field in the evaluation
+    // module but is not needed/provided by liblinear
+    private static final String THRESHOLD_CONSTANT = "-1";
+    
     public LiblinearOutcomeIdReport(){
         //required by groovy
     }
 
-	@Override
-	public void execute() throws Exception {
-		boolean isRegression = getDiscriminators()
-				.get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-				.equals(Constants.LM_REGRESSION);
-		
-		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
-		String header = buildHeader(id2label, isRegression);
+    @Override
+    public void execute()
+        throws Exception
+    {
+        boolean isRegression = getDiscriminators()
+                .get(LiblinearTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_REGRESSION);
+        
+        boolean isUnit = getDiscriminators()
+                .get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
+                .equals(Constants.FM_UNIT);
+        
+        Map<Integer, String> id2label = getId2LabelMapping(isRegression);
+        String header = buildHeader(id2label, isRegression);
 
-		List<String> predictions = readPredictions();
-		Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
+        List<String> predictions = readPredictions();
+        Map<String, String> index2instanceIdMap = getMapping(isUnit);
 
-		Properties prop = new SortedKeyProperties();
-		int lineCounter = 0;
-		for (String line : predictions) {
-			if (line.startsWith("#")) {
-				continue;
-			}
-			String[] split = line.split(LiblinearTestTask.SEPARATOR_CHAR);
-			String key = index2instanceIdMap.get(lineCounter + "");
-			
-			if (isRegression){
+        Properties prop = new SortedKeyProperties();
+        int lineCounter = 0;
+        for (String line : predictions) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            String[] split = line.split(";");
+            String key = index2instanceIdMap.get(lineCounter+"");
+            
+            if (isRegression){
                 prop.setProperty(key,
                     split[0] + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
             }else{
@@ -82,23 +91,28 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
                 prop.setProperty(key,
                         pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
             }
-			
-			lineCounter++;
-		}
+            lineCounter++;
+        }
 
-		File targetFile = getId2OutcomeFileLocation();
+        File targetFile = getId2OutcomeFileLocation();
 
-		FileWriterWithEncoding fw = new FileWriterWithEncoding(targetFile, "utf-8");
-		prop.store(fw, header);
-		fw.close();
+        FileWriterWithEncoding fw = new FileWriterWithEncoding(targetFile, "utf-8");
+        prop.store(fw, header);
+        fw.close();
 
-	}
-
-	private Map<String, String> getIndex2InstanceIdMap( ) throws IOException {
+    }
+    
+private Map<String, String> getMapping(boolean isUnit) throws IOException {
 		
-		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-
+		File f;
+		if (isUnit) {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					LiblinearDataWriter.INDEX2INSTANCEID);
+		} else {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		}
+		
 		Map<String, String> m = new HashMap<>();
 
 		int idx=0;
@@ -111,61 +125,75 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 			}
 			String[] split = l.split("\t");
 
-			m.put(idx + "", split[0]);
-			idx++;
-			
+//			if (isUnit) {
+				m.put(idx + "", split[0]);
+				idx++;
+//			} else {
+//				m.put(split[0], split[1]);
+//			}
+
 		}
 		return m;
 	}
 
-	private File getId2OutcomeFileLocation() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, ID_OUTCOME_KEY);
-	}
+    private File getId2OutcomeFileLocation()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, ID_OUTCOME_KEY);
+    }
 
-	private List<String> readPredictions() throws IOException {
-		File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-		String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile);
-		return FileUtils.readLines(new File(predFolder, predFileName), "utf-8");
-	}
+    private List<String> readPredictions()
+        throws IOException
+    {
+        File predFolder = getContext().getFolder("", AccessMode.READWRITE);
+        String predFileName = LiblinearAdapter.getInstance()
+                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
+        return FileUtils.readLines(new File(predFolder, predFileName), "utf-8");
+    }
 
-	private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
-			throws UnsupportedEncodingException {
-		StringBuilder header = new StringBuilder();
-		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+    private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
+        throws UnsupportedEncodingException
+    {
+        StringBuilder header = new StringBuilder();
+        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
 
-		if (isRegression) {
-			return header.toString();
-		}
+        if (isRegression) {
+            // no label mapping for regression so that is all we have to do
+            return header.toString();
+        }
 
-		int numKeys = id2label.keySet().size();
-		List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
-		for (int i = 0; i < numKeys; i++) {
-			Integer key = keys.get(i);
-			header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
-			if (i + 1 < numKeys) {
-				header.append(" ");
-			}
-		}
-		return header.toString();
-	}
+        int numKeys = id2label.keySet().size();
+        List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
+        for (int i = 0; i < numKeys; i++) {
+            Integer key = keys.get(i);
+            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
+            if (i + 1 < numKeys) {
+                header.append(" ");
+            }
+        }
+        return header.toString();
+    }
 
-	private Map<Integer, String> getId2LabelMapping(boolean isRegression) throws Exception {
-		if (isRegression) {
-			return new HashMap<>();
-		}
+    private Map<Integer, String> getId2LabelMapping(boolean isRegression)
+        throws Exception
+    {
+        if(isRegression){
+            //no map for regression;
+            return new HashMap<>();
+        }
+        
+        File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
+        String fileName = LiblinearAdapter.getOutcomeMappingFilename();
+        File file = new File(mappingFolder, fileName);
+        Map<Integer, String> map = new HashMap<Integer, String>();
 
-		File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
-		String fileName = LiblinearAdapter.getOutcomeMappingFilename();
-		File file = new File(mappingFolder, fileName);
-		Map<Integer, String> map = new HashMap<Integer, String>();
+        List<String> lines = FileUtils.readLines(file, "utf-8");
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            map.put(Integer.valueOf(split[1]), split[0]);
+        }
 
-		List<String> lines = FileUtils.readLines(file, "utf-8");
-		for (String line : lines) {
-			String[] split = line.split("\t");
-			map.put(Integer.valueOf(split[1]), split[0]);
-		}
+        return map;
+    }
 
-		return map;
-	}
 }
