@@ -66,7 +66,7 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 		String header = buildHeader(id2label, isRegression);
 
 		List<String> predictions = readPredictions();
-		Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap(isDocumentMode);
+		Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
 
 		Properties prop = new SortedKeyProperties();
 		int lineCounter = 0;
@@ -98,16 +98,10 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 
 	}
 
-	private Map<String, String> getIndex2InstanceIdMap(boolean isDocumentMode) throws IOException {
+	private Map<String, String> getIndex2InstanceIdMap( ) throws IOException {
 		
-		File f;
-		if (isDocumentMode) {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-		} else {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					LiblinearDataWriter.INDEX2INSTANCEID);
-		}
+		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
 
 		Map<String, String> m = new HashMap<>();
 
@@ -120,13 +114,9 @@ public class LiblinearOutcomeIdReport extends ReportBase implements Constants {
 				continue;
 			}
 			String[] split = l.split("\t");
-			
-			if(isDocumentMode){
-				m.put(idx+"", split[0]);
-				idx++;
-			}else{
-				m.put(split[0], split[1]);
-			}
+
+			m.put(idx + "", split[0]);
+			idx++;
 			
 		}
 		return m;
