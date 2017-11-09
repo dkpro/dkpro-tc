@@ -94,7 +94,8 @@ public class WekaOutcomeIDReport
         	props = generateMlProperties(predictions, labels, r);
         }
         else{
-        	props = generateSlProperties(predictions, regression, isDocumentMode, labels);
+        	Map<Integer, String> documentIdMap = loadDocumentMode(isDocumentMode);
+        	props = generateSlProperties(predictions, regression, documentIdMap, labels);
         }
         
 
@@ -163,10 +164,9 @@ public class WekaOutcomeIDReport
     
     
     protected Properties generateSlProperties(Instances predictions,
-            boolean isRegression, boolean isDocumentMode, List<String> labels)
+            boolean isRegression, Map<Integer,String> documentIdMap, List<String> labels)
                 throws ClassNotFoundException, IOException
     {
-    	Map<Integer, String> documentIdMap = loadDocumentMode(isDocumentMode);
     	
         Properties props = new SortedKeyProperties();
         String[] classValues = new String[predictions.numClasses()];
@@ -198,7 +198,7 @@ public class WekaOutcomeIDReport
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                 
                 String stringValue = inst.stringValue(attOffset);
-                if(isDocumentMode){
+                if(documentIdMap!=null){
                 	stringValue = documentIdMap.get(idx++);
                 }
                 props.setProperty(stringValue, predictionAsNumber
@@ -206,8 +206,10 @@ public class WekaOutcomeIDReport
             }
             else {
                 // the outcome is numeric
-//                String stringValue = inst.stringValue(attOffset);
-                String stringValue = documentIdMap.get(idx++);
+                String stringValue = inst.stringValue(attOffset);
+				if (documentIdMap != null) {
+					stringValue = documentIdMap.get(idx++);
+				}
                 props.setProperty(stringValue, prediction + SEPARATOR_CHAR
                         + gold + SEPARATOR_CHAR + String.valueOf(0));
             }
@@ -219,20 +221,18 @@ public class WekaOutcomeIDReport
 		
 		Map<Integer, String> documentIdMap = new HashMap<>();
 		
-		if(isDocumentMode){
-			File f = new File(getContext().getFolder(Constants.TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-			List<String> readLines = FileUtils.readLines(f, "utf-8");
-			
-			int idx=0;
-			for(String l : readLines){
-				if(l.startsWith("#")){
-					continue;
-				}
-				String[] split = l.split("\t");
-				documentIdMap.put(idx, split[0]);
-				idx++;
+		File f = new File(getContext().getFolder(Constants.TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		List<String> readLines = FileUtils.readLines(f, "utf-8");
+
+		int idx = 0;
+		for (String l : readLines) {
+			if (l.startsWith("#")) {
+				continue;
 			}
+			String[] split = l.split("\t");
+			documentIdMap.put(idx, split[0]);
+			idx++;
 		}
 		
 		return documentIdMap;
