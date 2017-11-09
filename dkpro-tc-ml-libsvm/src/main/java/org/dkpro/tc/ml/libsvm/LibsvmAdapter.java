@@ -28,6 +28,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.ml.libsvm.report.LibsvmOutcomeIdReport;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
 import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;

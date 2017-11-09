@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.libsvm;
+package org.dkpro.tc.ml.libsvm.report;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +34,10 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.core.task.InitTask;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
+import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
@@ -59,11 +63,15 @@ public class LibsvmOutcomeIdReport
                 .get(LibsvmTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
                 .equals(Constants.LM_REGRESSION);
         
+        boolean isUnit = getDiscriminators()
+                .get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
+                .equals(Constants.FM_UNIT);
+        
         Map<Integer, String> id2label = getId2LabelMapping(isRegression);
         String header = buildHeader(id2label, isRegression);
 
         List<String> predictions = readPredictions();
-        Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
+        Map<String, String> index2instanceIdMap = getMapping(isUnit);
 
         Properties prop = new SortedKeyProperties();
         int lineCounter = 0;
@@ -94,11 +102,17 @@ public class LibsvmOutcomeIdReport
 
     }
     
-private Map<String, String> getIndex2InstanceIdMap() throws IOException {
+private Map<String, String> getMapping(boolean isUnit) throws IOException {
 		
-		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-
+		File f;
+		if (isUnit) {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					LibsvmDataWriter.INDEX2INSTANCEID);
+		} else {
+			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		}
+		
 		Map<String, String> m = new HashMap<>();
 
 		int idx=0;
@@ -111,8 +125,12 @@ private Map<String, String> getIndex2InstanceIdMap() throws IOException {
 			}
 			String[] split = l.split("\t");
 
-			m.put(idx + "", split[0]);
-			idx++;
+//			if (isUnit) {
+				m.put(idx + "", split[0]);
+				idx++;
+//			} else {
+//				m.put(split[0], split[1]);
+//			}
 
 		}
 		return m;
