@@ -86,7 +86,7 @@ public class WekaUtilTest
 
         WekaUtils.instanceListToArffFile(outfile, iList);
 
-        System.out.println(FileUtils.readFileToString(outfile));
+        System.out.println(FileUtils.readFileToString(outfile, "utf-8"));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class WekaUtilTest
 
         WekaUtils.instanceListToArffFileMultiLabel(outfile, instances, false);
 
-        System.out.println(FileUtils.readFileToString(outfile));
+        System.out.println(FileUtils.readFileToString(outfile, "utf-8"));
     }
 
     @Test

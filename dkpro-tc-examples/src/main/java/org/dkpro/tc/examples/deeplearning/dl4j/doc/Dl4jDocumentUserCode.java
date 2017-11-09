@@ -59,6 +59,7 @@ public class Dl4jDocumentUserCode
         // DataSetIterators for training and testing respectively
         // Using AsyncDataSetIterator to do data loading in a separate thread; this may improve
         // performance vs. waiting for data to load
+		@SuppressWarnings("deprecation")
 		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 
         NewsIterator iTrain = new NewsIterator.Builder().dataDirectory(trainVec.getParent())
@@ -105,7 +106,8 @@ public class Dl4jDocumentUserCode
         // Run evaluation. This is on 25k reviews, so can take some time
         while (iTest.hasNext()) {
             DataSet t = iTest.next();
-            INDArray features = t.getFeatureMatrix();
+            @SuppressWarnings("deprecation")
+			INDArray features = t.getFeatureMatrix();
             INDArray lables = t.getLabels();
             // System.out.println("labels : " + lables);
             INDArray outMask = t.getLabelsMaskArray();

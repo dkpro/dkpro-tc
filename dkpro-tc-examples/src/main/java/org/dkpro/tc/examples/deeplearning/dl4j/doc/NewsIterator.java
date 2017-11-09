@@ -182,6 +182,7 @@ public class NewsIterator implements DataSetIterator {
 	 *             If file cannot be read
 	 */
 	public INDArray loadFeaturesFromFile(File file, int maxLength) throws IOException {
+		@SuppressWarnings("deprecation")
 		String news = FileUtils.readFileToString(file);
 		return loadFeaturesFromString(news, maxLength);
 	}
@@ -222,8 +223,8 @@ public class NewsIterator implements DataSetIterator {
 	private void populateData() throws Exception {
 
 		//FIXME: Implement me a bit more efficiently :)
-		List<String> vectors = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_INSTANCE_VECTOR));
-		String outcomes = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_OUTCOME_VECTOR)).get(0);
+		List<String> vectors = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_INSTANCE_VECTOR), "utf-8");
+		String outcomes = FileUtils.readLines(new File(this.dataDirectory, DeepLearningConstants.FILENAME_OUTCOME_VECTOR), "utf-8").get(0);
 		
 		//FIXME: We assume that our outcomes have only 1 digit ....
 		outcomes = outcomes.replaceAll(" ", "");

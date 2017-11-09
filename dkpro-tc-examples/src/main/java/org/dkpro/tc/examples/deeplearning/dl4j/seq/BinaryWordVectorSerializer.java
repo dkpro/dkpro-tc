@@ -71,7 +71,8 @@ public class BinaryWordVectorSerializer {
         convertWordVectorsToBinary(wv, false, Locale.US, binaryTarget);
     }
     
-    public static void verify(WordVectors wv, Path binaryTarget)
+    @SuppressWarnings("unchecked")
+	public static void verify(WordVectors wv, Path binaryTarget)
         throws IOException
     {
         BinaryVectorizer vec = BinaryVectorizer.load(binaryTarget);
@@ -127,7 +128,8 @@ public class BinaryWordVectorSerializer {
             header.write(output);
             
             System.out.println("Sorting data...");
-            String[] words = (String[]) wv.vocab().words()
+            @SuppressWarnings("unchecked")
+			String[] words = (String[]) wv.vocab().words()
                     .toArray(new String[wv.vocab().words().size()]);
             Arrays.sort(words);
             

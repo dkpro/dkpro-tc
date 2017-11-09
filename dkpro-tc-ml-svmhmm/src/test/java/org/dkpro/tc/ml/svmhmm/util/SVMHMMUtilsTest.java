@@ -44,14 +44,14 @@ public class SVMHMMUtilsTest
     {
         normalCase = new File(System.currentTimeMillis() + "normalCase.txt");
         FileUtils.writeStringToFile(normalCase,
-                "VBD qid:318 3:6 127:1 134:1 135:1 235:1 336:1 337:1 338:1 497:1 696:1 703:1 # VBD 318 signed");
+                "VBD qid:318 3:6 127:1 134:1 135:1 235:1 336:1 337:1 338:1 497:1 696:1 703:1 # VBD 318 signed", "utf-8");
 
         trickyCase = new File(System.currentTimeMillis() + "trickyCase.txt");
-        FileUtils.writeStringToFile(trickyCase, "O qid:5 2:7 # #IFTHEN O 5");
+        FileUtils.writeStringToFile(trickyCase, "O qid:5 2:7 # #IFTHEN O 5", "utf-8");
 
         // example with several # that occurred when processing the WSJ
         evenMoreTrickyCase = new File(System.currentTimeMillis() + "evenMoreTrickyCase.txt");
-        FileUtils.writeStringToFile(evenMoreTrickyCase, "# qid:317 3:1 # # 317 %23");
+        FileUtils.writeStringToFile(evenMoreTrickyCase, "# qid:317 3:1 # # 317 %23", "utf-8");
     }
 
     @After
