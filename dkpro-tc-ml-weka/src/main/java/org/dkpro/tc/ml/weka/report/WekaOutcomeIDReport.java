@@ -206,7 +206,8 @@ public class WekaOutcomeIDReport
             }
             else {
                 // the outcome is numeric
-                String stringValue = inst.stringValue(attOffset);
+//                String stringValue = inst.stringValue(attOffset);
+                String stringValue = documentIdMap.get(idx++);
                 props.setProperty(stringValue, prediction + SEPARATOR_CHAR
                         + gold + SEPARATOR_CHAR + String.valueOf(0));
             }

@@ -68,7 +68,7 @@ public class EssayScoreReader
     {
         DocumentMetaData dmd = new DocumentMetaData(aJCas);
         dmd.setDocumentTitle("");
-        dmd.setDocumentId(id++ + "");
+        dmd.setDocumentId("Document " + id++ + "");
         dmd.addToIndexes();
 
         aJCas.setDocumentText(text);
