@@ -62,7 +62,6 @@ public class WekaDataWriter
     BufferedWriter bw = null;
     Gson gson = new Gson();
     private boolean useSparse;
-    private String learningMode;
     private boolean applyWeighting;
     private File outputFolder;
     private File arffTarget;
@@ -81,7 +80,6 @@ public class WekaDataWriter
     {
         this.outputFolder = outputFolder;
         this.useSparse = useSparse;
-        this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
         this.outcomes = outcomes;
 

@@ -23,16 +23,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import weka.core.Attribute;
-import weka.core.Utils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.api.features.MissingValue.MissingValueType;
 import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
+
+import weka.core.Attribute;
+import weka.core.Utils;
 
 /*
  * Converts the TC feature representation into the Weka representation.
