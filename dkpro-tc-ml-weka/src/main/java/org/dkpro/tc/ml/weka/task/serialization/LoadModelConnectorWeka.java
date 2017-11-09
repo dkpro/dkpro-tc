@@ -122,7 +122,7 @@ public class LoadModelConnectorWeka
     {
         classLabels = new ArrayList<>();
         for (String classLabel : FileUtils
-                .readLines(new File(tcModelLocation, MODEL_CLASS_LABELS))) {
+                .readLines(new File(tcModelLocation, MODEL_CLASS_LABELS), "utf-8")) {
             classLabels.add(classLabel);
         }
     }

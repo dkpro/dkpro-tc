@@ -163,7 +163,7 @@ public class WekaModelSerializationDescription
             classLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
             String classLabelsString = StringUtils.join(classLabels, "\n");
             FileUtils.writeStringToFile(new File(outputFolder, MODEL_CLASS_LABELS),
-                    classLabelsString);
+                    classLabelsString, "utf-8");
         }
 
     }

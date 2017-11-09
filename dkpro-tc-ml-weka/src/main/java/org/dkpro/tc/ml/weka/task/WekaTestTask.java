@@ -100,7 +100,7 @@ public class WekaTestTask
                         trainData, featureSearcher, attributeEvaluator);
                 File file = WekaUtils.getFile(aContext, "",
                         AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
-                FileUtils.writeStringToFile(file, attSel.toResultsString());
+                FileUtils.writeStringToFile(file, attSel.toResultsString(), "utf-8");
                 if (applySelection) {
                     Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
                     trainData = attSel.reduceDimensionality(trainData);
