@@ -63,25 +63,29 @@ public class DynetMetaReport extends ReportBase {
 	}
 
 	private String getVersion(String python, String cmd) throws IOException, InterruptedException {
-		List<String> command = new ArrayList<>();
-		command.add(python);
-		command.add("-c");
-		command.add(cmd);
+		try {
+			List<String> command = new ArrayList<>();
+			command.add(python);
+			command.add("-c");
+			command.add(cmd);
 
-		ProcessBuilder pb = new ProcessBuilder(command).command(command);
-		Process start = pb.start();
-		start.waitFor();
+			ProcessBuilder pb = new ProcessBuilder(command).command(command);
+			Process start = pb.start();
+			start.waitFor();
 
-		InputStream inputStream = start.getInputStream();
-		List<String> output = new ArrayList<>();
-		BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-		String l = null;
-		while ((l = r.readLine()) != null) {
-			output.add(l);
+			InputStream inputStream = start.getInputStream();
+			List<String> output = new ArrayList<>();
+			BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+			String l = null;
+			while ((l = r.readLine()) != null) {
+				output.add(l);
+			}
+			r.close();
+
+			return output.get(output.size() - 1);
+		} catch (Exception e) {
+			return "NotAvailable";
 		}
-		r.close();
-
-		return output.get(output.size() - 1);
 	}
 
 }
