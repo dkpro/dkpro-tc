@@ -35,7 +35,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.InitTask;
-import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
@@ -102,14 +101,8 @@ public class LibsvmOutcomeIdReport
     
 private Map<String, String> getIndex2InstanceIdMap(boolean isDocumentMode) throws IOException {
 		
-		File f;
-		if (isDocumentMode) {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-		} else {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					LibsvmDataWriter.INDEX2INSTANCEID);
-		}
+		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
 
 		Map<String, String> m = new HashMap<>();
 

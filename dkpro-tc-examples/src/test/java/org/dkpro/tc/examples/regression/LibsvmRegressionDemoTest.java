@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.regression;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
