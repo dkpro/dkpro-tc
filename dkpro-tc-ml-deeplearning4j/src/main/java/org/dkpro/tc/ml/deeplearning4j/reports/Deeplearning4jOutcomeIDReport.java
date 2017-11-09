@@ -138,7 +138,7 @@ public class Deeplearning4jOutcomeIDReport
 		}
 
 		File file = getContext().getFile(Deeplearning4jTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> readLines = FileUtils.readLines(file);
+		List<String> readLines = FileUtils.readLines(file, "utf-8");
 
 		Set<String> keys = new HashSet<>();
 
