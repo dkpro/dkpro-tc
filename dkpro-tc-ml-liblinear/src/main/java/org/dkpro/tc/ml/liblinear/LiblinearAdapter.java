@@ -28,6 +28,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.ml.liblinear.report.LiblinearOutcomeIdReport;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
 import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;

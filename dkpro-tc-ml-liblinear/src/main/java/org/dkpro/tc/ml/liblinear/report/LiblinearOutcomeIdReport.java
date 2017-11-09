@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.liblinear;
+package org.dkpro.tc.ml.liblinear.report;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +34,8 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
+import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
