@@ -34,7 +34,6 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
@@ -60,15 +59,11 @@ public class LibsvmOutcomeIdReport
                 .get(LibsvmTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
                 .equals(Constants.LM_REGRESSION);
         
-		boolean isDocumentMode = getDiscriminators()
-				.get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
-				.equals(Constants.FM_DOCUMENT);        
-        
         Map<Integer, String> id2label = getId2LabelMapping(isRegression);
         String header = buildHeader(id2label, isRegression);
 
         List<String> predictions = readPredictions();
-        Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap(isDocumentMode);
+        Map<String, String> index2instanceIdMap = getIndex2InstanceIdMap();
 
         Properties prop = new SortedKeyProperties();
         int lineCounter = 0;
@@ -99,7 +94,7 @@ public class LibsvmOutcomeIdReport
 
     }
     
-private Map<String, String> getIndex2InstanceIdMap(boolean isDocumentMode) throws IOException {
+private Map<String, String> getIndex2InstanceIdMap() throws IOException {
 		
 		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
 				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
@@ -115,14 +110,10 @@ private Map<String, String> getIndex2InstanceIdMap(boolean isDocumentMode) throw
 				continue;
 			}
 			String[] split = l.split("\t");
-			
-			if(isDocumentMode){
-				m.put(idx+"", split[0]);
-				idx++;
-			}else{
-				m.put(split[0], split[1]);
-			}
-			
+
+			m.put(idx + "", split[0]);
+			idx++;
+
 		}
 		return m;
 	}
