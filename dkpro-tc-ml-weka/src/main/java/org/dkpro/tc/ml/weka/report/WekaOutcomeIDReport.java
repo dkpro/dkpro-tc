@@ -79,9 +79,9 @@ public class WekaOutcomeIDReport
         boolean regression = getDiscriminators()
                 .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
                 .equals(Constants.LM_REGRESSION);
-        boolean isDocumentMode = getDiscriminators()
+        boolean isUnit = getDiscriminators()
                 .get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
-                .equals(Constants.FM_DOCUMENT);
+                .equals(Constants.FM_UNIT);
 
         Instances predictions = WekaUtils.getInstances(arff, multiLabel);
 
@@ -94,8 +94,8 @@ public class WekaOutcomeIDReport
         	props = generateMlProperties(predictions, labels, r);
         }
         else{
-        	Map<Integer, String> documentIdMap = loadDocumentMode(isDocumentMode);
-        	props = generateSlProperties(predictions, regression, documentIdMap, labels);
+        	Map<Integer, String> documentIdMap = loadDocumentMap();
+        	props = generateSlProperties(predictions, regression, isUnit, documentIdMap, labels);
         }
         
 
@@ -164,7 +164,7 @@ public class WekaOutcomeIDReport
     
     
     protected Properties generateSlProperties(Instances predictions,
-            boolean isRegression, Map<Integer,String> documentIdMap, List<String> labels)
+            boolean isRegression, boolean isUnit, Map<Integer,String> documentIdMap, List<String> labels)
                 throws ClassNotFoundException, IOException
     {
     	
@@ -198,9 +198,9 @@ public class WekaOutcomeIDReport
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                 
                 String stringValue = inst.stringValue(attOffset);
-                if(documentIdMap!=null){
-                	stringValue = documentIdMap.get(idx++);
-                }
+				if (!isUnit && documentIdMap != null) {
+					stringValue = documentIdMap.get(idx++);
+				}
                 props.setProperty(stringValue, predictionAsNumber
                         + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
             }
@@ -217,7 +217,7 @@ public class WekaOutcomeIDReport
         return props;
     }
 
-	private Map<Integer, String> loadDocumentMode(boolean isDocumentMode) throws IOException {
+	private Map<Integer, String> loadDocumentMap() throws IOException {
 		
 		Map<Integer, String> documentIdMap = new HashMap<>();
 		
