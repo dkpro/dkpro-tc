@@ -42,15 +42,18 @@ public class KerasDocumentTest extends KerasLocator {
 		ContextMemoryReport.key = KerasTestTask.class.getName();
 
 		boolean testConditon = true;
-		String python3 = getEnvironment();
-		if (python3 == null){
+		String python3 = null;
+		try {
+			python3 = getEnvironment();
+		} catch (Exception e) {
 			LogFactory.getLog(getClass()).warn("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
-		ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
-		KerasDocumentRegression.runTrainTest(ps);
-
+		
 		if (testConditon) {
+			ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
+			KerasDocumentRegression.runTrainTest(ps);
+
 			Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
 			EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
 			Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());

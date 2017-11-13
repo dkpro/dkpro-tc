@@ -42,15 +42,18 @@ public class KerasRegressionWassaTest extends KerasLocator {
 		ContextMemoryReport.key = KerasTestTask.class.getName();
 
 		boolean testConditon = true;
-		String python3 = getEnvironment();
-		if (python3 == null){
+		String python3 = null;
+		try {
+			python3 = getEnvironment();
+		} catch (Exception e) {
 			LogFactory.getLog(getClass()).warn("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
-		ParameterSpace ps = KerasDocumentRegressionWassa.getParameterSpace(python3);
-		KerasDocumentRegressionWassa.runTrainTest(ps);
 
 		if (testConditon) {
+			ParameterSpace ps = KerasDocumentRegressionWassa.getParameterSpace(python3);
+			KerasDocumentRegressionWassa.runTrainTest(ps);
+			
 			Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
 			EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
 			Double result = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
