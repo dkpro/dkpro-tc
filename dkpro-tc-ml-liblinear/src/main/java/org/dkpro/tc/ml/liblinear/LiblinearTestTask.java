@@ -138,7 +138,7 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 			Feature[] instance = testInstances[i];
 			Double prediction = Linear.predict(model, instance);
 
-			writer.write(prediction.intValue() + SEPARATOR_CHAR + new Double(test.y[i]).intValue());
+			writer.write(prediction + SEPARATOR_CHAR + new Double(test.y[i]));
 			writer.write("\n");
 		}
 
