@@ -60,14 +60,14 @@ public class AdjectiveEndingTest
 
         Assert.assertEquals(9, features.size());
 
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING1, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING2, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING3, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING4, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING5, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING6, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING7, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING8, 10.0, features, 0.001);
-        assertFeatures(AdjectiveEndingFeatureExtractor.FN_ENDING9, 100.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING1, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING2, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING3, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING4, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING5, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING6, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING7, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING8, 10.0, features, 0.001);
+        assertFeatures(AdjectiveEndingFeatureExtractor.ADV_ENDING9, 100.0, features, 0.001);
    }
 }

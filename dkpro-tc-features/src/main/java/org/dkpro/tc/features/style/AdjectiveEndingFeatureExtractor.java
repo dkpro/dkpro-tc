@@ -46,29 +46,30 @@ public class AdjectiveEndingFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
 {
-    public static final String FN_ENDING1 = "EndingAble";
-    public static final String FN_ENDING2 = "EndingAl";
-    public static final String FN_ENDING3 = "EndingFul";
-    public static final String FN_ENDING4 = "EndingIble";
-    public static final String FN_ENDING5 = "EndingLess";
-    public static final String FN_ENDING6 = "EndingOus";
-    public static final String FN_ENDING7 = "EndingIve";
-    public static final String FN_ENDING8 = "EndingIc";
-    public static final String FN_ENDING9 = "EndingLy"; // adverb, but anyway
+    public static final String ADJ_ENDING1 = "EndingAble";
+    public static final String ADJ_ENDING2 = "EndingAl";
+    public static final String ADJ_ENDING3 = "EndingFul";
+    public static final String ADJ_ENDING4 = "EndingIble";
+    public static final String ADJ_ENDING5 = "EndingLess";
+    public static final String ADJ_ENDING6 = "EndingOus";
+    public static final String ADJ_ENDING7 = "EndingIve";
+    public static final String ADJ_ENDING8 = "EndingIc";
+    
+    public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
     {
 
-        int able = 0;
-        int al = 0;
-        int ful = 0;
-        int ible = 0;
-        int ic = 0;
-        int ive = 0;
-        int less = 0;
-        int ous = 0;
-        int ly = 0;
+        double able = 0;
+        double al = 0;
+        double ful = 0;
+        double ible = 0;
+        double ic = 0;
+        double ive = 0;
+        double less = 0;
+        double ous = 0;
+        double ly = 0;
 
         int n = 0;
         for (ADJ adj : JCasUtil.selectCovered(jcas, ADJ.class, target)) {
@@ -111,20 +112,17 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        Set<Feature> featSet = new HashSet<Feature>();
-        if (n > 0) {
-            featSet.add(new Feature(FN_ENDING1, (double) able * 100 / n));
-            featSet.add(new Feature(FN_ENDING2, (double) al * 100 / n));
-            featSet.add(new Feature(FN_ENDING3, (double) ful * 100 / n));
-            featSet.add(new Feature(FN_ENDING4, (double) ible * 100 / n));
-            featSet.add(new Feature(FN_ENDING5, (double) less * 100 / n));
-            featSet.add(new Feature(FN_ENDING6, (double) ous * 100 / n));
-            featSet.add(new Feature(FN_ENDING7, (double) ive * 100 / n));
-            featSet.add(new Feature(FN_ENDING8, (double) ic * 100 / n));
-        }
-        if (m > 0) {
-            featSet.add(new Feature(FN_ENDING9, (double) ly * 100 / m));
-        }
+		Set<Feature> featSet = new HashSet<Feature>();
+		featSet.add(new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING2, n > 0 ? al * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING3, n > 0 ? ful * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING4, n > 0 ? ible * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING5, n > 0 ? less * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING6, n > 0 ? ous * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING7, n > 0 ? ive * 100 / n : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING8, n > 0 ? ic * 100 / n : 0, n == 0));
+
+		featSet.add(new Feature(ADV_ENDING9, m > 0 ? ly * 100 / m : 0, n == 0));
 
         return featSet;
     }
