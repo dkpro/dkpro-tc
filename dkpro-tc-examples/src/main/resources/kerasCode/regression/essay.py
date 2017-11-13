@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright 2017
 # Ubiquitous Knowledge Processing (UKP) Lab
@@ -104,7 +105,7 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
     model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(x_train, y_train, epochs=10, shuffle=True)
+    model.fit(x_train, y_train, epochs=1, shuffle=True)
 
     prediction = transformBack(model.predict(x_test), max, min)
 

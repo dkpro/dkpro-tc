@@ -55,13 +55,13 @@ public class KerasDocumentTrainTest
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
         System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
         KerasDocumentTrainTest experiment = new KerasDocumentTrainTest();
         experiment.runTrainTest(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace(String python3)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension

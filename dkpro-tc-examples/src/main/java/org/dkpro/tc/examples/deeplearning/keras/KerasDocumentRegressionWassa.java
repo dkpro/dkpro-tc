@@ -52,12 +52,12 @@ public class KerasDocumentRegressionWassa
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
         System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
         KerasDocumentRegressionWassa.runTrainTest(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace()
+    public static ParameterSpace getParameterSpace(String python3)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -82,7 +82,7 @@ public class KerasDocumentRegressionWassa
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
                 Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        "/usr/local/bin/python3"),
+                		python3),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         "src/main/resources/kerasCode/regression/wassa.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 50),
