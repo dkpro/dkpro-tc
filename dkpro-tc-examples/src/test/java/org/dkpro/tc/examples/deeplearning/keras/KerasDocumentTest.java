@@ -20,7 +20,6 @@ package org.dkpro.tc.examples.deeplearning.keras;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
