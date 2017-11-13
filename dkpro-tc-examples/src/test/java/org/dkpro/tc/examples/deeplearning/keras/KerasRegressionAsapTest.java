@@ -20,7 +20,6 @@ package org.dkpro.tc.examples.deeplearning.keras;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
@@ -46,7 +45,7 @@ public class KerasRegressionAsapTest extends KerasLocator {
 		try {
 			python3 = getEnvironment();
 		} catch (Exception e) {
-			LogFactory.getLog(getClass()).warn("Failed to locate Python with Keras - will skip this test case");
+			System.err.println("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
 		

@@ -46,7 +46,7 @@ public class KerasDocumentTest extends KerasLocator {
 		try {
 			python3 = getEnvironment();
 		} catch (Exception e) {
-			LogFactory.getLog(getClass()).warn("Failed to locate Python with Keras - will skip this test case");
+			System.err.println("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
 		
