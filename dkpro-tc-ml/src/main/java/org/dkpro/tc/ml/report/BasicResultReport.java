@@ -89,7 +89,7 @@ public class BasicResultReport
             pa.setProperty("Pearson Correlation:", "" + pearson);
             pa.setProperty("Spearman Correlation:", "" + spearman);
         } else if (learningMode.equals(LM_SINGLE_LABEL)) {
-            Double acc = get(Accuracy.class, createEvaluator);
+            Double acc = get(Accuracy.class, createEvaluator) * 100;
             Double microF1 = get(MicroFScore.class, createEvaluator);
             Double macroF1 = get(MacroFScore.class, createEvaluator);
             pa.setProperty("Accuracy:", "" + acc);
