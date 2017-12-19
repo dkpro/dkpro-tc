@@ -113,6 +113,8 @@ public class Deeplearning4jOutcomeIDReport
 			}
 			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
 		}
+		
+		header.append("\nToken\tPrediction\tGold");
 
 		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
