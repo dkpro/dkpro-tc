@@ -35,8 +35,8 @@
 		<organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
 		<spring.version>3.2.16.RELEASE</spring.version>
 		<dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
-		<deeplearning4j>0.8.0</deeplearning4j>
-		<nd4j.version>0.8.0</nd4j.version>
+		<deeplearning4j>0.9.1</deeplearning4j>
+		<nd4j.version>0.9.1</nd4j.version>
 	</properties>
 	<scm>
 	  	<connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
