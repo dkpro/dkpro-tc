@@ -81,7 +81,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 				.updater(Updater.SGD).regularization(true).l2(1e-5).weightInit(WeightInit.RELU)
 				.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
 				.gradientNormalizationThreshold(1.0).learningRate(learningRate).list()
-				.layer(0, new GravesLSTM.Builder().activation(Activation.SOFTSIGN).nIn(featuresSize).nOut(200).build())
+				.layer(0, new GravesLSTM.Builder().activation(Activation.TANH).nIn(featuresSize).nOut(200).build())
 				.layer(1,
 						new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
 								.lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD).nIn(200).nOut(maxTagsetSize).build())
