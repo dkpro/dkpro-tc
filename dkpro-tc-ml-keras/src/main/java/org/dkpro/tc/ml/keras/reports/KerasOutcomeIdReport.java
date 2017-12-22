@@ -70,14 +70,21 @@ public class KerasOutcomeIdReport extends ReportBase {
 		List<String> predictions = getPredictions(file);
 		
 		Map<String, String> map = loadMap(isIntegerMode);
+		Map<String, String> inverseMap = inverseMap(map);
 		List<String> labelsInPrediction = getTestGoldLabels();
 
 		StringBuilder header = new StringBuilder();
 		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
+		
+		
         List<String> k = new ArrayList<>(map.keySet());
         for (int i = 0; i < labelsInPrediction.size(); i++) {
-            header.append(i + "=" + labelsInPrediction.get(i));
+			if (isIntegerMode) {
+				header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
+			} else {
+				header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+			}
             if (i + 1 < k.size()) {
                 header.append(" ");
             }
@@ -116,13 +123,9 @@ public class KerasOutcomeIdReport extends ReportBase {
 			String gold = null;
 			String prediction = null;
 			if (isIntegerMode) {
-				// Keras starts counting at 1 for 'content' - zero is reserved
-				// as padding value - we have to shift-correct the index
 				gold = split[0];
 				prediction = split[1];
 			} else {
-				// we have non-integer labels so we have to map them to integers
-				// for creating the id2outcome data format
 				gold = map.get(split[0]).toString();
 				prediction = map.get(split[1]).toString();
 			}
@@ -133,6 +136,14 @@ public class KerasOutcomeIdReport extends ReportBase {
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
+	}
+
+	private Map<String, String> inverseMap(Map<String, String> map) {
+		HashMap<String, String> inverseMap = new HashMap<>();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			inverseMap.put(entry.getValue(), entry.getKey());
+		}
+		return inverseMap;
 	}
 
 	private List<String> getTestGoldLabels() throws Exception {
