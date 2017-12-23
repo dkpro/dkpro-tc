@@ -23,24 +23,25 @@ import java.util.Set;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.anomaly.type.SpellingAnomaly;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ART;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.CARD;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.CONJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.O;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PUNC;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADP;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_CONJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_DET;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NOUN;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NUM;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PROPN;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PUNCT;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
 
 /**
  * Computes for each coarse grained POS tag the ratio of being affected by a spelling error. For
@@ -84,37 +85,37 @@ public class SpellingErrorPOSRatioFeatureExtractor
 
         for (SpellingAnomaly anomaly : JCasUtil.selectCovered(jcas, SpellingAnomaly.class, target)) {
             for (POS pos : JCasUtil.selectCovered(jcas, POS.class, anomaly)) {
-                if (pos instanceof ADJ) {
+                if (pos instanceof POS_ADJ) {
                     adjErrors++;
                 }
-                else if (pos instanceof ADV) {
+                else if (pos instanceof POS_ADV) {
                     advErrors++;
                 }
-                else if (pos instanceof ART) {
+                else if (pos instanceof POS_DET) {
                     artErrors++;
                 }
-                else if (pos instanceof CARD) {
+                else if (pos instanceof POS_NUM) {
                     cardErrors++;
                 }
-                else if (pos instanceof CONJ) {
+                else if (pos instanceof POS_CONJ) {
                     conjErrors++;
                 }
-                else if (pos instanceof N) {
+                else if (pos instanceof POS_NOUN || pos instanceof POS_PROPN) {
                     nounErrors++;
                 }
-                else if (pos instanceof O) {
+                else if (pos instanceof POS_X) {
                     otherErrors++;
                 }
-                else if (pos instanceof PP) {
+                else if (pos instanceof POS_ADP) {
                     prepErrors++;
                 }
-                else if (pos instanceof PR) {
+                else if (pos instanceof POS_PRON) {
                     pronErrors++;
                 }
-                else if (pos instanceof PUNC) {
+                else if (pos instanceof POS_PUNCT) {
                     puncErrors++;
                 }
-                else if (pos instanceof V) {
+                else if (pos instanceof POS_VERB) {
                     verbErrors++;
                 }
             }
