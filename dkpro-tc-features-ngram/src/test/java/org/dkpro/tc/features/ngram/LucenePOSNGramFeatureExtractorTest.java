@@ -104,7 +104,7 @@ public class LucenePOSNGramFeatureExtractorTest {
 		SimplePipeline.runPipeline(reader, segmenter, posTagger, featExtractorConnector);
 
 		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
 		List<Instance> instances = new ArrayList<>();
 		for (String l : lines) {
 			instances.add(gson.fromJson(l, Instance.class));
@@ -115,9 +115,9 @@ public class LucenePOSNGramFeatureExtractorTest {
 
 		Set<String> featureNames = new HashSet<String>(getUniqueFeatureNames(instances));
 		assertEquals(5, featureNames.size());
-		assertTrue(featureNames.contains("posngram_CARD"));
-		assertTrue(featureNames.contains("posngram_NN"));
-		assertTrue(featureNames.contains("posngram_CARD_CARD"));
+		assertTrue(featureNames.contains("posngram_POS_NUM"));
+		assertTrue(featureNames.contains("posngram_POS_NOUN"));
+		assertTrue(featureNames.contains("posngram_POS_NUM_POS_NUM"));
 
 	}
 
