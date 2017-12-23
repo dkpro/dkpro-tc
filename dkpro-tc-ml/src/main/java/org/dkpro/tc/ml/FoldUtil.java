@@ -47,7 +47,8 @@ public class FoldUtil
 
         CollectionReaderDescription createReader = CollectionReaderFactory.createReaderDescription(
                 BinaryCasReader.class, BinaryCasReader.PARAM_SOURCE_LOCATION, inputFolder,
-                BinaryCasReader.PARAM_PATTERNS, "*.bin");
+                BinaryCasReader.PARAM_PATTERNS, "*.bin",
+                BinaryCasReader.PARAM_ADD_DOCUMENT_METADATA, false);
 
         AnalysisEngineDescription multiplier = AnalysisEngineFactory.createEngineDescription(
                 FoldClassificationUnitCasMultiplier.class,
