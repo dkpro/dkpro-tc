@@ -80,7 +80,7 @@ public class LuceneNgramUnitTest {
 
 	private void evaluateExtractedFeatures(File output) throws Exception {
 		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME));
+		List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME),"utf-8");
 		List<Instance> instances = new ArrayList<>();
 		for (String l : lines) {
 			instances.add(gson.fromJson(l, Instance.class));

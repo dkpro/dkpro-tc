@@ -95,7 +95,7 @@ public class LucenePhoneticNGramFeatureExtractorTest {
 		SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
 		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME));
+		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME),"utf-8");
 		List<Instance> instances = new ArrayList<>();
 		for (String l : lines) {
 			instances.add(gson.fromJson(l, Instance.class));
