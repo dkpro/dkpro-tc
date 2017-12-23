@@ -362,13 +362,13 @@ public class ReportUtils
             context.storeBinary(evalFileName + "_compact" + suffixExcel,
                     table.getExcelWriter());
         }
-        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
-        table.setCompact(false);
-        // Excel cannot cope with more than 255 columns
-        if (table.getColumnIds().length <= 255) {
-            context.storeBinary(evalFileName + suffixExcel, table.getExcelWriter());
-        }
-        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
+//        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
+//        table.setCompact(false);
+//        // Excel cannot cope with more than 255 columns
+//        if (table.getColumnIds().length <= 255) {
+//            context.storeBinary(evalFileName + suffixExcel, table.getExcelWriter());
+//        }
+//        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
