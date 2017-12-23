@@ -46,13 +46,12 @@ import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 public class DynetOutcomeIdReport
     extends ReportBase
 {
-
 	/**
 	 * Character that is used for separating fields in the output file
 	 */
 	public static final String SEPARATOR_CHAR = ";";
 
-	private static String THRESHOLD = "-1";
+	private String THRESHOLD = "-1";
 	
 	int counter=0;
 
@@ -68,21 +67,31 @@ public class DynetOutcomeIdReport
 		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
                 .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
+		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		List<String> predictions = getPredictions(file);
+		
 		Map<String, String> map = loadMap(isIntegerMode);
+		Map<String, String> inverseMap = inverseMap(map);
+		List<String> labelsInPrediction = getTestGoldLabels();
 
 		StringBuilder header = new StringBuilder();
 		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
+		
+		
         List<String> k = new ArrayList<>(map.keySet());
-        for (int i = 0; i < k.size(); i++) {
-            header.append(i + "=" + k.get(i));
+        for (int i = 0; i < labelsInPrediction.size(); i++) {
+			if (isIntegerMode) {
+				header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
+			} else {
+				header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+			}
             if (i + 1 < k.size()) {
                 header.append(" ");
             }
         }
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
+		
 
 		List<String> nameOfTargets = getNameOfTargets();
 
@@ -97,12 +106,12 @@ public class DynetOutcomeIdReport
 				// targets files
 				continue;
 			}
-			if (p.isEmpty()) {
+			if (p.trim().isEmpty()) {
 				shift++;
 				continue;
 			}
 
-            String id = (!nameOfTargets.isEmpty() && nameOfTargets.contains(i - shift))
+            String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift))
                     ? nameOfTargets.get(i - shift) : ("" + (counter++));
 
 			String[] split = p.split("\t");
@@ -115,17 +124,9 @@ public class DynetOutcomeIdReport
 			String gold = null;
 			String prediction = null;
 			if (isIntegerMode) {
-				// Keras starts counting at 1 for 'content' - zero is reserved
-				// as padding value - we have to shift-correct the index
-				Integer v = Integer.valueOf(Integer.valueOf(split[0])) - 1;
-				v = (v < 0) ? 0 : v;
-				gold = v.toString();
-				v = Integer.valueOf(Integer.valueOf(split[1])) - 1;
-				v = (v < 0) ? 0 : v;
-				prediction = v.toString();
+				gold = split[0];
+				prediction = split[1];
 			} else {
-				// we have non-integer labels so we have to map them to integers
-				// for creating the id2outcome data format
 				gold = map.get(split[0]).toString();
 				prediction = map.get(split[1]).toString();
 			}
@@ -136,6 +137,29 @@ public class DynetOutcomeIdReport
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
+	}
+
+	private Map<String, String> inverseMap(Map<String, String> map) {
+		HashMap<String, String> inverseMap = new HashMap<>();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			inverseMap.put(entry.getValue(), entry.getKey());
+		}
+		return inverseMap;
+	}
+
+	private List<String> getTestGoldLabels() throws Exception {
+		Set<String> labels = new HashSet<>();
+		
+		File testVectorizationFolder = getContext().getFolder(TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT, AccessMode.READONLY);
+		File f = new File(testVectorizationFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+		List<String> readLines = FileUtils.readLines(f, "utf-8");
+		for(String s : readLines){
+			for(String x : s.split(" ")){
+				labels.add(x);
+			}
+		}
+		
+		return new ArrayList<String>(labels);
 	}
 
 	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop, Map<String, String> map)
@@ -252,5 +276,6 @@ public class DynetOutcomeIdReport
 
 		return t;
 	}
+
 
 }
