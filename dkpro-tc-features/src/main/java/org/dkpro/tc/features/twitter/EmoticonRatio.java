@@ -27,7 +27,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.EMO;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.POS_EMO;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
@@ -50,7 +50,7 @@ public class EmoticonRatio
     public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
         throws TextClassificationException
     {
-        int nrOfEmoticons = JCasUtil.selectCovered(jCas, EMO.class, target).size();
+        int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, target).size();
         int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, target).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
         return new Feature(EmoticonRatio.class.getSimpleName(), ratio).asSet();

@@ -22,13 +22,13 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
 
 /**
  * Gender-Preferential Text Mining of E-mail Discourse
@@ -72,7 +72,7 @@ public class AdjectiveEndingFeatureExtractor
         double ly = 0;
 
         int n = 0;
-        for (ADJ adj : JCasUtil.selectCovered(jcas, ADJ.class, target)) {
+        for (POS_ADJ adj : JCasUtil.selectCovered(jcas, POS_ADJ.class, target)) {
             n++;
 
             String text = adj.getCoveredText().toLowerCase();
@@ -103,7 +103,7 @@ public class AdjectiveEndingFeatureExtractor
         }
 
         int m = 0;
-        for (ADV adv : JCasUtil.select(jcas, ADV.class)) {
+        for (POS_ADV adv : JCasUtil.select(jcas, POS_ADV.class)) {
             m++;
 
             String text = adv.getCoveredText().toLowerCase();

@@ -24,21 +24,21 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ART;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.O;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PP;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADP;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_DET;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NOUN;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
 
 /**
  * Heylighen &amp; Dewaele (2002): Variation in the contextuality of language The contextuality
@@ -61,16 +61,16 @@ public class ContextualityMeasureFeatureExtractor
         Set<Feature> featSet = new HashSet<Feature>();
 
         double total = JCasUtil.selectCovered(jcas, POS.class, target).size();
-        double noun = selectCovered(jcas, N.class, target).size() / total;
-        double adj = selectCovered(jcas, ADJ.class, target).size() / total;
-        double prep = selectCovered(jcas, PP.class, target).size() / total;
-        double art = selectCovered(jcas, ART.class, target).size() / total;// !includes determiners
-        double pro = selectCovered(jcas, PR.class, target).size() / total;
-        double verb = selectCovered(jcas, V.class, target).size() / total;
-        double adv = selectCovered(jcas, ADV.class, target).size() / total;
+        double noun = selectCovered(jcas, POS_NOUN.class, target).size() / total;
+        double adj = selectCovered(jcas, POS_ADJ.class, target).size() / total;
+        double prep = selectCovered(jcas, POS_ADP.class, target).size() / total;
+        double art = selectCovered(jcas, POS_DET.class, target).size() / total;// !includes determiners
+        double pro = selectCovered(jcas, POS_PRON.class, target).size() / total;
+        double verb = selectCovered(jcas, POS_VERB.class, target).size() / total;
+        double adv = selectCovered(jcas, POS_ADV.class, target).size() / total;
 
         int interjCount = 0;
-        for (POS tag : JCasUtil.select(jcas, O.class)) {
+        for (POS tag : JCasUtil.select(jcas, POS_X.class)) {
             // FIXME Issue 123: this is tagset specific
             if (tag.getPosValue().contains("UH")) {
                 interjCount++;

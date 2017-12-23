@@ -22,12 +22,12 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
 
 /**
  * Counts the ratio of individual English modal verbs to all verbs:
@@ -72,7 +72,7 @@ public class ModalVerbsFeatureExtractor
 
         int n = 0;
         int modals = 0;
-        for (V verb : JCasUtil.selectCovered(jcas, V.class, target)) {
+        for (POS_VERB verb : JCasUtil.selectCovered(jcas, POS_VERB.class, target)) {
             n++;
 
             String text = verb.getCoveredText().toLowerCase();

@@ -22,12 +22,12 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.V;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
 
 /**
  * Quick, very simplified approximation of usage of past tense in comparison to present/future tense
@@ -57,7 +57,7 @@ public class PastVsFutureFeatureExtractor
         int futureVerbs = 0;
         int verbs = 0;
 
-        for (V tag : JCasUtil.selectCovered(jcas, V.class, target)) {
+        for (POS_VERB tag : JCasUtil.selectCovered(jcas, POS_VERB.class, target)) {
             verbs++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("VBD") || tag.getPosValue().contains("VBN")) {

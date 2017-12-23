@@ -23,12 +23,12 @@ import java.util.Set;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.PR;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
 
 /**
  * Extracts the ratio of the 6 major English pronouns to the total pronouns
@@ -61,7 +61,7 @@ public class PronounRatioFeatureExtractor
         int youCount = 0;
 
         int n = 0;
-        for (PR pronoun : JCasUtil.selectCovered(jcas, PR.class, target)) {
+        for (POS_PRON pronoun : JCasUtil.selectCovered(jcas, POS_PRON.class, target)) {
             n++;
 
             String text = pronoun.getCoveredText().toLowerCase();

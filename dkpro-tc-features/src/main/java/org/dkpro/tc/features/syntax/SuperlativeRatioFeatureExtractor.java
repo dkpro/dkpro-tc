@@ -23,13 +23,13 @@ import java.util.Set;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADV;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
 
 /**
  * Extracts the ratio adjectives and adverbs to the total number of adjectives and adverbs.
@@ -48,7 +48,7 @@ public class SuperlativeRatioFeatureExtractor
         double adjRatio = 0;
         int superlativeAdj = 0;
         int adjectives = 0;
-        for (ADJ tag : JCasUtil.selectCovered(jcas, ADJ.class, target)) {
+        for (POS_ADJ tag : JCasUtil.selectCovered(jcas, POS_ADJ.class, target)) {
             adjectives++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("JJS")) {
@@ -62,7 +62,7 @@ public class SuperlativeRatioFeatureExtractor
         double advRatio = 0;
         int superlativeAdv = 0;
         int adverbs = 0;
-        for (ADV tag : JCasUtil.selectCovered(jcas, ADV.class, target)) {
+        for (POS_ADV tag : JCasUtil.selectCovered(jcas, POS_ADV.class, target)) {
             adverbs++;
             // FIXME Issue 123: depends on tagset
             if (tag.getPosValue().contains("RBS")) {

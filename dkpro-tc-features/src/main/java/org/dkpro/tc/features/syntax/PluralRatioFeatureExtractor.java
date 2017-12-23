@@ -27,7 +27,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NOUN;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 
 /**
@@ -48,7 +48,7 @@ public class PluralRatioFeatureExtractor
         int plural = 0;
         int singular = 0;
 
-        for (POS tag : JCasUtil.selectCovered(jcas, N.class, target)) {
+        for (POS tag : JCasUtil.selectCovered(jcas, POS_NOUN.class, target)) {
             // FIXME Issue 123: depends on tagset
             if ((tag.getPosValue().equals("NNS")) || (tag.getPosValue().equals("NNPS"))
                     || (tag.getPosValue().equals("NNS"))) {

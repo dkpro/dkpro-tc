@@ -34,6 +34,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.EMO;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.POS_EMO;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
@@ -56,7 +57,7 @@ public class EmoticonRatioTest
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         builder.buildTokens(jcas, "This is a very emotional tweet ;-)");
-        EMO emo = new EMO(jcas);
+        POS_EMO emo = new POS_EMO(jcas);
         emo.setBegin(31);
         emo.setEnd(34);
         emo.addToIndexes();
