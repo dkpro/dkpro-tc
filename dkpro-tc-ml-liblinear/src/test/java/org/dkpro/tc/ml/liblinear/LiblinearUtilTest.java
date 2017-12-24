@@ -156,6 +156,6 @@ public class LiblinearUtilTest
 
         File integerReplacedFile = LiblinearUtils.replaceOutcome(tmpFile, map);
         assertEquals("0\t1:1.0\t2:1.0\n1\t1:1.0\n2\t2:1.0\n",
-                FileUtils.readFileToString(integerReplacedFile));
+                FileUtils.readFileToString(integerReplacedFile, "utf-8"));
     }
 }
