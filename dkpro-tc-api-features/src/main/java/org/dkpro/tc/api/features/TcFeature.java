@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.api.features;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.uima.fit.factory.ExternalResourceFactory;
@@ -48,7 +49,7 @@ public class TcFeature
         this.classOfFeat = classOfFeat;
         this.id = id;
         this.fullFeatureName = classOfFeat.getName();
-        this.params = params;
+        this.params = Arrays.<Object>copyOf(params, params.length);
     }
 
     public void setConfig(Map<String, Object> aConfig)
