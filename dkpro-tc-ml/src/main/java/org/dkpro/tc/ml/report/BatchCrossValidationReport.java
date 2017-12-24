@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dkpro.lab.reporting.BatchReportBase;
-import org.dkpro.lab.reporting.FlexTable;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportUtils;
+import org.dkpro.tc.core.util.TcFlexTable;
 import org.dkpro.tc.util.EvaluationReportUtil;
 
 /**
@@ -52,7 +52,7 @@ public class BatchCrossValidationReport
 
         StorageService store = getContext().getStorageService();
 
-        FlexTable<String> table = FlexTable.forClass(String.class);
+        TcFlexTable<String> table = TcFlexTable.forClass(String.class);
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (!TcTaskTypeUtil.isCrossValidationTask(store, subcontext.getId())) {

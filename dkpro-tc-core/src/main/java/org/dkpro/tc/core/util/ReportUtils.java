@@ -44,7 +44,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.ChartUtil;
-import org.dkpro.lab.reporting.FlexTable;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StreamWriter;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -211,7 +210,7 @@ public class ReportUtils
     /**
      * Looks into the {@link FlexTable} and outputs general performance numbers if available
      */
-    public static String getPerformanceOverview(FlexTable<String> table)
+    public static String getPerformanceOverview(TcFlexTable<String> table)
     {
         // output some general performance figures
         // TODO this is a bit of a hack. Is there a better way?
@@ -288,10 +287,10 @@ public class ReportUtils
      * @see ReportUtils#updateAggregateMatrix(Map, File)
      * @return a table with the matrix
      */
-    public static FlexTable<String> createOverallConfusionMatrix(
+    public static TcFlexTable<String> createOverallConfusionMatrix(
             Map<List<String>, Double> aggregateMap)
     {
-        FlexTable<String> cMTable = FlexTable.forClass(String.class);
+        TcFlexTable<String> cMTable = TcFlexTable.forClass(String.class);
         cMTable.setSortRows(false);
 
         Set<String> labelsPred = new TreeSet<String>();
@@ -352,7 +351,7 @@ public class ReportUtils
         return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
     }
 
-    public static void writeExcelAndCSV(TaskContext context, String contextLabel, FlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
+    public static void writeExcelAndCSV(TaskContext context, String contextLabel, TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
     {
         StorageService store = context.getStorageService();
         context.getLoggingService().message(contextLabel,
@@ -362,13 +361,13 @@ public class ReportUtils
             context.storeBinary(evalFileName + "_compact" + suffixExcel,
                     table.getExcelWriter());
         }
-//        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
+        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
         table.setCompact(false);
         // Excel cannot cope with more than 255 columns
         if (table.getColumnIds().length <= 255) {
             context.storeBinary(evalFileName + suffixExcel, table.getExcelWriter());
         }
-//        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
+        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
 
         // output the location of the batch evaluation folder
         // otherwise it might be hard for novice users to locate this
