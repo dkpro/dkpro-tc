@@ -65,7 +65,7 @@ public class TopicWordsFeatureExtractor
         Set<Feature> features = new HashSet<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, target));
         try {
-            topics = FileUtils.readLines(new File(topicFilePath));
+            topics = FileUtils.readLines(new File(topicFilePath), "utf-8");
             for (String t : topics) {
                 features.addAll(countWordHits(t, tokens));
             }
