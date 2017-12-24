@@ -166,9 +166,6 @@ public class TaskUtils {
 		return (T) deserializedObject;
 	}
 
-	/**
-	 * Get a list of required type names.
-	 */
 	public static Set<String> getRequiredTypesFromFeatureExtractors(List<ExternalResourceDescription> featureSet)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Set<String> requiredTypes = new HashSet<String>();

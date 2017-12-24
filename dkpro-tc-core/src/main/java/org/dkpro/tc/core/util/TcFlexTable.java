@@ -48,9 +48,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 /**
  * Conveniently create a tabular data structure which may be persisted to and read from a CSV file
  * or serialized in several other formats.
- *
- * @param <V>
- *            cell data type.
  */
 public class TcFlexTable<V>
 {
@@ -81,9 +78,6 @@ public class TcFlexTable<V>
 
     /**
      * If a cell contains no value, this value is returned when asking for the cell value.
-     *
-     * @param aDefaultValue
-     *            the default cell value.
      */
     public void setDefaultValue(V aDefaultValue)
     {

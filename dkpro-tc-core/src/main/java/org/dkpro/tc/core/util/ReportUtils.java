@@ -114,9 +114,6 @@ public class ReportUtils
         return classString;
     }
 
-    /**
-     * Adds results from one fold to the overall CV results
-     */
     public static void addToResults(Map<String, Double> results, Map<String, List<Double>> cvResults)
     {
         for (Entry<String, Double> entry : results.entrySet()) {
@@ -208,7 +205,7 @@ public class ReportUtils
     }
 
     /**
-     * Looks into the {@link FlexTable} and outputs general performance numbers if available
+     * Looks into the {@link TcFlexTable} and outputs general performance numbers if available
      */
     public static String getPerformanceOverview(TcFlexTable<String> table)
     {
@@ -244,6 +241,7 @@ public class ReportUtils
      * Adds results from a serialized matrix to a map
      * 
      * @param aggregateMap
+     * 			  the aggregated map
      * @param matrix
      *            a csv matrix with the class names in the first row and first column
      * @return updated map
