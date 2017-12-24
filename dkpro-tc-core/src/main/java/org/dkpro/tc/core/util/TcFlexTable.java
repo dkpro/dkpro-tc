@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011
+ * Copyright 2017
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *   
@@ -44,8 +44,6 @@ import org.dkpro.lab.storage.StreamWriter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
-
-/** Customized version from FlexTable in DKPro LL**/
 
 /**
  * Conveniently create a tabular data structure which may be persisted to and read from a CSV file
@@ -361,7 +359,7 @@ public class TcFlexTable<V>
             private boolean isDouble(String val)
             {
                 try {
-                    double d = Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
+                    Double.parseDouble(val);
                 }
                 catch (NumberFormatException ex) {
                     return false;
@@ -473,7 +471,7 @@ public class TcFlexTable<V>
                 String[] colIds = getColumnIds();
                 writer.print("{");
                 for (int i = 0; i <= colIds.length; i++) {
-                    writer.print(" l"); // TODO: Pass column alignment as parameter
+                    writer.print(" l");
                 }
                 writer.println(" }");
 
@@ -502,7 +500,7 @@ public class TcFlexTable<V>
                         val = convertNumbers(decimalPlacesForDouble, decimalPlacesForPercentages,
                                 val);
 
-                        buf[i] = escapeForLatex(val); // TODO: Move to util class? Which one?
+                        buf[i] = escapeForLatex(val);
                         i++;
                     }
                     writer.print(StringUtils.join(buf, " & "));
@@ -517,7 +515,7 @@ public class TcFlexTable<V>
             private String convertNumbers(final int decimalPlacesForDouble,
                     final int decimalPlacesForPercentages, String val)
             {
-                if (decimalPlacesForPercentages != -1 && isPercentage(val)) {
+                if (decimalPlacesForPercentages != -1) {
                     val = doRoundDouble(val, decimalPlacesForPercentages);
                 }
                 else if (decimalPlacesForDouble != -1 && isDouble(val)) {
@@ -528,7 +526,6 @@ public class TcFlexTable<V>
 
             private String doStringReplace(String val)
             {
-                // TODO MW: Make all this configurable
                 val = val.replace("org.dkpro.tc.core.task.", "");
                 val = val.replace("org.dkpro.tc.ml.", "");
 
@@ -539,8 +536,7 @@ public class TcFlexTable<V>
             {
                 double d = Double.parseDouble(val);
 
-                int temp = (int) (d * Math.pow(10, decimalPlaces)); // TODO: Could this cause
-                                                                    // rounding problems?
+                int temp = (int) (d * Math.pow(10, decimalPlaces));  
                 Double newD = (temp) / Math.pow(10, decimalPlaces);
 
                 return newD.toString();
@@ -549,19 +545,13 @@ public class TcFlexTable<V>
             private boolean isDouble(String val)
             {
                 try {
-                    double d = Double.parseDouble(val); // TODO: A bit of a hack; use Regex instead?
+                    Double.parseDouble(val); 
                 }
                 catch (NumberFormatException ex) {
                     return false;
                 }
 
                 return true;
-            }
-
-            private boolean isPercentage(String val)
-            {
-                // TODO: Implement
-                return false;
             }
 
             private String escapeForLatex(String val)
@@ -638,6 +628,7 @@ public class TcFlexTable<V>
                 }
 
                 writer.flush();
+                writer.close();
             }
         };
     }
@@ -665,6 +656,7 @@ public class TcFlexTable<V>
                         }
                         addRow(data[0], row);
                     }
+                    reader.close();
                 }
                 catch (IOException e) {
                     throw e;
@@ -739,6 +731,7 @@ public class TcFlexTable<V>
                 }
 
                 wb.write(aStream);
+                wb.close();
             }
         };
     }
