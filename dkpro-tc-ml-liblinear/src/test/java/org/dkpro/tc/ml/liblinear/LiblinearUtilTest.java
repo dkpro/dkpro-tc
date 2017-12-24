@@ -142,7 +142,7 @@ public class LiblinearUtilTest
     {
         String dummyData = "A\t1:1.0\t2:1.0\nB\t1:1.0\nC\t2:1.0";
         File tmpFile = FileUtil.createTempFile("junitTest", ".tmp");
-        FileUtils.write(tmpFile, dummyData);
+        FileUtils.write(tmpFile, dummyData, "utf-8");
         
         File outcomes = FileUtil.createTempFile("junitTest", ".txt");
         FileUtils.writeStringToFile(outcomes, "A\nB\nC\n","utf-8");

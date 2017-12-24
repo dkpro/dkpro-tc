@@ -63,7 +63,7 @@ public class LiblinearDataWriterTest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("feature1\n");
 		sb.append("feature2\n");
-		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString());
+		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString(), "utf-8");
 		File outputFile = new File(outputDirectory,
 				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
 		LiblinearDataWriter writer = new LiblinearDataWriter();
