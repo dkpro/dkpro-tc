@@ -137,7 +137,7 @@ public interface Constants
     public static final String DIM_BIPARTITION_THRESHOLD = "threshold";
 
     /**
-     * Name of the class that implements {@link org.dkpro.tc.api.features.FeatureStore}
+     * Name of the class that implements
      */
     public static final String DIM_FEATURE_USE_SPARSE = "featureStore";
 

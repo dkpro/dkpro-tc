@@ -34,5 +34,5 @@ public interface TCReaderMultiLabel
      * @return
      * @throws CollectionException
      */
-    public Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException;
+    Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException;
 }

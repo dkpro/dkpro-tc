@@ -32,5 +32,5 @@ public interface TCReaderSingleLabel
      * @return
      * @throws CollectionException
      */
-    public String getTextClassificationOutcome(JCas jcas) throws CollectionException;
+    String getTextClassificationOutcome(JCas jcas) throws CollectionException;
 }

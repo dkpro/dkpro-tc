@@ -34,5 +34,5 @@ public interface TCReaderSequence
      * @return
      * @throws CollectionException
      */
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit) throws CollectionException;
+    String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit) throws CollectionException;
 }
