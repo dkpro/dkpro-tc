@@ -42,7 +42,7 @@ public class KerasAdapter
     @Override
     public int lowestIndex()
     {
-        return 0;
+        return 1;
     }
 
     @Override
