@@ -35,7 +35,6 @@ import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureStore;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
@@ -54,8 +53,6 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class KeywordNGramFeatureExtractorTest
 {
-
-    FeatureStore fs;
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
