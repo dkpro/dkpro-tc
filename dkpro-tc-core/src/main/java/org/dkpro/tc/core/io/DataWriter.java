@@ -28,11 +28,6 @@ import org.dkpro.tc.api.features.Instance;
  */
 public interface DataWriter
 {
-    /**
-     * Write the feature instances in a generic format. This is necessary if either feature filter
-     * are provided or the input data format of the classifier requies a header which can only be
-     * created once all feature information e.g. names and outcomes have been seen (WEKA)
-     */
     public void writeGenericFormat(Collection<Instance> instances)
         throws Exception;
 
@@ -43,17 +38,9 @@ public interface DataWriter
     public void transformFromGeneric()
         throws Exception;
 
-    /**
-     * Writes directly into the data format of the classifier. This is considerably faster and the
-     * preferred way.
-     */
     public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
         throws Exception;
 
-    /**
-     * Lazy initialization of the writer component which writes either a generic file or the
-     * classifier file
-     */
     public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
         throws Exception;
 
