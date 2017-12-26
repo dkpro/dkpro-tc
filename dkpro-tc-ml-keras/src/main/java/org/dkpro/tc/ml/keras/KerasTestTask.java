@@ -86,27 +86,6 @@ public class KerasTestTask
         File embeddingPath = getEmbedding(aContext);
         String maxLen = getMaximumLength(aContext);
         
-        
-        StringBuilder fullCommand = new StringBuilder();
-        
-        
-		if (embeddingPath != null) {
-			fullCommand.append(PythonConstants.EMBEDDING);
-			fullCommand.append(System.lineSeparator());
-			fullCommand.append(embeddingPath.getAbsolutePath());
-			fullCommand.append(System.lineSeparator());
-		}
-		if (randomSeed != null) {
-			fullCommand.append(PythonConstants.SEED);
-			fullCommand.append(System.lineSeparator());
-			fullCommand.append(randomSeed);
-			fullCommand.append(System.lineSeparator());
-		}
-		
-		FileUtils.writeStringToFile(
-				aContext.getFile(DeepLearningConstants.FILENAME_USERCODE_PARAMETERS, AccessMode.READWRITE),
-				fullCommand.toString(), "utf-8");
-
         python = (python == null) ? "python" : python;
 
         List<String> command = new ArrayList<>();
