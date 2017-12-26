@@ -56,7 +56,6 @@ public interface PairReader
      * Title of the first document
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
-     * @throws exception in case of error
      */
     public String getTitle1() throws TextClassificationException;
     /**
