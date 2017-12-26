@@ -29,8 +29,13 @@ public interface TCReaderSingleLabel
      * Returns the text classification outcome for the current single-label instance
      * 
      * @param jcas
+     * 		The JCas containing the outcomes
+     * @param target
+     * 		The target span in which the outcome is located
      * @return
+     * 		Set of outcomes as string values
      * @throws CollectionException
+     * 		In case of error 		
      */
     String getTextClassificationOutcome(JCas jcas) throws CollectionException;
 }

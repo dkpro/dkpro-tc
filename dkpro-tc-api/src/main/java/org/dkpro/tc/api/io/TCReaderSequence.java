@@ -31,8 +31,13 @@ public interface TCReaderSequence
      * Returns the text classification outcome for each classification unit
      * 
      * @param jcas
+     * 		The JCas containing the outcomes
+     * @param target
+     * 		The target span in which the outcome is located
      * @return
+     * 		Set of outcomes as string values
      * @throws CollectionException
+     * 		In case of error 		
      */
-    String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit) throws CollectionException;
+    String getTextClassificationOutcome(JCas jcas, TextClassificationTarget target) throws CollectionException;
 }

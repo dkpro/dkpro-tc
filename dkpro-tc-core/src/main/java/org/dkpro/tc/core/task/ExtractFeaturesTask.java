@@ -112,9 +112,6 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 		this.mlAdapter = mlAdapter;
 	}
 
-	/**
-	 * @param isTesting
-	 */
 	public void setTesting(boolean isTesting) {
 		this.isTesting = isTesting;
 	}

@@ -58,12 +58,18 @@ public interface TcDeepLearningAdapter
      * value will be zero. Unless, zero values have a special meaning in the respective deep
      * learning framework. For instance, zero should not be used if vectors are zero-padded
      * otherwise distinction between padded-value and actual-value is no longer possible.
+     * 
+     * @return 
+     * 		the lowest index that should be used to identify data values
      */
     public int lowestIndex();
 
     /**
      * An optional report which is intended to record the environment versions of non-Java
      * frameworks e.g. Keras version, Python version , etc.
+     * 
+     * @return
+     * 		Meta collection report object for collecting relevant information of this adapter
      */
     public ReportBase getMetaCollectionReport();
 

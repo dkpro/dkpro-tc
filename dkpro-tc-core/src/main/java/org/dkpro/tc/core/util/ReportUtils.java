@@ -70,6 +70,7 @@ public class ReportUtils
      * @param predictedLabelsList
      *            the label powerset transformed list of predicted labels
      * @return
+     * 		confusion matrix
      */
     public static double[][] createConfusionMatrix(HashMap<String, Map<String, Integer>> tempM,
             List<String> actualLabelsList, List<String> predictedLabelsList)
@@ -93,6 +94,18 @@ public class ReportUtils
     /**
      * Converts a bipartition array into a list of class names. Parameter arrays must have the same
      * length
+     * 
+     * @param labels
+     * 		the labels
+     * 
+     * @param classnames
+     * 		the class names
+     * 
+     * @param separatorChar
+     * 		separating character
+     * 
+     * @return
+     * 		a String
      */
     public static String doubleArrayToClassNames(int[] labels, String[] classNames,
             Character separatorChar)
@@ -206,6 +219,11 @@ public class ReportUtils
 
     /**
      * Looks into the {@link TcFlexTable} and outputs general performance numbers if available
+     * @param table
+     * 		Flextable object
+     * 
+     * @return 
+     * 		table as string
      */
     public static String getPerformanceOverview(TcFlexTable<String> table)
     {
@@ -332,6 +350,7 @@ public class ReportUtils
      * @param discriminatorName The name of the discriminator
      * @return The discriminator value for the given key
      * @throws TextClassificationException
+     * 		If no discriminator value was found
      */
     public static String getDiscriminatorValue(Map<String, String> discriminatorsMap, String discriminatorName)
         throws TextClassificationException

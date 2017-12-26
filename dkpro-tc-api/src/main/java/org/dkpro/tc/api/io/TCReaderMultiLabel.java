@@ -31,8 +31,11 @@ public interface TCReaderMultiLabel
      * Returns the set of text classification outcomes for the current multi-label instance
      * 
      * @param jcas
+     * 		The JCas containing the outcomes
      * @return
+     * 		Set of outcomes as string values
      * @throws CollectionException
+     * 		In case of error
      */
     Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException;
 }

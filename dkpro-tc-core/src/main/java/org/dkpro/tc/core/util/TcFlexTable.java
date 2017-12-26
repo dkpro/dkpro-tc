@@ -78,6 +78,9 @@ public class TcFlexTable<V>
 
     /**
      * If a cell contains no value, this value is returned when asking for the cell value.
+     * 
+     * @param aDefaultValue
+     * 			the default value
      */
     public void setDefaultValue(V aDefaultValue)
     {
@@ -107,6 +110,9 @@ public class TcFlexTable<V>
     /**
      * Setting the locale to a non-English locale may break the detection of numeric values in
      * writers.
+     * 
+     * @param aLocale
+     * 		locale object
      */
     public void setLocale(Locale aLocale)
     {
@@ -184,6 +190,9 @@ public class TcFlexTable<V>
      * Enable/disable compact rendering mode. In compact mode, invariant columns may be rendered as
      * a separate section in the output or totally omitted. This is turned on by default. To always
      * render all columns, disable this.
+     * 
+     * @param aCompact
+     * 		use compact mode or not
      */
     public void setCompact(boolean aCompact)
     {
@@ -198,6 +207,9 @@ public class TcFlexTable<V>
     /**
      * Enable/disable automatic sorting of rows by ID. This is turned on by default. To render rows
      * in the order they were added to the table, disable this.
+     * 
+     * @param aWriteSorted
+     * 		sort rows
      */
     public void setSortRows(boolean aWriteSorted)
     {
@@ -434,6 +446,8 @@ public class TcFlexTable<V>
     /**
      * Returns a LaTeX writer to write the FlexTable to a Latex file. (without rounding any figures)
      * 
+     * @return StreamWriter
+     * 			the stream writer
      */
     public StreamWriter getLatexWriter()
     {
@@ -450,6 +464,8 @@ public class TcFlexTable<V>
      * @param decimalPlacesForPercentages
      *            How many decimal places should percentage values have; if set to -1, the values
      *            won't be rounded.
+     *            
+     * @return a stream writer           
      */
     public StreamWriter getLatexWriter(final int decimalPlacesForDouble,
             final int decimalPlacesForPercentages)

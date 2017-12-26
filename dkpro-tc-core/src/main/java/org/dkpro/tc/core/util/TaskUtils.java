@@ -261,6 +261,30 @@ public class TaskUtils {
 	/**
 	 * Should not be called directly, but always from a connector (UIMA context
 	 * with parameters initialized)
+	 * 
+	 * @param featureMode
+	 * 			the feature mode
+	 * 
+	 * @param featureExtractors
+	 * 			the feature extractors for extracting the features
+	 * 
+	 * @param jcas
+	 * 			the jcas object 
+	 * 
+	 * @param developerMode
+	 * 			deactivates some sanity checks
+	 * 
+	 * @param addInstanceId
+	 * 			if the instance id should be created as feature
+	 * 
+	 * @param supportSparseFeatures
+	 * 			if sparse feature extraction is supported
+	 * 
+	 * @return instance
+	 * 			an instance holding all extracted features for this cas object
+	 * 
+	 * @throw exception
+	 * 			in case of any error
 	 */
 	public static Instance getSingleInstance(String featureMode, FeatureExtractorResource_ImplBase[] featureExtractors,
 			JCas jcas, boolean developerMode, boolean addInstanceId, boolean supportSparseFeatures) throws Exception {
@@ -280,6 +304,34 @@ public class TaskUtils {
 		return instance;
 	}
 
+	/**
+	 * @param instance
+	 * 			an existing instance object
+	 * 
+	 * @param featureMode
+	 * 			the feature mode
+	 * 
+	 * @param featureExtractors
+	 * 			the feature extractors for extracting the features
+	 * 
+	 * @param jcas
+	 * 			the jcas object 
+	 * 
+	 * @param developerMode
+	 * 			deactivates some sanity checks
+	 * 
+	 * @param addInstanceId
+	 * 			if the instance id should be created as feature
+	 * 
+	 * @param supportSparseFeatures
+	 * 			if sparse feature extraction is supported
+	 * 
+	 * @return instance
+	 * 			an instance holding all extracted features for this cas object
+	 * 
+	 * @throw exception
+	 * 			in case of any error
+	 */
 	private static Instance getSingleInstanceUnit(Instance instance,
 			FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
 			boolean developerMode, boolean supportsSparseFeature) throws Exception {

@@ -36,6 +36,15 @@ public class ExperimentStarter
      * 
      * @param pathToScript
      *            path to Groovy script.
+     *            
+     * @throw InstantiationException
+     * 		  if class cannot be instantiated
+     * 
+     * @throw IllegalAccessException
+     * 		  if an illegal access occurred
+     * 
+     * @throw 
+     * 		  general IO Exceptions
      */
     public static void start(String pathToScript)
         throws InstantiationException, IllegalAccessException, IOException

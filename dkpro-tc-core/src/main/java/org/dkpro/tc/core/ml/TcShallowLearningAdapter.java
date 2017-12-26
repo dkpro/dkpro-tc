@@ -79,6 +79,7 @@ public interface TcShallowLearningAdapter
     public Class<? extends ReportBase> getBatchTrainTestReportClass();
 
     /**
+     * @param  collection of cas
      * @return The fold dimension bundle for CV
      */
     public <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,
@@ -91,7 +92,16 @@ public interface TcShallowLearningAdapter
      */
     public String getFrameworkFilename(AdapterNameEntries name);
 
+    /**
+     * @return
+     * 		Returns a task that deals with serializing a model
+     */
 	public Class<? extends ModelSerializationTask> getSaveModelTask();
 
+	/**
+	 * 
+	 * @return
+	 * 		boolean value wheter sparse features shall be used or not
+	 */
 	public boolean useSparseFeatures();
 }
