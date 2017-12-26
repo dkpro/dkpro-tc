@@ -28,7 +28,7 @@ public interface SingleLabelOutcomeAnnotator
      * 		Jcas object from which the outcome is extracted
      * @return 
      * 		outcome as string
-     * @throws
+     * @throws org.apache.uima.analysis_engine.AnalysisEngineProcessException
      * 		exception
      */
     public String getTextClassificationOutcome(JCas jcas)

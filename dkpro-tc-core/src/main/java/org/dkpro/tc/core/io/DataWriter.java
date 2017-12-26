@@ -34,7 +34,7 @@ public interface DataWriter
     /**
      * If the generic data format is/must be used - this method will read the generic file and
      * create the classifier-fitted output format
-     * @throws exception
+     * @throws java.lang.Exception
      * 			in case of error
      */
     public void transformFromGeneric()
@@ -44,7 +44,7 @@ public interface DataWriter
     * 		   collection of instances
     * @param compress
     * 			compress feature file 
-    * @throws exception
+    * @throws java.lang.Exception
     * 			in case of error
     * */
     public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
@@ -61,7 +61,7 @@ public interface DataWriter
      * 			apply weights
      * @param outcomes
      * 			all outcomes
-     * @throws exception
+     * @throws java.lang.Exception
      * 			in case of error
      * */
     public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
@@ -83,7 +83,7 @@ public interface DataWriter
     public String getGenericFileName();
     
     /**
-     * @throws exception
+     * @throws java.lang.Exception
      * 			if error occurs
      */
     public void close() throws Exception;
