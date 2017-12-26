@@ -81,6 +81,8 @@ public interface TcShallowLearningAdapter
     /**
      * @param  files
      * 			collection of cas
+     * @param folds
+     * 			number of folds
      * @param <T>
      * 			data type
      * @return The fold dimension bundle for CV

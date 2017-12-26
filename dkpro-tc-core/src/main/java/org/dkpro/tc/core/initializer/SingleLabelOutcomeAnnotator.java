@@ -28,7 +28,7 @@ public interface SingleLabelOutcomeAnnotator
      * 		Jcas object from which the outcome is extracted
      * @return 
      * 		outcome as string
-     * @throw
+     * @throws
      * 		exception
      */
     public String getTextClassificationOutcome(JCas jcas)

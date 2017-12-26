@@ -43,7 +43,7 @@ public class ExperimentStarter
      * @throws IllegalAccessException
      * 		  if an illegal access occurred
      * 
-     * @throws
+     * @throws IOException
      * 		  general IO Exceptions
      */
     public static void start(String pathToScript)

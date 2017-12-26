@@ -132,7 +132,7 @@ public class TaskUtils {
 	 *
 	 * @param serializedFile
 	 *            a file
-	 * @param T
+	 * @param <T> 
 	 * 			data type
 	 * @return the deserialized Object
 	 * @throws IOException
@@ -285,7 +285,7 @@ public class TaskUtils {
 	 * @return instance
 	 * 			an instance holding all extracted features for this cas object
 	 * 
-	 * @throws exception
+	 * @throws Exception
 	 * 			in case of any error
 	 */
 	public static Instance getSingleInstance(String featureMode, FeatureExtractorResource_ImplBase[] featureExtractors,
