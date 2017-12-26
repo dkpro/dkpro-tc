@@ -1,10 +1,6 @@
 from sys import argv
 import numpy as np
-from keras.preprocessing import sequence
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Embedding, TimeDistributed, Bidirectional, Convolution1D
-from keras.layers import LSTM
-from keras.utils import np_utils
+import argparse
 
 EMBEDDING_DIM=-1
 np.set_printoptions(threshold=np.nan)
@@ -37,7 +33,15 @@ def loadEmbeddings(emb):
 		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
 	return matrix, dim
 
-def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
+def runExperiment(seed, trainVec, trainOutcome, testVec, testOutcome, embedding, longest_sequence, predictionOut):	
+
+	np.random.seed(seed)
+
+	from keras.preprocessing import sequence
+	from keras.models import Sequential
+	from keras.layers import Dense, Activation, Embedding, TimeDistributed, Bidirectional, Convolution1D
+	from keras.layers import LSTM
+	from keras.utils import np_utils
 
 	trainVecNump = numpyizeVector(trainVec)
 	trainOutcome = numpyizeVector(trainOutcome)
@@ -68,9 +72,9 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 	print("Building model")
 	model = Sequential()
 	if embedding:
-	    model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
+		model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
 	else:
-	    model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
+		model.add(Embedding(vocabSize+1, EMBEDDING_DIM))
 	model.add(Convolution1D(128, 5, padding='same', activation='relu'))	
 	model.add(Bidirectional(LSTM(EMBEDDING_DIM, return_sequences=True)))
 	model.add(TimeDistributed(Dense(maxLabel)))
@@ -100,4 +104,33 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, longe
 
 
 if  __name__ =='__main__':
-	runExperiment(argv[1], argv[2], argv[3], argv[4], argv[5], int(argv[6]), argv[7])
+	parser = argparse.ArgumentParser(description="")
+	parser.add_argument("--trainData", nargs=1, required=True)
+	parser.add_argument("--trainOutcome", nargs=1, required=True)
+	parser.add_argument("--testData", nargs=1, required=True)
+	parser.add_argument("--testOutcome", nargs=1, required=True)    
+	parser.add_argument("--embedding", nargs=1, required=False)    
+	parser.add_argument("--maxLen", nargs=1, required=True)
+	parser.add_argument("--predictionOut", nargs=1, required=True)
+	parser.add_argument("--seed", nargs=1, required=False)    
+    
+    
+	args = parser.parse_args()
+    
+	trainData = args.trainData[0]
+	trainOutcome = args.trainOutcome[0]
+	testData = args.testData[0]
+	testOutcome = args.testOutcome[0]
+	if not args.embedding:
+		embedding=""
+	else:
+		embedding = args.embedding[0]
+	maxLen = args.maxLen[0]
+	predictionOut = args.predictionOut[0]
+	if not args.seed:
+		seed=897534793	#random seed
+	else:
+		seed = args.seed[0]
+	
+	runExperiment(int(seed), trainData, trainOutcome, testData, testOutcome, embedding, int(maxLen), predictionOut)
+

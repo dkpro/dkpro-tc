@@ -21,21 +21,9 @@
 # This is an adapted demo test case from the Keras project (https://keras.io)
 
 
-'''Train a recurrent convolutional network on the IMDB sentiment
-classification task.
-
-Gets to 0.8498 test accuracy after 2 epochs. 41s/epoch on K520 GPU.
-'''
-from __future__ import print_function
-
 from sys import argv
-from keras.preprocessing import sequence
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation
-from keras.layers import Embedding
-from keras.layers import LSTM
-from keras.layers import Conv1D, MaxPooling1D
-from keras.datasets import imdb
+import argparse
+
 import numpy as np
 
 # Embedding
@@ -96,7 +84,15 @@ def loadEmbeddings(emb):
 		matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
 	return matrix, dim
 
-def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
+def runExperiment(seed, trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
+
+	from keras.preprocessing import sequence
+	from keras.models import Sequential
+	from keras.layers import Dense, Dropout, Activation
+	from keras.layers import Embedding
+	from keras.layers import LSTM
+	from keras.layers import Conv1D, MaxPooling1D
+	from keras.datasets import imdb
 
 	trainVecNump = numpyizeDataVector(trainVec)
 	trainOutcome = numpyizeOutcomeVector(trainOutcome)
@@ -165,4 +161,32 @@ def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maxim
 
 
 if  __name__ =='__main__':
-	runExperiment(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7])
+	parser = argparse.ArgumentParser(description="")
+	parser.add_argument("--trainData", nargs=1, required=True)
+	parser.add_argument("--trainOutcome", nargs=1, required=True)
+	parser.add_argument("--testData", nargs=1, required=True)
+	parser.add_argument("--testOutcome", nargs=1, required=True)    
+	parser.add_argument("--embedding", nargs=1, required=False)    
+	parser.add_argument("--maxLen", nargs=1, required=True)
+	parser.add_argument("--predictionOut", nargs=1, required=True)
+	parser.add_argument("--seed", nargs=1, required=False)    
+    
+    
+	args = parser.parse_args()
+    
+	trainData = args.trainData[0]
+	trainOutcome = args.trainOutcome[0]
+	testData = args.testData[0]
+	testOutcome = args.testOutcome[0]
+	if not args.embedding:
+		embedding=""
+	else:
+		embedding = args.embedding[0]
+	maxLen = args.maxLen[0]
+	predictionOut = args.predictionOut[0]
+	if not args.seed:
+		seed=897534793	#random seed
+	else:
+		seed = args.seed[0]
+	
+	runExperiment(int(seed), trainData, trainOutcome, testData, testOutcome, embedding, int(maxLen), predictionOut)

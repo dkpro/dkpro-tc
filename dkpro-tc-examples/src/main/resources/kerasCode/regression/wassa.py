@@ -20,14 +20,8 @@
 from __future__ import print_function
 
 from sys import argv
-from keras.preprocessing import sequence
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation
-from keras.layers import Embedding
-from keras.layers import LSTM
-from keras.layers import Conv1D, MaxPooling1D
-from keras.datasets import imdb
 import numpy as np
+import argparse
 
 
 def numpyizeDataVector(vec):
@@ -64,40 +58,74 @@ def loadEmbeddings(emb):
         matrix[int(id)]=np.asarray(vector.split(" "), dtype='float32')
     return matrix, dim
 
-def runExperiment(trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
+def runExperiment(seed, trainVec, trainOutcome, testVec, testOutcome, embedding, maximumLength, predictionOut):
 
-    trainVecNump = numpyizeDataVector(trainVec)
-    trainOutcome = numpyizeOutcomeVector(trainOutcome)
+	np.random.seed(seed)
+	from keras.preprocessing import sequence
+	from keras.models import Sequential
+	from keras.layers import Dense, Dropout, Activation
+	from keras.layers import Embedding
+	from keras.layers import LSTM
+	from keras.layers import Conv1D, MaxPooling1D
+	from keras.datasets import imdb
 
-    testVecNump = numpyizeDataVector(testVec)
-    testOutcome = numpyizeOutcomeVector(testOutcome)
+	trainVecNump = numpyizeDataVector(trainVec)
+	trainOutcome = numpyizeOutcomeVector(trainOutcome)
 
-    x_train = sequence.pad_sequences(trainVecNump, maxlen=int(maximumLength))
-    x_test = sequence.pad_sequences(testVecNump, maxlen=int(maximumLength))
+	testVecNump = numpyizeDataVector(testVec)
+	testOutcome = numpyizeOutcomeVector(testOutcome)
 
-    y_train = trainOutcome
-    y_test = testOutcome
+	x_train = sequence.pad_sequences(trainVecNump, maxlen=int(maximumLength))
+	x_test = sequence.pad_sequences(testVecNump, maxlen=int(maximumLength))
 
-    embeddings, dim = loadEmbeddings(embedding)
+	y_train = trainOutcome
+	y_test = testOutcome
 
-    model = Sequential()
-    model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
-    model.add(Dropout(0.2))
-    model.add(LSTM(128, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
-    model.add(LSTM(128, return_sequences=False, dropout=0.2, recurrent_dropout=0.2, go_backwards=True))
-    model.add(Dense(1))
-    model.add(Activation('sigmoid'))
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(x_train, y_train, epochs=1, shuffle=True)
+	embeddings, dim = loadEmbeddings(embedding)
 
-    prediction = model.predict(x_test)
+	model = Sequential()
+	model.add(Embedding(output_dim=embeddings.shape[1], input_dim=embeddings.shape[0], input_length=x_train.shape[1], weights=[embeddings], trainable=False))
+	model.add(Dropout(0.2))
+	model.add(LSTM(128, return_sequences=True, dropout=0.2, recurrent_dropout=0.2))
+	model.add(LSTM(128, return_sequences=False, dropout=0.2, recurrent_dropout=0.2, go_backwards=True))
+	model.add(Dense(1))
+	model.add(Activation('sigmoid'))
+	model.compile(loss='mean_squared_error', optimizer='adam')
+	model.fit(x_train, y_train, epochs=1, shuffle=True)
 
-    predictionFile = open(predictionOut, 'w')
-    predictionFile.write("#Gold\tPrediction\n")
-    for i in range(0, len(prediction)):
-        predictionFile.write(str(y_test[i]) +"\t" + str(prediction[i][0])+ "\n")
-    predictionFile.close()
+	prediction = model.predict(x_test)
+
+	predictionFile = open(predictionOut, 'w')
+	predictionFile.write("#Gold\tPrediction\n")
+	for i in range(0, len(prediction)):
+		predictionFile.write(str(y_test[i]) +"\t" + str(prediction[i][0])+ "\n")
+	predictionFile.close()
 
 
 if  __name__ =='__main__':
-    runExperiment(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7])
+	parser = argparse.ArgumentParser(description="")
+	parser.add_argument("--trainData", nargs=1, required=True)
+	parser.add_argument("--trainOutcome", nargs=1, required=True)
+	parser.add_argument("--testData", nargs=1, required=True)
+	parser.add_argument("--testOutcome", nargs=1, required=True)    
+	parser.add_argument("--embedding", nargs=1, required=True)    
+	parser.add_argument("--maxLen", nargs=1, required=True)
+	parser.add_argument("--predictionOut", nargs=1, required=True)
+	parser.add_argument("--seed", nargs=1, required=False)    
+    
+    
+	args = parser.parse_args()
+    
+	trainData = args.trainData[0]
+	trainOutcome = args.trainOutcome[0]
+	testData = args.testData[0]
+	testOutcome = args.testOutcome[0]
+	embedding = args.embedding[0]
+	maxLen = args.maxLen[0]
+	predictionOut = args.predictionOut[0]
+	if not args.seed:
+		seed=897534793	#random seed
+	else:
+		seed = args.seed[0]
+	
+	runExperiment(int(seed), trainData, trainOutcome, testData, testOutcome, embedding, int(maxLen), predictionOut)
