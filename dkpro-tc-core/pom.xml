@@ -146,7 +146,7 @@
 	</dependency>
 	<dependency>
 		<groupId>org.jfree</groupId>
-		<artifactId>jcommon</artifactId>
+		<artifactId>jfreechart</artifactId>
 		<version>1.0.19</version>
 	</dependency>
 	</dependencies>
