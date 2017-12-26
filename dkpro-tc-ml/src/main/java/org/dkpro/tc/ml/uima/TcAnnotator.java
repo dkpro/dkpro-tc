@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -222,7 +221,7 @@ public class TcAnnotator
     private void processSequence(JCas jcas)
         throws AnalysisEngineProcessException
     {
-        Logger.getLogger(getClass()).debug("START: process(JCAS)");
+        getLogger().debug("START: process(JCAS)");
 
         addTCSequenceAnnotation(jcas);
         addTCUnitAndOutcomeAnnotation(jcas);
@@ -235,7 +234,7 @@ public class TcAnnotator
         // System.out.println(o.getOutcome());
         // }
 
-        Logger.getLogger(getClass()).debug("FINISH: process(JCAS)");
+        getLogger().debug("FINISH: process(JCAS)");
     }
 
     private void addTCUnitAndOutcomeAnnotation(JCas jcas)
