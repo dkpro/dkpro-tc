@@ -79,7 +79,10 @@ public interface TcShallowLearningAdapter
     public Class<? extends ReportBase> getBatchTrainTestReportClass();
 
     /**
-     * @param  collection of cas
+     * @param  files
+     * 			collection of cas
+     * @param <T>
+     * 			data type
      * @return The fold dimension bundle for CV
      */
     public <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,

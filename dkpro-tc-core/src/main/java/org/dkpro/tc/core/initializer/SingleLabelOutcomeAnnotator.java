@@ -24,6 +24,12 @@ public interface SingleLabelOutcomeAnnotator
 {
     /**
      * Returns the text classification outcome for the current single-label instance
+     * @param jcas
+     * 		Jcas object from which the outcome is extracted
+     * @return 
+     * 		outcome as string
+     * @throw
+     * 		exception
      */
     public String getTextClassificationOutcome(JCas jcas)
         throws AnalysisEngineProcessException;

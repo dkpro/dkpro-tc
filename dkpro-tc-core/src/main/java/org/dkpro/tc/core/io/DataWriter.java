@@ -34,21 +34,57 @@ public interface DataWriter
     /**
      * If the generic data format is/must be used - this method will read the generic file and
      * create the classifier-fitted output format
+     * @throws exception
+     * 			in case of error
      */
     public void transformFromGeneric()
         throws Exception;
-
+    /**
+    * @param instances
+    * 		   collection of instances
+    * @param compress
+    * 			compress feature file 
+    * @throws exception
+    * 			in case of error
+    * */
     public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
         throws Exception;
 
+    /**
+     * @param outputDirectory
+     * 			the output directory
+     * @param useSparse
+     * 			use sparse feature
+     * @param learningMode
+     * 			the learning model
+     * @param applyWeighting
+     * 			apply weights
+     * @param outcomes
+     * 			all outcomes
+     * @throws exception
+     * 			in case of error
+     * */
     public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
         throws Exception;
 
+    /**
+     * @return boolean if streaming is available
+     */
     public boolean canStream();
 
+    /**
+     * @return boolean if classifier reads compressed files
+     */
     public boolean classiferReadsCompressed();
 
+    /**
+     * @return string holding the generic working file
+     */
     public String getGenericFileName();
     
+    /**
+     * @throws exception
+     * 			if error occurs
+     */
     public void close() throws Exception;
 }

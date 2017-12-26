@@ -27,16 +27,22 @@ public interface FeatureFilter
 
     /**
      * Applies the filter to the given feature store
+     * @param tmpFeatureFile
+     * 			the file to filter
+     * @throws exception
+     * 			in case of error
      */
     public void applyFilter(File tmpFeatureFile) throws Exception;
 
     /**
      * Whether the filter is applicable on training instances
+     * @return boolean value
      */
     public boolean isApplicableForTraining();
 
     /**
      * Whether the filter is applicable on testing instances
+     * @return boolean value
      */
     public boolean isApplicableForTesting();
 

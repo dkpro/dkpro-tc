@@ -98,7 +98,7 @@ public class ReportUtils
      * @param labels
      * 		the labels
      * 
-     * @param classnames
+     * @param classNames
      * 		the class names
      * 
      * @param separatorChar
@@ -264,6 +264,7 @@ public class ReportUtils
      *            a csv matrix with the class names in the first row and first column
      * @return updated map
      * @throws IOException
+     * 			if files could not be read
      */
     public static Map<List<String>, Double> updateAggregateMatrix(
             Map<List<String>, Double> aggregateMap, File matrix)

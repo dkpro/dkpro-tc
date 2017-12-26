@@ -45,6 +45,7 @@ public abstract class SingleLabelOutcomeAnnotator_ImplBase
      * @param jcas
      *            the JCas to add the annotation to
      * @return a double between zero and one
+     * @throws exception in case of errors
      */
     public double getTextClassificationOutcomeWeight(JCas jcas)
         throws AnalysisEngineProcessException
