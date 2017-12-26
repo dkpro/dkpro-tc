@@ -58,6 +58,12 @@ public interface DeepLearningConstants
      * later on to identify which unit/target was classified
      */
     String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
+    
+    /**
+	 * File that stores the parameter list the user code is expected to read and
+	 * configure the user code accordingly.
+	 */
+    String FILENAME_USERCODE_PARAMETERS = "userCodeParameters.txt";
 
     /**
      * When creating the vectorized representation of the input data one can directly vectorize and

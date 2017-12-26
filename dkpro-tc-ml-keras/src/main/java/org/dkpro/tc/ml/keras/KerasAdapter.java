@@ -42,6 +42,8 @@ public class KerasAdapter
     @Override
     public int lowestIndex()
     {
+		// The value 0 zero might be used in zero-padding i.e. padding would not
+		// be distinguishable from actual value zero
         return 1;
     }
 
