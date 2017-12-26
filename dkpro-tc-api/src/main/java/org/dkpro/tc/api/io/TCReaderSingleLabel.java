@@ -30,10 +30,8 @@ public interface TCReaderSingleLabel
      * 
      * @param jcas
      * 		The JCas containing the outcomes
-     * @param target
-     * 		The target span in which the outcome is located
      * @return
-     * 		Set of outcomes as string values
+     * 		outcome as string
      * @throws CollectionException
      * 		In case of error 		
      */
