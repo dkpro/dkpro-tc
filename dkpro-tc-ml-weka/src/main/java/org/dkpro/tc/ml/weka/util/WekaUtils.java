@@ -836,7 +836,7 @@ public class WekaUtils
      *
      * @param data
      *            data set with or without instanceId attribute
-     * @param isMultilabel
+     * @param multilabel
      * 				is multi label processing
      * @return 
      * 			the data set without instanceId attribute
