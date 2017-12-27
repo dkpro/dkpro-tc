@@ -1,3 +1,4 @@
+# coding=utf-8
 from sys import argv
 from collections import Counter, defaultdict
 from itertools import count
@@ -14,20 +15,20 @@ documentLength=40
 embDimension=25  
 
 if  __name__ =='__main__':
-	parser = argparse.ArgumentParser(description="Demo")
-	parser.add_argument("--trainData", nargs=1, required=True)
-	parser.add_argument("--trainOutcome", nargs=1, required=True)
-	parser.add_argument("--testData", nargs=1, required=True)
-	parser.add_argument("--testOutcome", nargs=1, required=True)    
-	parser.add_argument("--embedding", nargs=1, required=False)    
-	parser.add_argument("--maxLen", nargs=1, required=True)
-	parser.add_argument("--predictionOut", nargs=1, required=True)
-	parser.add_argument("--seed", nargs=1, required=True)    
+	parser = argparse.ArgumentParser(description='Demo')
+	parser.add_argument('--trainData', nargs=1, required=True)
+	parser.add_argument('--trainOutcome', nargs=1, required=True)
+	parser.add_argument('--testData', nargs=1, required=True)
+	parser.add_argument('--testOutcome', nargs=1, required=True)    
+	parser.add_argument('--embedding', nargs=1, required=False)    
+	parser.add_argument('--maxLen', nargs=1, required=True)
+	parser.add_argument('--predictionOut', nargs=1, required=True)
+	parser.add_argument('--seed', nargs=1, required=True)    
 	
-	parser.add_argument("--dynet-seed", nargs=1, required=False)    
-	parser.add_argument("--dynet-mem", nargs=1, required=False)    
-	parser.add_argument("--dynet-devices", nargs=1, required=False)    
-	parser.add_argument("--dynet-autobatch", nargs=1, required=False)    
+	parser.add_argument('--dynet-seed', nargs=1, required=False)    
+	parser.add_argument('--dynet-mem', nargs=1, required=False)    
+	parser.add_argument('--dynet-devices', nargs=1, required=False)    
+	parser.add_argument('--dynet-autobatch', nargs=1, required=False)    
 	
 	args = parser.parse_args()
 	np.random.seed(int(args.seed[0]))
@@ -37,12 +38,7 @@ if  __name__ =='__main__':
 	testLabel = args.testOutcome[0]
 	prediction = args.predictionOut[0]
 
-def read(data, labels):
-    """
-    Read a POS-tagged file where each line is of the form "word1/tag2 word2/tag2 ..."
-    Yields lists of the form [(word1,tag1), (word2,tag2), ...]
-    """
-        
+def read(data, labels):        
     f = open(data)
     sentences=f.readlines()
     f.close()
@@ -78,9 +74,9 @@ lookup = m.add_lookup_parameters((maxToken+1, embDimension))
 trainer = dy.SimpleSGDTrainer(m)
 
 def create_network_return_loss(inputs, expected_output):
-    """
+    '''
     inputs is a list of numbers
-    """
+    '''
     dy.renew_cg()
     W = dy.parameter(pW) # from parameters to expressions
     b = dy.parameter(pB)
@@ -101,9 +97,9 @@ def create_network_return_loss(inputs, expected_output):
     return loss
     
 def create_network_return_best(inputs):
-    """
+    '''
     inputs is a list of numbers
-    """
+    '''
     dy.renew_cg()
     W = dy.parameter(pW)
     b = dy.parameter(pB)
@@ -135,11 +131,11 @@ for tupel in dev:
     p = create_network_return_best(tupel[1])
     results.append((tupel[0],p))
 
-with open(prediction, mode="w") as out:
-    out.write("#Gold\tPrediction\n")
+with open(prediction, mode='w') as out:
+    out.write('#Gold\tPrediction\n')
     for e in results:
-        out.write(str(e[0]) + "\t" + str(e[1])+"\n")
-    out.write("\n")
+        out.write(str(e[0]) + '\t' + str(e[1])+'\n')
+    out.write('\n')
         
 
 

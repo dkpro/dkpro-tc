@@ -58,13 +58,12 @@ public class DynetSeq2SeqTrainTest implements Constants {
 		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
 		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		ParameterSpace pSpace = getParameterSpace();
+		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-		DynetSeq2SeqTrainTest experiment = new DynetSeq2SeqTrainTest();
-		experiment.runTrainTest(pSpace);
+		DynetSeq2SeqTrainTest.runTrainTest(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
+	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
@@ -88,16 +87,16 @@ public class DynetSeq2SeqTrainTest implements Constants {
 						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
 				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
+						.create(DeepLearningConstants.DIM_USER_CODE, python3));
 
 		return pSpace;
 	}
 
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
 		return createEngineDescription(SequenceOutcomeAnnotator.class);
 	}
 
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
 		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DynetSeq2Seq", DynetAdapter.class);
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());

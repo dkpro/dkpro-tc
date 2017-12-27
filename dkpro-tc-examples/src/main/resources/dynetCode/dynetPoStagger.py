@@ -1,3 +1,4 @@
+# coding=utf-8
 from sys import argv
 from collections import Counter, defaultdict
 from itertools import count
@@ -8,20 +9,20 @@ import dynet as dy
 import numpy as np
 
 if  __name__ =='__main__':
-	parser = argparse.ArgumentParser(description="Demo")
-	parser.add_argument("--trainData", nargs=1, required=True)
-	parser.add_argument("--trainOutcome", nargs=1, required=True)
-	parser.add_argument("--testData", nargs=1, required=True)
-	parser.add_argument("--testOutcome", nargs=1, required=True)    
-	parser.add_argument("--embedding", nargs=1, required=False)    
-	parser.add_argument("--maxLen", nargs=1, required=True)
-	parser.add_argument("--predictionOut", nargs=1, required=True)
-	parser.add_argument("--seed", nargs=1, required=True)    
+	parser = argparse.ArgumentParser(description='Demo')
+	parser.add_argument('--trainData', nargs=1, required=True)
+	parser.add_argument('--trainOutcome', nargs=1, required=True)
+	parser.add_argument('--testData', nargs=1, required=True)
+	parser.add_argument('--testOutcome', nargs=1, required=True)    
+	parser.add_argument('--embedding', nargs=1, required=False)    
+	parser.add_argument('--maxLen', nargs=1, required=True)
+	parser.add_argument('--predictionOut', nargs=1, required=True)
+	parser.add_argument('--seed', nargs=1, required=True)    
 	
-	parser.add_argument("--dynet-seed", nargs=1, required=False)    
-	parser.add_argument("--dynet-mem", nargs=1, required=False)    
-	parser.add_argument("--dynet-devices", nargs=1, required=False)    
-	parser.add_argument("--dynet-autobatch", nargs=1, required=False)    
+	parser.add_argument('--dynet-seed', nargs=1, required=False)    
+	parser.add_argument('--dynet-mem', nargs=1, required=False)    
+	parser.add_argument('--dynet-devices', nargs=1, required=False)    
+	parser.add_argument('--dynet-autobatch', nargs=1, required=False)    
 	
 	args = parser.parse_args()
 	np.random.seed(int(args.seed[0]))
@@ -46,10 +47,10 @@ class Vocab:
 
     def size(self): return len(self.w2i.keys())
 
-def load_embeddings_file(file_name, sep=" ",lower=False):
-    """
+def load_embeddings_file(file_name, sep=' ',lower=False):
+    '''
     load embeddings file
-    """
+    '''
     emb={}
     for line in open(file_name, errors='ignore', encoding='utf-8'):
         try:
@@ -60,16 +61,16 @@ def load_embeddings_file(file_name, sep=" ",lower=False):
                 word = word.lower()
             emb[word] = vec
         except ValueError:
-            print("Error converting: {}".format(line))
+            print('Error converting: {}'.format(line))
 
-    print("loaded pre-trained embeddings (word->emb_vec) size: {} (lower: {})".format(len(emb.keys()), lower))
+    print('loaded pre-trained embeddings (word->emb_vec) size: {} (lower: {})'.format(len(emb.keys()), lower))
     return emb, len(emb[word])
 
 def read(data, labels):
-    """
-    Read a POS-tagged file where each line is of the form "word1/tag2 word2/tag2 ..."
+    '''
+    Read a POS-tagged file where each line is of the form 'word1/tag2 word2/tag2 ...'
     Yields lists of the form [(word1,tag1), (word2,tag2), ...]
-    """
+    '''
     sents = []
     
     f = open(data)
@@ -104,13 +105,13 @@ for sent in (train+dev):
         tags.append(p)
         chars.update(w)
         wc[w]+=1
-words.append("_UNK_")
-chars.add("<*>")
+words.append('_UNK_')
+chars.add('<*>')
 
 vw = Vocab.from_corpus([words]) 
 vt = Vocab.from_corpus([tags])
 vc = Vocab.from_corpus([chars])
-UNK = vw.w2i["_UNK_"]
+UNK = vw.w2i['_UNK_']
 
 nwords = vw.size()
 ntags  = vt.size()
@@ -135,13 +136,13 @@ for word in vw.w2i.keys():
     # for those words we have already in w2i, update vector, otherwise add to w2i (since we keep data as integers)
     if word in embeddings.keys():
         found+=1
-        #print("found ["+word+"] in w2i")
+        #print('found ['+word+'] in w2i')
         WORDS_LOOKUP.init_row(vw.w2i[word], embeddings[word])
     else:
         notfound+=1
         WORDS_LOOKUP.init_row(vw.w2i[word], UNK_vec)
 
-print("did not find embeddings for %.1f percent of the vocabulary " % (notfound/(found+notfound)*100))
+print('did not find embeddings for %.1f percent of the vocabulary ' % (notfound/(found+notfound)*100))
 
 #WORDS_LOOKUP = model.add_lookup_parameters((nwords, 128))
 #CHARS_LOOKUP = model.add_lookup_parameters((nchars, 20))
@@ -164,7 +165,7 @@ cFwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, char_emb_dim, model)
 cBwdRNN = dy.LSTMBuilder(NUM_LAYERS, 20, char_emb_dim, model)
 
 def word_rep(w, cf_init, cb_init):
-    pad_char = vc.w2i["<*>"]
+    pad_char = vc.w2i['<*>']
     char_ids = [pad_char] + [vc.w2i[c] for c in w] + [pad_char]
     char_embs = [CHARS_LOOKUP[cid] for cid in char_ids]
     fw_exps = cf_init.transduce(char_embs)
@@ -176,7 +177,7 @@ def word_rep(w, cf_init, cb_init):
     #     w_index = vw.w2i[w]
     #     return WORDS_LOOKUP[w_index]
     # else:
-    #     pad_char = vc.w2i["<*>"]
+    #     pad_char = vc.w2i['<*>']
     #     char_ids = [pad_char] + [vc.w2i[c] for c in w] + [pad_char]
     #     char_embs = [CHARS_LOOKUP[cid] for cid in char_ids]
     #     fw_exps = cf_init.transduce(char_embs)
@@ -267,7 +268,7 @@ def evaluate():
                 good += 1
             else:
                 bad += 1
-    print("Accuracy: ", good / (good + bad) * 100, good_sent / (good_sent + bad_sent) * 100)
+    print('Accuracy: ', good / (good + bad) * 100, good_sent / (good_sent + bad_sent) * 100)
     return words_out, gold_out, pred_out
 
 
@@ -291,19 +292,19 @@ for ITER in range(1):
         num_tagged += len(golds)
         loss_exp.backward()
         trainer.update()
-    print ("epoch %r finished" % ITER)
+    print ('epoch %r finished' % ITER)
     evaluate()
     trainer.update_epoch(1.0)
-print("Finish")
+print('Finish')
 w,g,p = evaluate()
 
-with open(prediction, mode="w") as out:
-    out.write("#Gold\tPrediction\n")
+with open(prediction, mode='w') as out:
+    out.write('#Gold\tPrediction\n')
     for w_sent, g_sent,p_sent in zip(w,g,p):
         assert(len(p_sent) == len(g_sent) == len(w_sent))
         for i in range(0, len(p_sent)):
-            out.write(g_sent[i] + "\t" + p_sent[i]+"\n")
-        out.write("\n")
+            out.write(g_sent[i] + '\t' + p_sent[i]+'\n')
+        out.write('\n')
 
 
 
