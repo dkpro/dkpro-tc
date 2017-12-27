@@ -91,7 +91,7 @@ public class FeatureTestUtil
      * 			expected
      * @param expectedValue
      * 			actual
-     * @param actualFeature
+     * @param features
      * 			feature
      * @param epsilon
      * 			epsilon
