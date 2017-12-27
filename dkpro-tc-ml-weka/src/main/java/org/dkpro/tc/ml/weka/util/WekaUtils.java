@@ -505,6 +505,7 @@ public class WekaUtils
      * @param allClassLabels
      * 			all labels
      * @return
+     * 			weka instance
      * @throws Exception
      * 			in case of errors
      */
@@ -837,7 +838,8 @@ public class WekaUtils
      *            data set with or without instanceId attribute
      * @param isMultilabel
      * 				is multi label processing
-     * @return the data set without instanceId attribute
+     * @return 
+     * 			the data set without instanceId attribute
      * @throws Exception 
      * 			an exception
      */

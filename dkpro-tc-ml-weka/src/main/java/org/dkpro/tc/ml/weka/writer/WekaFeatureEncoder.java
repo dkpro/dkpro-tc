@@ -40,7 +40,6 @@ import weka.core.Utils;
  * Copyright (c) 2012, Regents of the University of Colorado <br>
  * All rights reserved.
  */
-
 public class WekaFeatureEncoder
 {
 
@@ -151,6 +150,8 @@ public class WekaFeatureEncoder
 
     /**
      * A map returning a double value for each valid
+     * @return
+     * 			map
      */
     public static Map<MissingValueType, Double> getMissingValueConversionMap()
     {
