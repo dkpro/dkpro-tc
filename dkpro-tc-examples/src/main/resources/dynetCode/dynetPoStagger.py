@@ -2,29 +2,35 @@ from sys import argv
 from collections import Counter, defaultdict
 from itertools import count
 import random
+import argparse
 
 import dynet as dy
 import numpy as np
 
 if  __name__ =='__main__':
-
-	# argv[1] is the constant to which dynet reachts to set the seed value
-	print("Seed: ", argv[2])
-	# argv[3] is the constant to which dynet reachts to set the working memory
-	print("Memory: ", argv[4])	
-	print("Train Data: ", argv[5])
-	print("Train Label: ", argv[6])
-	print("Test Data: ", argv[7])	
-	print("Test Label: ", argv[8])	
-	print("Embedding: ", argv[9])	
-	print("Result-Out: ", argv[10])	
-
-	trainSeq = argv[5]
-	trainLabel = argv[6]
-	testSeq = argv[7]
-	testLabel = argv[8]	
-	embedding = argv[9]
-	prediction = argv[10]
+	parser = argparse.ArgumentParser(description="Demo")
+	parser.add_argument("--trainData", nargs=1, required=True)
+	parser.add_argument("--trainOutcome", nargs=1, required=True)
+	parser.add_argument("--testData", nargs=1, required=True)
+	parser.add_argument("--testOutcome", nargs=1, required=True)    
+	parser.add_argument("--embedding", nargs=1, required=False)    
+	parser.add_argument("--maxLen", nargs=1, required=True)
+	parser.add_argument("--predictionOut", nargs=1, required=True)
+	parser.add_argument("--seed", nargs=1, required=True)    
+	
+	parser.add_argument("--dynet-seed", nargs=1, required=False)    
+	parser.add_argument("--dynet-mem", nargs=1, required=False)    
+	parser.add_argument("--dynet-devices", nargs=1, required=False)    
+	parser.add_argument("--dynet-autobatch", nargs=1, required=False)    
+	
+	args = parser.parse_args()
+	np.random.seed(int(args.seed[0]))
+	trainSeq = args.trainData[0]
+	trainLabel = args.trainOutcome[0]
+	testSeq = args.testData[0]
+	testLabel = args.testOutcome[0]
+	embedding = args.embedding[0]
+	prediction = args.predictionOut[0]
 
 class Vocab:
     def __init__(self, w2i=None):

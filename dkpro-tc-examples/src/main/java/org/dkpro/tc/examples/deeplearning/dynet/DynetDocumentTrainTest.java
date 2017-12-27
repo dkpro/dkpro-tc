@@ -55,13 +55,13 @@ public class DynetDocumentTrainTest implements Constants {
 		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
 		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		ParameterSpace pSpace = getParameterSpace();
+		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
 		DynetDocumentTrainTest experiment = new DynetDocumentTrainTest();
 		experiment.runTrainTest(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
+	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
@@ -80,7 +80,7 @@ public class DynetDocumentTrainTest implements Constants {
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
 				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
+				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
 				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true), 
 				Dimension
