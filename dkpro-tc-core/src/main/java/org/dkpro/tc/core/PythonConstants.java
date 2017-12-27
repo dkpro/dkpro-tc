@@ -22,15 +22,12 @@ package org.dkpro.tc.core;
  */
 public interface PythonConstants
 {
-
-    String SEED = "--seed";
-    String TRAIN_DATA  = "--trainData";
-    String TRAIN_OUTCOME = "--trainOutcome";
-    String TEST_DATA = "--testData";
-    String TEST_OUTCOME = "--testOutcome";
-    String EMBEDDING = "--embedding";
-    String MAX_LEN = "--maxLen";
-    String PREDICTION_OUT = "--predictionOut";
-    
-
+    static final String SEED = "--seed";
+    static final String TRAIN_DATA  = "--trainData";
+    static final String TRAIN_OUTCOME = "--trainOutcome";
+    static final String TEST_DATA = "--testData";
+    static final String TEST_OUTCOME = "--testOutcome";
+    static final String EMBEDDING = "--embedding";
+    static final String MAX_LEN = "--maxLen";
+    static final String PREDICTION_OUT = "--predictionOut";
 }

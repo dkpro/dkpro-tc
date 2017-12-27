@@ -38,8 +38,6 @@ public class KerasTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    public static final String PREDICTION_FILE = "prediction.txt";
-            
     @Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
     private String python;
     
@@ -66,7 +64,7 @@ public class KerasTestTask
 
     private File getResultLocation(TaskContext aContext)
     {
-        return aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
+        return aContext.getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READWRITE);
     }
 
     private void train(List<String> command)
@@ -118,6 +116,17 @@ public class KerasTestTask
         return command;
     }
 
+    /**
+	 * Returns the maximum length which is either user defined and might be
+	 * shorter than the actual longest sequence, or is the longest sequence in
+	 * the data if no value is provided
+	 * 
+	 * @param aContext
+	 *            Task Context
+	 * @return String value of maximum length
+	 * @throws IOException
+	 *             in case a read error occurs
+	 */
     private String getMaximumLength(TaskContext aContext) throws IOException
     {
         if(maximumLength!=null){

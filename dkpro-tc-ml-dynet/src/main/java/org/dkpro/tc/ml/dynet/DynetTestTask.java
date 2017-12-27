@@ -19,9 +19,11 @@ package org.dkpro.tc.ml.dynet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -29,19 +31,18 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.core.PythonConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
 public class DynetTestTask extends ExecutableTaskBase implements Constants {
-	public static final String PREDICTION_FILE = "prediction.txt";
 
 	private static final String DEFAULT_SEED = "123456789";
-	private static final String DEFAULT_RAM = "1024";
 
 	@Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
 	private String python;
 
 	@Discriminator(name = DeepLearningConstants.DIM_RANDOM_SEED)
-	private String seed;
+	private String randomSeed;
 
 	@Discriminator(name = DeepLearningConstants.DIM_RAM_WORKING_MEMORY)
 	private String workingMemory;
@@ -51,7 +52,16 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 
 	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
 	private Integer maximumLength;
+	
+	@Discriminator(name = DyNetConstants.DIM_DYNET_DEVICES)
+	private String deviceIds;
+	
+	@Discriminator(name = DyNetConstants.DIM_DYNET_AUTOBATCH)
+	private Integer autoBatch;
 
+	@Discriminator(name = DyNetConstants.DIM_DYNET_GPUS)
+	private Integer numGpus;
+	
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
 		File kerasResultOut = getResultLocation(aContext);
@@ -60,7 +70,7 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private File getResultLocation(TaskContext aContext) {
-		return aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
+		return aContext.getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READWRITE);
 	}
 
 	private void train(List<String> command) throws Exception {
@@ -71,30 +81,90 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 	private List<String> buildTrainCommand(TaskContext aContext, File resultOut) throws Exception {
 		File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 		File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
-
 		File testDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
 		File testOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
-
 		File embeddingPath = getEmbedding(aContext);
+		String maxLen = getMaximumLength(aContext);
 
 		python = (python == null) ? "python" : python;
 
 		List<String> command = new ArrayList<>();
 		command.add(python);
 		command.add(userCode);
-		command.add("--dynet-seed");
-		command.add((seed == null ? DEFAULT_SEED : seed));
-		command.add("--dynet-mem");
-		command.add((workingMemory == null ? DEFAULT_RAM : workingMemory));
-		command.add(trainDataVector.getAbsolutePath());
-		command.add(trainOutcomeVector.getAbsolutePath());
-		command.add(testDataVector.getAbsolutePath());
-		command.add(testOutcomeVector.getAbsolutePath());
-		command.add(embeddingPath != null ? embeddingPath.getAbsolutePath() : "");
-		command.add(resultOut.getAbsolutePath());
+		
+		command.add(DyNetConstants.DYNET_SEED);
+		command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));
+		
+		if (workingMemory != null && !workingMemory.equals("")) {
+			command.add(DyNetConstants.DYNET_MEMORY);
+			command.add(workingMemory);
+		}
+
+		if (deviceIds != null && !deviceIds.equals("")) {
+			command.add(DyNetConstants.DIM_DYNET_DEVICES);
+			command.add(deviceIds);
+		}
+
+		if (autoBatch != null) {
+			command.add(DyNetConstants.DIM_DYNET_AUTOBATCH);
+			command.add(autoBatch.toString());
+		}
+
+		if (numGpus != null) {
+			command.add(DyNetConstants.DIM_DYNET_GPUS);
+			command.add(numGpus.toString());
+		}
+		
+		command.add(PythonConstants.SEED);
+		command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));
+		command.add(PythonConstants.TRAIN_DATA);
+        command.add(trainDataVector.getAbsolutePath());
+        command.add(PythonConstants.TRAIN_OUTCOME);
+        command.add(trainOutcomeVector.getAbsolutePath());
+        command.add(PythonConstants.TEST_DATA);
+        command.add(testDataVector.getAbsolutePath());
+        command.add(PythonConstants.TEST_OUTCOME);
+        command.add(testOutcomeVector.getAbsolutePath());
+        
+		if (embeddingPath != null) {
+			command.add(PythonConstants.EMBEDDING);
+			command.add(embeddingPath.getAbsolutePath());
+		}
+		if (randomSeed != null) {
+			command.add(PythonConstants.SEED);
+			command.add(randomSeed);
+		}
+		
+        command.add(PythonConstants.MAX_LEN);
+        command.add(maxLen);
+        command.add(PythonConstants.PREDICTION_OUT);
+        command.add(resultOut.getAbsolutePath());
 
 		return command;
 	}
+	
+	 /**
+		 * Returns the maximum length which is either user defined and might be
+		 * shorter than the actual longest sequence, or is the longest sequence in
+		 * the data if no value is provided
+		 * 
+		 * @param aContext
+		 *            Task Context
+		 * @return String value of maximum length
+		 * @throws IOException
+		 *             in case a read error occurs
+		 */
+	    private String getMaximumLength(TaskContext aContext) throws IOException
+	    {
+	        if(maximumLength!=null){
+	            return maximumLength.toString();
+	        }
+	        
+	        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
+	        String maxLenFromFile = FileUtils.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+	        
+	        return maxLenFromFile;
+	    }
 
 	private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException {
 		File folder = aContext.getFolder(key, AccessMode.READONLY);

@@ -67,7 +67,7 @@ public class DynetOutcomeIdReport
 		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
                 .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
 		
 		Map<String, String> map = loadMap(isIntegerMode);
@@ -213,7 +213,7 @@ public class DynetOutcomeIdReport
 			return m;
 		}
 
-		File file = getContext().getFile(DynetTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> readLines = FileUtils.readLines(file, "utf-8");
 
 		Set<String> keys = new HashSet<>();
