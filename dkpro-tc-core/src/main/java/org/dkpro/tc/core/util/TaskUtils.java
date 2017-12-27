@@ -235,7 +235,7 @@ public class TaskUtils {
 	 *             in case of errors
 	 */
 	public static Instance getSingleInstanceUnit(String featureMode,
-			FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean developerMode,
+			FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, 
 			boolean addInstanceId, TextClassificationTarget unit) throws TextClassificationException {
 		Instance instance = new Instance();
 		int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();

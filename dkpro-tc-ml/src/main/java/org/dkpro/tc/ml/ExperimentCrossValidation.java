@@ -74,7 +74,15 @@ public class ExperimentCrossValidation
     }
 
     /**
-     * Preconfigured crossvalidation setup. Pseudo-random assignment of instances to folds.
+     * 
+     * @param aExperimentName
+     * 			the experiment name
+     * @param mlAdapter
+     * 			the ml adapter
+     * @param aNumFolds
+     * 			the number of folds
+     * @throws TextClassificationException
+     * 			in case of errors
      */
     public ExperimentCrossValidation(String aExperimentName,
             Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds)
@@ -86,6 +94,16 @@ public class ExperimentCrossValidation
     /**
      * Use this constructor for CV fold control. The Comparator is used to determine which instances
      * must occur together in the same CV fold.
+          * @param aExperimentName
+     * 			the experiment name
+     * @param mlAdapter
+     * 			the ml adapter
+     * @param aNumFolds
+     * 			the number of folds
+     * @param aComparator
+     * 			the comparator 
+     * @throws TextClassificationException
+     * 			in case of errors
      */
     public ExperimentCrossValidation(String aExperimentName,
             Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds,
@@ -177,6 +195,18 @@ public class ExperimentCrossValidation
                 setParameterSpace(pSpace);
             }
 
+            /**
+			 * creates required number of CAS
+			 * 
+			 * @param xmiPathRoot
+			 * 			input path
+			 * @param numAvailableJCas
+			 * 			all CAS
+			 * @param featureMode
+			 * 			the feature mode
+			 * @return
+			 * 			a file
+			 */
             private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode)
             {
 
@@ -193,6 +223,11 @@ public class ExperimentCrossValidation
                 }
             }
 
+        	/**
+			 * 
+			 * @param outputFolder
+			 * 			where the new cas are written to
+			 */            
             private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
             {
                 int numCas = 0;
@@ -292,6 +327,12 @@ public class ExperimentCrossValidation
         addTask(crossValidationTask);
     }
 
+	/**
+	 * 
+	 * @param fileNames
+	 * @return
+	 * 		fold dimension bundle
+	 */
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
     {
         if (comparator != null) {
@@ -301,11 +342,21 @@ public class ExperimentCrossValidation
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
+	/**
+	 * sets the number of folds
+	 * @param numFolds
+	 * 			folds
+	 */
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
     }
 
+	/**
+	 * Sets a comparator
+	 * @param aComparator
+	 * 			the comparator
+	 */
     public void setComparator(Comparator<String> aComparator)
     {
         comparator = aComparator;

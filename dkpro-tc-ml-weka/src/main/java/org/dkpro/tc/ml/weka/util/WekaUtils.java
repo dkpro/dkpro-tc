@@ -92,23 +92,34 @@ public class WekaUtils
     implements Constants
 {
 
-    /*
+    /**
      * Name of the relation == name of the arff file
      */
     public static final String RELATION_NAME = "dkpro-tc-generated";
 
-    /*
+    /**
      * Suffix for class label names in the test data that have been adapted to match the training
      * data
      *
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
-    /*
+    /**
      * Adapts the test data class labels to the training data. Class labels from the test data
      * unseen in the training data will be deleted from the test data. Class labels from the
      * training data unseen in the test data will be added to the test data. If training and test
      * class labels are equal, nothing will be done.
+     * 
+     * @param trainData
+     * 			train data
+     * @param testData
+     * 			test data
+     * @param multilabel
+     * 			is multilable
+     * @return
+     * 			instance
+     * @throws Exception
+     * 			in case of error
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Instances makeOutcomeClassesCompatible(Instances trainData, Instances testData,
@@ -221,6 +232,13 @@ public class WekaUtils
         return compTestData;
     }
 
+    /**
+     * gets the labels
+     * @param data
+     * 			the instance values
+     * @return
+     * 			array of strings
+     */
     private static ArrayList<String> getLabels(Instances data)
     {
         int numLabels = data.classIndex();
@@ -231,8 +249,15 @@ public class WekaUtils
         return list;
     }
 
-    /*
+    /**
      * Converts a feature store to a list of instances. Single-label case.
+     * 
+     * @param outputFile
+     * 			the output file
+     * @param instanceList
+     * 			the list of instance
+     * @throws Exception
+     * 			in case of errors
      */
     public static void instanceListToArffFile(File outputFile, List<Instance> instanceList)
         throws Exception
@@ -240,6 +265,19 @@ public class WekaUtils
         instanceListToArffFile(outputFile, instanceList, false, false);
     }
 
+    /**
+     * converts a list of instances to weka's format 
+     * @param outputFile
+     * 			the output file
+     * @param instanceList
+     * 			the list of instances
+     * @param useDenseInstances
+     * 			use a dense feature representation
+     * @param isRegressionExperiment
+     * 			is a regression experiment
+     * @throws Exception
+     * 			in case of error
+     */
     public static void instanceListToArffFile(File outputFile, List<Instance> instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment)
         throws Exception
@@ -248,8 +286,21 @@ public class WekaUtils
                 false);
     }
 
-    /*
+    /**
      * Converts a feature store to a list of instances. Single-label case.
+     * 
+     * @param outputFile
+     * 			the output file
+     * @param instanceList
+     * 			the instance list
+     * @param useDenseInstances
+     * 			use dense instances
+     * @param isRegressionExperiment
+     * 			is regression
+     * @param useWeights
+     * 			uses weight
+     * @throws Exception
+     * 			in case of error
      */
     public static void instanceListToArffFile(File outputFile, List<Instance> instanceList,
             boolean useDenseInstances, boolean isRegressionExperiment, boolean useWeights)
@@ -333,6 +384,17 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
+    /**
+     * converts a multi label instance list to weka's format 
+     * @param outputFile
+     * 			the output file
+     * @param instances
+     * 			the instances
+     * @param useDenseInstances
+     * 			creates dense features
+     * @throws Exception
+     * 			in case of errors
+     */
     public static void instanceListToArffFileMultiLabel(File outputFile, List<Instance> instances,
             boolean useDenseInstances)
         throws Exception
@@ -340,8 +402,19 @@ public class WekaUtils
         instanceListToArffFileMultiLabel(outputFile, instances, useDenseInstances, false);
     }
 
-    /*
+    /**
      * Converts a feature store to a list of instances. Multi-label case.
+     * 
+     * @param outputFile
+     * 			the output file
+     * @param instances
+     * 			the instances to convert
+     * @param useDenseInstances
+     * 			dense features
+     * @param useWeights
+     * 			use weights
+     * @throws Exception
+     * 			in case of errors
      */
     public static void instanceListToArffFileMultiLabel(File outputFile, List<Instance> instances,
             boolean useDenseInstances, boolean useWeights)
@@ -421,9 +494,19 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    /*
+    /**
      * Converts a TC instance object into a Meka instance object, compatible with the given
      * attribute set and class labels.
+     *
+     * @param instance
+     * 			tc instance
+     * @param trainingData
+     * 			training data
+     * @param allClassLabels
+     * 			all labels
+     * @return
+     * @throws Exception
+     * 			in case of errors
      */
     public static weka.core.Instance tcInstanceToMekaInstance(Instance instance,
             Instances trainingData, List<String> allClassLabels)
@@ -449,6 +532,16 @@ public class WekaUtils
         return sparseInstance;
     }
 
+    /**
+     * outcome attribute 
+     * 
+     * @param outcomeValues
+     * 			all outcome values
+     * @param isRegresion
+     * 			is regression
+     * @return
+     * 			weka attribute
+     */
     private static Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
     {
         if (isRegresion) {
@@ -463,6 +556,13 @@ public class WekaUtils
         }
     }
 
+    /**
+     * 
+     * @param outcomeValues
+     * 			the outcome values
+     * @return
+     * 			list of weka attributes
+     */
     private static List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
     {
         // make the order of the attributes predictable
@@ -477,9 +577,22 @@ public class WekaUtils
         return atts;
     }
 
-    /*
+    /**
      * Converts a TC instance object into a Weka instance object, compatible with the given
      * attribute set and class labels.
+     *
+     * @param instance
+     * 			tc instance
+     * @param trainingData
+     * 			training data
+     * @param allClasses
+     * 			all classes
+     * @param isRegressionExperiment
+     * 			is regression
+     * @return
+     * 			weka instance
+     * @throws Exception
+     * 			in case of errors
      */
     public static weka.core.Instance tcInstanceToWekaInstance(Instance instance,
             Instances trainingData, List<String> allClasses, boolean isRegressionExperiment)
@@ -503,6 +616,15 @@ public class WekaUtils
         return sparseInstance;
     }
 
+    /**
+     * 
+     * @param attributeStore
+     * 			weka attribute store
+     * @param instance
+     * 			tc instances
+     * @return
+     * 			array of double values
+     */
     private static double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
     {
         double[] featureValues = new double[attributeStore.getAttributes().size()];
@@ -567,8 +689,19 @@ public class WekaUtils
         return featureValues;
     }
 
-    /*
+    /**
      * Evaluates a given single-label classifier on given train and test sets.
+     *
+     * @param cl
+     * 			classifier
+     * @param trainData
+     * 			weka training instances
+     * @param testData
+     * 			weka test instances
+     * @return
+     * 			Evaluation object
+     * @throws Exception
+     * 			in case of errors
      */
     public static Evaluation getEvaluationSinglelabel(Classifier cl, Instances trainData,
             Instances testData)
@@ -579,8 +712,20 @@ public class WekaUtils
         return eval;
     }
 
-    /*
+    /**
      * Evaluates a given multi-label classifier on given train and test sets.
+	 *
+     * @param cl
+     * 			classifier
+     * @param trainData
+     * 			weka training instances
+     * @param testData
+     * 			weka test instances
+     * @param threshold
+     * 			partition threshold
+     * @return result object
+     * @throws Exception
+     * 			in case of errors
      */
     public static Result getEvaluationMultilabel(Classifier cl, Instances trainData,
             Instances testData, String threshold)
@@ -591,9 +736,17 @@ public class WekaUtils
         return r;
     }
 
-    /*
+    /**
      * Generates an instances object containing the predictions of a given single-label classifier
      * for a given test set
+     *
+     * @param testData
+     * 			weka instances
+     * @param cl
+     * 			classifier
+     * @return 	weka instances
+     * @throws Exception
+     * 			in case of errors
      */
     public static Instances getPredictionInstancesSingleLabel(Instances testData, Classifier cl)
         throws Exception
@@ -811,6 +964,13 @@ public class WekaUtils
         return trainData;
     }
 
+    /**
+     * 
+     * @param data
+     * 			weka instances
+     * @return
+     * 		id
+     */
     public static int getInstanceIdAttributeOffset(Instances data)
     {
         int attOffset = 1;
@@ -828,6 +988,13 @@ public class WekaUtils
 
     /**
      * Returns a list with names of the class attribute values.
+     *
+     * @param data
+     * 			weka instances
+     * @param isMultilabel
+     * 			is multilable experiment
+     * @return
+     * 			list of strings
      */
     public static List<String> getClassLabels(Instances data, boolean isMultilabel)
     {
@@ -875,7 +1042,6 @@ public class WekaUtils
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
             t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
-            // FIXME
             throw new Exception("Not yet implemented.");
         }
         else {
@@ -887,6 +1053,17 @@ public class WekaUtils
 
     /**
      * Feature selection using Weka.
+     * 
+     * @param trainData
+     * 			weka train data
+     * @param featureSearcher
+     * 			list of features
+     * @param attributeEvaluator
+     * 			list of attribute evaluators
+     * @return
+     * 			attribute selection
+     * @throws Exception
+     * 			in case of errors
      */
     public static AttributeSelection singleLabelAttributeSelection(Instances trainData,
             List<String> featureSearcher, List<String> attributeEvaluator)
@@ -911,6 +1088,13 @@ public class WekaUtils
     /**
      * Converts the Meka-specific instances format to Mulan-specific instances. Hierarchical
      * relationships among labels cannot be expressed.
+     * 
+     * @param instances
+     * 			instances
+     * @return
+     * 			multi label instances
+     * @throws InvalidDataFormatException
+     * 			in case of data format error
      */
     public static MultiLabelInstances convertMekaInstancesToMulanInstances(Instances instances)
         throws InvalidDataFormatException
@@ -927,6 +1111,15 @@ public class WekaUtils
     /**
      * Applies a filter to reduce the dimension of attributes and reorders them to be used within
      * Meka
+     * 
+     * @param trainData
+     * 		the train data
+     * @param removeFilter
+     * 		remove filter
+     * @return
+     * 		weka instances
+     * @throws Exception
+     * 			in case of error
      */
     public static Instances applyAttributeSelectionFilter(Instances trainData, Remove removeFilter)
         throws Exception
@@ -993,6 +1186,16 @@ public class WekaUtils
         return result;
     }
 
+    /**
+     * Retrieves a classifier
+     * @param learningMode
+     * 			the learning mode
+     * @param classificationArguments
+     * 			classifier arguments
+     * @return	classifier
+     * @throws Exception
+     * 			in case of errors
+     */
     public static Classifier getClassifier(String learningMode, List<String> classificationArguments)
         throws Exception
     {
@@ -1012,6 +1215,20 @@ public class WekaUtils
         return cl;
     }
 
+    /**
+     * feature selection
+     * @param aContext
+     * 			lab context
+     * @param trainData
+     * 			weka instances
+     * @param featureSearcher
+     * 			searcher
+     * @param attributeEvaluator
+     * 			evaluator
+     * @return	attribute selection
+     * @throws Exception
+     * 			in case of errors
+     */
 	public static AttributeSelection featureSelectionSinglelabel(TaskContext aContext, Instances trainData,
 			List<String> featureSearcher, List<String> attributeEvaluator) throws Exception {
 		AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData, featureSearcher,
@@ -1027,7 +1244,21 @@ public class WekaUtils
 	
     /**
      * Feature selection using Mulan.
-     */
+     *
+	 * @param aContext
+	 * 			Lab context
+	 * @param trainData
+	 * 			training data
+	 * @param attributeEvaluator
+	 * 			evaluator
+	 * @param labelTransformationMethod
+	 * 			transformation method
+	 * @param numLabelsToKeep
+	 * 			mapping
+	 * @return	remove object
+	 * @throws TextClassificationException
+	 * 			in case of errors
+	 */
 	public static Remove featureSelectionMultilabel(TaskContext aContext, Instances trainData,
 			List<String> attributeEvaluator, String labelTransformationMethod, int numLabelsToKeep) throws TextClassificationException {
 		// file to hold the results of attribute selection
@@ -1094,7 +1325,17 @@ public class WekaUtils
     
     /**
      * Convenience method to get file described in an AdapterNameEntry in a folder of the current context 
-     */
+	 * 
+	 * @param aContext
+	 * 			Lab context
+	 * @param key
+	 * 			key
+	 * @param entry
+	 * 			adapter entry
+	 * @param mode
+	 * 			access mode
+	 * @return	file
+	 */
     public static File getFile(TaskContext aContext, String key, AdapterNameEntries entry, AccessMode mode)
     {
         String path = aContext.getFolder(key, mode).getPath();
@@ -1106,6 +1347,17 @@ public class WekaUtils
 
     /**
      * Convenience method to get file described by a string value in a folder of the current context 
+     *
+     * @param aContext
+     * 			Lab context
+     * @param key
+     * 			Key for access
+     * @param entry
+     * 			the entry
+     * @param mode
+     * 			access mode
+     * @return
+     * 			file
      */
     public static File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
     {

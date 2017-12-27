@@ -28,14 +28,15 @@ public interface PairReader
      * 		excpetion in case of error
      * @return id as string
      */
-    public String getCollectionId1() throws TextClassificationException;
+    String getCollectionId1() throws TextClassificationException;
+   
     /**
      * ID of the collection the second document was sampled from
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      * @return id as string
      */
-    public String getCollectionId2() throws TextClassificationException;  
+    String getCollectionId2() throws TextClassificationException;  
 
     /**
      * ID of the first document
@@ -43,28 +44,30 @@ public interface PairReader
      * 		excpetion in case of error
      * @return id as string
      */
-    public String getDocumentId1() throws TextClassificationException;
+    String getDocumentId1() throws TextClassificationException;
+    
     /**
      * ID of the second document
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      * @return id as string
      */
-    public String getDocumentId2() throws TextClassificationException;
+    String getDocumentId2() throws TextClassificationException;
 
     /**
      * Title of the first document
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getTitle1() throws TextClassificationException;
+    String getTitle1() throws TextClassificationException;
+    
     /**
      * Title of the second document
      * @return title as string
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getTitle2() throws TextClassificationException;
+    String getTitle2() throws TextClassificationException;
 
     /**
      * Language of the first document
@@ -72,14 +75,15 @@ public interface PairReader
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getLanguage1() throws TextClassificationException;
+    String getLanguage1() throws TextClassificationException;
+    
     /**
      * Language of the second document
      * @return title as string
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getLanguage2() throws TextClassificationException;
+    String getLanguage2() throws TextClassificationException;
 
     /**
      * The text of the first document in the pair
@@ -87,13 +91,14 @@ public interface PairReader
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getText1() throws TextClassificationException;
+    String getText1() throws TextClassificationException;
+    
     /**
      * The text of the second document in the pair
      * @return text
      * @throws org.dkpro.tc.api.exception.TextClassificationException 
      * 		excpetion in case of error
      */
-    public String getText2() throws TextClassificationException;
+    String getText2() throws TextClassificationException;
 
 }

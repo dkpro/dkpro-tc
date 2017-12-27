@@ -71,8 +71,16 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	}
 
 	/**
-	 * Preconfigured crossvalidation setup. Pseudo-random assignment of
-	 * instances to folds.
+	 * Cross-validation experiment
+	 * 
+	 * @param aExperimentName
+	 * 		  Name of the experiment
+	 * @param mlAdapter
+	 * 			ML adapter
+	 * @param aNumFolds
+	 * 			number of folds
+	 * @throws TextClassificationException
+	 * 			in case of errors
 	 */
 	public DeepLearningExperimentCrossValidation(String aExperimentName,
 			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds) throws TextClassificationException {
@@ -84,8 +92,20 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	}
 
 	/**
-	 * Use this constructor for CV fold control. The Comparator is used to
-	 * determine which instances must occur together in the same CV fold.
+	 * Cross-validation experiment with control over instances in folds
+	 *  
+	 * @param aExperimentName
+	 * 		  Name of the experiment
+	 * @param mlAdapter
+	 * 			ML adapter
+	 * @param aNumFolds
+	 * 			number of folds
+	 * @throws TextClassificationException
+	 * 			in case of errors
+	 * @param aComparator
+	 * 		 	keeps data together
+	 * @throws TextClassificationException
+	 * 			in case of errors
 	 */
 	public DeepLearningExperimentCrossValidation(String aExperimentName,
 			Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds, Comparator<String> aComparator)
@@ -102,6 +122,9 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	 * Initializes the experiment. This is called automatically before
 	 * execution. It's not done directly in the constructor, because we want to
 	 * be able to use setters instead of the three-argument constructor.
+	 * 
+	 * @throws IllegalStateException
+	 * 			in case of errors
 	 */
 	protected void init() throws IllegalStateException {
 
@@ -169,6 +192,18 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 				setParameterSpace(pSpace);
 			}
 
+			/**
+			 * creates required number of CAS
+			 * 
+			 * @param xmiPathRoot
+			 * 			input path
+			 * @param numAvailableJCas
+			 * 			all CAS
+			 * @param featureMode
+			 * 			the feature mode
+			 * @return
+			 * 			a file
+			 */
 			private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode) {
 
 				try {
@@ -183,6 +218,11 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 				}
 			}
 
+			/**
+			 * 
+			 * @param outputFolder
+			 * 			where the new cas are written to
+			 */
 			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
 				int numCas = 0;
 				for (File f : outputFolder.listFiles()) {
@@ -279,6 +319,12 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		addTask(crossValidationTask);
 	}
 
+	/**
+	 * 
+	 * @param fileNames
+	 * @return
+	 * 		fold dimension bundle
+	 */
 	protected FoldDimensionBundle<String> getFoldDim(String[] fileNames) {
 		if (comparator != null) {
 			return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds, comparator);
@@ -286,10 +332,20 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 		return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
 	}
 
+	/**
+	 * sets the number of folds
+	 * @param numFolds
+	 * 			folds
+	 */
 	public void setNumFolds(int numFolds) {
 		this.numFolds = numFolds;
 	}
 
+	/**
+	 * Sets a comparator
+	 * @param aComparator
+	 * 			the comparator
+	 */
 	public void setComparator(Comparator<String> aComparator) {
 		comparator = aComparator;
 	}

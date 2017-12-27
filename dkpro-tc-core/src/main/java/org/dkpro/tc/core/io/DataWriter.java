@@ -28,7 +28,7 @@ import org.dkpro.tc.api.features.Instance;
  */
 public interface DataWriter
 {
-    public void writeGenericFormat(Collection<Instance> instances)
+    void writeGenericFormat(Collection<Instance> instances)
         throws Exception;
 
     /**
@@ -37,7 +37,7 @@ public interface DataWriter
      * @throws java.lang.Exception
      * 			in case of error
      */
-    public void transformFromGeneric()
+    void transformFromGeneric()
         throws Exception;
     /**
     * @param instances
@@ -47,7 +47,7 @@ public interface DataWriter
     * @throws java.lang.Exception
     * 			in case of error
     * */
-    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+    void writeClassifierFormat(Collection<Instance> instances, boolean compress)
         throws Exception;
 
     /**
@@ -64,27 +64,27 @@ public interface DataWriter
      * @throws java.lang.Exception
      * 			in case of error
      * */
-    public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
+    void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
         throws Exception;
 
     /**
      * @return boolean if streaming is available
      */
-    public boolean canStream();
+    boolean canStream();
 
     /**
      * @return boolean if classifier reads compressed files
      */
-    public boolean classiferReadsCompressed();
+    boolean classiferReadsCompressed();
 
     /**
      * @return string holding the generic working file
      */
-    public String getGenericFileName();
+    String getGenericFileName();
     
     /**
      * @throws java.lang.Exception
      * 			if error occurs
      */
-    public void close() throws Exception;
+    void close() throws Exception;
 }

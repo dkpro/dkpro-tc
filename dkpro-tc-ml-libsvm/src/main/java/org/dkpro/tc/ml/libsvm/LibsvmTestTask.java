@@ -184,7 +184,7 @@ public class LibsvmTestTask
         BufferedReader r = new BufferedReader(
                 new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
         File prediction = getPredictionFile(aContext);
-        File predTmp = createTemporaryPredictionFile(aContext);
+        File predTmp = createTemporaryPredictionFile();
 
         DataOutputStream output = new DataOutputStream(new FileOutputStream(predTmp));
         svm_model trainedModel = svm.svm_load_model(model.getAbsolutePath());
@@ -228,7 +228,7 @@ public class LibsvmTestTask
         return gold;
     }
 
-    private File createTemporaryPredictionFile(TaskContext aContext)
+    private File createTemporaryPredictionFile()
         throws IOException
     {
         DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");

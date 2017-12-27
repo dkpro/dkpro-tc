@@ -23,42 +23,42 @@ package org.dkpro.tc.core.util;
 public interface ReportConstants
 {
 	// GENERAL
-    public static final String MEASURES = "Measures";
+    static final String MEASURES = "Measures";
 	
     // accuracy
-    public static final String CORRECT = "Correctly Classified Examples";
-    public static final String INCORRECT = "Incorrectly Classified Examples";
-    public static final String PCT_CORRECT = "Percentage Correct";
-    public static final String PCT_INCORRECT = "Percentage Incorrect";
-    public static final String PCT_UNCLASSIFIED = "Percentage Unclassified";
+    static final String CORRECT = "Correctly Classified Examples";
+    static final String INCORRECT = "Incorrectly Classified Examples";
+    static final String PCT_CORRECT = "Percentage Correct";
+    static final String PCT_INCORRECT = "Percentage Incorrect";
+    static final String PCT_UNCLASSIFIED = "Percentage Unclassified";
 
     // P/R/F
-    public static final String PRECISION = "Unweighted Precision";
-    public static final String RECALL = "Unweighted Recall";
-    public static final String FMEASURE = "Unweighted F-Measure";
-    public static final String WGT_PRECISION = "Weighted Precision";
-    public static final String WGT_RECALL = "Weighted Recall";
-    public static final String WGT_FMEASURE = "Weighted F-Measure";
+    static final String PRECISION = "Unweighted Precision";
+    static final String RECALL = "Unweighted Recall";
+    static final String FMEASURE = "Unweighted F-Measure";
+    static final String WGT_PRECISION = "Weighted Precision";
+    static final String WGT_RECALL = "Weighted Recall";
+    static final String WGT_FMEASURE = "Weighted F-Measure";
 
     // regression
-    public static final String CORRELATION = "Pearson Correlation";
-    public static final String MEAN_ABSOLUTE_ERROR = "Mean absolute error";
-    public static final String RELATIVE_ABSOLUTE_ERROR = "Relative absolute error";
-    public static final String ROOT_MEAN_SQUARED_ERROR = "Root mean squared error";
-    public static final String ROOT_RELATIVE_SQUARED_ERROR = "Root relative squared error";
+    static final String CORRELATION = "Pearson Correlation";
+    static final String MEAN_ABSOLUTE_ERROR = "Mean absolute error";
+    static final String RELATIVE_ABSOLUTE_ERROR = "Relative absolute error";
+    static final String ROOT_MEAN_SQUARED_ERROR = "Root mean squared error";
+    static final String ROOT_RELATIVE_SQUARED_ERROR = "Root relative squared error";
     
     // multi-label classification
-    public static final String AVERAGE_THRESHOLD = "Averaged Threshold";
-    public static final String LABEL_CARDINALITY_REAL = "Label Cardinality real";
-    public static final String LABEL_CARDINALITY_PRED = "Label Cardinality predicted";
-    public static final String EMPTY_VECTORS = "Empty Vectors";
-    public static final String HEMMING_ACCURACY = "Hemming Accuracy";
-    public static final String ZERO_ONE_LOSS = "Zero One Loss";
-    public static final String EXAMPLE_BASED_LOG_LOSS = "Example Based LogLoss";
-    public static final String LABEL_BASED_LOG_LOSS = "Label Based LogLoss";
-    public static final String TP_RATE = "True Positive Rate";
-    public static final String FP_RATE = "False Positive Rate";
+    static final String AVERAGE_THRESHOLD = "Averaged Threshold";
+    static final String LABEL_CARDINALITY_REAL = "Label Cardinality real";
+    static final String LABEL_CARDINALITY_PRED = "Label Cardinality predicted";
+    static final String EMPTY_VECTORS = "Empty Vectors";
+    static final String HEMMING_ACCURACY = "Hemming Accuracy";
+    static final String ZERO_ONE_LOSS = "Zero One Loss";
+    static final String EXAMPLE_BASED_LOG_LOSS = "Example Based LogLoss";
+    static final String LABEL_BASED_LOG_LOSS = "Label Based LogLoss";
+    static final String TP_RATE = "True Positive Rate";
+    static final String FP_RATE = "False Positive Rate";
     
-    public static final String NUMBER_EXAMPLES = "Absolute Number of Examples";
-    public static final String NUMBER_LABELS = "Absolute Number of Labels";
+    static final String NUMBER_EXAMPLES = "Absolute Number of Examples";
+    static final String NUMBER_LABELS = "Absolute Number of Labels";
 }
