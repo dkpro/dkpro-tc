@@ -39,6 +39,10 @@ public class EvaluatorFactory
      *            Controls calculation of measures for individual labels. individual: returns
      *            measures for each label and composite measures; not individual: returns just
      *            composite measures
+     * @return EvaluatorBase
+     * 			evaluation object
+     * @throws	IOException
+     * 			throws an IOException
      */
     public static EvaluatorBase createEvaluator(File file, String learningMode,
             boolean softEvaluation, boolean individualLabelMeasures)
@@ -57,6 +61,10 @@ public class EvaluatorFactory
      *            Controls calculation of measures for individual labels. individual: returns
      *            measures for each label and composite measures; not individual: returns just
      *            composite measures
+     * @return EvaluatorBase
+     * 			evaluation object           
+     * @throws	IOException
+     * 			throws an IOException 
      */
     public static EvaluatorBase createEvaluator(Id2Outcome id2outcome,
             boolean softEvaluation, boolean individualLabelMeasures)

@@ -54,7 +54,8 @@ public abstract class EvaluatorBase {
 	 * calculation of label based macro measures 
 	 * 
 	 * @param cTable
-	 * @return
+	 * 			small contigency table
+	 * @return 	result map
 	 */
 	protected Map<String, Double> calculateMacroMeasures(SmallContingencyTables cTable)
 	{
@@ -91,8 +92,9 @@ public abstract class EvaluatorBase {
 	/**
 	 * calculation of label based micro measures 
 	 * 
-	 * @param cCTable
+	 * @param cCTable a combined small contingency table
 	 * @return
+	 * 			map with results
 	 */
 	protected Map<String, Double> calculateMicroMeasures(CombinedSmallContingencyTable cCTable)
 	{

@@ -93,6 +93,7 @@ public class Id2Outcome
      * @param learningMode
      *            the learning mode, i.e. the value of {@link Constants#DIM_LEARNING_MODE}
      * @throws IOException
+     * 			in case of errors
      */
     public Id2Outcome(File id2outcomeFile, String learningMode)
         throws IOException
@@ -189,6 +190,7 @@ public class Id2Outcome
      *            the line of the id2outcome file which contains the labels and their indices
      * @return a list of labels sorted by index, ascending
      * @throws UnsupportedEncodingException
+     * 			in case of encoding issues
      */
     public static List<String> getLabels(String line)
         throws UnsupportedEncodingException

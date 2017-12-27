@@ -33,8 +33,11 @@ public class FeatureTestUtil
      * Shortcut for JUnit assert that test whether a feature has a missing value
      * 
      * @param expectedName
+     * 			expected
      * @param expectedValue
+     * 			actual
      * @param actualFeature
+     * 			feature
      */
     public static void assertFeature(String expectedName, MissingValue expectedValue,
             Feature actualFeature)
@@ -48,8 +51,11 @@ public class FeatureTestUtil
      * Shortcut for JUnit assert that test whether a feature has the correct name and value
      * 
      * @param expectedName
+     * 			expected
      * @param expectedValue
+     * 			actual
      * @param actualFeature
+     * 			feature
      */
     public static void assertFeature(String expectedName, Object expectedValue,
             Feature actualFeature)
@@ -63,9 +69,13 @@ public class FeatureTestUtil
      * Shortcut for JUnit assert that test whether a feature has the correct name and double value (compared using the epsilon)
      * 
      * @param expectedName
+     * 			expected
      * @param expectedValue
+     * 			actual
      * @param actualFeature
+     * 			feature
      * @param epsilon
+     * 			epsilon
      */
     public static void assertFeature(String expectedName, double expectedValue,
             Feature actualFeature, double epsilon)
@@ -75,6 +85,17 @@ public class FeatureTestUtil
         Assert.assertEquals(expectedValue, (Double) actualFeature.getValue(), epsilon);
     }
     
+    /**
+     * 
+     * @param expectedName
+     * 			expected
+     * @param expectedValue
+     * 			actual
+     * @param actualFeature
+     * 			feature
+     * @param epsilon
+     * 			epsilon
+     */
     public static void assertFeatures(String expectedName, double expectedValue,
             Set<Feature> features, double epsilon)
     {
@@ -89,6 +110,15 @@ public class FeatureTestUtil
     	Assert.assertTrue(found);
     }
     
+    /**
+     * 
+     * @param expectedName
+     * 			expected
+     * @param expectedValue
+     * 			actual
+     * @param features
+     * 			features
+     */
     public static void assertFeatures(String expectedName, int expectedValue,
             Set<Feature> features)
     {

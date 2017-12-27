@@ -835,8 +835,11 @@ public class WekaUtils
      *
      * @param data
      *            data set with or without instanceId attribute
+     * @param isMultilabel
+     * 				is multi label processing
      * @return the data set without instanceId attribute
-     * @throws Exception an exception
+     * @throws Exception 
+     * 			an exception
      */
     public static Instances removeInstanceId(Instances data, boolean multilabel)
         throws Exception
@@ -872,6 +875,8 @@ public class WekaUtils
      *            data set without instanceId attribute
      * @param oldData
      *            data set with or without instanceId attribute
+     * @param isMultilabel
+     * 				is multi label processing            
      * @return a data set with or without instanceId attribute
      * @throws Exception an exception
      */

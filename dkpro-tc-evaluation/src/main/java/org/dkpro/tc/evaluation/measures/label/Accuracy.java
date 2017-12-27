@@ -62,9 +62,12 @@ public class Accuracy
 	 * and divide it by the total number of instances in the large confusion matrix
 	 * 
 	 * @param cSCTable
+	 * 			combined small contigency table
 	 * @param numberOfSmallContingencyTables
+	 * 			number of contigency tables
 	 * @param softEvaluation
-	 * @return
+	 * 			use soft evaluation
+	 * @return map
 	 */
 	public static Map<String, Double> calculate(CombinedSmallContingencyTable cSCTable, 
 			int numberOfSmallContingencyTables, boolean softEvaluation) 

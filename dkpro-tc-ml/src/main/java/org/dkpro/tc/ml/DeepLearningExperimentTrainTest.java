@@ -52,6 +52,13 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 
 	/**
 	 * Preconfigured train-test setup.
+	 *
+	 * @param aExperimentName
+	 * 			experiment name
+	 * @param mlAdapter
+	 * 			used adapter
+	 * @throws TextClassificationException
+	 * 			in case of errors
 	 */
 	public DeepLearningExperimentTrainTest(String aExperimentName, Class<? extends TcDeepLearningAdapter> mlAdapter)
 			throws TextClassificationException {
@@ -70,7 +77,6 @@ public class DeepLearningExperimentTrainTest extends DeepLearningExperiment_Impl
 	 * Initializes the experiment. This is called automatically before
 	 * execution. It's not done directly in the constructor, because we want to
 	 * be able to use setters instead of the arguments in the constructor.
-	 * 
 	 */
 	@Override
 	protected void init() {

@@ -37,7 +37,19 @@ public class FoldUtil
      * rule-of-thumb value to split each of the found cas into N sub-cases and the end the total
      * created number is compared to the requested number of CAS and an exception thrown if too few
      * CAS were created.
-     */
+	 * 
+	 * @param inputFolder
+	 * 			the input folder
+	 * @param numFolds
+	 * 			number of folds to create
+	 * @param numAvailableJCas
+	 * 			number available cas'
+	 * @param isSequence
+	 * 			is sequence model
+	 * @return	returns folder with sufficient folds
+	 * @throws Exception
+	 * 			if not enough data is available for creating the required number of folds 
+	 */
     public static File createMinimalSplit(String inputFolder, int numFolds, int numAvailableJCas,
             boolean isSequence)
         throws Exception
@@ -70,6 +82,15 @@ public class FoldUtil
         return outputFolder;
     }
 
+    /**
+     * test condition if data has to be split further
+     * @param outputFolder
+     * 			the output folder
+     * @param numFolds
+     * 			number of folds requested
+     * @throws Exception
+     * 			in case of an error
+     */
     private static void isNumberOfCasCreatedLargerEqualNumFolds(File outputFolder, int numFolds)
         throws Exception
     {

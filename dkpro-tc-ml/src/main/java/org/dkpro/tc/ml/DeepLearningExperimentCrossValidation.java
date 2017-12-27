@@ -322,6 +322,7 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	/**
 	 * 
 	 * @param fileNames
+	 * 			the file names
 	 * @return
 	 * 		fold dimension bundle
 	 */

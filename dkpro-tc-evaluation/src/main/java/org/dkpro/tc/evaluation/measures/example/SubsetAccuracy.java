@@ -48,7 +48,9 @@ public class SubsetAccuracy
 	/**
 	 * 
 	 * @param id2Outcome
+	 * 			an id2outcome
 	 * @return
+	 * 		a result map
 	 */
 	public static Map<String, Double> calculate(Id2Outcome id2Outcome) {
 		Double subsetAccuracy = 0.0;
