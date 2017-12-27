@@ -224,8 +224,6 @@ public class TaskUtils {
 	 *            feature extractors
 	 * @param jcas
 	 *            a jcas
-	 * @param developerMode
-	 *            developer mode
 	 * @param addInstanceId
 	 *            instance id
 	 * @param unit

@@ -56,15 +56,17 @@ public interface PairReader
 
     /**
      * Title of the first document
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
+     * @throws TextClassificationException 
      * 		excpetion in case of error
+     * @return string value
+     * 			
      */
     String getTitle1() throws TextClassificationException;
     
     /**
      * Title of the second document
      * @return title as string
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
+     * @throws TextClassificationException 
      * 		excpetion in case of error
      */
     String getTitle2() throws TextClassificationException;
