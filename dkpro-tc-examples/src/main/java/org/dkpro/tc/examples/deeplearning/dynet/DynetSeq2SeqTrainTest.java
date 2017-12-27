@@ -34,6 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
 
@@ -82,12 +83,12 @@ public class DynetSeq2SeqTrainTest implements Constants {
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
 				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
+				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
 				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
 						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
 				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
 				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, python3));
+						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetPoStagger.py"));
 
 		return pSpace;
 	}
@@ -101,7 +102,7 @@ public class DynetSeq2SeqTrainTest implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(getPreprocessing());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
+		batch.addReport(ContextMemoryReport.class);
 		Lab.getInstance().run(batch);
 	}
 }

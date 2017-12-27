@@ -31,6 +31,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
 
@@ -94,7 +95,7 @@ public class DynetDocumentTrainTest implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
+		batch.addReport(ContextMemoryReport.class);
 		Lab.getInstance().run(batch);
 	}
 }
