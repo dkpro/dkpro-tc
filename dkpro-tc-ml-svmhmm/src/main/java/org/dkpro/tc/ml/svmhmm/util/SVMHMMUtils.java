@@ -205,7 +205,7 @@ public final class SVMHMMUtils
      * Loads a serialized BidiMap from file
      * @param inputFile
      * 			input file
-     * @returns bidimap
+     * @return bidimap
      * @throws IOException
      * 			in case of errors
      */
@@ -229,7 +229,7 @@ public final class SVMHMMUtils
      * Extracts the outcome labels from the file; it corresponds to the first token on each line.
      * @param featureVectorsFile
      * 			the feature file
-     * @returns list of strings
+     * @return list of strings
      * @throws IOException
      * 			in case of errors
      */

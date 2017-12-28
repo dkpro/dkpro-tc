@@ -195,9 +195,6 @@ public class SVMHMMTestTask
         FileUtils.deleteQuietly(tmpModelFile);
     }
 
-    /**
-     * Trains the model and stores it into the task context
-     */
     public void trainModel(TaskContext taskContext, File trainingFile, double paramC,
             int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
                 throws Exception
