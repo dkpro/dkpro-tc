@@ -149,11 +149,6 @@ public class SVMHMMTestTask
         paramB = SVMHMMUtils.getParameterBeamWidth(classificationArguments);
     }
 
-    /**
-     * Tests the model against the test data and stores the outcomes in the
-     * {@link org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries#predictionsFile}
-     * file.
-     */
     public void testModel(TaskContext taskContext, File testFile)
         throws Exception
     {
@@ -283,9 +278,6 @@ public class SVMHMMTestTask
         return result;
     }
 
-    /**
-     * Returns absolute path to svm_hmm_classify binary
-     */
     public static String resolveSVMHmmClassifyCommand()
     {
         try {
@@ -297,11 +289,6 @@ public class SVMHMMTestTask
         }
     }
 
-    /**
-     * Returns absolute path to svm_hmm_learn binary
-     *
-     * @return binary path
-     */
     public static String resolveSVMHmmLearnCommand()
     {
         try {
@@ -313,9 +300,6 @@ public class SVMHMMTestTask
         }
     }
 
-    /**
-     * Builds the cmd with parameters to run svm_hmm_train
-     */
     private List<String> buildTrainCommand(File trainingFile, String targetModelLocation,
             double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
     {
@@ -343,9 +327,6 @@ public class SVMHMMTestTask
         return result;
     }
 
-    /**
-     * Executes the command (runs a new process outside the JVM and waits for its completion)
-     */
     private static void runCommand(List<String> command)
         throws Exception
     {

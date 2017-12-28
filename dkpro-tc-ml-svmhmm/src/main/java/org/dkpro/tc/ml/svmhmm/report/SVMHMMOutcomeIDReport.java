@@ -78,6 +78,7 @@ public class SVMHMMOutcomeIDReport
      * Loads gold labels and predicted labels
      *
      * @throws IOException
+     * 			in case of errors
      */
     protected void loadGoldAndPredictedLabels()
         throws IOException

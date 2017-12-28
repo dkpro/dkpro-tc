@@ -75,6 +75,12 @@ public final class SVMHMMUtils
     /**
      * Extract all outcomes from featureVectorsFiles (training, test) that are in LIBSVM format -
      * each line is a feature vector and the first token is the outcome label
+     * 
+     * @param files
+     * 			data files
+     * @return	sorted set of strings
+     * @throws IOException
+     * 			in case of errors
      */
     public static SortedSet<String> extractOutcomeLabelsFromFeatureVectorFiles(File... files)
         throws IOException
@@ -90,7 +96,7 @@ public final class SVMHMMUtils
 
     /**
      * Maps names to numbers (numbers are required by SVMLight format)
-     * @param vocabulary
+     * @param names
      * 			the vocabulary
      * @return BidiMap
      * 			map
@@ -155,6 +161,8 @@ public final class SVMHMMUtils
      * 			mapping
      * @param outputFile
      * 			the output file
+     * @throws IOException
+     * 			in case of errors
      */
     public static void saveMapping(BidiMap mapping, File outputFile)
         throws IOException
@@ -197,6 +205,7 @@ public final class SVMHMMUtils
      * Loads a serialized BidiMap from file
      * @param inputFile
      * 			input file
+     * @returns bidimap
      * @throws IOException
      * 			in case of errors
      */
@@ -220,6 +229,7 @@ public final class SVMHMMUtils
      * Extracts the outcome labels from the file; it corresponds to the first token on each line.
      * @param featureVectorsFile
      * 			the feature file
+     * @returns list of strings
      * @throws IOException
      * 			in case of errors
      */
