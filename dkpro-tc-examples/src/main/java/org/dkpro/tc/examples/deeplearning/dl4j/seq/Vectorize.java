@@ -39,7 +39,7 @@ public class Vectorize
     // Tagset
     private Object2IntMap<String> tagset = new Object2IntLinkedOpenHashMap<>();
 
-    /**
+    /*
      * Use for training - tagset will be built internally.
      */
     public Vectorize()
@@ -47,7 +47,7 @@ public class Vectorize
         // Nothing to do
     }
     
-    /**
+    /*
      * Use for tagging - pre-load tagset! Mind that order of tags must be exactly as produced during
      * training.
      */
