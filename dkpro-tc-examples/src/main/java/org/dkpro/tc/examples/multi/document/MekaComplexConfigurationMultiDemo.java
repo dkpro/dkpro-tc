@@ -68,7 +68,7 @@ public class MekaComplexConfigurationMultiDemo
     private static final String LANGUAGE_CODE = "en";
     private static final String BIPARTITION_THRESHOLD = "0.5";
 
-    /**
+    /*
      * Starts the experiment.
      */
     public static void main(String[] args)
