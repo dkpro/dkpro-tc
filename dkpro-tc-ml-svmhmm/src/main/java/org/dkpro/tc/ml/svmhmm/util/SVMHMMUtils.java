@@ -90,6 +90,10 @@ public final class SVMHMMUtils
 
     /**
      * Maps names to numbers (numbers are required by SVMLight format)
+     * @param vocabulary
+     * 			the vocabulary
+     * @return BidiMap
+     * 			map
      */
     public static BidiMap mapVocabularyToIntegers(SortedSet<String> names)
     {
@@ -108,6 +112,13 @@ public final class SVMHMMUtils
     /**
      * Creates a new file in the same directory as {@code featureVectorsFile} and replaces the first
      * token (outcome label) by its corresponding integer number from the bi-di map
+     * @param featureVectorsFile
+     * 			data vector
+     * @param labelsToIntegers
+     * 			label mapping
+     * @return prepared data file
+     * @throws IOException
+     * 			in case of errors
      */
     public static File replaceLabelsWithIntegers(File featureVectorsFile, BidiMap labelsToIntegers)
         throws IOException
@@ -140,6 +151,10 @@ public final class SVMHMMUtils
 
     /**
      * Saves label-integer mapping to a file
+     * @param mapping
+     * 			mapping
+     * @param outputFile
+     * 			the output file
      */
     public static void saveMapping(BidiMap mapping, File outputFile)
         throws IOException
@@ -154,6 +169,12 @@ public final class SVMHMMUtils
     /**
      * Saves the feature mapping to readable format, each line is a feature id and feature name,
      * sorted by feature id
+     * @param mapping
+     * 			bidi mapping
+     * @param outputFile
+     * 			the output file
+     * @throws IOException
+     * 			in case of errors
      */
     public static void saveMappingTextFormat(BidiMap mapping, File outputFile)
         throws IOException
@@ -174,6 +195,10 @@ public final class SVMHMMUtils
 
     /**
      * Loads a serialized BidiMap from file
+     * @param inputFile
+     * 			input file
+     * @throws IOException
+     * 			in case of errors
      */
     public static BidiMap loadMapping(File inputFile)
         throws IOException
@@ -193,6 +218,10 @@ public final class SVMHMMUtils
 
     /**
      * Extracts the outcome labels from the file; it corresponds to the first token on each line.
+     * @param featureVectorsFile
+     * 			the feature file
+     * @throws IOException
+     * 			in case of errors
      */
     public static List<String> extractOutcomeLabels(File featureVectorsFile)
         throws IOException
@@ -210,6 +239,12 @@ public final class SVMHMMUtils
     /**
      * Reads the featureVectorsFile and splits comment on each line into a list of strings, i.e.
      * "TAG qid:4 1:1 2:1 4:2 # token TAG 4" produces "token", "TAG", "4"
+     * 
+     * @param featureVectorsFileStream
+     * 			feature file
+     * @return	iterator over lists
+     * @throws IOException
+     * 			in case of errors
      */
     protected static Iterator<List<String>> extractComments(final File featureVectorsFileStream)
         throws IOException
@@ -220,6 +255,12 @@ public final class SVMHMMUtils
 
     /**
      * Extracts original tokens that are stored in the comment part of the featureVectorsFile
+     * 
+     * @param featureVectorsFile
+     * 			feature file
+     * @return list of strings
+     * @throws IOException
+     * 			in case of error
      */
     public static List<String> extractOriginalTokens(File featureVectorsFile)
         throws IOException
@@ -248,6 +289,14 @@ public final class SVMHMMUtils
     /**
      * Reads the prediction file (each line is a integer) and converts them into original outcome
      * labels using the mapping provided by the bi-directional map
+     * 
+     * @param predictionsFile
+     * 			the prediction file
+     * @param labelsToIntegersMapping
+     * 			mapping file
+     * @return list of strings
+     * @throws IOException
+     * 			in case of errors
      */
     public static List<String> extractOutcomeLabelsFromPredictions(File predictionsFile,
             BidiMap labelsToIntegersMapping)
@@ -268,6 +317,12 @@ public final class SVMHMMUtils
 
     /**
      * Returns a list of original sequence IDs extracted from comments
+     * 
+     * @param featureVectorsFile
+     * 			feature file
+     * @return list of integers
+     * @throws IOException
+     * 			in case of errors
      */
     public static List<Integer> extractOriginalSequenceIDs(File featureVectorsFile)
         throws IOException
@@ -285,6 +340,14 @@ public final class SVMHMMUtils
         return result;
     }
 
+    /**
+     * 
+     * @param featureVectorsFile
+     * 			feature file
+     * @return list of sorted maps
+     * @throws IOException
+     * 			in case of errors
+     */
     public static List<SortedMap<String, String>> extractMetaDataFeatures(File featureVectorsFile)
         throws IOException
     {
