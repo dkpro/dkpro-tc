@@ -49,7 +49,7 @@ public class Dl4jDocumentUserCode
 
     @Override
     public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
-            File embedding, File prediction)
+            File embedding, int seed, File prediction)
                 throws Exception
     {
 
@@ -75,7 +75,7 @@ public class Dl4jDocumentUserCode
                                                                                                  // case
         int outputs = iTrain.getLabels().size();
 
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
                 .updater(Updater.RMSPROP).regularization(true).l2(1e-5)
                 .weightInit(WeightInit.XAVIER)

@@ -64,7 +64,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 	Vectorize vectorize = new Vectorize();
 
 	@Override
-	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, File prediction)
+	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, int seed, File prediction)
 			throws Exception {
 
 		vectorize = new Vectorize(getOutcomes(trainOutcome, testOutcome));
@@ -76,7 +76,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		int iterations = 1;
 		double learningRate = 0.1;
 
-		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
 				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(iterations).seed(12345l)
 				.updater(Updater.SGD).regularization(true).l2(1e-5).weightInit(WeightInit.RELU)
 				.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
