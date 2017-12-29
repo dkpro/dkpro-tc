@@ -50,7 +50,7 @@ public class KerasTestTask
     @Discriminator(name = Constants.DIM_BIPARTITION_THRESHOLD)
     private Double biPartitionMultiLabel;
     
-	@Discriminator(name = DeepLearningConstants.DIM_RANDOM_SEED)
+	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
 	private String randomSeed;
 
     @Override

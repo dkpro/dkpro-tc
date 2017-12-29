@@ -38,6 +38,9 @@ public class Deeplearning4jTestTask extends ExecutableTaskBase implements Consta
 
 	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
 	private Integer maximumLength;
+	
+	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
+	private Integer seed;
 
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
@@ -50,8 +53,12 @@ public class Deeplearning4jTestTask extends ExecutableTaskBase implements Consta
 		File embeddingPath = getEmbedding(aContext);
 
 		File outputTarget = aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
+		
+		if (seed==null){
+			seed = 123456789;
+		}
 
-		userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector, embeddingPath,
+		userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector, embeddingPath, seed,
 				outputTarget);
 	}
 

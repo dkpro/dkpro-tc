@@ -79,7 +79,7 @@ public interface DeepLearningConstants
      * on the framework used, the user code is responsible to call the initialization of the
      * framework with this value.
      */
-    static final String DIM_RANDOM_SEED = "randomSeed";
+    static final String DIM_SEED_VALUE = "randomSeed";
 
     /**
      * For specifying the working memory. Depending on the framework used, the user code is

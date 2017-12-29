@@ -41,7 +41,7 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 	@Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
 	private String python;
 
-	@Discriminator(name = DeepLearningConstants.DIM_RANDOM_SEED)
+	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
 	private String randomSeed;
 
 	@Discriminator(name = DeepLearningConstants.DIM_RAM_WORKING_MEMORY)
