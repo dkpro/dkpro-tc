@@ -132,7 +132,7 @@ public class CRFSuiteTestTask
                 .getFrameworkFilename(AdapterNameEntries.predictionsFile), AccessMode.READWRITE);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Gold\tPrediction\n");
+        sb.append("#Prediction\tGold\n");
         for (String p : predictionValues) {
             sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
             // NOTE: CRFSuite has a bug when the label is ':' (as in
