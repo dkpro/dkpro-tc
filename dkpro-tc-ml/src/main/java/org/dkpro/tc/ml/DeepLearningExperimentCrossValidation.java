@@ -100,10 +100,10 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 	 * 			ML adapter
 	 * @param aNumFolds
 	 * 			number of folds
-	 * @throws TextClassificationException
-	 * 			in case of errors
 	 * @param aComparator
 	 * 		 	keeps data together
+	 * @throws TextClassificationException
+	 * 			in case of errors
 	 * @throws TextClassificationException
 	 * 			in case of errors
 	 */
