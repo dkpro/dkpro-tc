@@ -72,17 +72,17 @@ public class InitTask
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
     @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
+    protected String learningMode;
     @Discriminator(name = DIM_FEATURE_MODE)
-    private String featureMode;
+    protected String featureMode;
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-    private String threshold;
+    protected String threshold;
     @Discriminator(name = DIM_FEATURE_SET)
-    private TcFeatureSet featureExtractors;
+    protected TcFeatureSet featureExtractors;
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
 
-    private boolean isTesting = false;
+    protected boolean isTesting = false;
 
     private AnalysisEngineDescription preprocessing;
 
