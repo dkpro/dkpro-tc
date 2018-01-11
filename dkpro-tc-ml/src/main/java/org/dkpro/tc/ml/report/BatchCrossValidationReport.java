@@ -65,8 +65,6 @@ public class BatchCrossValidationReport
             File fileToEvaluate = store.locateKey(subcontext.getId(),
                     Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
             
-            System.err.println("Computing results with: " + fileToEvaluate.getAbsolutePath());
-
             Map<String, String> resultMap = EvaluationReportUtil.getResultsHarmonizedId2Outcome(
                     fileToEvaluate, softEvaluation, individualLabelMeasures);
 
