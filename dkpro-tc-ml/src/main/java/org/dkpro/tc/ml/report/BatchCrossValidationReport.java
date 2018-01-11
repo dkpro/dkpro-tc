@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ReportUtils;
@@ -59,10 +60,12 @@ public class BatchCrossValidationReport
                 continue;
             }
             Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store,
-                    subcontext.getId(), Constants.DISCRIMINATORS_KEY_TEMP);
-
+                    subcontext.getId(), Task.DISCRIMINATORS_KEY);
+            
             File fileToEvaluate = store.locateKey(subcontext.getId(),
                     Constants.TEST_TASK_OUTPUT_KEY + "/" + Constants.SERIALIZED_ID_OUTCOME_KEY);
+            
+            System.err.println("Computing results with: " + fileToEvaluate.getAbsolutePath());
 
             Map<String, String> resultMap = EvaluationReportUtil.getResultsHarmonizedId2Outcome(
                     fileToEvaluate, softEvaluation, individualLabelMeasures);

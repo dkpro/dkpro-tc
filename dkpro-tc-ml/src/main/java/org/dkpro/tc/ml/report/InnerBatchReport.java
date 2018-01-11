@@ -24,21 +24,24 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
-import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.evaluation.Id2Outcome;
 
@@ -62,12 +65,16 @@ public class InnerBatchReport
         Id2Outcome overallOutcome = new Id2Outcome();
         Properties prop = new Properties();
         Set<Object> discriminatorsToExclude = new HashSet<Object>();
-        for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, subcontext.getId())) {
-                Map<String, String> discriminatorsMap = store.retrieveBinary(subcontext.getId(),
+        
+        
+        List<String> mlaContextIds = getContextIdOfMachineLearningAdapter();
+        
+        for(String mla : mlaContextIds){	
+            if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
+                Map<String, String> discriminatorsMap = store.retrieveBinary(mla,
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
                 String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
+                File id2outcomeFile = getContext().getStorageService().locateKey(mla,
                         ID_OUTCOME_KEY);
                 Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
                 overallOutcome.add(id2outcome);
@@ -80,7 +87,7 @@ public class InnerBatchReport
                 }
             }
         }
-
+        
         // remove keys with altering values
         for (Object key : discriminatorsToExclude) {
             prop.remove(key);
@@ -99,6 +106,60 @@ public class InnerBatchReport
 
         writeHomogenizedOutcome(homogenizedOverallOutcomes);
     }
+    
+    /**
+     * Reads the Attributes.txt of the CV task folder which holds the name of the folder belonging to this run
+     * @return
+     * 		a list of context ids of the machine learning adapter folders
+     * @throws Exception
+     * 		in case read operations fail
+     */
+    private List<String> getContextIdOfMachineLearningAdapter() throws Exception {
+    	
+        File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
+        List<String> foldersOfSingleRuns = getFoldersOfSingleRuns(cvTaskAttributeFile);
+        
+        
+        List<String> mlaContextIdsOfCvRun = new ArrayList<>();
+        for(String f : foldersOfSingleRuns){
+        	if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), f)) {
+        		mlaContextIdsOfCvRun.add(f);
+        	}
+        }
+    	
+		return mlaContextIdsOfCvRun;
+	}
+
+	private List<String> getFoldersOfSingleRuns(File attributesTXT)
+            throws Exception
+        {
+            List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+
+            int idx = 0;
+            for (String line : readLines) {
+                if (line.startsWith("Subtask")) {
+                    break;
+                }
+                idx++;
+            }
+            String line = readLines.get(idx);
+            int start = line.indexOf("[") + 1;
+            int end = line.indexOf("]");
+            String subTasks = line.substring(start, end);
+
+            String[] tasks = subTasks.split(",");
+
+            List<String> results = new ArrayList<>();
+
+            for (String task : tasks) {
+                if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(),
+                        task.trim())) {
+                    results.add(task.trim());
+                }
+            }
+
+            return results;
+        }
 
     private void writeHomogenizedOutcome(File homogenizedOverallOutcomes) throws Exception
     {
