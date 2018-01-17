@@ -60,6 +60,11 @@ public class KerasOutcomeIdReport extends ReportBase {
 		boolean isMultiLabel = getDiscriminators()
 				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
 				.equals(Constants.LM_MULTI_LABEL);
+
+		boolean isRegression = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_REGRESSION);
+
 		if (isMultiLabel) {
 			THRESHOLD = getDiscriminators()
 					.get(KerasTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
@@ -80,13 +85,15 @@ public class KerasOutcomeIdReport extends ReportBase {
 
 		List<String> k = new ArrayList<>(map.keySet());
 		for (int i = 0; i < labelsInPrediction.size(); i++) {
-			if (isIntegerMode) {
-				header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
-			} else {
-				header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
-			}
-			if (i + 1 < k.size()) {
-				header.append(" ");
+			if (!isRegression) {
+				if (isIntegerMode) {
+					header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
+				} else {
+					header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+				}
+				if (i + 1 < k.size()) {
+					header.append(" ");
+				}
 			}
 		}
 
@@ -120,12 +127,18 @@ public class KerasOutcomeIdReport extends ReportBase {
 
 			String gold = null;
 			String prediction = null;
-			if (isIntegerMode) {
+
+			if (isRegression) {
 				gold = split[0];
 				prediction = split[1];
 			} else {
-				gold = map.get(split[0]).toString();
-				prediction = map.get(split[1]).toString();
+				if (isIntegerMode) {
+					gold = split[0];
+					prediction = split[1];
+				} else {
+					gold = map.get(split[0]).toString();
+					prediction = map.get(split[1]).toString();
+				}
 			}
 			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}

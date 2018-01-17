@@ -43,33 +43,39 @@ import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetOutcomeIdReport
-    extends ReportBase
-{
+public class DynetOutcomeIdReport extends ReportBase {
+
 	/**
 	 * Character that is used for separating fields in the output file
 	 */
 	public static final String SEPARATOR_CHAR = ";";
 
 	private String THRESHOLD = "-1";
-	
-	int counter=0;
+
+	int counter = 0;
 
 	@Override
 	public void execute() throws Exception {
-	    
-	    boolean isMultiLabel= getDiscriminators().get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE).equals(Constants.LM_MULTI_LABEL);
-	    if(isMultiLabel){
-	        THRESHOLD = getDiscriminators()
-            .get(DynetTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
-	    }
-	    
+
+		boolean isMultiLabel = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_MULTI_LABEL);
+
+		boolean isRegression = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_REGRESSION);
+
+		if (isMultiLabel) {
+			THRESHOLD = getDiscriminators()
+					.get(DynetTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
+		}
+
 		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
-                .get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
+				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
 		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
-		
+
 		Map<String, String> map = loadMap(isIntegerMode);
 		Map<String, String> inverseMap = inverseMap(map);
 		List<String> labelsInPrediction = getTestGoldLabels();
@@ -77,21 +83,19 @@ public class DynetOutcomeIdReport
 		StringBuilder header = new StringBuilder();
 		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
-		
-		
-        List<String> k = new ArrayList<>(map.keySet());
-        for (int i = 0; i < labelsInPrediction.size(); i++) {
-			if (isIntegerMode) {
-				header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
-			} else {
-				header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+		List<String> k = new ArrayList<>(map.keySet());
+		for (int i = 0; i < labelsInPrediction.size(); i++) {
+			if (!isRegression) {
+				if (isIntegerMode) {
+					header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
+				} else {
+					header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+				}
+				if (i + 1 < k.size()) {
+					header.append(" ");
+				}
 			}
-            if (i + 1 < k.size()) {
-                header.append(" ");
-            }
-        }
-
-		
+		}
 
 		List<String> nameOfTargets = getNameOfTargets();
 
@@ -111,24 +115,30 @@ public class DynetOutcomeIdReport
 				continue;
 			}
 
-            String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift))
-                    ? nameOfTargets.get(i - shift) : ("" + (counter++));
+			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)) ? nameOfTargets.get(i - shift)
+					: ("" + (counter++));
 
 			String[] split = p.split("\t");
-			
-            if (isMultiLabel) {
-                multilabelReport(id, split,isIntegerMode, prop, map);
-                continue;
-            }
+
+			if (isMultiLabel) {
+				multilabelReport(id, split, isIntegerMode, prop, map);
+				continue;
+			}
 
 			String gold = null;
 			String prediction = null;
-			if (isIntegerMode) {
+
+			if (isRegression) {
 				gold = split[0];
 				prediction = split[1];
 			} else {
-				gold = map.get(split[0]).toString();
-				prediction = map.get(split[1]).toString();
+				if (isIntegerMode) {
+					gold = split[0];
+					prediction = split[1];
+				} else {
+					gold = map.get(split[0]).toString();
+					prediction = map.get(split[1]).toString();
+				}
 			}
 			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}
@@ -149,54 +159,54 @@ public class DynetOutcomeIdReport
 
 	private List<String> getTestGoldLabels() throws Exception {
 		Set<String> labels = new HashSet<>();
-		
-		File testVectorizationFolder = getContext().getFolder(TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT, AccessMode.READONLY);
+
+		File testVectorizationFolder = getContext().getFolder(TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT,
+				AccessMode.READONLY);
 		File f = new File(testVectorizationFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 		List<String> readLines = FileUtils.readLines(f, "utf-8");
-		for(String s : readLines){
-			for(String x : s.split(" ")){
+		for (String s : readLines) {
+			for (String x : s.split(" ")) {
 				labels.add(x);
 			}
 		}
-		
+
 		return new ArrayList<String>(labels);
 	}
 
-	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop, Map<String, String> map)
-    {
+	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,
+			Map<String, String> map) {
 
-        String gold = null;
-        String prediction = null;
-        if (isIntegerMode) {
-            String[] s = split[0].split(" ");
-            gold = StringUtils.join(s, ",");
-            
-            s = split[1].split(" ");
-            prediction = StringUtils.join(s, ",");
-        } else {
-            String[] s = split[0].split(" ");
-            gold = label2String(s, map);
-            
-            s = split[1].split(" ");
-            prediction = label2String(s, map);
-        }
-        prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "0.5");
-    }
-	
-	private String label2String(String[] val, Map<String, String> map)
-    {
-	    StringBuilder sb = new StringBuilder();
-        for(int i=0; i < val.length; i++){
-            String e = val[i];
-            sb.append(map.get(e.toString()));
-            if(i+1 < val.length){
-                sb.append(",");
-            }
-        }
-        return sb.toString().trim();        
-    }
+		String gold = null;
+		String prediction = null;
+		if (isIntegerMode) {
+			String[] s = split[0].split(" ");
+			gold = StringUtils.join(s, ",");
 
-    private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
+			s = split[1].split(" ");
+			prediction = StringUtils.join(s, ",");
+		} else {
+			String[] s = split[0].split(" ");
+			gold = label2String(s, map);
+
+			s = split[1].split(" ");
+			prediction = label2String(s, map);
+		}
+		prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "0.5");
+	}
+
+	private String label2String(String[] val, Map<String, String> map) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < val.length; i++) {
+			String e = val[i];
+			sb.append(map.get(e.toString()));
+			if (i + 1 < val.length) {
+				sb.append(",");
+			}
+		}
+		return sb.toString().trim();
+	}
+
+	private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
 
 		Map<String, String> m = new HashMap<>();
 
@@ -276,6 +286,5 @@ public class DynetOutcomeIdReport
 
 		return t;
 	}
-
 
 }
