@@ -31,7 +31,7 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 /**
  * Save model batch
  * 

@@ -24,6 +24,7 @@ import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
 import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TEST_DATA;
 import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA;
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 
 import java.io.File;
 import java.util.Arrays;
