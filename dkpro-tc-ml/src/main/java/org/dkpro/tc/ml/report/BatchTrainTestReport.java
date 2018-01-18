@@ -30,6 +30,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.core.util.TcFlexTable;
 import org.dkpro.tc.util.EvaluationReportUtil;

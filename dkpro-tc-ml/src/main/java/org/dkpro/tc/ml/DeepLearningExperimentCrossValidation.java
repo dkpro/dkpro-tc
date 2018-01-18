@@ -42,6 +42,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
+import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
@@ -49,7 +50,6 @@ import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.InnerBatchReport;
-import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Crossvalidation setup

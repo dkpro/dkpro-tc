@@ -32,6 +32,7 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportConstants;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;

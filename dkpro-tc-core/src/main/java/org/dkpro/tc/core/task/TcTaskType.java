@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.report;
+package org.dkpro.tc.core.task;
 
 public enum TcTaskType
 {

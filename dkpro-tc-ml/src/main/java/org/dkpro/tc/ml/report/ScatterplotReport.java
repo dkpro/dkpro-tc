@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.report.util.ScatterplotRenderer;
 

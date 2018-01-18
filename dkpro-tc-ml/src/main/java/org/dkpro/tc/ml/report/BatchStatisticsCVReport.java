@@ -29,6 +29,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 
 
 /**

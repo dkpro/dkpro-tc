@@ -43,6 +43,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.evaluation.Id2Outcome;
 
 /**

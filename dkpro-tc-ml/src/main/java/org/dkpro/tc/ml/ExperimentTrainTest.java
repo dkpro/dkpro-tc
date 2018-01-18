@@ -23,12 +23,12 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
+import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.TcTaskType;
 
 /**
  * Train-Test setup
