@@ -349,6 +349,8 @@ public interface Constants
 	public static String OUTCOMES_INPUT_KEY = "outcomesFolder";
     public static String FILENAME_FEATURES_DESCRIPTION = "featureDescription.txt";
 	public static String FILENAME_DOCUMENT_META_DATA_LOG = "documentMetaData.txt";
+	
+	public static String TC_TASK_TYPE = "TcTaskType";
 
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome

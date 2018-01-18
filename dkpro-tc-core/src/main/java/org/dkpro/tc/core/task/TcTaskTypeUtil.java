@@ -23,6 +23,7 @@ import java.util.Map;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.base.Experiment_ImplBase;
 
 public class TcTaskTypeUtil
@@ -79,7 +80,7 @@ public class TcTaskTypeUtil
 
     protected static TcTaskType getTaskType(Map<String, String> attributes)
     {
-        String string = attributes.get(Experiment_ImplBase.TC_TASK_TYPE);
+        String string = attributes.get(Constants.TC_TASK_TYPE);
         if (string == null) {
             return TcTaskType.NO_TYPE;
         }
