@@ -55,6 +55,7 @@ import org.dkpro.tc.ml.weka.WekaStatisticsClassificationAdapter;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.SMO;
 
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
@@ -118,7 +119,7 @@ public class WekaTwentyNewsgroupsDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                Arrays.asList(new String[] { SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
