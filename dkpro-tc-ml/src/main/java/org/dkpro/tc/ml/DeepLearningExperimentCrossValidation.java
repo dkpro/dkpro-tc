@@ -22,6 +22,7 @@ import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 
 import java.io.File;
 import java.util.Arrays;

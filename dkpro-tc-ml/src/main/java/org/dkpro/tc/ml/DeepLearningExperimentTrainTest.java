@@ -31,6 +31,8 @@ import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
+
 /**
  * Train-Test setup base class. This class is missing the machine learning
  * classifier configuration and is intentionally not "abstract" for testing
