@@ -20,8 +20,8 @@ package org.dkpro.tc.ml.dynet;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.ml.dynet.report.DynetMetaReport;
-import org.dkpro.tc.ml.dynet.report.DynetOutcomeIdReport;
+import org.dkpro.tc.ml.dynet.reports.DynetMetaReport;
+import org.dkpro.tc.ml.dynet.reports.DynetOutcomeIdReport;
 
 public class DynetAdapter
     implements TcDeepLearningAdapter

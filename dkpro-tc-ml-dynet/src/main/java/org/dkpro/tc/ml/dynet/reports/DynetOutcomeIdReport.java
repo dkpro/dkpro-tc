@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.dynet.report;
+package org.dkpro.tc.ml.dynet.reports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,18 +78,17 @@ public class DynetOutcomeIdReport extends ReportBase {
 
 		Map<String, String> map = loadMap(isIntegerMode);
 		Map<String, String> inverseMap = inverseMap(map);
-		List<String> labelsInPrediction = getTestGoldLabels();
 
 		StringBuilder header = new StringBuilder();
 		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
 		List<String> k = new ArrayList<>(map.keySet());
-		for (int i = 0; i < labelsInPrediction.size(); i++) {
+		for (Integer i = 0; i < map.keySet().size(); i++) {
 			if (!isRegression) {
 				if (isIntegerMode) {
-					header.append(inverseMap.get(labelsInPrediction.get(i)) + "=" + i);
+					header.append(inverseMap.get(i+"") + "=" + i);
 				} else {
-					header.append(map.get(labelsInPrediction.get(i)) + "=" + i);
+					header.append(map.get(i+"") + "=" + i);
 				}
 				if (i + 1 < k.size()) {
 					header.append(" ");
@@ -155,22 +154,6 @@ public class DynetOutcomeIdReport extends ReportBase {
 			inverseMap.put(entry.getValue(), entry.getKey());
 		}
 		return inverseMap;
-	}
-
-	private List<String> getTestGoldLabels() throws Exception {
-		Set<String> labels = new HashSet<>();
-
-		File testVectorizationFolder = getContext().getFolder(TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT,
-				AccessMode.READONLY);
-		File f = new File(testVectorizationFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
-		List<String> readLines = FileUtils.readLines(f, "utf-8");
-		for (String s : readLines) {
-			for (String x : s.split(" ")) {
-				labels.add(x);
-			}
-		}
-
-		return new ArrayList<String>(labels);
 	}
 
 	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,

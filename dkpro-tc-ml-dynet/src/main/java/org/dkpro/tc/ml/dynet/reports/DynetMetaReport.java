@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.dynet.report;
+package org.dkpro.tc.ml.dynet.reports;
 
 import java.io.BufferedReader;
 import java.io.File;
