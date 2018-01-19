@@ -29,8 +29,8 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
 import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import weka.core.SerializationHelper;
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class SemanticTextSimilarityDemoTest extends JavaDemosTest_Base
+public class SemanticTextSimilarityDemoTest extends TestCaseSuperClass
 {
     ParameterSpace pSpace;
     SemanticTextSimilarityDemo experiment;

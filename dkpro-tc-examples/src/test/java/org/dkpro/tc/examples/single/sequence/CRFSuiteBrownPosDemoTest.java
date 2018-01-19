@@ -19,7 +19,7 @@
 package org.dkpro.tc.examples.single.sequence;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.junit.Before;
@@ -40,7 +40,7 @@ import org.junit.Test;
  * This test just ensures that the experiment runs without throwing any exception.
  */
 public class CRFSuiteBrownPosDemoTest
-    extends JavaDemosTest_Base
+extends TestCaseSuperClass
 {
     CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
 

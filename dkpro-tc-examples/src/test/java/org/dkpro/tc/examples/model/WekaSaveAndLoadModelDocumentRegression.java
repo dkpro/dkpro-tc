@@ -46,6 +46,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfSentences;
@@ -68,7 +69,7 @@ import weka.classifiers.functions.LinearRegression;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentRegression
+public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
     implements Constants
 {
     static String regressionTrain = "src/main/resources/data/essays/train/essay_train.txt";
@@ -78,8 +79,9 @@ public class WekaSaveAndLoadModelDocumentRegression
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
+    	super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentRegression.class.getSimpleName());
     }
 

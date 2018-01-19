@@ -31,7 +31,7 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.random.RandomSVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
@@ -42,7 +42,7 @@ import org.junit.Test;
  * This test just ensures that the experiment runs without throwing any exception.
  */
 public class SVMHMMBrownPosDemoTest
-    extends JavaDemosTest_Base
+extends TestCaseSuperClass
 {
     SVMHMMBrownPosDemo javaExperiment;
     ParameterSpace pSpace;

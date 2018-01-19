@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 
-public class KerasLocator {
+public class KerasLocator extends TestCaseSuperClass {
 
 	public static String getEnvironment() throws Exception {
 

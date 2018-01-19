@@ -46,6 +46,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
@@ -66,7 +67,7 @@ import weka.classifiers.functions.SMO;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelUnitTest
+public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
     implements Constants
 {
     static String unitTrainFolder = "src/main/resources/data/brown_tei/";
@@ -75,8 +76,9 @@ public class WekaSaveAndLoadModelUnitTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
+    	super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelUnitTest.class.getSimpleName());
     }
 

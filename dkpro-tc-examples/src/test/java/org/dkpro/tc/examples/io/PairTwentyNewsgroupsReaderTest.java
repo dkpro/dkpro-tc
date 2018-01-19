@@ -27,22 +27,14 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.junit.Before;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
-import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
-
-public class PairTwentyNewsgroupsReaderTest
+public class PairTwentyNewsgroupsReaderTest extends TestCaseSuperClass
 {
-    @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
 
     @Test
     public void testPairTwentyNewsgroupsCorpusReader()

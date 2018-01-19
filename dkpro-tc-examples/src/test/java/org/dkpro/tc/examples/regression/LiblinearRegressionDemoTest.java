@@ -27,8 +27,8 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
 import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import org.junit.Test;
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class LiblinearRegressionDemoTest extends JavaDemosTest_Base
+public class LiblinearRegressionDemoTest extends TestCaseSuperClass
 {
     ParameterSpace pSpace;
     LiblinearRegressionDemo experiment;

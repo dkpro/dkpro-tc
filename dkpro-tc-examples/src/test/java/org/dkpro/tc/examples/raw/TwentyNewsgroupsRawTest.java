@@ -18,15 +18,14 @@
  */
 package org.dkpro.tc.examples.raw;
 
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Test;
-import org.dkpro.tc.examples.raw.TwentyNewsgroupsRaw;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class TwentyNewsgroupsRawTest extends JavaDemosTest_Base
+public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
 {
 
     @Test

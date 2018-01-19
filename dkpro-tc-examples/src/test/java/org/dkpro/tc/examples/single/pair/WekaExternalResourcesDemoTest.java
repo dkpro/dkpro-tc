@@ -19,16 +19,15 @@
 package org.dkpro.tc.examples.single.pair;
 
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.examples.single.pair.WekaExternalResourceDemo;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class WekaExternalResourcesDemoTest extends JavaDemosTest_Base
+public class WekaExternalResourcesDemoTest extends TestCaseSuperClass
 {
     WekaExternalResourceDemo javaExperiment;
     ParameterSpace pSpace;

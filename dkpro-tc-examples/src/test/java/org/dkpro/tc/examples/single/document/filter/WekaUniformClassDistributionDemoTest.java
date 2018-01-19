@@ -19,16 +19,15 @@
 package org.dkpro.tc.examples.single.document.filter;
 
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.examples.single.document.filter.WekaUniformClassDistributionDemo;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class WekaUniformClassDistributionDemoTest extends JavaDemosTest_Base
+public class WekaUniformClassDistributionDemoTest extends TestCaseSuperClass
 {
     WekaUniformClassDistributionDemo javaExperiment;
     ParameterSpace pSpace;

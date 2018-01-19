@@ -45,6 +45,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -66,7 +67,7 @@ import weka.classifiers.bayes.NaiveBayes;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentSingleLabelTest
+public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
@@ -77,8 +78,9 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
+    	super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
     }
 

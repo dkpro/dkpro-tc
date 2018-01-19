@@ -19,24 +19,22 @@
 package org.dkpro.tc.examples.multi.document;
 
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.dkpro.tc.examples.multi.document.MekaComplexConfigurationMultiDemo;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  * 
  */
-public class MekaWekaComplexConfigurationMultiDemoTest extends JavaDemosTest_Base
+public class MekaWekaComplexConfigurationMultiDemoTest extends TestCaseSuperClass
 {
     MekaComplexConfigurationMultiDemo javaExperiment;
     ParameterSpace pSpace;
     
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
         

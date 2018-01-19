@@ -24,20 +24,13 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.examples.io.ReutersCorpusReader;
-import org.junit.Before;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
-public class ReutersCorpusReaderTest
+public class ReutersCorpusReaderTest extends TestCaseSuperClass
 {
-    @Before
-    public void setupLogging()
-    {
-        System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-    }
-    
     @Test
     public void testReutersCorpusReader()
         throws Exception

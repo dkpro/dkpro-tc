@@ -44,6 +44,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.STSReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
@@ -63,7 +64,7 @@ import weka.classifiers.functions.SMOreg;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentPairRegression
+public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperClass
     implements Constants
 {
     static String pairTrainFiles = "src/main/resources/data/sts2012/STS.input.MSRpar.txt";
@@ -73,8 +74,9 @@ public class WekaSaveAndLoadModelDocumentPairRegression
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
+    	super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentPairRegression.class.getSimpleName());
     }
 

@@ -46,6 +46,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
@@ -67,7 +68,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
  * This demo demonstrates the usage of the sequence classifier CRFsuite which
  * uses Conditional Random Fields (CRF).
  */
-public class CRFSuiteSaveAndLoadModelTest implements Constants {
+public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements Constants {
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
@@ -75,7 +76,8 @@ public class CRFSuiteSaveAndLoadModelTest implements Constants {
 	public Set<String> postags = new HashSet<>();
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		super.setup();
 		postags.add("NN");
 		postags.add("JJ");
 		postags.add("NP");

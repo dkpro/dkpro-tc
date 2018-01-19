@@ -47,6 +47,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -66,7 +67,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
+public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twitter/train";
@@ -77,8 +78,9 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
-    public void setup()
+    public void setup() throws Exception
     {
+    	super.setup();
         DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
     }
 

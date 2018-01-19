@@ -30,8 +30,8 @@ import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
@@ -41,7 +41,7 @@ import org.junit.Test;
  * This test just ensures that the experiment runs without throwing any exception.
  */
 public class LibsvmTwentyNewsgroupsTest
-    extends JavaDemosTest_Base
+extends TestCaseSuperClass
 {
     LibsvmTwentyNewsgroups javaExperiment;
     ParameterSpace pSpace;

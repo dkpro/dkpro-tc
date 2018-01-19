@@ -28,20 +28,22 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearning4jDocumentTrainTest;
 import org.dkpro.tc.examples.deeplearning.dl4j.seq.DeepLearningDl4jSeq2SeqTrainTest;
 import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Dl4jTest
+public class Dl4jTest extends TestCaseSuperClass
 {
     LabFolderTrackerReport folderTracker;
     
     @Before
-    public void setup(){
-        folderTracker = new LabFolderTrackerReport();
-    }
+	public void setup() throws Exception {
+		super.setup();
+		folderTracker = new LabFolderTrackerReport();
+	}
     
     @Test
     public void runSequenceTest()

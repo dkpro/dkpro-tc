@@ -19,10 +19,12 @@
 package org.dkpro.tc.examples.crossvalidation;
 
 import org.dkpro.lab.engine.ExecutionException;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Test;
 
-public class TestWekaManualFoldCrossValidation
+public class TestWekaManualFoldCrossValidation extends TestCaseSuperClass
 {
+	
     /*
      * We request more folds than we have files (2) because we set 'manualMode' to true we expect an exception 
      */

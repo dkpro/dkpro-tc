@@ -18,15 +18,14 @@
  */
 package org.dkpro.tc.examples.raw;
 
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.junit.Test;
-import org.dkpro.tc.examples.raw.TwitterSentimentRaw;
-import org.dkpro.tc.examples.utils.JavaDemosTest_Base;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class TwitterSentimentRawTest extends JavaDemosTest_Base
+public class TwitterSentimentRawTest extends TestCaseSuperClass
 {
 
     @Test
