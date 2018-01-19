@@ -25,6 +25,7 @@ import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.FM_UNIT;
+import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
 
 import java.io.File;
 import java.io.IOException;
@@ -218,7 +219,7 @@ public class MetaInfoTask
         throws ResourceInitializationException
     {
         try {
-            if (featureMode.equals(FM_UNIT)) {
+            if (featureMode.equals(FM_UNIT) || featureMode.equals(FM_DOCUMENT)) {
                 // add additional unit context meta collector that extracts the context around text
                 // classification units
                 // mainly used for error analysis purposes
