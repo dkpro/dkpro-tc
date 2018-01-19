@@ -165,7 +165,7 @@ public class ExtractFeaturesConnectorTest
 
         // we do not need parameters here, but in case we do :)
         Object[] parameters = new Object[] { NoopFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME,
-                "123", UnitContextMetaCollector.PARAM_CONTEXT_FILE, Constants.ID_CONTEXT_KEY };
+                "123", UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, Constants.ID_CONTEXT_KEY };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(NoopFeatureExtractor.class, parameters);

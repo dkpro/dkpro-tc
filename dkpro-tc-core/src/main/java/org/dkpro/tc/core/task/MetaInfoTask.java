@@ -23,9 +23,9 @@ import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
+import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.FM_UNIT;
-import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -219,28 +220,34 @@ public class MetaInfoTask
         throws ResourceInitializationException
     {
         try {
-            if (featureMode.equals(FM_UNIT) || featureMode.equals(FM_DOCUMENT)) {
-                // add additional unit context meta collector that extracts the context around text
-                // classification units
-                // mainly used for error analysis purposes
-                Map<String, Object> empty = new HashMap<>();
-                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
-                        UnitContextMetaCollector.class, empty).addStorageMapping(
-                                UnitContextMetaCollector.PARAM_CONTEXT_FILE, null,
-                                UnitContextMetaCollector.CONTEXT_KEY);
-                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
-                        AccessMode.READWRITE);
+			if (featureMode.equals(FM_UNIT) || featureMode.equals(FM_DOCUMENT)) {
+				// add additional unit context meta collector that extracts the
+				// context around text
+				// classification units
+				// mainly used for error analysis purposes
+				Map<String, Object> empty = new HashMap<>();
+				MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class, empty);
 
-                return conf.descriptor;
-            }
+				int rnd = new Random().nextInt();
+				String val = new String("" + (rnd > 0 ? rnd : rnd * -1));
+				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
+				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
+				configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
+						AccessMode.READWRITE);
+
+				return conf.descriptor;
+			}
 
             if (featureMode.equals(FM_SEQUENCE)) {
                 Map<String, Object> empty = new HashMap<>();
                 MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
-                        SequenceContextMetaCollector.class, empty).addStorageMapping(
-                                SequenceContextMetaCollector.PARAM_CONTEXT_FILE, null,
-                                SequenceContextMetaCollector.CONTEXT_KEY);
+                        SequenceContextMetaCollector.class, empty);
 
+                int rnd = new Random().nextInt();
+				String val = new String("" + (rnd > 0 ? rnd : rnd * -1));
+				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
+				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
+                
                 configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
                         AccessMode.READWRITE);
                 return conf.descriptor;

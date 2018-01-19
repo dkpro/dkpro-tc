@@ -36,9 +36,9 @@ import org.dkpro.tc.api.features.meta.MetaCollector;
 public abstract class ContextMetaCollector_ImplBase
     extends MetaCollector
 {
-    public static final String PARAM_CONTEXT_FILE = "contextFile";
-    @ConfigurationParameter(name = PARAM_CONTEXT_FILE, mandatory = true)
-    protected File contextFile;
+    public static final String PARAM_CONTEXT_FOLDER = "contextFolder";
+    @ConfigurationParameter(name = PARAM_CONTEXT_FOLDER, mandatory = true)
+    protected File folder;
 
     public static final String CONTEXT_KEY = "id2context.txt";
     
@@ -52,7 +52,7 @@ public abstract class ContextMetaCollector_ImplBase
         super.initialize(context);
 
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile),
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, CONTEXT_KEY)),
                     "utf-8"));
         }
         catch (Exception e) {

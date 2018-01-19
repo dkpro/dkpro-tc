@@ -47,7 +47,7 @@ public class ContextCollectorUFE
 {
     public static final int CONTEXT_WIDTH = 30;
 
-    @ConfigurationParameter(name = UnitContextMetaCollector.PARAM_CONTEXT_FILE, mandatory = true)
+    @ConfigurationParameter(name = UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, mandatory = true)
     private File contextFile;
 
     private BufferedWriter bw;

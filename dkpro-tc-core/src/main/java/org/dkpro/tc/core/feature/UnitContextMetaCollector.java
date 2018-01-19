@@ -17,8 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
+import java.io.IOException;
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /** A dummy meta-collector which merely sets up the correct file path
  * for the context file. This is required by the {@link ContextCollectorUFE},
@@ -30,7 +35,12 @@ public class UnitContextMetaCollector
     
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		// Intentionally do nothing here.
+		DocumentMetaData dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+		try {
+			bw.write(dmd.getDocumentId() + "\t" + aJCas.getDocumentText()+"\n");
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 	
 }
