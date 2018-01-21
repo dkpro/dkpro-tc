@@ -17,9 +17,15 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.BatchReportBase;
@@ -51,6 +57,93 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieves the training data folder of a train-test run. Behavior is 
+	 * undefined if called during cross-validation
+	 * 
+	 * @return
+	 * 		file of the training data folder
+	 * @throws IOException
+	 * 		in case of error
+	 */
+	protected File getTrainDataFolder() throws IOException {
+		StorageService store = getContext().getStorageService();
+
+		for (TaskContextMetadata subcontext : getSubtasks()) {
+			if (TcTaskTypeUtil.isFeatureExtractionTrainTask(store, subcontext.getId())) {
+				File folder = store.locateKey(subcontext.getId(), "");
+				return folder;
+			}
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Retrieves the test data folder of a train-test run. Behavior is 
+	 * undefined if called during cross-validation
+	 * 
+	 * @return
+	 * 		file of the test data folder
+	 * @throws IOException
+	 * 		in case of error
+	 */
+	protected File getTestDataFolder() throws IOException {
+		StorageService store = getContext().getStorageService();
+
+		for (TaskContextMetadata subcontext : getSubtasks()) {
+			if (TcTaskTypeUtil.isFeatureExtractionTestTask(store, subcontext.getId())) {
+				File folder = store.locateKey(subcontext.getId(), "");
+				return folder;
+			}
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Loads a mapping from the numeric values to their corresponding label. The mapping is retrieved from the header of the id2outcome result file.
+	 * The map is empty for regression which has no mapping.
+	 * @return
+	 * 			a hashmap with a integer to string mapping
+	 * @throws Exception
+	 * 			in case of error
+	 */
+	protected Map<String, String> getInteger2LabelMapping() throws Exception{
+		
+		File id2Outcome = getId2Outcome();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2Outcome), "utf-8"));
+		
+		String line = null;
+		while((line=reader.readLine())!=null){
+			if(line.startsWith("#labels")){
+				break;
+			}
+			if(line.startsWith("#")){
+				continue;
+			}
+			break;
+		}
+		reader.close();
+		
+		line=line.replaceAll("#labels", "").trim();
+		
+		if(line.isEmpty()){
+			//regression mode has no mapping
+			return new HashMap<>();
+		}
+		
+		
+		Map<String, String> m = new HashMap<>();
+		String[] entries = line.split(" ");
+		for(String e : entries){
+			String[] intLabel = e.split("=");
+			m.put(intLabel[0], intLabel[1]);
+		}
+		
+		return m;
 	}
 
 	/**
