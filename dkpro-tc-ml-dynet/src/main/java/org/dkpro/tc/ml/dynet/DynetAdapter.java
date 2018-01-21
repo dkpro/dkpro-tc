@@ -42,7 +42,7 @@ public class DynetAdapter
     @Override
     public int lowestIndex()
     {
-        return 0;
+        return 1;
     }
 
     @Override
