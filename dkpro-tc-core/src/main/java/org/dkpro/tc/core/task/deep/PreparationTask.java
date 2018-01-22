@@ -17,18 +17,19 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.deep;
 
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
 import static org.dkpro.tc.core.DeepLearningConstants.FILENAME_MAXIMUM_LENGTH;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +45,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.core.task.deep.anno.DictionaryMappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorDocument2Label;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorSequence2Label;
@@ -84,7 +84,7 @@ public class PreparationTask extends UimaTaskBase {
 	private boolean integerVectorization;
 	
 	@Discriminator(name = DIM_DICTIONARY_PATHS)
-	private String [] dictionaryLists;
+	private List<String> dictionaryLists;
 
 	private TcDeepLearningAdapter mlDeepLearningAdapter;
 
@@ -117,13 +117,15 @@ public class PreparationTask extends UimaTaskBase {
 					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX_INSTANCES,
 					mlDeepLearningAdapter.lowestIndex(),MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
 			
-//			if (dictionaryLists != null){
+			if (dictionaryLists != null && !dictionaryLists.isEmpty()){
 				
-//				builder.add
+				for(String d : dictionaryLists){
+					System.out.println(d);
+				}
 				
 //				builder.add(createEngineDescription(DictionaryMappingAnnotator.class, DictionaryMappingAnnotator.PARAM_DICTIONARY_PATHS, dictionaryLists,
 //						DictionaryMappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
-//			}
+			}
 			
 		}else{
 			builder.add(AnalysisEngineFactory.createEngineDescription(VocabularyOutcomeCollector.class,
