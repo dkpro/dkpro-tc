@@ -24,6 +24,7 @@ import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
+import static org.dkpro.tc.core.DeepLearningConstants.FILENAME_MAXIMUM_LENGTH;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,6 +118,9 @@ public class PreparationTask extends UimaTaskBase {
 					mlDeepLearningAdapter.lowestIndex(),MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
 			
 //			if (dictionaryLists != null){
+				
+//				builder.add
+				
 //				builder.add(createEngineDescription(DictionaryMappingAnnotator.class, DictionaryMappingAnnotator.PARAM_DICTIONARY_PATHS, dictionaryLists,
 //						DictionaryMappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
 //			}
@@ -160,7 +164,7 @@ public class PreparationTask extends UimaTaskBase {
 
 	private void writeExpectedMaximumLengthFile(File folder) throws ResourceInitializationException {
 		try {
-			FileUtils.writeStringToFile(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
+			FileUtils.writeStringToFile(new File(folder, FILENAME_MAXIMUM_LENGTH),
 					maximumLength.toString(), "utf-8");
 		} catch (IOException e) {
 			throw new ResourceInitializationException(e);
