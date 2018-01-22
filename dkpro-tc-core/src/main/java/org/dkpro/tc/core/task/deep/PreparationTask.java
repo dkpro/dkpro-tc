@@ -18,8 +18,12 @@
 package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,8 +42,8 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.core.task.deep.anno.DictionaryMappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorDocument2Label;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorSequence2Label;
@@ -66,7 +70,7 @@ public class PreparationTask extends UimaTaskBase {
 	@Discriminator(name = Constants.DIM_FEATURE_MODE)
 	private String mode;
 
-	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+	@Discriminator(name = DIM_MAXIMUM_LENGTH)
 	private Integer maximumLength;
 
 	@Discriminator(name = DIM_FILES_ROOT)
@@ -75,8 +79,11 @@ public class PreparationTask extends UimaTaskBase {
 	@Discriminator(name = DIM_FILES_TRAINING)
 	private Collection<String> files_training;
 
-	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
+	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
 	private boolean integerVectorization;
+	
+	@Discriminator(name = DIM_DICTIONARY_PATHS)
+	private String [] dictionaryLists;
 
 	private TcDeepLearningAdapter mlDeepLearningAdapter;
 
@@ -105,9 +112,15 @@ public class PreparationTask extends UimaTaskBase {
 		AggregateBuilder builder = new AggregateBuilder();
 
 		if (integerVectorization) {
-			builder.add(AnalysisEngineFactory.createEngineDescription(MappingAnnotator.class,
+			builder.add(createEngineDescription(MappingAnnotator.class,
 					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX_INSTANCES,
 					mlDeepLearningAdapter.lowestIndex(),MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
+			
+//			if (dictionaryLists != null){
+//				builder.add(createEngineDescription(DictionaryMappingAnnotator.class, DictionaryMappingAnnotator.PARAM_DICTIONARY_PATHS, dictionaryLists,
+//						DictionaryMappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
+//			}
+			
 		}else{
 			builder.add(AnalysisEngineFactory.createEngineDescription(VocabularyOutcomeCollector.class,
 					VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));
@@ -128,15 +141,15 @@ public class PreparationTask extends UimaTaskBase {
 
 			writeExpectedMaximumLengthFile(folder);
 
-			return AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class);
+			return createEngineDescription(NoOpAnnotator.class);
 		}
 
 		switch (mode) {
 		case Constants.FM_DOCUMENT:
-			return AnalysisEngineFactory.createEngineDescription(MaximumLengthAnnotatorDocument2Label.class,
+			return createEngineDescription(MaximumLengthAnnotatorDocument2Label.class,
 					MaximumLengthAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, folder);
 		case Constants.FM_SEQUENCE:
-			return AnalysisEngineFactory.createEngineDescription(MaximumLengthAnnotatorSequence2Label.class,
+			return createEngineDescription(MaximumLengthAnnotatorSequence2Label.class,
 					MaximumLengthAnnotatorSequence2Label.PARAM_TARGET_DIRECTORY, folder);
 		default:
 			throw new ResourceInitializationException(

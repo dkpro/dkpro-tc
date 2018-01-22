@@ -94,4 +94,9 @@ public interface DeepLearningConstants
      */
     static final String DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING = "useOnlyVocabularyContainedInEmbedding";
 
+    /**
+     * Path to tab-separated lookup lists
+     */
+	static final String DIM_DICTIONARY_PATHS = "dictionaryPaths";
+
 }
