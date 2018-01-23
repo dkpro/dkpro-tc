@@ -30,4 +30,5 @@ public interface PythonConstants
     static final String EMBEDDING = "--embedding";
     static final String MAX_LEN = "--maxLen";
     static final String PREDICTION_OUT = "--predictionOut";
+	static final String DICTIONARIES = "--dictionaries";
 }

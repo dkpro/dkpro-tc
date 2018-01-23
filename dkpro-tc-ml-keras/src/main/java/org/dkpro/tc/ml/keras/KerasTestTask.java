@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.keras;
 
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,20 +45,26 @@ public class KerasTestTask
     extends ExecutableTaskBase
     implements Constants
 {
-    @Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
+    @Discriminator(name = DIM_PYTHON_INSTALLATION)
     private String python;
     
-    @Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
+    @Discriminator(name = DIM_USER_CODE)
     private String userCode;
     
-    @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+    @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
     
-    @Discriminator(name = Constants.DIM_BIPARTITION_THRESHOLD)
+    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     private Double biPartitionMultiLabel;
     
-	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
+	@Discriminator(name = DIM_SEED_VALUE)
 	private String randomSeed;
+	
+	@Discriminator(name = DIM_DICTIONARY_PATHS)
+	private List<String> dictionaries;
+	
+	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
+	private boolean intVectorization;
 
     @Override
     public void execute(TaskContext aContext)
@@ -106,6 +119,14 @@ public class KerasTestTask
 			command.add(PythonConstants.SEED);
 			command.add(randomSeed);
 		}
+
+		if (dictionaries!=null && dictionaries.size()>0){
+			List<String> dicts = retrieveDictionaryPaths(aContext);
+			command.add(PythonConstants.DICTIONARIES);
+			for(String d : dicts){
+				command.add(d);
+			}
+		}
         
         command.add(PythonConstants.MAX_LEN);
         command.add(maxLen);
@@ -116,7 +137,34 @@ public class KerasTestTask
         return command;
     }
 
-    /**
+	/**
+	 * Returns the file pointer to the integer-mapped version of the dictionary
+	 * if integer mapping is used otherwise the unaltered version
+	 * @param aContext 
+	 * 
+	 * @return
+	 * 		dictionary paths
+	 */
+	private List<String> retrieveDictionaryPaths(TaskContext aContext) {
+
+		List<String> dicts = new ArrayList<>();
+
+		if (intVectorization) {
+			for (int i = 0; i < dictionaries.size(); i += 2) {
+				File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
+				String name = new File(dictionaries.get(i)).getName();
+				dicts.add(new File(folder, name).getAbsolutePath());
+			}
+		} else {
+			for (int i = 0; i < dictionaries.size(); i += 2) {
+				dicts.add(dictionaries.get(i));
+			}
+		}
+
+		return dicts;
+	}
+
+	/**
 	 * Returns the maximum length which is either user defined and might be
 	 * shorter than the actual longest sequence, or is the longest sequence in
 	 * the data if no value is provided
