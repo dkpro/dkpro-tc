@@ -562,7 +562,7 @@
               <strictCheck>true</strictCheck>
               <properties>
                 <inceptionYear>${project.inceptionYear}</inceptionYear>
-                <currentYear>2017</currentYear>
+                <currentYear>2018</currentYear>
               </properties>
               <excludes>
                 <exclude>release.properties</exclude>
