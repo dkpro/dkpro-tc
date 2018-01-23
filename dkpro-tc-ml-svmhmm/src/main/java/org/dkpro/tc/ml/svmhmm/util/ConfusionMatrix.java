@@ -1,7 +1,7 @@
 package org.dkpro.tc.ml.svmhmm.util;
 
 /*
- * Copyright 2017
+ * Copyright 2018
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *
