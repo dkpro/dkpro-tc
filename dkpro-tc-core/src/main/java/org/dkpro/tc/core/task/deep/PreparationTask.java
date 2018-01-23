@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
+import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
@@ -49,6 +50,7 @@ import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorDocument2Label;
 import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorSequence2Label;
 import org.dkpro.tc.core.task.deep.anno.VocabularyOutcomeCollector;
+import org.dkpro.tc.core.task.deep.anno.res.LookupResourceAnnotator;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -119,8 +121,14 @@ public class PreparationTask extends UimaTaskBase {
 			
 			if (dictionaryLists != null && !dictionaryLists.isEmpty()){
 				
-				for(String d : dictionaryLists){
-					System.out.println(d);
+				sanityCheckDictionaries(dictionaryLists);
+				
+				for(int i=0; i < dictionaryLists.size(); i+=2){
+					
+					Class<? extends AnalysisComponent> cast = castName(dictionaryLists.get(i+1));
+					builder.add(createEngineDescription(cast, 
+							LookupResourceAnnotator.PARAM_DICTIONARY_PATH, dictionaryLists.get(i),
+							LookupResourceAnnotator.PARAM_TARGET_DIRECTORY, folder));
 				}
 				
 //				builder.add(createEngineDescription(DictionaryMappingAnnotator.class, DictionaryMappingAnnotator.PARAM_DICTIONARY_PATHS, dictionaryLists,
@@ -135,6 +143,22 @@ public class PreparationTask extends UimaTaskBase {
 		builder.add(getMaximumLengthDeterminer(folder));
 		return builder.createAggregateDescription();
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends AnalysisComponent> castName(String annotatorName) throws ResourceInitializationException {
+		try {
+			return  (Class<? extends AnalysisComponent>) Class.forName(annotatorName);
+		} catch (ClassNotFoundException e) {
+			throw new ResourceInitializationException(e);
+		}
+	}
+
+	private void sanityCheckDictionaries(List<String> dictionaryLists) {
+		if(dictionaryLists.size() % 2 != 0){
+			throw new IllegalStateException(
+					"Dictionaries are pairs of the dicitonary file and a processing UIMA component for the format of the dictionary, i.e. [dicPath, UIMA.class.getName, dictPath2, UIMA.class]");
+		}
 	}
 
 	private AnalysisEngineDescription getMaximumLengthDeterminer(File folder) throws ResourceInitializationException {
