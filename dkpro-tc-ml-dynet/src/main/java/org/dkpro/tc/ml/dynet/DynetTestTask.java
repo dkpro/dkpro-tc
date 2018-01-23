@@ -17,6 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.dynet;
 
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,20 +46,26 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 
 	private static final String DEFAULT_SEED = "123456789";
 
-	@Discriminator(name = DeepLearningConstants.DIM_PYTHON_INSTALLATION)
+	@Discriminator(name = DIM_PYTHON_INSTALLATION)
 	private String python;
 
-	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
+	@Discriminator(name = DIM_SEED_VALUE)
 	private String randomSeed;
 
-	@Discriminator(name = DeepLearningConstants.DIM_RAM_WORKING_MEMORY)
+	@Discriminator(name = DIM_RAM_WORKING_MEMORY)
 	private String workingMemory;
 
-	@Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
+	@Discriminator(name = DIM_USER_CODE)
 	private String userCode;
 
-	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+	@Discriminator(name = DIM_MAXIMUM_LENGTH)
 	private Integer maximumLength;
+	
+	@Discriminator(name = DIM_DICTIONARY_PATHS)
+	private List<String> dictionaries;
+	
+	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
+	private boolean intVectorization;
 	
 	@Discriminator(name = DyNetConstants.DIM_DYNET_DEVICES)
 	private String deviceIds;
@@ -66,7 +80,22 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 	public void execute(TaskContext aContext) throws Exception {
 		File kerasResultOut = getResultLocation(aContext);
 		List<String> command = buildTrainCommand(aContext, kerasResultOut);
+		dumpDebug(aContext, command);
 		train(command);
+	}
+
+	private void dumpDebug(TaskContext aContext, List<String> command) throws Exception {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (String c : command) {
+			sb.append(c + " ");
+		}
+		try {
+			FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE), sb.toString(), "utf-8");
+		} catch (IOException e) {
+			throw new Exception(e);
+		}
 	}
 
 	private File getResultLocation(TaskContext aContext) {
@@ -137,10 +166,46 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 		
         command.add(PythonConstants.MAX_LEN);
         command.add(maxLen);
+        
+    	if (dictionaries!=null && dictionaries.size()>0){
+			List<String> dicts = retrieveDictionaryPaths(aContext);
+			command.add(PythonConstants.DICTIONARIES);
+			for(String d : dicts){
+				command.add(d);
+			}
+		}
+        
         command.add(PythonConstants.PREDICTION_OUT);
         command.add(resultOut.getAbsolutePath());
 
 		return command;
+	}
+	
+	/**
+	 * Returns the file pointer to the integer-mapped version of the dictionary
+	 * if integer mapping is used otherwise the unaltered version
+	 * @param aContext 
+	 * 
+	 * @return
+	 * 		dictionary paths
+	 */
+	private List<String> retrieveDictionaryPaths(TaskContext aContext) {
+
+		List<String> dicts = new ArrayList<>();
+
+		if (intVectorization) {
+			for (int i = 0; i < dictionaries.size(); i += 2) {
+				File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
+				String name = new File(dictionaries.get(i)).getName();
+				dicts.add(new File(folder, name).getAbsolutePath());
+			}
+		} else {
+			for (int i = 0; i < dictionaries.size(); i += 2) {
+				dicts.add(dictionaries.get(i));
+			}
+		}
+
+		return dicts;
 	}
 	
 	 /**
