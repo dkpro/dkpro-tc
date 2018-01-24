@@ -72,8 +72,23 @@ public class KerasTestTask
     {
         File kerasResultOut = getResultLocation(aContext);
         List<String> command = buildTrainCommand(aContext, kerasResultOut);
+        dumpDebug(aContext, command);
         train(command);
     }
+    
+    private void dumpDebug(TaskContext aContext, List<String> command) throws Exception {
+
+		StringBuilder sb = new StringBuilder();
+
+		for (String c : command) {
+			sb.append(c + " ");
+		}
+		try {
+			FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE), sb.toString(), "utf-8");
+		} catch (IOException e) {
+			throw new Exception(e);
+		}
+	}
 
     private File getResultLocation(TaskContext aContext)
     {
