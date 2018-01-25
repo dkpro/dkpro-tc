@@ -18,8 +18,12 @@
 package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.dkpro.tc.core.Constants.*;
-import static org.dkpro.tc.core.DeepLearningConstants.*;
+import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
+import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
+import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +40,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.task.deep.anno.FilterVocabularyByEmbeddingAnnotator;
-import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 
@@ -140,10 +143,6 @@ public class InitTaskDeep
         builder.add(emptyProblemChecker);
         builder.add(preprocessing);
         builder.add(xmiWriter);
-        builder.add(createEngineDescription(IdentificationCollector.class,
-                IdentificationCollector.PARAM_TARGET_DIRECTORY, folder,
-                IdentificationCollector.PARAM_MODE, mode,
-                IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
 
         return builder.createAggregateDescription();
     }

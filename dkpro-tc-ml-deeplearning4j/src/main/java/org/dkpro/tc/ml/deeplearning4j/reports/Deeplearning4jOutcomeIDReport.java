@@ -176,7 +176,7 @@ public class Deeplearning4jOutcomeIDReport
 	}
 
 	private List<String> getNameOfTargets() throws IOException {
-		File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING,
+		File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST,
 				AccessMode.READONLY);
 		File targetIdMappingFile = new File(targetIdMappingFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
 

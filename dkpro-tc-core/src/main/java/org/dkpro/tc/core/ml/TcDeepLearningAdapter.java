@@ -31,13 +31,15 @@ public interface TcDeepLearningAdapter
      * Usually the init-test task to retrieve that document/instance N was document/instance
      * ABC.txt/walking
      */
-    public static final String TARGET_ID_MAPPING = "targetIdFolder";
+    public static final String TARGET_ID_MAPPING_TRAIN = "targetIdFolderTrain";
+    public static final String TARGET_ID_MAPPING_TEST = "targetIdFolderTest";
 
     public static final String EMBEDDING_FOLDER = "embeddingFolder";
 
     public static final String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
     
 	public static final String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
+
 
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the

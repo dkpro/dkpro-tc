@@ -43,7 +43,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationAnnotatorDocument2Regression extends JCasAnnotator_ImplBase {
+public class VectorizationDoc2Regression extends JCasAnnotator_ImplBase {
 	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
 	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
 	protected File targetFolder;

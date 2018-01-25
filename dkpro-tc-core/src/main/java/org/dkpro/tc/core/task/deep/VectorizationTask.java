@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.deep;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
@@ -31,6 +32,7 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
@@ -39,10 +41,11 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2MultiLabel;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2Regression;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorDocument2SingleLabel;
-import org.dkpro.tc.core.task.deep.anno.VectorizationAnnotatorSequence2SequenceOfLabel;
+import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
+import org.dkpro.tc.core.task.deep.anno.VectorizationDocDoc2MultiLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2Regression;
+import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2SingleLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationSeq2SeqOfLabel;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -96,47 +99,55 @@ public class VectorizationTask
             throw new ResourceInitializationException(
                     new IllegalStateException("Learning model is [null]"));
         }
+        
+        AggregateBuilder builder = new AggregateBuilder();
+        
+        //records which document ids are in the train / test set (this is not clear for cross-validation tasks)
+		builder.add(createEngineDescription(IdentificationCollector.class,
+				IdentificationCollector.PARAM_TARGET_DIRECTORY, outputDir, IdentificationCollector.PARAM_MODE,
+				featureMode, IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
 
-        switch (featureMode) {
-        case Constants.FM_DOCUMENT:
-            switch (learningMode) {
-            case Constants.LM_REGRESSION:
-                return AnalysisEngineFactory.createEngineDescription(
-                        VectorizationAnnotatorDocument2Regression.class,
-                        VectorizationAnnotatorDocument2Regression.PARAM_TARGET_DIRECTORY, outputDir,
-                        VectorizationAnnotatorDocument2Regression.PARAM_PREPARATION_DIRECTORY,
-                        mappingDir, VectorizationAnnotatorDocument2Regression.PARAM_TO_INTEGER,
-                        integerVectorization);
-            case Constants.LM_SINGLE_LABEL:
-                return AnalysisEngineFactory.createEngineDescription(
-                        VectorizationAnnotatorDocument2SingleLabel.class,
-                        VectorizationAnnotatorDocument2SingleLabel.PARAM_TARGET_DIRECTORY,
-                        outputDir,
-                        VectorizationAnnotatorDocument2SingleLabel.PARAM_PREPARATION_DIRECTORY,
-                        mappingDir, VectorizationAnnotatorDocument2SingleLabel.PARAM_TO_INTEGER,
-                        integerVectorization);
-            case Constants.LM_MULTI_LABEL:
-                return AnalysisEngineFactory.createEngineDescription(
-                        VectorizationAnnotatorDocument2MultiLabel.class,
-                        VectorizationAnnotatorDocument2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
-                        VectorizationAnnotatorDocument2MultiLabel.PARAM_PREPARATION_DIRECTORY,
-                        mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
-                        integerVectorization);
-            }
-        case Constants.FM_SEQUENCE:
-            return AnalysisEngineFactory.createEngineDescription(
-                    VectorizationAnnotatorSequence2SequenceOfLabel.class,
-                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_TARGET_DIRECTORY,
-                    outputDir,
-                    VectorizationAnnotatorSequence2SequenceOfLabel.PARAM_PREPARATION_DIRECTORY,
-                    mappingDir, VectorizationAnnotatorDocument2MultiLabel.PARAM_TO_INTEGER,
-                    integerVectorization);
-        default:
-            throw new ResourceInitializationException(
-                    new IllegalStateException("Combination of feature mode [" + featureMode
-                            + "] with learning mode [" + learningMode + "] not defined"));
-        }
+		AnalysisEngineDescription engine = null;
 
+		switch (featureMode) {
+		case Constants.FM_DOCUMENT:
+			switch (learningMode) {
+			case Constants.LM_REGRESSION:
+				engine = createEngineDescription(VectorizationDoc2Regression.class,
+						VectorizationDoc2Regression.PARAM_TARGET_DIRECTORY, outputDir,
+						VectorizationDoc2Regression.PARAM_PREPARATION_DIRECTORY, mappingDir,
+						VectorizationDoc2Regression.PARAM_TO_INTEGER, integerVectorization);
+				builder.add(engine);
+				break;
+			case Constants.LM_SINGLE_LABEL:
+				engine = createEngineDescription(VectorizationDoc2SingleLabel.class,
+						VectorizationDoc2SingleLabel.PARAM_TARGET_DIRECTORY, outputDir,
+						VectorizationDoc2SingleLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
+						VectorizationDoc2SingleLabel.PARAM_TO_INTEGER, integerVectorization);
+				builder.add(engine);
+				break;
+			case Constants.LM_MULTI_LABEL:
+				engine = AnalysisEngineFactory.createEngineDescription(VectorizationDocDoc2MultiLabel.class,
+						VectorizationDocDoc2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
+						VectorizationDocDoc2MultiLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
+						VectorizationDocDoc2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
+				builder.add(engine);
+				break;
+			}
+			break;
+		case Constants.FM_SEQUENCE:
+			engine = createEngineDescription(VectorizationSeq2SeqOfLabel.class,
+					VectorizationSeq2SeqOfLabel.PARAM_TARGET_DIRECTORY, outputDir,
+					VectorizationSeq2SeqOfLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
+					VectorizationDocDoc2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
+			builder.add(engine);
+			break;
+		default:
+			throw new ResourceInitializationException(new IllegalStateException("Combination of feature mode ["
+					+ featureMode + "] with learning mode [" + learningMode + "] not defined"));
+		}
+
+		return builder.createAggregateDescription();
     }
 
     @Override

@@ -292,10 +292,13 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 				Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 		learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
 				Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-		learningTask.addImport(initTask, InitTaskDeep.OUTPUT_KEY_TRAIN, TcDeepLearningAdapter.TARGET_ID_MAPPING);
+		
 		learningTask.addImport(embeddingTask, EmbeddingTask.OUTPUT_KEY, TcDeepLearningAdapter.EMBEDDING_FOLDER);
 		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.VECTORIZIATION_TRAIN_OUTPUT);
+		learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.TARGET_ID_MAPPING_TRAIN);
+		
 		learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT);
+		learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY, TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST);
 
 		// ================== CONFIG OF THE INNER BATCH TASK
 		// =======================

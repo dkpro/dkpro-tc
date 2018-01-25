@@ -43,7 +43,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationAnnotatorSequence2SequenceOfLabel
+public class VectorizationSeq2SeqOfLabel
     extends JCasAnnotator_ImplBase
 {
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";

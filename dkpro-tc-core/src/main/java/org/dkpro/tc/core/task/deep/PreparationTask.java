@@ -47,8 +47,8 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
-import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorDocument2Label;
-import org.dkpro.tc.core.task.deep.anno.MaximumLengthAnnotatorSequence2Label;
+import org.dkpro.tc.core.task.deep.anno.MaxLenDoc2Label;
+import org.dkpro.tc.core.task.deep.anno.MaxLenSeq2Label;
 import org.dkpro.tc.core.task.deep.anno.VocabularyOutcomeCollector;
 import org.dkpro.tc.core.task.deep.anno.res.LookupResourceAnnotator;
 
@@ -176,11 +176,11 @@ public class PreparationTask extends UimaTaskBase {
 
 		switch (mode) {
 		case Constants.FM_DOCUMENT:
-			return createEngineDescription(MaximumLengthAnnotatorDocument2Label.class,
-					MaximumLengthAnnotatorDocument2Label.PARAM_TARGET_DIRECTORY, folder);
+			return createEngineDescription(MaxLenDoc2Label.class,
+					MaxLenDoc2Label.PARAM_TARGET_DIRECTORY, folder);
 		case Constants.FM_SEQUENCE:
-			return createEngineDescription(MaximumLengthAnnotatorSequence2Label.class,
-					MaximumLengthAnnotatorSequence2Label.PARAM_TARGET_DIRECTORY, folder);
+			return createEngineDescription(MaxLenSeq2Label.class,
+					MaxLenSeq2Label.PARAM_TARGET_DIRECTORY, folder);
 		default:
 			throw new ResourceInitializationException(
 					new IllegalStateException("Mode [" + mode + "] not defined for deep learning experiements"));
