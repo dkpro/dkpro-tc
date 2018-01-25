@@ -31,7 +31,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.CRFSuiteBrownPosDemoSimpleDkproReader;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.junit.Before;

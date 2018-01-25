@@ -35,6 +35,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
@@ -50,13 +51,12 @@ public class KerasDocumentCrossValidation implements Constants {
 		// DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
 		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		ParameterSpace pSpace = getParameterSpace();
+		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-		KerasDocumentCrossValidation experiment = new KerasDocumentCrossValidation();
-		experiment.runCrossValidation(pSpace);
+		KerasDocumentCrossValidation.runCrossValidation(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
+	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		// train/test will use both, while cross-validation will only use the
 		// train part
@@ -85,19 +85,20 @@ public class KerasDocumentCrossValidation implements Constants {
 	}
 
 	// ##### TRAIN-TEST #####
-	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
+	public static void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
 		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasCrossValidation",
 				KerasAdapter.class, 2);
 		batch.setPreprocessing(getPreprocessing());
 		batch.setParameterSpace(pSpace);
+		batch.addReport(ContextMemoryReport.class);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run
 		Lab.getInstance().run(batch);
 	}
 
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
 		return createEngineDescription(BreakIteratorSegmenter.class);
 	}
 }

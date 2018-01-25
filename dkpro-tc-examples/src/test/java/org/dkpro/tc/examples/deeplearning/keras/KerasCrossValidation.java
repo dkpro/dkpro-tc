@@ -16,29 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.deeplearning.dynet;
+package org.dkpro.tc.examples.deeplearning.keras;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.deeplearning.KerasLocator;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.CvContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.junit.Test;
 
-public class DyNetDocumentTest extends KerasLocator {
+public class KerasCrossValidation extends KerasLocator {
 	@Test
 	public void runTest() throws Exception {
 
-		DemoUtils.setDkproHome(DynetDocumentTrainTest.class.getSimpleName());
-
-		ContextMemoryReport.key = DynetTestTask.class.getName();
+		DemoUtils.setDkproHome(KerasDocumentCrossValidation.class.getSimpleName());
 
 		boolean testConditon = true;
 		String python3 = null;
@@ -48,15 +44,14 @@ public class DyNetDocumentTest extends KerasLocator {
 			System.err.println("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
-		
-		if (testConditon) {
-			ParameterSpace ps = DynetSeq2SeqTrainTest.getParameterSpace(python3);
-			DynetSeq2SeqTrainTest.runTrainTest(ps);
 
-			Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-			EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-			Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-			assertTrue(result > 0.1);
+		if (testConditon) {
+			ParameterSpace ps = KerasDocumentCrossValidation.getParameterSpace(python3);
+			KerasDocumentCrossValidation.runCrossValidation(ps);
+			
+			assertEquals(2, CvContextMemoryReport.mlaAdapters);
+			assertTrue(new File(CvContextMemoryReport.mlaAdapters.get(0)+"/" + Constants.ID_OUTCOME_KEY).exists());
+			assertTrue(new File(CvContextMemoryReport.mlaAdapters.get(1)+"/" + Constants.ID_OUTCOME_KEY).exists());
 		}
 	}
 }

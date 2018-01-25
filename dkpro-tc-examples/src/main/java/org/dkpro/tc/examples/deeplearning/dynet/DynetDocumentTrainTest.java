@@ -31,7 +31,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
 

@@ -27,7 +27,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.deeplearning.KerasLocator;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.keras.KerasTestTask;
 import org.junit.Test;

@@ -31,7 +31,7 @@ import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
 import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
 import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.single.sequence.ContextMemoryReport;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
