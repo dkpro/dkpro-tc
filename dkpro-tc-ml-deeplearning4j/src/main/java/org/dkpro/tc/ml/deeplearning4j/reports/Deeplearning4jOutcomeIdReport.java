@@ -32,47 +32,69 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.deep.PreparationTask;
+import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class Deeplearning4jOutcomeIDReport
-    extends ReportBase
-{
+public class Deeplearning4jOutcomeIdReport extends ReportBase {
 
 	/**
 	 * Character that is used for separating fields in the output file
 	 */
 	public static final String SEPARATOR_CHAR = ";";
 
-	private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
+	private String THRESHOLD = "-1";
+
+	int counter = 0;
 
 	@Override
 	public void execute() throws Exception {
 
-		String string = getDiscriminators()
-				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER);
-		boolean isIntegerMode = Boolean.valueOf(string);
+		boolean isMultiLabel = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_MULTI_LABEL);
 
-		Map<String, String> map = loadMap(isIntegerMode);
+		boolean isRegression = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_REGRESSION);
 
-		StringBuilder header = new StringBuilder();
-		header.append("labels ");
-
-		List<String> sortedKeys = new ArrayList<>(map.keySet());
-		Collections.sort(sortedKeys);
-		for (String m : sortedKeys) {
-			Integer val = Integer.valueOf(map.get(m));
-			header.append(val + "=" + m + " ");
+		if (isMultiLabel) {
+			THRESHOLD = getDiscriminators()
+					.get(Deeplearning4jTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
 		}
 
-		File file = getContext().getFile(Deeplearning4jTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
+				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
+
+		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
+
+		Map<String, String> map = loadMap(isIntegerMode);
+		Map<String, String> inverseMap = inverseMap(map);
+
+		StringBuilder header = new StringBuilder();
+		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
+
+		List<String> k = new ArrayList<>(map.keySet());
+		for (Integer i = 0; i < map.keySet().size(); i++) {
+			if (!isRegression) {
+				if (isIntegerMode) {
+					header.append(inverseMap.get(i+"") + "=" + i);
+				} else {
+					header.append(map.get(i+"") + "=" + i);
+				}
+				if (i + 1 < k.size()) {
+					header.append(" ");
+				}
+			}
+		}
 
 		List<String> nameOfTargets = getNameOfTargets();
 
@@ -87,39 +109,84 @@ public class Deeplearning4jOutcomeIDReport
 				// targets files
 				continue;
 			}
-			if (p.isEmpty()) {
+			if (p.trim().isEmpty()) {
 				shift++;
 				continue;
 			}
 
-			String id = nameOfTargets.get(i - shift);
+			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)) ? nameOfTargets.get(i - shift)
+					: ("" + (counter++));
 
 			String[] split = p.split("\t");
 
+			if (isMultiLabel) {
+				multilabelReport(id, split, isIntegerMode, prop, map);
+				continue;
+			}
+
 			String gold = null;
 			String prediction = null;
-			if (isIntegerMode) {
-				// Keras starts counting at 1 for 'content' - zero is reserved
-				// as padding value - we have to shift-correct the index
-				Integer v = Integer.valueOf(Integer.valueOf(split[0]));
-				gold = v.toString();
-				v = Integer.valueOf(Integer.valueOf(split[1]));
-				prediction = v.toString();
+
+			if (isRegression) {
+				gold = split[0];
+				prediction = split[1];
 			} else {
-				// we have non-integer labels so we have to map them to integers
-				// for creating the id2outcome data format
-				gold = map.get(split[0]).toString();
-				prediction = map.get(split[1]).toString();
+				if (isIntegerMode) {
+					gold = split[0];
+					prediction = split[1];
+				} else {
+					gold = map.get(split[0]).toString();
+					prediction = map.get(split[1]).toString();
+				}
 			}
-			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
+			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}
-		
-		header.append("\nToken\tPrediction\tGold");
 
 		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
+	}
+
+	private Map<String, String> inverseMap(Map<String, String> map) {
+		HashMap<String, String> inverseMap = new HashMap<>();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			inverseMap.put(entry.getValue(), entry.getKey());
+		}
+		return inverseMap;
+	}
+
+	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,
+			Map<String, String> map) {
+
+		String gold = null;
+		String prediction = null;
+		if (isIntegerMode) {
+			String[] s = split[0].split(" ");
+			gold = StringUtils.join(s, ",");
+
+			s = split[1].split(" ");
+			prediction = StringUtils.join(s, ",");
+		} else {
+			String[] s = split[0].split(" ");
+			gold = label2String(s, map);
+
+			s = split[1].split(" ");
+			prediction = label2String(s, map);
+		}
+		prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "0.5");
+	}
+
+	private String label2String(String[] val, Map<String, String> map) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < val.length; i++) {
+			String e = val[i];
+			sb.append(map.get(e.toString()));
+			if (i + 1 < val.length) {
+				sb.append(",");
+			}
+		}
+		return sb.toString().trim();
 	}
 
 	private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
@@ -139,7 +206,7 @@ public class Deeplearning4jOutcomeIDReport
 			return m;
 		}
 
-		File file = getContext().getFile(Deeplearning4jTestTask.PREDICTION_FILE, AccessMode.READONLY);
+		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> readLines = FileUtils.readLines(file, "utf-8");
 
 		Set<String> keys = new HashSet<>();
@@ -202,4 +269,5 @@ public class Deeplearning4jOutcomeIDReport
 
 		return t;
 	}
+
 }
