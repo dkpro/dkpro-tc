@@ -30,7 +30,7 @@ import java.util.Set;
 
 import org.dkpro.tc.core.Constants;
 
-public class AIDE2OutcomeAggregator<T> {
+public class ID2OutcomeAggregator<T> {
 
 	List<String> names;
 	List<Double> thresholds;
@@ -40,8 +40,9 @@ public class AIDE2OutcomeAggregator<T> {
 	private String mode;
 
 	Set<String> uniqueNames = new HashSet<>();
+	Map<String,String> multilabelIndexMapping;
 
-	public AIDE2OutcomeAggregator(String mode) {
+	public ID2OutcomeAggregator(String mode) {
 		this.mode = mode;
 		names = new ArrayList<>();
 		thresholds = new ArrayList<>();
@@ -49,6 +50,7 @@ public class AIDE2OutcomeAggregator<T> {
 		prediction = new ArrayList<>();
 
 		uniqueNames = new HashSet<>();
+		multilabelIndexMapping = new HashMap<>();
 	}
 
 	public void add(File id2OutcomeFile, String mode) throws Exception {
@@ -72,10 +74,6 @@ public class AIDE2OutcomeAggregator<T> {
 			throw new IllegalArgumentException("Unknown learning mode ["+mode+"]");
 		}
 
-	}
-
-	private void processMultilabel(File id2OutcomeFile) {
-		
 	}
 
 	private void processRegression(File id2OutcomeFile) throws Exception {
@@ -163,6 +161,48 @@ public class AIDE2OutcomeAggregator<T> {
 		reader.close();
 		
 	}
+	
+	private void processMultilabel(File id2OutcomeFile) throws Exception {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+		reader.readLine(); // pop first line
+		
+		Map<String, String> map = buildMappingFromHeader(reader.readLine());
+		multilabelIndexMapping.putAll(map);
+		
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			if (line.isEmpty() || line.startsWith("#")) {
+				continue;
+			}
+
+			String[] split = line.split("=");
+			String docName = split[0];
+			String values = split[1];
+
+			String[] valSplit = values.split(";");
+			String [] p = valSplit[0].split(",");
+			String [] g = valSplit[1].split(",");
+			String threshold = valSplit[2];
+			
+			names.add(docName);
+			thresholds.add(Double.valueOf(threshold));
+
+			List<T> pl = new ArrayList<>();
+			for(String x : p){
+				pl.add((T)x);
+			}
+			prediction.add(pl);
+
+			List<T> gl = new ArrayList<>();
+			for(String x : g){
+				gl.add((T)x);
+			}
+			gold.add(gl);
+
+		}
+		
+		reader.close();
+	}
 
 	private static Map<String, String> buildMappingFromHeader(String header) {
 
@@ -213,9 +253,44 @@ public class AIDE2OutcomeAggregator<T> {
 						+ thresholds.get(i) + "\n");
 			}
 			break;
+			
+		case Constants.LM_MULTI_LABEL:
+			sb.append("#labels");
+			List<String> keySet = new ArrayList<String>(multilabelIndexMapping.keySet());
+			for(int i=0; i < keySet.size(); i++){
+				String s = keySet.get(i);
+				sb.append(s+"=" + multilabelIndexMapping.get(s));
+				if(i+1 < keySet.size()){
+					sb.append(" ");
+				}
+			}
+			sb.append("\n");
+			
+			for (int i = 0; i < names.size(); i++) {
+				sb.append(names.get(i) + "=");
+				
+				for(int j=0; j < prediction.get(i).size(); j++){
+					T t = prediction.get(i).get(j);
+					sb.append(t);
+					if(j+1  < prediction.get(i).size()){
+						sb.append(",");
+					}
+				}
+				sb.append(";");
+				
+				for(int j=0; j < gold.get(i).size(); j++){
+					T t = gold.get(i).get(j);
+					sb.append(t);
+					if(j+1  < gold.get(i).size()){
+						sb.append(",");
+					}
+				}
+				sb.append(";");
+
+				sb.append(thresholds.get(i));
+				sb.append("\n");
+			}
 		}
-		
-		
 		return sb.toString();
 	}
 

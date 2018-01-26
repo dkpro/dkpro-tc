@@ -17,36 +17,48 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.report.util.AIDE2OutcomeAggregator;
+import org.dkpro.tc.ml.report.util.ID2OutcomeAggregator;
 import org.junit.Test;
 
 public class Id2OutcomeAggregatorTest {
 	
 	@Test(expected=IllegalArgumentException.class) 
 	public void testWrongFormat() throws Exception{
-		AIDE2OutcomeAggregator<String> aggregator = new AIDE2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
+		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
 		aggregator.add(null, Constants.LM_MULTI_LABEL);
 	}
 	
 	@Test
 	public void testAggregatorSingleLabel() throws Exception{
-		AIDE2OutcomeAggregator<String> aggregator = new AIDE2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
+		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_1.txt"), Constants.LM_SINGLE_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_2.txt"), Constants.LM_SINGLE_LABEL);
 		
-		System.out.println(aggregator.generateId2OutcomeFile());
+		assertEquals(18, aggregator.generateId2OutcomeFile().split("\n").length);
 	}
 	
 	@Test
 	public void testAggregatorRegression() throws Exception{
-		AIDE2OutcomeAggregator<String> aggregator = new AIDE2OutcomeAggregator<>(Constants.LM_REGRESSION);
+		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_REGRESSION);
 		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_1.txt"), Constants.LM_REGRESSION);
 		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_2.txt"), Constants.LM_REGRESSION);
 		
+		assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
 		System.out.println(aggregator.generateId2OutcomeFile());
+	}
+	
+	@Test
+	public void testAggregatorMultilabel() throws Exception{
+		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_MULTI_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_1.txt"), Constants.LM_MULTI_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_2.txt"), Constants.LM_MULTI_LABEL);
+		
+		assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
 	}
 
 }
