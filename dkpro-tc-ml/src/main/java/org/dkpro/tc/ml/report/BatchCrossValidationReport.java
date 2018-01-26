@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
@@ -32,18 +31,6 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.core.util.TcFlexTable;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
-import org.dkpro.tc.util.EvaluationReportUtil;
-
-import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.categorial.Fscore;
-import de.unidue.ltl.evaluation.measures.categorial.multi.ExactMatchRatio;
-import de.unidue.ltl.evaluation.measures.categorial.single.Accuracy;
-import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
-import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
-import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
-import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
-import de.unidue.ltl.evaluation.measures.regression.RSquared;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
