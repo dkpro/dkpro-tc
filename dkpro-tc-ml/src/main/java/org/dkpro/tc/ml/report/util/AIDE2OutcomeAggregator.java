@@ -63,8 +63,19 @@ public class AIDE2OutcomeAggregator<T> {
 			break;
 		case Constants.LM_REGRESSION:
 			processRegression(id2OutcomeFile);			
+			break;
+		case Constants.LM_MULTI_LABEL:
+			processMultilabel(id2OutcomeFile);
+			break;
+			
+		default:
+			throw new IllegalArgumentException("Unknown learning mode ["+mode+"]");
 		}
 
+	}
+
+	private void processMultilabel(File id2OutcomeFile) {
+		
 	}
 
 	private void processRegression(File id2OutcomeFile) throws Exception {
