@@ -1,0 +1,11 @@
+#ID=PREDICTION;GOLDSTANDARD;THRESHOLD
+#labels 0=xxx.added 1=comp.graphics 2=alt.atheism 
+#Fri Jan 26 08:59:41 CET 2018
+alt.atheism/5306788.txt=0;1;-1
+alt.atheism/5325657.txt=1;1;-1
+alt.atheism/5563260.txt=0;1;-1
+alt.atheism/53261.txt=0;1;-1
+comp.graphics/38745658.txt=1;0;-1
+comp.graphics/384761.txt=0;0;-1
+comp.graphics/382762.txt=0;0;-1
+comp.graphics/3842763.txt=0;2;-1
