@@ -22,20 +22,20 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.report.util.ID2OutcomeAggregator;
+import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 import org.junit.Test;
 
 public class Id2OutcomeAggregatorTest {
 	
 	@Test(expected=IllegalArgumentException.class) 
 	public void testWrongFormat() throws Exception{
-		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_SINGLE_LABEL);
 		aggregator.add(null, Constants.LM_MULTI_LABEL);
 	}
 	
 	@Test
 	public void testAggregatorSingleLabel() throws Exception{
-		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_SINGLE_LABEL);
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_SINGLE_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_1.txt"), Constants.LM_SINGLE_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_2.txt"), Constants.LM_SINGLE_LABEL);
 		
@@ -44,7 +44,7 @@ public class Id2OutcomeAggregatorTest {
 	
 	@Test
 	public void testAggregatorRegression() throws Exception{
-		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_REGRESSION);
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_REGRESSION);
 		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_1.txt"), Constants.LM_REGRESSION);
 		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_2.txt"), Constants.LM_REGRESSION);
 		
@@ -54,7 +54,7 @@ public class Id2OutcomeAggregatorTest {
 	
 	@Test
 	public void testAggregatorMultilabel() throws Exception{
-		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(Constants.LM_MULTI_LABEL);
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_MULTI_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_1.txt"), Constants.LM_MULTI_LABEL);
 		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_2.txt"), Constants.LM_MULTI_LABEL);
 		

@@ -30,7 +30,7 @@ import java.util.Set;
 
 import org.dkpro.tc.core.Constants;
 
-public class ID2OutcomeAggregator<T> {
+public class ID2OutcomeCombiner<T> {
 
 	List<String> names;
 	List<Double> thresholds;
@@ -42,7 +42,7 @@ public class ID2OutcomeAggregator<T> {
 	Set<String> uniqueNames = new HashSet<>();
 	Map<String,String> multilabelIndexMapping;
 
-	public ID2OutcomeAggregator(String mode) {
+	public ID2OutcomeCombiner(String mode) {
 		this.mode = mode;
 		names = new ArrayList<>();
 		thresholds = new ArrayList<>();
@@ -76,6 +76,7 @@ public class ID2OutcomeAggregator<T> {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void processRegression(File id2OutcomeFile) throws Exception {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
@@ -162,6 +163,7 @@ public class ID2OutcomeAggregator<T> {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void processMultilabel(File id2OutcomeFile) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 		reader.readLine(); // pop first line

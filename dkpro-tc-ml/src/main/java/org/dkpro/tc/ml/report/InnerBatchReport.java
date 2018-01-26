@@ -36,7 +36,7 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
-import org.dkpro.tc.ml.report.util.ID2OutcomeAggregator;
+import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 
 /**
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
@@ -85,7 +85,7 @@ public class InnerBatchReport
 				.retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap()
 				.get(InitTask.class.getName() + "|" + DIM_LEARNING_MODE);
 
-		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(learningMode);
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
 		for (File id2o : id2outcomeFiles) {
 			aggregator.add(id2o, learningMode);
 		}
