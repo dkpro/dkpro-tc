@@ -39,6 +39,7 @@
     <dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
     <deeplearning4j>0.9.1</deeplearning4j>
     <nd4j.version>0.9.1</nd4j.version>
+    <ltlab.evaluation>0.1.0-SNAPSHOT</ltlab.evaluation>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
@@ -59,16 +60,26 @@
       </snapshots>
     </repository>
 <!--     Required for DKPro Lab SNAPSHOT builds - to be removed before release -->
-<!--     <repository> -->
-<!--       <id>ukp-oss-snapshots</id> -->
-<!--       <url>https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/list/public-snapshots/</url> -->
-<!--       <releases> -->
-<!--         <enabled>false</enabled> -->
-<!--       </releases> -->
-<!--       <snapshots> -->
-<!--         <enabled>true</enabled> -->
-<!--       </snapshots> -->
-<!--     </repository> -->
+    <repository>
+      <id>ukp-oss-snapshots</id>
+      <url>https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/list/public-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>LTL</id>
+      <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>    
 <!--     Required for DKPro Core 1.9.0 - to be removed before release -->
 <!--     <repository> -->
 <!--       <id>dkpro-core-190-staging</id> -->
@@ -471,6 +482,16 @@
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
         <version>7.0.9</version>
+      </dependency>
+      <dependency>
+      	<groupId>de.unidue.ltl</groupId>
+      	<artifactId>ltlab-evaluation-util</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>
+      <dependency>
+      	<groupId>de.unidue.ltl</groupId>
+      	<artifactId>ltlab-evaluation-measures</artifactId>
+      	<version>${ltlab.evaluation}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

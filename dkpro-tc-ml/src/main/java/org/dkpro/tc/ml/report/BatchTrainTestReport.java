@@ -21,10 +21,10 @@ import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
@@ -33,19 +33,27 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.core.util.TcFlexTable;
-import org.dkpro.tc.util.EvaluationReportUtil;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.categorial.Fscore;
+import de.unidue.ltl.evaluation.measures.categorial.multi.ExactMatchRatio;
+import de.unidue.ltl.evaluation.measures.categorial.single.Accuracy;
+import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
+import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
+import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
+import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
+import de.unidue.ltl.evaluation.measures.regression.RSquared;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * Collects the final evaluation results in a train/test setting.
  */
 public class BatchTrainTestReport
-    extends BatchReportBase
+    extends TcBatchReportBase
     implements Constants
 {
     private final List<String> discriminatorsToExclude = Arrays
             .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
-    private boolean softEvaluation = true;
-    private boolean individualLabelMeasures = false;
     
     public BatchTrainTestReport()
     {
@@ -70,11 +78,10 @@ public class BatchTrainTestReport
                     discriminatorsToExclude);
 
             // add the results into the discriminator map
-            File id2o = getContext().getStorageService().locateKey(subcontext.getId(),
-                    ID_OUTCOME_KEY);
+            File id2o = getId2Outcome();
             String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-            Map<String, String> resultMap = EvaluationReportUtil.getResultsId2Outcome(id2o, mode,
-                    softEvaluation, individualLabelMeasures);
+            
+            Map<String, String> resultMap = getResults(id2o, mode);
             discriminatorsMap.putAll(resultMap);
 
             table.addRow(subcontext.getLabel(), discriminatorsMap);
@@ -85,7 +92,51 @@ public class BatchTrainTestReport
         getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
     }
 
-    private Map<String, String> getDiscriminators(StorageService store, String id)
+	private Map<String, String> getResults(File id2o, String mode) throws Exception {
+
+		Map<String, String> map = new HashMap<>();
+
+		if (mode.equals(Constants.LM_SINGLE_LABEL)) {
+			EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(id2o);
+
+			Accuracy<String> acc = new Accuracy<>(data);
+			map.put(acc.getClass().getName(), "" + acc.getResult());
+
+			Fscore<String> fmeasure = new Fscore<>(data);
+			map.put("Micro FScore", "" + fmeasure.getMicroFscore());
+			map.put("Macro FScore", "" + fmeasure.getMacroFscore());
+		}
+		else if(mode.equals(Constants.LM_REGRESSION)){
+			EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2o);
+
+			RSquared rsq = new RSquared(data);
+			map.put(rsq.getClass().getName(), "" + rsq.getResult());
+			
+			PearsonCorrelation pc = new PearsonCorrelation(data);
+			map.put(pc.getClass().getName(), "" + pc.getResult());
+			
+			SpearmanCorrelation sc = new SpearmanCorrelation(data);
+			map.put(sc.getClass().getName(), "" + sc.getResult());
+			
+			MeanSquaredError mse = new MeanSquaredError(data);
+			map.put(mse.getClass().getName(), "" + mse.getResult());
+			
+			MeanAbsoluteError mae = new MeanAbsoluteError(data);
+			map.put(mae.getClass().getName(), "" + mae.getResult());
+			
+		}
+		else if (mode.equals(Constants.LM_MULTI_LABEL)){
+			
+			EvaluationData<String> data = DKProTcDataFormatConverter.convertMultiLabelModeId2Outcome(id2o);
+			
+			ExactMatchRatio<String> emr = new ExactMatchRatio<>(data);
+			map.put(emr.getClass().getName(), "" + emr.getResult());
+		}
+
+		return map;
+	}
+
+	private Map<String, String> getDiscriminators(StorageService store, String id)
     {
         return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
     }
