@@ -45,11 +45,8 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
-import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
-import org.dkpro.tc.ml.report.BatchStatisticsTrainTestReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
-import org.dkpro.tc.ml.weka.WekaStatisticsClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -161,22 +158,6 @@ public class WekaTwentyNewsgroupsStandardReader
         Lab.getInstance().run(batch);
     }
 
-    // ##### CV with STATS EVAL #####
-    protected void runCrossValidationWithStatsEval(ParameterSpace pSpace)
-        throws Exception
-    {
-        // demo for the statistical evaluation reports
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                WekaStatisticsClassificationAdapter.class, NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchStatisticsCVReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
-
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
@@ -192,22 +173,6 @@ public class WekaTwentyNewsgroupsStandardReader
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
         // batch.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
-
-    // ##### TRAIN-TEST with STATS EVAL #####
-    protected void runTrainTestWithStatsEval(ParameterSpace pSpace)
-        throws Exception
-    {
-
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaStatisticsClassificationAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchStatisticsTrainTestReport.class);
 
         // Run
         Lab.getInstance().run(batch);

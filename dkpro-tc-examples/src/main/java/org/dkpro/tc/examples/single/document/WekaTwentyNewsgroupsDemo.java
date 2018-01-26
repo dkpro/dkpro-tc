@@ -47,10 +47,8 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
-import org.dkpro.tc.ml.report.BatchStatisticsCVReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
-import org.dkpro.tc.ml.weka.WekaStatisticsClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -171,23 +169,6 @@ public class WekaTwentyNewsgroupsDemo
         Lab.getInstance().run(batch);
     }
 
-    // ##### CV with STATS EVAL #####
-    protected void runCrossValidationWithStatsEval(ParameterSpace pSpace)
-        throws Exception
-    {
-        // demo for the statistical evaluation reports
-        ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "TwentyNewsgroupsCV-withStats", WekaStatisticsClassificationAdapter.class,
-                NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchStatisticsCVReport.class);
-        batch.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
-    }
 
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
