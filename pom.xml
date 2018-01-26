@@ -485,6 +485,11 @@
       </dependency>
       <dependency>
       	<groupId>de.unidue.ltl</groupId>
+      	<artifactId>ltlab-evaluation-core</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>
+      <dependency>
+      	<groupId>de.unidue.ltl</groupId>
       	<artifactId>ltlab-evaluation-util</artifactId>
       	<version>${ltlab.evaluation}</version>
       </dependency>
