@@ -284,7 +284,7 @@ public interface Constants
      * Name of the global homogenized file which contains the classifier predictions and gold
      * standard for all test instances.
      */
-    public static final String ID_HOMOGENIZED_OUTCOME_KEY = "id2homogenizedOutcome.txt";
+    public static final String COMBINED_ID_OUTCOME_KEY = "combinedId2Outcome.txt";
     /**
      * Name of the meta task file which holds the tc unit text and context for all test instances.
      */

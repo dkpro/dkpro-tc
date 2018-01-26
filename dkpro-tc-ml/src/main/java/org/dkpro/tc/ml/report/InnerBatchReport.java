@@ -17,17 +17,12 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
-import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +34,9 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
-import org.dkpro.tc.evaluation.Id2Outcome;
+import org.dkpro.tc.ml.report.util.ID2OutcomeAggregator;
 
 /**
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
@@ -59,21 +55,22 @@ public class InnerBatchReport
         throws Exception
     {
         StorageService store = getContext().getStorageService();
-        Id2Outcome overallOutcome = new Id2Outcome();
         Properties prop = new Properties();
         Set<Object> discriminatorsToExclude = new HashSet<Object>();
         
-        
+        List<File> id2outcomeFiles = new ArrayList<>();
         List<String> mlaContextIds = getContextIdOfMachineLearningAdapter();
         
         for(String mla : mlaContextIds){	
             if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
                 Map<String, String> discriminatorsMap = store.retrieveBinary(mla,
                         Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-                String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-                File id2outcomeFile = getId2Outcome();
-                Id2Outcome id2outcome = new Id2Outcome(id2outcomeFile, mode);
-                overallOutcome.add(id2outcome);
+//                String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
+                
+                
+                File id2outcomeFile = store.locateKey(mla, Constants.ID_OUTCOME_KEY);
+                id2outcomeFiles.add(id2outcomeFile);
+                
                 for (Object key : discriminatorsMap.keySet()) {
                     if (prop.containsKey(key)
                             && !((String) prop.get(key)).equals(discriminatorsMap.get(key))) {
@@ -83,56 +80,29 @@ public class InnerBatchReport
                 }
             }
         }
+
+		String learningMode = store
+				.retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap()
+				.get(InitTask.class.getName() + "|" + DIM_LEARNING_MODE);
+
+		ID2OutcomeAggregator<String> aggregator = new ID2OutcomeAggregator<>(learningMode);
+		for (File id2o : id2outcomeFiles) {
+			aggregator.add(id2o, learningMode);
+		}
         
-        // remove keys with altering values
-        for (Object key : discriminatorsToExclude) {
-            prop.remove(key);
-        }
-        getContext().storeBinary(Constants.DISCRIMINATORS_KEY_TEMP, new PropertiesAdapter(prop));
-
-        File folder = getContext().getFolder(Constants.TEST_TASK_OUTPUT_KEY, AccessMode.READWRITE);
-        FileOutputStream fos = new FileOutputStream(
-                new File(folder, Constants.SERIALIZED_ID_OUTCOME_KEY));
-        ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-        outputStream.writeObject(overallOutcome);
-        outputStream.close();
-
-        // write out a homogenized human readable file
-        File homogenizedOverallOutcomes = overallOutcome.homogenizeAggregatedFile();
-
-        writeHomogenizedOutcome(homogenizedOverallOutcomes);
+        writeHomogenizedOutcome(aggregator.generateId2OutcomeFile());
     }
     
 
-    private void writeHomogenizedOutcome(File homogenizedOverallOutcomes) throws Exception
+    private void writeHomogenizedOutcome(String payload) throws Exception
     {
-        if(homogenizedOverallOutcomes == null){
-            //not single or multi label modoe
-            return;
-        }
-        
-        BufferedReader tmpFileReader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(homogenizedOverallOutcomes), "utf-8"));
+    	File file = getContext().getFile(COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
         Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(
-                        getContext().getFile(ID_HOMOGENIZED_OUTCOME_KEY, AccessMode.READWRITE)),
+                new FileOutputStream(file),
                 "utf-8"));
 
-        String line = null;
-        int idx=0;
-        while ((line = tmpFileReader.readLine()) != null) {
-            if(idx <= 1){
-                writer.append("#"+line+"\n");
-                idx++;
-                continue;
-            }
-            int idxMostRightHandEqual = line.lastIndexOf("=");
-            String id = line.substring(0, idxMostRightHandEqual);
-            String evaluationData = line.substring(idxMostRightHandEqual + 1);
-            writer.append(id + "=" + evaluationData);
-            writer.append("\n");
-        }
+        writer.write(payload);
+        
         writer.close();
-        tmpFileReader.close();        
     }
 }
