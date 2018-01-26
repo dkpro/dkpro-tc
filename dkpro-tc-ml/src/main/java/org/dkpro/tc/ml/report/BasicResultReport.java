@@ -19,28 +19,18 @@ package org.dkpro.tc.ml.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
-import org.dkpro.tc.evaluation.measures.label.MacroFScore;
-import org.dkpro.tc.evaluation.measures.label.MicroFScore;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
-import org.dkpro.tc.evaluation.measures.regression.SpearmanCorrelation;
+import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
-
-import de.tudarmstadt.ukp.dkpro.statistics.correlation.PearsonCorrelation;
 
 /**
  * A result report which creates a few basic measures and writes them to the output folder of a run to
@@ -74,32 +64,11 @@ public class BasicResultReport
                     .getMap().get(VectorizationTask.class.getName() + "|" + DIM_LEARNING_MODE);
         }
 
-        Id2Outcome o = new Id2Outcome(id2outcomeFile, learningMode);
-
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
+        
         Properties pa = new SortedKeyProperties();
-
-        if (learningMode.equals(LM_REGRESSION)) {
-            Double meanAbs = get(MeanAbsoluteError.class, createEvaluator);
-            Double rootMeanSquaredError = get(RootMeanSquaredError.class, createEvaluator);
-            Double spearman = get(SpearmanCorrelation.class, createEvaluator);
-            Double pearson = get(PearsonCorrelation.class, createEvaluator);
-            pa.setProperty("Mean Absolute Error:", "" + meanAbs);
-            pa.setProperty("Root Mean Squared Error:", "" + rootMeanSquaredError);
-            pa.setProperty("Pearson Correlation:", "" + pearson);
-            pa.setProperty("Spearman Correlation:", "" + spearman);
-        } else if (learningMode.equals(LM_SINGLE_LABEL)) {
-            Double acc = get(Accuracy.class, createEvaluator) * 100;
-            Double microF1 = get(MicroFScore.class, createEvaluator);
-            Double macroF1 = get(MacroFScore.class, createEvaluator);
-            pa.setProperty("Accuracy:", "" + acc);
-            pa.setProperty("Micro F1:", "" + microF1);
-            pa.setProperty("Macro F1:", "" + macroF1);
-        } else if (learningMode.equals(LM_MULTI_LABEL)){
-            Double microF1 = get(MicroFScore.class, createEvaluator);
-            Double macroF1 = get(MacroFScore.class, createEvaluator);
-            pa.setProperty("Micro F1:", "" + microF1);
-            pa.setProperty("Macro F1:", "" + macroF1);
+        Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile, learningMode);
+        for(String k : resultMap.keySet()){
+        	pa.setProperty(k, resultMap.get(k));
         }
 
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
@@ -108,10 +77,5 @@ public class BasicResultReport
         fileOutputStream.close();
         
     }
-
-    private Double get(Class<?> class1, EvaluatorBase createEvaluator)
-        throws TextClassificationException
-    {
-        return createEvaluator.calculateEvaluationMeasures().get(class1.getSimpleName());
-    }
+ 
 }

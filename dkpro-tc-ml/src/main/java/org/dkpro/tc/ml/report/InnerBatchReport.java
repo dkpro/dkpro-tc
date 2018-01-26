@@ -90,11 +90,11 @@ public class InnerBatchReport
 			aggregator.add(id2o, learningMode);
 		}
         
-        writeHomogenizedOutcome(aggregator.generateId2OutcomeFile());
+        writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
     }
     
 
-    private void writeHomogenizedOutcome(String payload) throws Exception
+    private void writeCombinedOutcomeReport(String payload) throws Exception
     {
     	File file = getContext().getFile(COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
         Writer writer = new BufferedWriter(new OutputStreamWriter(
