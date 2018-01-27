@@ -37,23 +37,15 @@
   <dependencies>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-api-features</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-weka</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-liblinear</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
@@ -64,49 +56,49 @@
       <artifactId>dkpro-tc-features-ngram</artifactId>
     </dependency>
     <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.tei-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-gpl</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-features-pair</artifactId>
     </dependency>
     <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.text-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.io-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.resources-asl</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-api</artifactId>
+      <artifactId>dkpro-tc-features-pair-similarity</artifactId>
     </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-ml</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-crfsuite</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-dynet</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-keras</artifactId>
+    </dependency>       
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-liblinear</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-libsvm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-svmhmm</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml-weka</artifactId>
+    </dependency>  
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
@@ -137,63 +129,71 @@
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-gpl</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default</artifactId>
+    </dependency>   
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.io-asl</artifactId>
+    </dependency>     
+  	<dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.tei-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.text-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.resources-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent</artifactId>
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent</artifactId>
     </dependency>
-    <dependency>
+   <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default</artifactId>
-    </dependency>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.tokit-asl</artifactId>
+    </dependency>    
     <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-crfsuite</artifactId>
+      <groupId>org.dkpro.similarity</groupId>
+      <artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-svmhmm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-features-pair-similarity</artifactId>
-    </dependency>
-    <dependency>
+     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging-api</artifactId>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.similarity</groupId>
-      <artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-libsvm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-api-features</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-keras</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml-dynet</artifactId>
     </dependency>
     <dependency>
       <groupId>org.deeplearning4j</groupId>
