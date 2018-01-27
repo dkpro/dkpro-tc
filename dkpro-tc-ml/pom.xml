@@ -107,5 +107,13 @@
     	<groupId>de.unidue.ltl</groupId>
     	<artifactId>ltlab-evaluation-util</artifactId>
     </dependency>
+    <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-correlation</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-agreement</artifactId>
+    </dependency>
   </dependencies>
 </project>

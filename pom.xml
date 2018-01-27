@@ -40,6 +40,7 @@
     <deeplearning4j>0.9.1</deeplearning4j>
     <nd4j.version>0.9.1</nd4j.version>
     <ltlab.evaluation>0.1.0-SNAPSHOT</ltlab.evaluation>
+    <dkpro.statistics>2.1.0</dkpro.statistics>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
@@ -498,6 +499,16 @@
       	<artifactId>ltlab-evaluation-measures</artifactId>
       	<version>${ltlab.evaluation}</version>
       </dependency>
+          <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-correlation</artifactId>
+    	<version>${dkpro.statistics}</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-agreement</artifactId>
+    	<version>${dkpro.statistics}</version>
+    </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
