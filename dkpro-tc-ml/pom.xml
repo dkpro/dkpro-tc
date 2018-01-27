@@ -89,11 +89,6 @@
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
     </dependency>    
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.statistics</groupId>
-      <artifactId>dkpro-statistics-correlation</artifactId>
-      <version>2.0.0</version>
-    </dependency>
 	<dependency>
     	<groupId>de.unidue.ltl</groupId>
     	<artifactId>ltlab-evaluation-core</artifactId>
@@ -105,14 +100,6 @@
     <dependency>
     	<groupId>de.unidue.ltl</groupId>
     	<artifactId>ltlab-evaluation-util</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-correlation</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-agreement</artifactId>
     </dependency>
   </dependencies>
 </project>
