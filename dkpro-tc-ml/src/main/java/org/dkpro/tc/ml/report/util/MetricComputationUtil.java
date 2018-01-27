@@ -24,9 +24,9 @@ import java.util.Map;
 import org.dkpro.tc.core.Constants;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.categorial.Fscore;
-import de.unidue.ltl.evaluation.measures.categorial.multi.ExactMatchRatio;
-import de.unidue.ltl.evaluation.measures.categorial.single.Accuracy;
+import de.unidue.ltl.evaluation.measures.categorial.multilabel.ExactMatchRatio;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
