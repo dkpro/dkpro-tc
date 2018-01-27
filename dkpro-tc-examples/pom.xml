@@ -187,6 +187,14 @@
       <groupId>org.dkpro.similarity</groupId>
       <artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
     </dependency>
+    <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-correlation</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-agreement</artifactId>
+    </dependency>
      <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging-api</artifactId>
@@ -250,14 +258,6 @@
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-evaluation</artifactId>
       <scope>test</scope>
-    </dependency>
-        <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-correlation</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-agreement</artifactId>
     </dependency>
   </dependencies>
   <dependencyManagement>
