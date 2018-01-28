@@ -21,16 +21,15 @@ package org.dkpro.tc.examples.deeplearning.dynet;
 import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.deeplearning.KerasLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 public class DyNetDocumentTest extends KerasLocator {
 	@Test
@@ -52,11 +51,9 @@ public class DyNetDocumentTest extends KerasLocator {
 		if (testConditon) {
 			ParameterSpace ps = DynetSeq2SeqTrainTest.getParameterSpace(python3);
 			DynetSeq2SeqTrainTest.runTrainTest(ps);
-
-			Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-			EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-			Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-			assertTrue(result > 0.1);
+			EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+			Accuracy<String> acc = new Accuracy<>(data);
+			assertTrue(acc.getResult() > 0.1);
 		}
 	}
 }

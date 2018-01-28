@@ -21,17 +21,15 @@ package org.dkpro.tc.examples.regression;
 import static org.junit.Assert.assertEquals;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -59,12 +57,9 @@ public class LiblinearRegressionDemoTest extends TestCaseSuperClass
         experiment.runTrainTest(pSpace);
         
         
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double meanAbsoluteError = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
-        assertEquals(0.54, meanAbsoluteError, 0.00001);
+        EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+		MeanSquaredError mse = new MeanSquaredError(data);
+        assertEquals(0.54, mse.getResult(), 0.00001);
         
-        Double rootMeanSquaredError = createEvaluator.calculateEvaluationMeasures().get(RootMeanSquaredError.class.getSimpleName());
-        assertEquals(1.1575, rootMeanSquaredError, 0.001);
     }
 }

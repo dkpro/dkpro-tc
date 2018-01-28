@@ -26,16 +26,16 @@ import java.util.List;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.single.sequence.CRFSuiteBrownPosDemoSimpleDkproReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing any
@@ -71,11 +71,10 @@ public class CRFSuiteBrownPosDemoTest  {
 		ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
 		javaExperiment.runTrainTest(pSpace);
 
-		Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-		EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-		Double results = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-
-		return results;
+        EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        Accuracy<String> acc = new Accuracy<String>(data);
+		
+		return acc.getResult();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -93,10 +92,9 @@ public class CRFSuiteBrownPosDemoTest  {
 		ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
 		javaExperiment.runTrainTest(pSpace);
 
-		Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-		EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-		Double results = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-
-		return results;
+        EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        Accuracy<String> acc = new Accuracy<String>(data);
+		
+		return acc.getResult();
 	}
 }

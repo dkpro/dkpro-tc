@@ -21,16 +21,15 @@ package org.dkpro.tc.examples.single.unit;
 import static org.junit.Assert.assertEquals;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -57,10 +56,10 @@ public class WekaBrownUnitPosDemoTest extends TestCaseSuperClass
     {
         ContextMemoryReport.key = WekaTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
+ 
+        EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        Accuracy<String> acc = new Accuracy<String>(data);
         
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-        assertEquals(0.744, result, 0.0001);
+        assertEquals(0.744, acc.getResult(), 0.0001);
     }
 }

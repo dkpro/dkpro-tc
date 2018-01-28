@@ -21,16 +21,15 @@ package org.dkpro.tc.examples.deeplearning.keras;
 import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
 import org.dkpro.tc.examples.deeplearning.KerasLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.keras.KerasTestTask;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 public class KerasRegressionWassaTest extends KerasLocator {
 	@Test
@@ -52,11 +51,11 @@ public class KerasRegressionWassaTest extends KerasLocator {
 		if (testConditon) {
 			ParameterSpace ps = KerasDocumentRegressionWassa.getParameterSpace(python3);
 			KerasDocumentRegressionWassa.runTrainTest(ps);
+
+			EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+			Accuracy<String> acc = new Accuracy<>(data);
 			
-			Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
-			EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-			Double result = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
-			assertTrue(result > 0.1);
+			assertTrue(acc.getResult() > 0.1);
 		}
 	}
 }

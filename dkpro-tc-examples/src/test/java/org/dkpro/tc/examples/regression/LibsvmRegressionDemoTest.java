@@ -21,17 +21,15 @@ package org.dkpro.tc.examples.regression;
 import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -57,14 +55,9 @@ public class LibsvmRegressionDemoTest extends TestCaseSuperClass
     public void testTrainTest() throws Exception{
         ContextMemoryReport.key = LibsvmTestTask.class.getName();
         experiment.runTrainTest(pSpace);
-        
-        //we use a greater-as comparison as test as results are not stable between runs due to extremely few training        
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double meanAbsoluteError = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
-        assertTrue(meanAbsoluteError > 1.0);
-        
-        Double rootMeanSquaredError = createEvaluator.calculateEvaluationMeasures().get(RootMeanSquaredError.class.getSimpleName());
-        assertTrue(rootMeanSquaredError > 1.1);
+
+        EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+		MeanSquaredError mse = new MeanSquaredError(data);
+        assertTrue(mse.getResult() > 1.0);
     }
 }
