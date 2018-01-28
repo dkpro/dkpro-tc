@@ -41,7 +41,8 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	/**
 	 * Retrieves the id2outcome file in a train test setup. The behavior of this
 	 * method in cross validation tasks is undefined.
-	 * @param string 
+	 * @param id
+	 * 			context id of machine learning adapter 
 	 * 
 	 * @return file to the id2 outcome file in the machine learning adapter or
 	 *         null if the folder of machine learning adapter was not found
@@ -101,6 +102,9 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	/**
 	 * Loads a mapping from the numeric values to their corresponding label. The mapping is retrieved from the header of the id2outcome result file.
 	 * The map is empty for regression which has no mapping.
+	 * 
+	 * @param contextId
+	 * 			context id of context from which the mapping shall be loaded
 	 * @return
 	 * 			a hashmap with a integer to string mapping
 	 * @throws Exception

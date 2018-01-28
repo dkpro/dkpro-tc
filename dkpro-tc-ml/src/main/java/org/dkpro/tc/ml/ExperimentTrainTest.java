@@ -50,9 +50,8 @@ public class ExperimentTrainTest
     {/* needed for Groovy */
     }
 
-    /**
+    /*
      * Preconfigured train-test setup.
-     * 
      */
     public ExperimentTrainTest(String aExperimentName, Class<? extends TcShallowLearningAdapter> mlAdapter)
             throws TextClassificationException
