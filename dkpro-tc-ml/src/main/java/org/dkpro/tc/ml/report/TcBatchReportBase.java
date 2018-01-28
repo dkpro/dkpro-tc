@@ -41,22 +41,17 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	/**
 	 * Retrieves the id2outcome file in a train test setup. The behavior of this
 	 * method in cross validation tasks is undefined.
+	 * @param string 
 	 * 
 	 * @return file to the id2 outcome file in the machine learning adapter or
 	 *         null if the folder of machine learning adapter was not found
 	 * @throws Exception
 	 *             in case of errors
 	 */
-	protected File getId2Outcome() throws Exception {
+	protected File getId2Outcome(String id) throws Exception {
 		StorageService store = getContext().getStorageService();
-		for (TaskContextMetadata subcontext : getSubtasks()) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, subcontext.getId())) {
-				File id2outcomeFile = store.locateKey(subcontext.getId(), Constants.ID_OUTCOME_KEY);
-				return id2outcomeFile;
-			}
-		}
-
-		return null;
+		File id2outcomeFile = store.locateKey(id, Constants.ID_OUTCOME_KEY);
+		return id2outcomeFile;
 	}
 
 	/**
@@ -111,9 +106,9 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * @throws Exception
 	 * 			in case of error
 	 */
-	protected Map<String, String> getInteger2LabelMapping() throws Exception{
+	protected Map<String, String> getInteger2LabelMapping(String contextId) throws Exception{
 		
-		File id2Outcome = getId2Outcome();
+		File id2Outcome = getId2Outcome(contextId);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2Outcome), "utf-8"));
 		
 		String line = null;

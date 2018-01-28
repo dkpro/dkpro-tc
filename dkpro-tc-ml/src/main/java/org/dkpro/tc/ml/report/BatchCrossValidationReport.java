@@ -26,7 +26,6 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.core.util.TcFlexTable;
@@ -55,13 +54,20 @@ public class BatchCrossValidationReport extends BatchReportBase implements Const
 			if (!TcTaskTypeUtil.isCrossValidationTask(store, subcontext.getId())) {
 				continue;
 			}
-			Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store, subcontext.getId(),
-					Task.DISCRIMINATORS_KEY);
 
 			File combinedId2outcome = store.locateKey(subcontext.getId(),
 					Constants.COMBINED_ID_OUTCOME_KEY);
 
-			String learningMode = discriminatorsMap.get(InitTask.class.getName() + "|" + DIM_LEARNING_MODE);
+			Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store, subcontext.getId(),
+					Task.DISCRIMINATORS_KEY);
+			
+			String learningMode = null;
+			for (String key : discriminatorsMap.keySet()) {
+				if (key.endsWith("|" + DIM_LEARNING_MODE)) {
+					learningMode = discriminatorsMap.get(key);
+					break;
+				}
+			}
 
 			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
 

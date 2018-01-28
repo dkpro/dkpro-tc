@@ -67,7 +67,7 @@ public class BatchTrainTestReport
                     discriminatorsToExclude);
 
             // add the results into the discriminator map
-            File id2o = getId2Outcome();
+            File id2o = getId2Outcome(subcontext.getId());
             String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
             
             Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
