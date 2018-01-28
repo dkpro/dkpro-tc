@@ -247,15 +247,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>de.unidue.ltl</groupId>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
     	<artifactId>ltlab-evaluation-core</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.unidue.ltl</groupId>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
     	<artifactId>ltlab-evaluation-measures</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.unidue.ltl</groupId>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
     	<artifactId>ltlab-evaluation-util</artifactId>
     </dependency>
   </dependencies>
