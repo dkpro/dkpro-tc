@@ -338,8 +338,8 @@ public class Id2Outcome
                         newIndexedPredictions[index] = predictionValue;
                     }
                     else {
-                        newIndexedGoldstandards[index] = Constants.HOMOGENIZING_MISSING_VALUE;
-                        newIndexedPredictions[index] = Constants.HOMOGENIZING_MISSING_VALUE;
+                        newIndexedGoldstandards[index] = -1;
+                        newIndexedPredictions[index] = -1;
                     }
                 }
 
