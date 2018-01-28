@@ -45,10 +45,6 @@
       <artifactId>dkpro-tc-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-evaluation</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
