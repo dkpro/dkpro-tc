@@ -29,6 +29,8 @@ import de.unidue.ltl.evaluation.measures.categorial.Fscore;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 import de.unidue.ltl.evaluation.measures.multilabel.ExactMatchRatio;
+import de.unidue.ltl.evaluation.measures.multilabel.HammingLoss;
+import de.unidue.ltl.evaluation.measures.multilabel.MultilabelAccuracy;
 import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.measures.regression.RSquared;
@@ -73,6 +75,16 @@ public class MetricComputationUtil {
 
 			ExactMatchRatio<String> emr = new ExactMatchRatio<>(data);
 			map.put(emr.getClass().getSimpleName(), "" + emr.getResult());
+			
+			
+			EvaluationData<Integer> dataInt = DKProTcDataFormatConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
+			
+			HammingLoss hl = new HammingLoss(dataInt);
+			map.put(hl.getClass().getSimpleName(), "" + hl.getResult());
+			
+			MultilabelAccuracy ma = new MultilabelAccuracy(dataInt);
+			map.put(ma.getClass().getSimpleName(), "" + ma.getResult());
+			
 		}
 		return map;
 	}
