@@ -248,6 +248,10 @@
     </dependency>
     <dependency>
     	<groupId>de.unidue.ltl</groupId>
+    	<artifactId>ltlab-evaluation-core</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.unidue.ltl</groupId>
     	<artifactId>ltlab-evaluation-measures</artifactId>
     </dependency>
     <dependency>
