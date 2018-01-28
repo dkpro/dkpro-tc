@@ -56,7 +56,7 @@ public class ContextMemoryReport
                 }
                 else {
                     id2outcome = storageService.locateKey(subcontext.getId(),
-                            "id2homogenizedOutcome.txt");
+                            Constants.COMBINED_ID_OUTCOME_KEY);
                 }
                 return;
             }

@@ -19,8 +19,6 @@ package org.dkpro.tc.core;
 
 import org.apache.uima.cas.CAS;
 
-import org.dkpro.lab.task.Task;
-
 /**
  * Basic constants that are used throughout the project
  */
@@ -289,18 +287,7 @@ public interface Constants
      * Name of the meta task file which holds the tc unit text and context for all test instances.
      */
     public static final String ID_CONTEXT_KEY = "id2context.txt";
-    /**
-     * Name of a serialized version of the id2outcome object.
-     */
-    public static final String SERIALIZED_ID_OUTCOME_KEY = "id2outcome.ser";
-    /***
-     * For missing values at the homogenizing
-     */
-    public static final double HOMOGENIZING_MISSING_VALUE = Double.NaN;
-    /**
-     * Name of a file which holds a copy of the discriminators keys and values.
-     */
-    public static final String DISCRIMINATORS_KEY_TEMP = Task.DISCRIMINATORS_KEY + "_Temp.txt";
+
     /**
      * This is the character for joining strings for pair ngrams.
      */

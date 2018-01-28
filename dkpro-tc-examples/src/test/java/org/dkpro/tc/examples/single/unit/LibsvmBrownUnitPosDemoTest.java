@@ -21,17 +21,15 @@ package org.dkpro.tc.examples.single.unit;
 import static org.junit.Assert.assertEquals;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.label.Accuracy;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -58,11 +56,11 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
     {
         ContextMemoryReport.key = ExperimentCrossValidation.class.getName();
         javaExperiment.runCrossValidation(pSpace);
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-        //test case is not deterministic - results vary from run to run we allow quite some error here
-        assertEquals(0.39175257, result, 0.09);
+        
+		Accuracy<String> accuracy = new Accuracy<>(
+				DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+
+		assertEquals(0.39175257, accuracy.getResult(), 0.09);
     }
     
     @Test
@@ -72,9 +70,9 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
         ContextMemoryReport.key = LibsvmTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_SINGLE_LABEL);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double result = createEvaluator.calculateEvaluationMeasures().get(Accuracy.class.getSimpleName());
-        assertEquals(0.8092783505154639, result, 0.0001);
+		Accuracy<String> accuracy = new Accuracy<>(
+				DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+
+        assertEquals(0.8092783505154639, accuracy.getResult(), 0.0001);
     }
 }

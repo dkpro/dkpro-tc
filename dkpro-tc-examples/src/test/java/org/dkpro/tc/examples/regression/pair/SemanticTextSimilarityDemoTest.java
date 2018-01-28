@@ -23,18 +23,14 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.evaluation.Id2Outcome;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorBase;
-import org.dkpro.tc.evaluation.evaluator.EvaluatorFactory;
-import org.dkpro.tc.evaluation.measures.regression.MeanAbsoluteError;
-import org.dkpro.tc.evaluation.measures.regression.RootMeanSquaredError;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
+import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 import weka.core.SerializationHelper;
 
 /**
@@ -72,14 +68,9 @@ public class SemanticTextSimilarityDemoTest extends TestCaseSuperClass
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
                 .read(new File(ContextMemoryReport.id2outcome.getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
-        double wekaMeanSquaredError = eval.rootMeanSquaredError();
         
-        Id2Outcome o = new Id2Outcome(ContextMemoryReport.id2outcome, Constants.LM_REGRESSION);
-        EvaluatorBase createEvaluator = EvaluatorFactory.createEvaluator(o, true, false);
-        Double meanAbsoluteError = createEvaluator.calculateEvaluationMeasures().get(MeanAbsoluteError.class.getSimpleName());
-        assertEquals(wekaMeanAbsoluteError, meanAbsoluteError, 0.00001);
+        MeanAbsoluteError mae = new MeanAbsoluteError(DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome));
         
-        Double rootMeanSquaredError = createEvaluator.calculateEvaluationMeasures().get(RootMeanSquaredError.class.getSimpleName());
-        assertEquals(wekaMeanSquaredError, rootMeanSquaredError, 0.00001);
+        assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.00001);
     }
 }
