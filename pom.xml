@@ -106,7 +106,7 @@
     <module>dkpro-tc-api-features</module>
     <module>dkpro-tc-core</module>
     <module>dkpro-tc-doc</module>
-    <module>dkpro-tc-evaluation</module>
+    
     <module>dkpro-tc-examples</module>
     <module>dkpro-tc-examples-groovy</module>
     <module>dkpro-tc-features</module>
