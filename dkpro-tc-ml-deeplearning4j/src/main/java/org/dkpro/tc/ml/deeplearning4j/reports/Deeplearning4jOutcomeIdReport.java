@@ -86,9 +86,9 @@ public class Deeplearning4jOutcomeIdReport extends ReportBase {
 		for (Integer i = 0; i < map.keySet().size(); i++) {
 			if (!isRegression) {
 				if (isIntegerMode) {
-					header.append(inverseMap.get(i+"") + "=" + i);
+					header.append(i + "=" + inverseMap.get(i + ""));
 				} else {
-					header.append(map.get(i+"") + "=" + i);
+					header.append(i + "=" + map.get(i + ""));
 				}
 				if (i + 1 < k.size()) {
 					header.append(" ");
