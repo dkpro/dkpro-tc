@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
@@ -58,8 +59,8 @@ public class LiblinearRegressionDemoTest extends TestCaseSuperClass
         
         
         EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
-		MeanSquaredError mse = new MeanSquaredError(data);
-        assertEquals(0.54, mse.getResult(), 0.00001);
+		MeanAbsoluteError mae = new MeanAbsoluteError(data);
+        assertEquals(0.54, mae.getResult(), 0.00001);
         
     }
 }

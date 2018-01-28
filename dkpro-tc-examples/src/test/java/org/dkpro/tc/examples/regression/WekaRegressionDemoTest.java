@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
+import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 import weka.core.SerializationHelper;
 
@@ -65,8 +65,7 @@ public class WekaRegressionDemoTest extends TestCaseSuperClass
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
         
         EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
-		MeanSquaredError mse = new MeanSquaredError(data);
-        
-        assertEquals(wekaMeanAbsoluteError, mse.getResult(), 0.00001);
+		MeanAbsoluteError mae = new MeanAbsoluteError(data);
+        assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.00001);
     }
 }
