@@ -24,7 +24,6 @@ import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
-import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.report.util.ScatterplotRenderer;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
@@ -70,9 +69,23 @@ public class ScatterplotReport
                 File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
                         Constants.ID_OUTCOME_KEY);
 
-                Id2Outcome o = new Id2Outcome(id2outcomeFile, Constants.LM_REGRESSION);
-                ScatterplotRenderer renderer = new ScatterplotRenderer(o.getGoldValues(),
-                        o.getPredictions());
+
+                EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2outcomeFile);
+                
+                double [] gold = new double[(int) data.size()];
+                double [] prediction = new double [(int) data.size()];
+                Iterator<EvaluationEntry<Double>> iterator = data.iterator();
+                
+                int i=0;
+                while(iterator.hasNext()) {
+                	EvaluationEntry<Double> next = iterator.next();
+                	gold[i] = next.getGold();
+                	prediction[i] = next.getPredicted();
+                	i++;
+                }
+
+                ScatterplotRenderer renderer = new ScatterplotRenderer(gold,
+                        prediction);
                 getContext().storeBinary("scatterplot.pdf", renderer);
             }
         }

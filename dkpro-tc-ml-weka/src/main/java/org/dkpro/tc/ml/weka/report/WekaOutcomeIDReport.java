@@ -36,7 +36,6 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.InitTask;
-import org.dkpro.tc.evaluation.Id2Outcome;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
@@ -141,7 +140,7 @@ public class WekaOutcomeIDReport
 
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
 
-            Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
+            Map<String, Integer> class2number = classNamesToMapping(labels);
             int[][] goldmatrix = r.getGoldstandard();
             double[][] predictionsmatrix = r.getPredictions();
             double bipartition = r.getBipartitionThreshold();
@@ -192,7 +191,7 @@ public class WekaOutcomeIDReport
             Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
             Double prediction = new Double(inst.value(gsAtt));
             if (!isRegression) {
-                Map<String, Integer> class2number = Id2Outcome.classNamesToMapping(labels);
+                Map<String, Integer> class2number = classNamesToMapping(labels);
                 Integer predictionAsNumber = class2number
                         .get(gsAtt.value(prediction.intValue()));
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
@@ -216,6 +215,14 @@ public class WekaOutcomeIDReport
         }
         return props;
     }
+
+	private static Map<String, Integer> classNamesToMapping(List<String> labels) {
+		Map<String, Integer> mapping = new HashMap<String, Integer>();
+        for (int i = 0; i < labels.size(); i++) {
+            mapping.put(labels.get(i), i);
+        }
+        return mapping;
+	}
 
 	private Map<Integer, String> loadDocumentMap() throws IOException {
 		
