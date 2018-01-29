@@ -45,6 +45,30 @@
       <artifactId>dkpro-tc-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.bincas-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
+    	<artifactId>ltlab-evaluation-core</artifactId>
+    </dependency>    
+    <dependency>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
+    	<artifactId>ltlab-evaluation-measures</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
+    	<artifactId>ltlab-evaluation-util</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.unidue.ltl.evaluation</groupId>
+    	<artifactId>ltlab-evaluation-visualization</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
@@ -68,26 +92,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.io.bincas-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
-    </dependency>    
-	<dependency>
-    	<groupId>de.unidue.ltl.evaluation</groupId>
-    	<artifactId>ltlab-evaluation-core</artifactId>
-    </dependency>    
-    <dependency>
-    	<groupId>de.unidue.ltl.evaluation</groupId>
-    	<artifactId>ltlab-evaluation-measures</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>de.unidue.ltl.evaluation</groupId>
-    	<artifactId>ltlab-evaluation-util</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.jfree</groupId>

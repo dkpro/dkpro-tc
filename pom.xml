@@ -235,6 +235,37 @@
         <artifactId>dkpro-tc-testing</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
+      <!-- Evaluation module -->
+      <dependency>
+      	<groupId>de.unidue.ltl.evaluation</groupId>
+      	<artifactId>ltlab-evaluation-core</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>
+      <dependency>
+      	<groupId>de.unidue.ltl.evaluation</groupId>
+      	<artifactId>ltlab-evaluation-util</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>
+     <dependency>
+      	<groupId>de.unidue.ltl.evaluation</groupId>
+      	<artifactId>ltlab-evaluation-visualization</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>      
+      <dependency>
+      	<groupId>de.unidue.ltl.evaluation</groupId>
+      	<artifactId>ltlab-evaluation-measures</artifactId>
+      	<version>${ltlab.evaluation}</version>
+      </dependency>
+      <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-correlation</artifactId>
+    	<version>${dkpro.statistics}</version>
+      </dependency>
+      <dependency>
+    	<groupId>org.dkpro.statistics</groupId>
+    	<artifactId>dkpro-statistics-agreement</artifactId>
+    	<version>${dkpro.statistics}</version>
+      </dependency>      
       <!-- Other dependencies -->
       <dependency>
         <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -479,31 +510,6 @@
         <artifactId>fastutil</artifactId>
         <version>7.0.9</version>
       </dependency>
-      <dependency>
-      	<groupId>de.unidue.ltl.evaluation</groupId>
-      	<artifactId>ltlab-evaluation-core</artifactId>
-      	<version>${ltlab.evaluation}</version>
-      </dependency>
-      <dependency>
-      	<groupId>de.unidue.ltl.evaluation</groupId>
-      	<artifactId>ltlab-evaluation-util</artifactId>
-      	<version>${ltlab.evaluation}</version>
-      </dependency>
-      <dependency>
-      	<groupId>de.unidue.ltl.evaluation</groupId>
-      	<artifactId>ltlab-evaluation-measures</artifactId>
-      	<version>${ltlab.evaluation}</version>
-      </dependency>
-          <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-correlation</artifactId>
-    	<version>${dkpro.statistics}</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.dkpro.statistics</groupId>
-    	<artifactId>dkpro-statistics-agreement</artifactId>
-    	<version>${dkpro.statistics}</version>
-    </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

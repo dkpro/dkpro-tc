@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
@@ -35,6 +36,7 @@ import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.measures.regression.RSquared;
 import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
+import de.unidue.ltl.evaluation.visualization.ConfusionMatrix;
 
 public class MetricComputationUtil {
 	
@@ -51,7 +53,13 @@ public class MetricComputationUtil {
 			Fscore<String> fmeasure = new Fscore<>(data);
 			map.put("Micro FScore", "" + fmeasure.getMicroFscore());
 			map.put("Macro FScore", "" + fmeasure.getMacroFscore());
+			
+			ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
+			File matrixFile = new File(id2o.getParentFile(), "confusionMatrix.txt");
+			FileUtils.writeStringToFile(matrixFile, matrix.toText(), "utf-8");
+			
 		} else if (mode.equals(Constants.LM_REGRESSION)) {
+			
 			EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2o);
 
 			RSquared rsq = new RSquared(data);
