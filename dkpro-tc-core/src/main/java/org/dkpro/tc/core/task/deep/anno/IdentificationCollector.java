@@ -127,11 +127,11 @@ public class IdentificationCollector extends JCasAnnotator_ImplBase {
 						writer.write(System.lineSeparator());
 					}
 
-					if (maximumLength != null && i + 1 >= maximumLength) {
+					if (maximumLength != null && maximumLength > 0 && i + 1 >= maximumLength) {
 						break;
 					}
 				}
-				writer.write("\n");
+				writer.write(System.lineSeparator());
 				seqId++;
 			}
 		} catch (IOException e) {
