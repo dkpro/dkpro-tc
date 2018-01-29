@@ -94,7 +94,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>org.jfree</groupId>
+    	<groupId>jfree</groupId>
     	<artifactId>jfreechart</artifactId>
 	</dependency>
   </dependencies>
