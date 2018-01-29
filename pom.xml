@@ -357,11 +357,11 @@
         <artifactId>guava</artifactId>
         <version>19.0</version>
       </dependency>
-      <dependency>
-        <groupId>jfree</groupId>
-        <artifactId>jfreechart</artifactId>
-        <version>1.0.13</version>
-      </dependency>
+	  <dependency>
+		<groupId>org.jfree</groupId>
+		<artifactId>jfreechart</artifactId>
+		<version>1.0.19</version>
+	  </dependency>
       <dependency>
         <groupId>net.sf.trove4j</groupId>
         <artifactId>trove4j</artifactId>

@@ -76,10 +76,6 @@
     <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jfree</groupId>
-      <artifactId>jfreechart</artifactId>
     </dependency>    
 	<dependency>
     	<groupId>de.unidue.ltl.evaluation</groupId>
@@ -93,5 +89,9 @@
     	<groupId>de.unidue.ltl.evaluation</groupId>
     	<artifactId>ltlab-evaluation-util</artifactId>
     </dependency>
+    <dependency>
+    	<groupId>org.jfree</groupId>
+    	<artifactId>jfreechart</artifactId>
+	</dependency>
   </dependencies>
 </project>
