@@ -18,12 +18,12 @@
 package org.dkpro.tc.ml.dynet;
 
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -75,6 +75,10 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 
 	@Discriminator(name = DyNetConstants.DIM_DYNET_GPUS)
 	private Integer numGpus;
+	
+	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+	private double threshold;
+	
 	
 	@Override
 	public void execute(TaskContext aContext) throws Exception {

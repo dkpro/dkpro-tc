@@ -41,6 +41,9 @@ public class Deeplearning4jTestTask extends ExecutableTaskBase implements Consta
 	
 	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
 	private Integer seed;
+	
+	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+	private double threshold;
 
 	@Override
 	public void execute(TaskContext aContext) throws Exception {

@@ -65,6 +65,9 @@ public class KerasTestTask
 	
 	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
 	private boolean intVectorization;
+	
+	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+	private double threshold;
 
     @Override
     public void execute(TaskContext aContext)
