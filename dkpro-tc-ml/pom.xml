@@ -62,10 +62,6 @@
     </dependency>
     <dependency>
     	<groupId>de.unidue.ltl.evaluation</groupId>
-    	<artifactId>ltlab-evaluation-util</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>de.unidue.ltl.evaluation</groupId>
     	<artifactId>ltlab-evaluation-visualization</artifactId>
     </dependency>
     <dependency>
