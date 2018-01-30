@@ -25,11 +25,11 @@ import org.dkpro.tc.examples.deeplearning.KerasLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.keras.KerasTestTask;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 public class KerasDocumentTest extends KerasLocator {
 	@Test
@@ -52,7 +52,7 @@ public class KerasDocumentTest extends KerasLocator {
 			ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
 			KerasDocumentRegression.runTrainTest(ps);
 
-			EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
 			Accuracy<String> acc = new Accuracy<>(data);
 			
 			assertTrue(acc.getResult() > 0.2);

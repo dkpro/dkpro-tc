@@ -25,11 +25,11 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.measures.Accuracy;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -58,7 +58,7 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
         javaExperiment.runCrossValidation(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(
-				DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
 
 		assertEquals(0.39175257, accuracy.getResult(), 0.09);
     }
@@ -71,7 +71,7 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
         javaExperiment.runTrainTest(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(
-				DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
 
         assertEquals(0.8092783505154639, accuracy.getResult(), 0.0001);
     }

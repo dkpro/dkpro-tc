@@ -30,12 +30,12 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing any exception.
@@ -84,7 +84,7 @@ extends TestCaseSuperClass
         javaExperiment.runTrainTest(pSpace);
 
         
-        EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
         Accuracy<String> acc = new Accuracy<String>(data);
         
         Double resultNoParams = acc.getResult();
@@ -100,7 +100,7 @@ extends TestCaseSuperClass
         javaExperiment.runTrainTest(pSpace);
 
         
-        data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
         acc = new Accuracy<String>(data);
         Double resultParams = acc.getResult();
 

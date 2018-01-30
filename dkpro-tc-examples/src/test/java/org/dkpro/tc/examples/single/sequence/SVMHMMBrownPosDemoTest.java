@@ -29,6 +29,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.random.RandomSVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
@@ -37,7 +38,6 @@ import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing any exception.
@@ -87,7 +87,7 @@ extends TestCaseSuperClass
         ContextMemoryReport.key = SVMHMMTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
 
-        EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
         Accuracy<String> acc = new Accuracy<String>(data);
         
         assertEquals(0.5806, acc.getResult(), 0.0001);

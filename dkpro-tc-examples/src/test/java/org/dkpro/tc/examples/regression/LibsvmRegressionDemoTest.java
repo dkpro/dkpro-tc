@@ -24,12 +24,12 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 /**
  * This test just ensures that the experiment runs without throwing
@@ -56,7 +56,7 @@ public class LibsvmRegressionDemoTest extends TestCaseSuperClass
         ContextMemoryReport.key = LibsvmTestTask.class.getName();
         experiment.runTrainTest(pSpace);
 
-        EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
 		MeanSquaredError mse = new MeanSquaredError(data);
         assertTrue(mse.getResult() > 1.0);
     }

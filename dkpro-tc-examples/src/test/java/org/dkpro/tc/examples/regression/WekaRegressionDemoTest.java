@@ -25,13 +25,13 @@ import java.io.File;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 import weka.core.SerializationHelper;
 
 /**
@@ -64,7 +64,7 @@ public class WekaRegressionDemoTest extends TestCaseSuperClass
                 .read(new File(ContextMemoryReport.id2outcome.getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
         
-        EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
 		MeanAbsoluteError mae = new MeanAbsoluteError(data);
         assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.00001);
     }
