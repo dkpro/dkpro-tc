@@ -36,8 +36,8 @@ public class Id2OutcomeAggregatorTest {
 	@Test
 	public void testAggregatorSingleLabel() throws Exception{
 		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_SINGLE_LABEL);
-		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_1.txt"), Constants.LM_SINGLE_LABEL);
-		aggregator.add(new File("src/test/resources/id2outcome/singleLabelID2outcome_2.txt"), Constants.LM_SINGLE_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/singleLabelID2outcome_1.txt"), Constants.LM_SINGLE_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/singleLabelID2outcome_2.txt"), Constants.LM_SINGLE_LABEL);
 		
 		assertEquals(18, aggregator.generateId2OutcomeFile().split("\n").length);
 	}
@@ -45,8 +45,8 @@ public class Id2OutcomeAggregatorTest {
 	@Test
 	public void testAggregatorRegression() throws Exception{
 		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_REGRESSION);
-		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_1.txt"), Constants.LM_REGRESSION);
-		aggregator.add(new File("src/test/resources/id2outcome/regressionID2outcome_2.txt"), Constants.LM_REGRESSION);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/regressionID2outcome_1.txt"), Constants.LM_REGRESSION);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/regressionID2outcome_2.txt"), Constants.LM_REGRESSION);
 		
 		assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
 		System.out.println(aggregator.generateId2OutcomeFile());
@@ -55,8 +55,8 @@ public class Id2OutcomeAggregatorTest {
 	@Test
 	public void testAggregatorMultilabel() throws Exception{
 		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(Constants.LM_MULTI_LABEL);
-		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_1.txt"), Constants.LM_MULTI_LABEL);
-		aggregator.add(new File("src/test/resources/id2outcome/multiLabelId2outcome_2.txt"), Constants.LM_MULTI_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/multiLabelId2outcome_1.txt"), Constants.LM_MULTI_LABEL);
+		aggregator.add(new File("src/test/resources/id2outcome/combine/multiLabelId2outcome_2.txt"), Constants.LM_MULTI_LABEL);
 		
 		assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
 	}

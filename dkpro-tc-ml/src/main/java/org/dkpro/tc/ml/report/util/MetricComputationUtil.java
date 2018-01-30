@@ -35,7 +35,6 @@ import de.unidue.ltl.evaluation.measures.multilabel.MultilabelAccuracy;
 import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.measures.regression.RSquared;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 import de.unidue.ltl.evaluation.visualization.ConfusionMatrix;
 
 public class MetricComputationUtil {
@@ -45,7 +44,7 @@ public class MetricComputationUtil {
 		Map<String, String> map = new HashMap<>();
 
 		if (mode.equals(Constants.LM_SINGLE_LABEL)) {
-			EvaluationData<String> data = DKProTcDataFormatConverter.convertSingleLabelModeId2Outcome(id2o);
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
 
 			Accuracy<String> acc = new Accuracy<>(data);
 			map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
@@ -60,7 +59,7 @@ public class MetricComputationUtil {
 			
 		} else if (mode.equals(Constants.LM_REGRESSION)) {
 			
-			EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2o);
+			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2o);
 
 			RSquared rsq = new RSquared(data);
 			map.put(rsq.getClass().getSimpleName(), "" + rsq.getResult());
@@ -79,13 +78,13 @@ public class MetricComputationUtil {
 
 		} else if (mode.equals(Constants.LM_MULTI_LABEL)) {
 
-			EvaluationData<String> data = DKProTcDataFormatConverter.convertMultiLabelModeId2Outcome(id2o);
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertMultiLabelModeId2Outcome(id2o);
 
 			ExactMatchRatio<String> emr = new ExactMatchRatio<>(data);
 			map.put(emr.getClass().getSimpleName(), "" + emr.getResult());
 			
 			
-			EvaluationData<Integer> dataInt = DKProTcDataFormatConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
+			EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
 			
 			HammingLoss hl = new HammingLoss(dataInt);
 			map.put(hl.getClass().getSimpleName(), "" + hl.getResult());
