@@ -55,6 +55,31 @@ public class Tc2LtlabEvalConverterTest {
 		assertEquals("alt.atheism/53260.txt", data.get(2).getName());
 
 	}
+	
+	@Test
+	public void testSingleLabelSequenceModeDataFormat() throws Exception {
+
+		EvaluationData<String> data = Tc2LtlabEvalConverter
+				.convertSingleLabelModeId2Outcome(new File("src/test/resources/id2outcome/convert/sequenceSingleLabelId2outcome.txt"));
+
+		assertEquals(29, data.size());
+
+		// values
+		assertEquals("VBP", data.get(0).getGold());
+		assertEquals("VBP", data.get(0).getPredicted());
+
+		assertEquals("DT", data.get(1).getGold());
+		assertEquals("DT", data.get(1).getPredicted());
+
+		assertEquals("NNP", data.get(2).getGold());
+		assertEquals("NNP", data.get(2).getPredicted());
+
+		// names
+		assertEquals("0003_0687_0001_are", data.get(0).getName());
+		assertEquals("0003_0687_0002_the", data.get(1).getName());
+		assertEquals("0003_0687_0003_Labor", data.get(2).getName());
+
+	}
 
 	@Test
 	public void testRegressionModeDataFormat() throws Exception {
