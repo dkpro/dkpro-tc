@@ -174,7 +174,7 @@ public class DynetOutcomeIdReport extends ReportBase {
 			s = split[1].split(" ");
 			prediction = label2String(s, map);
 		}
-		prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "0.5");
+		prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 	}
 
 	private String label2String(String[] val, Map<String, String> map) {
