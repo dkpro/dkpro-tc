@@ -25,10 +25,10 @@ import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ScatterplotRenderer;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.core.EvaluationEntry;
-import de.unidue.ltl.evaluation.util.convert.DKProTcDataFormatConverter;
 
 public class ScatterplotReport
     extends BatchReportBase
@@ -45,7 +45,7 @@ public class ScatterplotReport
                     subcontext.getId())) {
                 File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), Constants.COMBINED_ID_OUTCOME_KEY);
 
-                EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2outcomeFile);
+                EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2outcomeFile);
                                 
                 double [] gold = new double[(int) data.size()];
                 double [] prediction = new double [(int) data.size()];
@@ -70,7 +70,7 @@ public class ScatterplotReport
                         Constants.ID_OUTCOME_KEY);
 
 
-                EvaluationData<Double> data = DKProTcDataFormatConverter.convertRegressionModeId2Outcome(id2outcomeFile);
+                EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2outcomeFile);
                 
                 double [] gold = new double[(int) data.size()];
                 double [] prediction = new double [(int) data.size()];
