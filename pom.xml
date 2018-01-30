@@ -39,7 +39,7 @@
     <dkpro.lab.version>0.14.0-SNAPSHOT</dkpro.lab.version>
     <deeplearning4j>0.9.1</deeplearning4j>
     <nd4j.version>0.9.1</nd4j.version>
-    <ltlab.evaluation>0.1.0-SNAPSHOT</ltlab.evaluation>
+    <ltlab.evaluation>0.1.1</ltlab.evaluation>
     <dkpro.statistics>2.1.0</dkpro.statistics>
   </properties>
   <scm>
@@ -71,16 +71,16 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>LTL</id>
-      <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>    
+<!--     <repository> -->
+<!--       <id>LTL</id> -->
+<!--       <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url> -->
+<!--       <releases> -->
+<!--         <enabled>false</enabled> -->
+<!--       </releases> -->
+<!--       <snapshots> -->
+<!--         <enabled>true</enabled> -->
+<!--       </snapshots> -->
+<!--     </repository>     -->
 <!--     Required for DKPro Core 1.9.0 - to be removed before release -->
 <!--     <repository> -->
 <!--       <id>dkpro-core-190-staging</id> -->
