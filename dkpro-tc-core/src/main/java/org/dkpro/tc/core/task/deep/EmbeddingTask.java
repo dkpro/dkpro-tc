@@ -42,8 +42,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 /**
- * Collects information about the entire document
- * 
+ * Prunes the embedding if one is provided
  */
 public class EmbeddingTask extends ExecutableTaskBase {
 
@@ -65,7 +64,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 
 	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
 	private boolean integerVectorization;
-
+	
 	String unknownVector = null;
 
 	int lenVec = -1;
@@ -89,8 +88,8 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private void wordPreparation(TaskContext aContext) throws Exception {
 		Set<String> vocabulary = loadVocabulary(aContext);
 
-		BufferedReader reader = getReader(aContext);
-		BufferedWriter writer = getWriter(aContext);
+		BufferedReader reader = getEmbeddingReader(aContext);
+		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
@@ -141,8 +140,8 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private void integerPreparation(TaskContext aContext) throws Exception {
 		Map<String, String> tokenIdMap = loadWord2IntegerMap(aContext);
 
-		BufferedReader reader = getReader(aContext);
-		BufferedWriter writer = getWriter(aContext);
+		BufferedReader reader = getEmbeddingReader(aContext);
+		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
@@ -171,12 +170,12 @@ public class EmbeddingTask extends ExecutableTaskBase {
 		reader.close();
 	}
 
-	private BufferedReader getReader(TaskContext aContext) throws Exception {
+	private BufferedReader getEmbeddingReader(TaskContext aContext) throws Exception {
 		return new BufferedReader(new InputStreamReader(new FileInputStream(embedding), "utf-8"));
 
 	}
 
-	private BufferedWriter getWriter(TaskContext aContext) throws Exception {
+	private BufferedWriter getPrunedEmbeddingWriter(TaskContext aContext) throws Exception {
 		return new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(new File(aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE),
 						DeepLearningConstants.FILENAME_PRUNED_EMBEDDING)),
