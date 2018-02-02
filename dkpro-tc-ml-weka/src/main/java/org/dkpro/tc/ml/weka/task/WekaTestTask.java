@@ -148,9 +148,11 @@ public class WekaTestTask
             testData = WekaUtils.addInstanceId(testData, copyTestData, false);
         }
 
-        // Write out the predictions
-        File predictionFile = WekaUtils.getFile(aContext,"", Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
-        DataSink.write(predictionFile.getAbsolutePath(), testData);
+        // Write out the prediction - the data sink expects an .arff ending file so we game it a bit and rename the file afterwards to .txt
+        File predictionFile = WekaUtils.getFile(aContext, "", Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
+        File arffDummy = new File(predictionFile.getParent(), "prediction.arff");
+        DataSink.write(arffDummy.getAbsolutePath(), testData);
+        FileUtils.moveFile(arffDummy, predictionFile);
     }
 
 }
