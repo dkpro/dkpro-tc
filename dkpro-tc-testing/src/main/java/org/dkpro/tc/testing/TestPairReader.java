@@ -68,7 +68,7 @@ public class TestPairReader
         texts2 = new ArrayList<String>();
 
         try {
-            for (String line : FileUtils.readLines(inputFile)) {
+            for (String line : FileUtils.readLines(inputFile, "utf-8")) {
                 String parts[] = line.split("\t");
 
                 if (parts.length != 2) {
