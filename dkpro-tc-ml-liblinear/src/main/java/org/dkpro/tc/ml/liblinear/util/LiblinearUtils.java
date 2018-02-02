@@ -20,22 +20,8 @@ package org.dkpro.tc.ml.liblinear.util;
 import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.EPISILON_DEFAULT;
 import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.PARAM_C_DEFAULT;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 
 import de.bwaldvogel.liblinear.SolverType;
