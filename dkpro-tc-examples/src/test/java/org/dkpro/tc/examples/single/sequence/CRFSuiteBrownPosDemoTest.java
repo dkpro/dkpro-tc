@@ -91,8 +91,8 @@ extends TestCaseSuperClass
 
         // Random parameters for demonstration!
         dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-                asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                        "feature.minfreq=3", "-p", "gamma=5.0", "-p", "max_iterations=15"));
+                asList(CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON, "-p",
+                        "feature.minfreq=3", "-p", "max_iterations=3"));
         pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
