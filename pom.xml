@@ -71,11 +71,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
-        <id>central</id>
-        <name>ukp-oss-releases</name>
-        <url>https://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-ukp-staging-local</url>
-    </repository>
 <!--     <repository> -->
 <!--       <id>LTL</id> -->
 <!--       <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url> -->
