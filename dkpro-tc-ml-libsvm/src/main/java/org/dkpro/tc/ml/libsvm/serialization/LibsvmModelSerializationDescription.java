@@ -18,17 +18,10 @@
 
 package org.dkpro.tc.ml.libsvm.serialization;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -49,8 +42,6 @@ public class LibsvmModelSerializationDescription
     private List<String> classificationArguments;
 
     boolean trainModel = true;
-
-    private Map<String, Integer> outcome2id = new HashMap<>();
 
     @Override
     public void execute(TaskContext aContext)
@@ -119,25 +110,6 @@ public class LibsvmModelSerializationDescription
         parameters.add(fileTrain.getAbsolutePath());
         parameters.add(model.getAbsolutePath());
         return parameters.toArray(new String[0]);
-    }
-
-    private void writeOutcomeMappingToThisFolder(TaskContext aContext)
-        throws IOException
-    {
-        String mapping = LibsvmAdapter.getOutcomeMappingFilename();
-
-        String map2String = map2String(outcome2id);
-        FileUtils.writeStringToFile(new File(outputFolder, mapping), map2String, "utf-8");
-    }
-
-    private String map2String(Map<String, Integer> map)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (String k : map.keySet()) {
-            sb.append(k + "\t" + map.get(k) + "\n");
-        }
-
-        return sb.toString();
     }
 
 }
