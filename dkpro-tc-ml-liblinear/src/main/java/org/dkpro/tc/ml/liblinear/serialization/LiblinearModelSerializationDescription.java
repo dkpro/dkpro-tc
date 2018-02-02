@@ -19,6 +19,7 @@
 package org.dkpro.tc.ml.liblinear.serialization;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -54,10 +55,8 @@ public class LiblinearModelSerializationDescription extends ModelSerializationTa
 		// create mapping and persist mapping
 		File fileTrain = getTrainFile(aContext);
 
-		File featureNameFile = new File(aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY),
-				LiblinearAdapter.getFeatureNameMappingFilename());
-		File featureOutFile = new File(outputFolder, LiblinearAdapter.getFeatureNameMappingFilename());
-		FileUtils.copyFile(featureNameFile, featureOutFile);
+		copyFeatureNameMappingToThisFolder(aContext);
+		copyOutcomeMappingToThisFolder(aContext);
 
 		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
 		double C = LiblinearUtils.getParameterC(classificationArguments);
@@ -69,6 +68,20 @@ public class LiblinearModelSerializationDescription extends ModelSerializationTa
 		Problem train = Problem.readFromFile(fileTrain, 1.0);
 		Model model = Linear.train(train, parameter);
 		model.save(new File(outputFolder, MODEL_CLASSIFIER));
+	}
+
+	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
+		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		String mapping = LiblinearAdapter.getOutcomeMappingFilename();
+
+		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+	}
+
+	private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException {
+		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		String mapping = LiblinearAdapter.getFeatureNameMappingFilename();
+
+		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
 	}
 
 	private File getTrainFile(TaskContext aContext) {
