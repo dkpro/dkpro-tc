@@ -80,20 +80,28 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 
 	@Discriminator(name = DIM_FEATURE_FILTERS)
 	private List<String> featureFilters = Collections.<String> emptyList();
+	
 	@Discriminator(name = DIM_FILES_ROOT)
 	private File filesRoot;
+	
 	@Discriminator(name = DIM_FILES_TRAINING)
 	private Collection<String> files_training;
+	
 	@Discriminator(name = DIM_FILES_VALIDATION)
 	private Collection<String> files_validation;
+	
 	@Discriminator(name = DIM_LEARNING_MODE)
 	private String learningMode;
+	
 	@Discriminator(name = DIM_FEATURE_MODE)
 	private String featureMode;
+	
 	@Discriminator(name = DIM_DEVELOPER_MODE)
 	private boolean developerMode;
+	
 	@Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
 	private boolean applyWeighting;
+	
 	@Discriminator(name = DIM_FEATURE_SET)
 	private TcFeatureSet featureExtractors;
 
