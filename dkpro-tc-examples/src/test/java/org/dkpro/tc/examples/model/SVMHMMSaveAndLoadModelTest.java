@@ -185,7 +185,6 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for(TextClassificationOutcome o: outcomes){
-            System.out.println(o.getOutcome());
             assertTrue(possibleOutcome.contains(o.getOutcome()));
         }
 
