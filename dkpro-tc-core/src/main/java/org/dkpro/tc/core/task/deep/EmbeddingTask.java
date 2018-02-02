@@ -60,7 +60,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private String learningMode;
 
 	@Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
-	private File embedding;
+	private String embedding;
 
 	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
 	private boolean integerVectorization;
@@ -171,7 +171,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	}
 
 	private BufferedReader getEmbeddingReader(TaskContext aContext) throws Exception {
-		return new BufferedReader(new InputStreamReader(new FileInputStream(embedding), "utf-8"));
+		return new BufferedReader(new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
 
 	}
 
