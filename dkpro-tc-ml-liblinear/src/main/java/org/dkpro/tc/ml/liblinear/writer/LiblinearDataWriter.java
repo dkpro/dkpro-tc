@@ -50,19 +50,30 @@ import com.google.gson.Gson;
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
 public class LiblinearDataWriter implements DataWriter {
+
 	public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
+
 	File outputDirectory;
+
 	boolean useSparse;
+
 	String learningMode;
+
 	boolean applyWeighting;
+
 	File classifierFormatOutputFile;
+
 	BufferedWriter bw = null;
+
 	Map<String, String> index2instanceId;
 
 	Gson gson = new Gson();
+
 	private int maxId = 0;
 
 	Map<String, Integer> featureNames2id;
+
+	Map<String, Integer> outcomeMap;
 
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
@@ -129,7 +140,7 @@ public class LiblinearDataWriter implements DataWriter {
 			List<Integer> keys = new ArrayList<Integer>(entry.keySet());
 			Collections.sort(keys);
 
-			bw.append(inst.getOutcome() + "\t");
+			bw.append(outcomeMap.get(inst.getOutcome()) + "\t");
 			for (int i = 0; i < keys.size(); i++) {
 				Integer key = keys.get(i);
 				Double value = entry.get(key);
@@ -146,6 +157,16 @@ public class LiblinearDataWriter implements DataWriter {
 
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
 		writeFeatureName2idMapping(outputDirectory, LiblinearAdapter.getFeatureNameMappingFilename(), featureNames2id);
+		writeOutcomeMapping(outputDirectory, LiblinearAdapter.getOutcomeMappingFilename(), outcomeMap);
+	}
+
+	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for (String k : map.keySet()) {
+			sb.append(k + "\t" + map.get(k) + "\n");
+		}
+
+		FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), "utf-8");
 	}
 
 	private Double toValue(Object value) {
@@ -216,6 +237,24 @@ public class LiblinearDataWriter implements DataWriter {
 		if (classifierFormatOutputFile.exists()) {
 			FileUtils.forceDelete(classifierFormatOutputFile);
 		}
+
+		buildOutcomeMap(outcomes);
+	}
+
+	/**
+	 * Creates a mapping from the label names to integer values to identify
+	 * labels by integers
+	 * 
+	 * @param outcomes
+	 */
+	private void buildOutcomeMap(String[] outcomes) {
+		outcomeMap = new HashMap<>();
+		Integer i = 0;
+		List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
+		Collections.sort(outcomesSorted);
+		for (String o : outcomesSorted) {
+			outcomeMap.put(o, i++);
+		}
 	}
 
 	@Override
@@ -252,7 +291,6 @@ public class LiblinearDataWriter implements DataWriter {
 
 	@Override
 	public void close() throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 

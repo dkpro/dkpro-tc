@@ -20,7 +20,6 @@ package org.dkpro.tc.ml.liblinear.serialization;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -37,71 +36,49 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearModelSerializationDescription
-    extends ModelSerializationTask
-    implements Constants
-{
+public class LiblinearModelSerializationDescription extends ModelSerializationTask implements Constants {
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
+	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
+	private List<String> classificationArguments;
 
-    boolean trainModel = true;
+	boolean trainModel = true;
 
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        trainAndStoreModel(aContext);
+	@Override
+	public void execute(TaskContext aContext) throws Exception {
+		trainAndStoreModel(aContext);
 
-        writeModelConfiguration(aContext, LiblinearAdapter.class.getName());
-    }
+		writeModelConfiguration(aContext, LiblinearAdapter.class.getName());
+	}
 
-    private void trainAndStoreModel(TaskContext aContext)
-        throws Exception
-    {
-        
-        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
-        
-        //create mapping and persist mapping
-        File fileTrain = getTrainFile(aContext);
-        
-        File outcomeFolder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
-        File outcomeFile = new File(outcomeFolder, Constants.FILENAME_OUTCOMES);
-        
-        Map<String, Integer> outcomeMapping = LiblinearUtils.createMapping(outcomeFile, isRegression);
-        File mappedTrainFile = LiblinearUtils.replaceOutcome(fileTrain, outcomeMapping);
-        File mappingFile = new File(outputFolder, LiblinearAdapter.getOutcomeMappingFilename());
-        FileUtils.writeStringToFile(mappingFile, LiblinearUtils.outcomeMap2String(outcomeMapping), "utf-8");
+	private void trainAndStoreModel(TaskContext aContext) throws Exception {
+		// create mapping and persist mapping
+		File fileTrain = getTrainFile(aContext);
 
-        File featureNameFile = new File(aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY),LiblinearAdapter.getFeatureNameMappingFilename()); 
-        File featureOutFile = new File(outputFolder, LiblinearAdapter.getFeatureNameMappingFilename());
-        FileUtils.copyFile(featureNameFile, featureOutFile);
+		File featureNameFile = new File(aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY),
+				LiblinearAdapter.getFeatureNameMappingFilename());
+		File featureOutFile = new File(outputFolder, LiblinearAdapter.getFeatureNameMappingFilename());
+		FileUtils.copyFile(featureNameFile, featureOutFile);
 
-        Problem train = Problem.readFromFile(mappedTrainFile, 1.0);
+		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
+		double C = LiblinearUtils.getParameterC(classificationArguments);
+		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
-        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
-        double C = LiblinearUtils.getParameterC(classificationArguments);
-        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
+		Linear.setDebugOutput(null);
 
-        Linear.setDebugOutput(null);
+		Parameter parameter = new Parameter(solver, C, eps);
+		Problem train = Problem.readFromFile(fileTrain, 1.0);
+		Model model = Linear.train(train, parameter);
+		model.save(new File(outputFolder, MODEL_CLASSIFIER));
+	}
 
-        Parameter parameter = new Parameter(solver, C, eps);
-        Model model = Linear.train(train, parameter);
-        model.save(new File(outputFolder, MODEL_CLASSIFIER));
-    }
-    
-    private File getTrainFile(TaskContext aContext)
-    {
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+	private File getTrainFile(TaskContext aContext) {
+		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        return fileTrain;
-    }
+		return fileTrain;
+	}
 
-    public void trainModel(boolean b)
-    {
-        trainModel = b;
-    }
+	public void trainModel(boolean b) {
+		trainModel = b;
+	}
 }

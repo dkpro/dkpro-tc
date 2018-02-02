@@ -17,17 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 import org.junit.Test;
 
@@ -124,38 +118,5 @@ public class LiblinearUtilTest
     {
         List<String> param = Arrays.asList("-e", "2.1");
         assertEquals(2.1, LiblinearUtils.getParameterEpsilon(param), 0.0001);
-    }
-
-    @Test
-    public void testMapToString()
-    {
-        Map<String, Integer> m = new HashMap<>();
-        m.put("a", 1);
-        m.put("b", 2);
-        String outcomeMap2String = LiblinearUtils.outcomeMap2String(m);
-        assertEquals(outcomeMap2String, "a\t1\nb\t2\n");
-    }
-
-    @Test
-    public void testCreateMapping()
-        throws IOException
-    {
-        String dummyData = "A\t1:1.0\t2:1.0\nB\t1:1.0\nC\t2:1.0";
-        File tmpFile = FileUtil.createTempFile("junitTest", ".tmp");
-        FileUtils.write(tmpFile, dummyData, "utf-8");
-        
-        File outcomes = FileUtil.createTempFile("junitTest", ".txt");
-        FileUtils.writeStringToFile(outcomes, "A\nB\nC\n","utf-8");
-        
-        Map<String, Integer> map = LiblinearUtils.createMapping(outcomes,false);
-
-        assertEquals(3, map.size());
-        assertEquals(new Integer(0), map.get("A"));
-        assertEquals(new Integer(1), map.get("B"));
-        assertEquals(new Integer(2), map.get("C"));
-
-        File integerReplacedFile = LiblinearUtils.replaceOutcome(tmpFile, map);
-        assertEquals("0\t1:1.0\t2:1.0\n1\t1:1.0\n2\t2:1.0\n",
-                FileUtils.readFileToString(integerReplacedFile, "utf-8"));
     }
 }

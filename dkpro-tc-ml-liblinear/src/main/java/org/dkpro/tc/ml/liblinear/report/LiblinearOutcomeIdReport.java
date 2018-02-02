@@ -179,7 +179,7 @@ private Map<String, String> getMapping(boolean isUnit) throws IOException {
             return new HashMap<>();
         }
         
-        File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
+        File mappingFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, StorageService.AccessMode.READONLY);
         String fileName = LiblinearAdapter.getOutcomeMappingFilename();
         File file = new File(mappingFolder, fileName);
         Map<Integer, String> map = new HashMap<Integer, String>();
