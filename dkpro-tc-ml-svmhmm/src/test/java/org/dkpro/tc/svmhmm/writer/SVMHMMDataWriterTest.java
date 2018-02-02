@@ -101,7 +101,7 @@ public class SVMHMMDataWriterTest
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
                 new String[] { "outcome" });
-        svmhmmDataWriter.writeClassifierFormat(instances, false);
+        svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");
@@ -124,7 +124,7 @@ public class SVMHMMDataWriterTest
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
                 new String[] {});
-        svmhmmDataWriter.writeClassifierFormat(instances, false);
+        svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");
@@ -157,7 +157,7 @@ public class SVMHMMDataWriterTest
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false,
                 new String[] {});
-        svmhmmDataWriter.writeClassifierFormat(instances, false);
+        svmhmmDataWriter.writeClassifierFormat(instances);
 
         File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
 
@@ -190,7 +190,7 @@ public class SVMHMMDataWriterTest
 
         SVMHMMDataWriter svmhmmDataWriter = new SVMHMMDataWriter();
         svmhmmDataWriter.init(temporaryFolder.getRoot(), true, Constants.LM_SINGLE_LABEL, false, new String []{});
-        svmhmmDataWriter.writeClassifierFormat(instances, false);
+        svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
                 new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");

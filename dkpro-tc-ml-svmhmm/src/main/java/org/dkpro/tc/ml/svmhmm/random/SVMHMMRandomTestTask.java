@@ -30,8 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 
 /**
@@ -55,9 +54,7 @@ public class SVMHMMRandomTestTask
         throws Exception
     {
         // file to hold prediction results
-        File predictionsFile = taskContext.getFile(
-                new SVMHMMAdapter().getFrameworkFilename(
-                        TcShallowLearningAdapter.AdapterNameEntries.predictionsFile),
+        File predictionsFile = taskContext.getFile(Constants.FILENAME_PREDICTIONS,
                 AccessMode.READWRITE);
 
         // number of expected outcomes

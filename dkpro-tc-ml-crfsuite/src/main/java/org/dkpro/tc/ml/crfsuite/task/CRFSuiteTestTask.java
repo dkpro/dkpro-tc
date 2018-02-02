@@ -35,8 +35,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
@@ -128,8 +126,7 @@ public class CRFSuiteTestTask
     private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
         throws Exception
     {
-        File predictionsFile = aContext.getFile(CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.predictionsFile), AccessMode.READWRITE);
+        File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
 
         StringBuilder sb = new StringBuilder();
         sb.append("#Prediction\tGold\n");
@@ -211,9 +208,7 @@ public class CRFSuiteTestTask
         throws Exception
     {
         File tmpFileFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        String tmpFileName = CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File tmpTest = new File(tmpFileFolder.getPath() + "/" + tmpFileName);
+        File tmpTest = new File(tmpFileFolder.getPath() + "/" + FILENAME_FEATURE_FILE_NAME);
         testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
         return wrapTestCommandAsList(testFile, executablePath, modelLocation);
@@ -262,9 +257,7 @@ public class CRFSuiteTestTask
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File tmpTrain = new File(trainFolder.getPath() + "/" + trainFileName);
+        File tmpTrain = new File(trainFolder.getPath() + "/" + FILENAME_FEATURE_FILE_NAME);
 
         trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 

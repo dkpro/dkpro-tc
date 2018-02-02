@@ -92,23 +92,6 @@ public class SVMHMMAdapter
         return new FoldDimensionBundle<>("files", Dimension.create("", files), folds);
     }
 
-    @Override
-    public String getFrameworkFilename(
-            AdapterNameEntries adapterNameEntries)
-    {
-
-        switch (adapterNameEntries) {
-        case featureVectorsFile:
-            return "feature-vectors.txt";
-        case predictionsFile:
-            // this is where the predicted outcomes are written
-            return "predicted-labels.txt";
-        case featureSelectionFile:
-            return "attributeEvaluationResults.txt";
-        }
-        return null;
-    }
-
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
 		return SVMHMMDataWriter.class;

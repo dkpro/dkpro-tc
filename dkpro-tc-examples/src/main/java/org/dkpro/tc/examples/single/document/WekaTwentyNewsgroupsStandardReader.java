@@ -41,7 +41,6 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -117,25 +116,10 @@ public class WekaTwentyNewsgroupsStandardReader
                                 LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
                                 3)));
 
-        Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(
-                DIM_BASELINE_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-
-        Dimension<List<String>> dimBaselinePipelineParameters = Dimension
-                .create(DIM_BASELINE_FEATURE_SET, Arrays.asList(
-                        new String[] { NrOfTokens.class.getName(), LuceneNGram.class.getName() }));
-
-        Dimension<List<Object>> dimBaselineFeatureSets = Dimension.create(
-                DIM_BASELINE_PIPELINE_PARAMS,
-                Arrays.asList(new Object[] { NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, 50,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, 2,
-                        NGramFeatureExtractorBase.PARAM_NGRAM_MAX_N, 3 }));
-
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets,
-                dimBaselinePipelineParameters);
+                dimClassificationArgs);
 
         return pSpace;
     }

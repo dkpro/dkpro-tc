@@ -41,7 +41,6 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -161,7 +160,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 			}
 
 			File inputData = File.createTempFile("libLinearePrediction",
-					LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+					Constants.FILENAME_FEATURE_FILE_NAME);
 			inputData.deleteOnExit();
 			FileUtils.writeStringToFile(inputData, sb.toString(), "utf-8");
 

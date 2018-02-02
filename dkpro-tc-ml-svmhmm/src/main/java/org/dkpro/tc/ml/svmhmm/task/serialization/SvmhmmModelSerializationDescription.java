@@ -27,7 +27,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
@@ -64,12 +63,7 @@ public class SvmhmmModelSerializationDescription
         File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 StorageService.AccessMode.READONLY);
 
-        // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
-        // TESTING!!!!!!
-        String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile);
-
-        File trainingFile = new File(trainingDataStorage, fileName);
+        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
 
         SortedSet<String> outcomeLabels = SVMHMMUtils
                 .extractOutcomeLabelsFromFeatureVectorFiles(trainingFile);

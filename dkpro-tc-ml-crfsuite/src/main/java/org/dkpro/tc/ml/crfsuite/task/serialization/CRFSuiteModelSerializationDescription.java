@@ -27,9 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
@@ -80,11 +78,9 @@ public class CRFSuiteModelSerializationDescription
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
 
         String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
-        String trainingDataPath = trainFolder.getPath() + "/" + trainFileName;
+        String trainingDataPath = trainFolder.getPath() + "/" + Constants.FILENAME_FEATURE_FILE_NAME;
         List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath,
                 trainingDataPath, algoName, algoParameters);
 

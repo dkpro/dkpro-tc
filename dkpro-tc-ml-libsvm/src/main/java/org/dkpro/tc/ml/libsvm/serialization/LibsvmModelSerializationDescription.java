@@ -36,7 +36,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
@@ -135,9 +134,7 @@ public class LibsvmModelSerializationDescription
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTrain = new File(trainFolder, trainFileName);
+        File fileTrain = new File(trainFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 
         return fileTrain;
     }

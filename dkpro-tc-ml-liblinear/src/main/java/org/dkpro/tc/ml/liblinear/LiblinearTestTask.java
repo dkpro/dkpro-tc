@@ -32,7 +32,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Feature;
@@ -109,25 +108,20 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 
 	private File getTestFile(TaskContext aContext) {
 		File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-		String testFileName = LiblinearAdapter.getInstance()
-				.getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-		File fileTest = new File(testFolder, testFileName);
+		File fileTest = new File(testFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 		return fileTest;
 	}
 
 	private File getTrainFile(TaskContext aContext) {
 		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		String trainFileName = LiblinearAdapter.getInstance()
-				.getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-		File fileTrain = new File(trainFolder, trainFileName);
+		File fileTrain = new File(trainFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 
 		return fileTrain;
 	}
 
 	private void predict(TaskContext aContext, Model model, Problem test) throws Exception {
 		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
-		String predFileName = LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.predictionsFile);
-		File predictionsFile = new File(predFolder, predFileName);
+		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 
 		BufferedWriter writer = new BufferedWriter(
 				new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));

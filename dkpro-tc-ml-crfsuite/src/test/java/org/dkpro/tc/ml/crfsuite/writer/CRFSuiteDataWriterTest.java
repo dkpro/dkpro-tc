@@ -29,8 +29,6 @@ import java.util.List;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -122,8 +120,7 @@ public class CRFSuiteDataWriterTest
     private List<String> readData()
         throws Exception
     {
-        File outputFile = new File(outputDirectory, CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        File outputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
         BufferedReader br = new BufferedReader(new FileReader(outputFile));
 
         List<String> lines = new ArrayList<String>();
@@ -139,6 +136,6 @@ public class CRFSuiteDataWriterTest
         throws Exception
     {
         writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false, outcomes.toArray(new String[0]));
-        writer.writeClassifierFormat(instances, false);
+        writer.writeClassifierFormat(instances);
     }
 }

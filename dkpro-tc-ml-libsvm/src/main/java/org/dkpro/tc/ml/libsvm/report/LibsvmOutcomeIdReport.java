@@ -33,7 +33,6 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
@@ -146,9 +145,7 @@ private Map<String, String> getMapping(boolean isUnit) throws IOException {
         throws IOException
     {
         File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-        String predFileName = LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
-        return FileUtils.readLines(new File(predFolder, predFileName), "utf-8");
+        return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
     }
 
     private String buildHeader(Map<Integer, String> id2label, boolean isRegression)

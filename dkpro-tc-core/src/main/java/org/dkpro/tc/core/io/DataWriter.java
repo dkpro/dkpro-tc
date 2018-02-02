@@ -42,12 +42,10 @@ public interface DataWriter
     /**
     * @param instances
     * 		   collection of instances
-    * @param compress
-    * 			compress feature file 
     * @throws java.lang.Exception
     * 			in case of error
     * */
-    void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+    void writeClassifierFormat(Collection<Instance> instances)
         throws Exception;
 
     /**
@@ -71,11 +69,6 @@ public interface DataWriter
      * @return boolean if streaming is available
      */
     boolean canStream();
-
-    /**
-     * @return boolean if classifier reads compressed files
-     */
-    boolean classiferReadsCompressed();
 
     /**
      * @return string holding the generic working file

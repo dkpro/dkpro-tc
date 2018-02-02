@@ -21,24 +21,22 @@ package org.dkpro.tc.ml.weka.task;
 import java.io.File;
 import java.util.List;
 
-import meka.core.Result;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.weka.util.MultilabelResult;
+import org.dkpro.tc.ml.weka.util.WekaUtils;
 
+import meka.core.Result;
 import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSink;
 import weka.filters.unsupervised.attribute.Remove;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.weka.util.MultilabelResult;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 /**
  * Base class for test task and save model tasks
@@ -48,7 +46,9 @@ public class WekaTestTask
     implements Constants
 {
 
-    @Discriminator(name=DIM_CLASSIFICATION_ARGS)
+    public static String featureSelectionFile = "featureSelection.txt";
+    
+	@Discriminator(name=DIM_CLASSIFICATION_ARGS)
     protected List<String> classificationArguments;
     @Discriminator(name=DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
@@ -76,9 +76,9 @@ public class WekaTestTask
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         File arffFileTrain = WekaUtils.getFile(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AdapterNameEntries.featureVectorsFile, AccessMode.READONLY);
+        		Constants.FILENAME_FEATURE_FILE_NAME, AccessMode.READONLY);
         File arffFileTest = WekaUtils.getFile(aContext, TEST_TASK_INPUT_KEY_TEST_DATA,
-                AdapterNameEntries.featureVectorsFile, AccessMode.READONLY);
+        		Constants.FILENAME_FEATURE_FILE_NAME, AccessMode.READONLY);
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);
@@ -99,7 +99,7 @@ public class WekaTestTask
                 AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext,
                         trainData, featureSearcher, attributeEvaluator);
                 File file = WekaUtils.getFile(aContext, "",
-                        AdapterNameEntries.featureSelectionFile, AccessMode.READWRITE);
+                        WekaTestTask.featureSelectionFile, AccessMode.READWRITE);
                 FileUtils.writeStringToFile(file, attSel.toResultsString(), "utf-8");
                 if (applySelection) {
                     Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
@@ -149,7 +149,7 @@ public class WekaTestTask
         }
 
         // Write out the predictions
-        File predictionFile = WekaUtils.getFile(aContext,"", AdapterNameEntries.predictionsFile, AccessMode.READWRITE);
+        File predictionFile = WekaUtils.getFile(aContext,"", Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
         DataSink.write(predictionFile.getAbsolutePath(), testData);
     }
 

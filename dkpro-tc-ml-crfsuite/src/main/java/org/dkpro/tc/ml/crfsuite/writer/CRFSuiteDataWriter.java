@@ -36,8 +36,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
 import com.google.gson.Gson;
 
@@ -101,7 +99,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
+	public void writeClassifierFormat(Collection<Instance> instances) throws Exception {
 		initClassifierFormat();
 
 		Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(
@@ -135,8 +133,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 		this.learningMode = learningMode;
 		this.applyWeigthing = applyWeighting;
 
-		classifierFormatOutputFile = new File(outputDirectory,
-				CRFSuiteAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
 
 		// Caution: DKPro Lab imports (aka copies!) the data of the train task
 		// as test task. We use
@@ -153,11 +150,6 @@ public class CRFSuiteDataWriter implements DataWriter {
 	@Override
 	public boolean canStream() {
 		return true;
-	}
-
-	@Override
-	public boolean classiferReadsCompressed() {
-		return false;
 	}
 
 	@Override

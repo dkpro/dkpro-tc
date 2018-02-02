@@ -71,22 +71,6 @@ public class WekaRegressionAdapter
         return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
     }
 
-    @Override
-    public String getFrameworkFilename(AdapterNameEntries name)
-    {
-
-        switch (name) {
-        case featureVectorsFile:
-            return "training-data.arff.gz";
-        case predictionsFile:
-            return "predictions.arff";
-        case featureSelectionFile:
-            return "attributeEvaluationResults.txt";
-        }
-
-        return null;
-    }
-    
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
 		return WekaDataWriter.class;

@@ -31,21 +31,6 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 public interface TcShallowLearningAdapter
 {
 
-    public enum AdapterNameEntries
-    {
-        /**
-         * Intended for storing feature vectors (both in training and testing phases)
-         */
-        featureVectorsFile,
-
-        /**
-         * Intended for actual predictions on test data, i.e. label sequence
-         */
-        predictionsFile,
-
-        featureSelectionFile
-    }
-
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
@@ -89,13 +74,6 @@ public interface TcShallowLearningAdapter
      */
     public <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,
             int folds);
-
-    /**
-     * @param name
-     *            Which name should be returned
-     * @return Returns the filename that is used for specific files by the framework
-     */
-    public String getFrameworkFilename(AdapterNameEntries name);
 
     /**
      * @return

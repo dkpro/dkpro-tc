@@ -104,18 +104,6 @@ public class LiblinearAdapter
 	}
 	
 	@Override
-	public String getFrameworkFilename(AdapterNameEntries name) {
-
-        switch (name) {
-            case featureVectorsFile:  return "training-data.txt";
-            case predictionsFile      :  return "predictions.txt";
-            case featureSelectionFile :  return "attributeEvaluationResults.txt";
-        }
-        
-        return null;
-	}
-
-	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
 		return LiblinearDataWriter.class;
 	}

@@ -50,8 +50,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.writer.WekaFeatureEncoder;
 
@@ -1241,7 +1239,7 @@ public class WekaUtils
 		AttributeSelection selector = WekaUtils.singleLabelAttributeSelection(trainData, featureSearcher,
 				attributeEvaluator);
 		// Write the results of attribute selection
-		File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile,
+		File file = getFile(aContext, TEST_TASK_OUTPUT_KEY, WekaTestTask.featureSelectionFile,
 				AccessMode.READWRITE);
 		FileUtils.writeStringToFile(file, selector.toResultsString(), "utf-8");
 		return selector;
@@ -1269,7 +1267,7 @@ public class WekaUtils
 	public static Remove featureSelectionMultilabel(TaskContext aContext, Instances trainData,
 			List<String> attributeEvaluator, String labelTransformationMethod, int numLabelsToKeep) throws TextClassificationException {
 		// file to hold the results of attribute selection
-		File fsResultsFile = getFile(aContext, TEST_TASK_OUTPUT_KEY, AdapterNameEntries.featureSelectionFile,
+		File fsResultsFile = getFile(aContext, TEST_TASK_OUTPUT_KEY, WekaTestTask.featureSelectionFile,
 				AccessMode.READWRITE);
 
 		// filter for reducing dimension of attributes
@@ -1330,28 +1328,6 @@ public class WekaUtils
 		return filterRemove;
 	}
     
-    /**
-     * Convenience method to get file described in an AdapterNameEntry in a folder of the current context 
-	 * 
-	 * @param aContext
-	 * 			Lab context
-	 * @param key
-	 * 			key
-	 * @param entry
-	 * 			adapter entry
-	 * @param mode
-	 * 			access mode
-	 * @return	file
-	 */
-    public static File getFile(TaskContext aContext, String key, AdapterNameEntries entry, AccessMode mode)
-    {
-        String path = aContext.getFolder(key, mode).getPath();
-        String featureFile = WekaClassificationAdapter.getInstance().getFrameworkFilename(entry);
-        String pathToArff = path + "/" + featureFile;
-
-        return new File(pathToArff);
-    }
-
     /**
      * Convenience method to get file described by a string value in a folder of the current context 
      *

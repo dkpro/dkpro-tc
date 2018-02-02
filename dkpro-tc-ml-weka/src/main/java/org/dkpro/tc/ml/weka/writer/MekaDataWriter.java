@@ -39,9 +39,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.uima.FeatureType;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -83,8 +81,7 @@ public class MekaDataWriter
         this.applyWeighting = applyWeighting;
         this.outcomes = outcomes;
 
-        arffTarget = new File(outputFolder, MekaClassificationAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        arffTarget = new File(outputFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 
         // Caution: DKPro Lab imports (aka copies!) the data of the train task
         // as test task. We use
@@ -131,7 +128,7 @@ public class MekaDataWriter
         String line = null;
         while ((line = reader.readLine()) != null) {
             Instance[] restoredInstance = gson.fromJson(line, Instance[].class);
-            writeClassifierFormat(Arrays.asList(restoredInstance), classiferReadsCompressed());
+            writeClassifierFormat(Arrays.asList(restoredInstance));
         }
         reader.close();
 
@@ -217,7 +214,7 @@ public class MekaDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+    public void writeClassifierFormat(Collection<Instance> instances)
         throws Exception
     {
 
@@ -264,7 +261,7 @@ public class MekaDataWriter
         saver = new ArffSaver();
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(arffTarget);
-        saver.setCompressOutput(true);
+        saver.setCompressOutput(false);
 
         attributeStore = new AttributeStore();
 
@@ -313,11 +310,6 @@ public class MekaDataWriter
         return true;
     }
 
-    @Override
-    public boolean classiferReadsCompressed()
-    {
-        return true;
-    }
 
     @Override
     public String getGenericFileName()

@@ -67,18 +67,6 @@ public class MekaStatisticsClassificationAdapter
 	}
 
 	@Override
-	public String getFrameworkFilename(AdapterNameEntries name) {
-
-        switch (name) {
-            case featureVectorsFile:  return "training-data.arff.gz";
-            case predictionsFile      :  return "predictions.arff";
-            case featureSelectionFile :  return "attributeEvaluationResults.txt";
-        }
-        
-        return null;
-	}
-	
-	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
 		return MekaDataWriter.class;
 	}

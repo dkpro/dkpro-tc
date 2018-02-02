@@ -40,13 +40,11 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class SVMHMMTestTask
     extends ExecutableTaskBase
@@ -101,13 +99,8 @@ public class SVMHMMTestTask
         File testDataStorage = taskContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
 
-        // file name of the data; THE FILES HAVE SAME NAME FOR BOTH TRAINING AND
-        // TESTING!!!!!!
-        String fileName = new SVMHMMAdapter().getFrameworkFilename(
-                TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile);
-
-        File trainingFile = new File(trainingDataStorage, fileName);
-        File testFile = new File(testDataStorage, fileName);
+        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
+        File testFile = new File(testDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
 
         if (!Constants.LM_SINGLE_LABEL.equals(learningMode)) {
             throw new TextClassificationException(
@@ -152,10 +145,7 @@ public class SVMHMMTestTask
     public void testModel(TaskContext taskContext, File testFile)
         throws Exception
     {
-        // file to hold prediction results
-        String predictionFileName = new SVMHMMAdapter()
-                .getFrameworkFilename(TcShallowLearningAdapter.AdapterNameEntries.predictionsFile);
-        File predictionsFile = taskContext.getFile(predictionFileName, AccessMode.READWRITE);
+		File predictionsFile = taskContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
 
         // location of the trained model
         File modelFile = taskContext.getFile(MODEL_NAME, StorageService.AccessMode.READONLY);

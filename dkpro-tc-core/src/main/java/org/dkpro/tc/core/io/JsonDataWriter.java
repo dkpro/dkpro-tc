@@ -63,7 +63,7 @@ public class JsonDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+    public void writeClassifierFormat(Collection<Instance> instances)
         throws Exception
     {
         init();
@@ -98,12 +98,6 @@ public class JsonDataWriter
     public boolean canStream()
     {
         return true;
-    }
-
-    @Override
-    public boolean classiferReadsCompressed()
-    {
-        return false;
     }
 
     @Override

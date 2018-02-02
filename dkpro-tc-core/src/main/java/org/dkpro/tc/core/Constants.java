@@ -138,22 +138,7 @@ public interface Constants
      * Name of the class that implements
      */
     public static final String DIM_FEATURE_USE_SPARSE = "featureStore";
-
-    /**
-     * Name of the discriminator which holds the classifier and arguments which serve as baseline
-     */
-    public static final String DIM_BASELINE_CLASSIFICATION_ARGS = "baselineClassificationArgs";
-
-    /**
-     * Name of the discriminator which holds the feature set which serves as base
-     */
-    public static final String DIM_BASELINE_FEATURE_SET = "baselineFeatureSet";
-
-    /**
-     * Name of the discriminator which holds the feature parameters which serve as base
-     */
-    public static final String DIM_BASELINE_PIPELINE_PARAMS = "baselinePipelineParams";
-
+    
     /**
      * Name of the discriminator that stores whether the instance weighting should be applied to
      * learning task or not
@@ -172,6 +157,16 @@ public interface Constants
     
     
     public static final String GENERIC_FEATURE_FILE = "JSON.txt";
+    
+    /**
+     * File name for storing the predictions in the classifier specific output data format 
+     */
+    public static String FILENAME_PREDICTIONS = "predictions.txt";
+    
+    /**
+     * File name for storing the training / testing data file 
+     */
+    public static String FILENAME_FEATURE_FILE_NAME = "featureFile.txt";
 
     /**
      * Developer mode enables it to use unit feature extractors in documents
@@ -297,7 +292,7 @@ public interface Constants
      * Machine Learning (General)
      */
     /**
-     * Name of the file which holds evaluation results from the machine learning framework
+     * Name of the file which the names of used features
      */
     public static final String FILENAME_FEATURES = "featureNames.txt";
 

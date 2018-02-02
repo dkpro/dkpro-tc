@@ -45,7 +45,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
@@ -247,19 +246,14 @@ public class LibsvmTestTask
 
     private File getPredictionFile(TaskContext aContext)
     {
-        String fileName = LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.predictionsFile);
         File folder = aContext.getFolder("", AccessMode.READWRITE);
-
-        return new File(folder, fileName);
+        return new File(folder, Constants.FILENAME_PREDICTIONS);
     }
 
     private File getTestFile(TaskContext aContext)
     {
         File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        String testFileName = LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTest = new File(testFolder, testFileName);
+        File fileTest = new File(testFolder, Constants.FILENAME_FEATURE_FILE_NAME);
         return fileTest;
     }
 
@@ -267,9 +261,7 @@ public class LibsvmTestTask
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        String trainFileName = LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile);
-        File fileTrain = new File(trainFolder, trainFileName);
+        File fileTrain = new File(trainFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 
         return fileTrain;
     }

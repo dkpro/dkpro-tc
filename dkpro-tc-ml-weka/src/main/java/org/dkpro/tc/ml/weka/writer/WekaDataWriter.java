@@ -38,9 +38,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.uima.FeatureType;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -83,8 +81,7 @@ public class WekaDataWriter
         this.applyWeighting = applyWeighting;
         this.outcomes = outcomes;
 
-        arffTarget = new File(outputFolder, WekaClassificationAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        arffTarget = new File(outputFolder, Constants.FILENAME_FEATURE_FILE_NAME);
 
         // Caution: DKPro Lab imports (aka copies!) the data of the train task
         // as test task. We use
@@ -138,7 +135,7 @@ public class WekaDataWriter
         String line = null;
         while ((line = reader.readLine()) != null) {
             Instance[] restoredInstances = gson.fromJson(line, Instance[].class);
-            writeClassifierFormat(Arrays.asList(restoredInstances), classiferReadsCompressed());
+            writeClassifierFormat(Arrays.asList(restoredInstances));
         }
 
         reader.close();
@@ -222,7 +219,7 @@ public class WekaDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> instances, boolean compress)
+    public void writeClassifierFormat(Collection<Instance> instances)
         throws Exception
     {
 
@@ -274,7 +271,7 @@ public class WekaDataWriter
         saver = new ArffSaver();
         saver.setRetrieval(Saver.INCREMENTAL);
         saver.setFile(arffTarget);
-        saver.setCompressOutput(true);
+        saver.setCompressOutput(false);
 
         attributeStore = new AttributeStore();
 
@@ -300,7 +297,6 @@ public class WekaDataWriter
 
         // Make sure "outcome" is not the name of an attribute
          List<String> outcomeList = Arrays.asList(outcomes);
-        // FIXME: Das muss wieder raus später
         outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
         if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
             System.err.println(
@@ -321,12 +317,6 @@ public class WekaDataWriter
 
     @Override
     public boolean canStream()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean classiferReadsCompressed()
     {
         return true;
     }

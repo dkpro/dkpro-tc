@@ -33,7 +33,6 @@ import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
@@ -48,7 +47,6 @@ import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.SMO;
 
 /**
@@ -143,23 +141,10 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
                                 LuceneNGram.PARAM_NGRAM_MIN_N, 2, LuceneNGram.PARAM_NGRAM_MAX_N,
                                 3)));
 
-        Dimension<List<String>> dimBaselineClassificationArgs = Dimension.create(
-                DIM_BASELINE_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
-
-        Dimension<List<TcFeature>> dimBaselineFeatureSets = Dimension
-                .create(DIM_BASELINE_FEATURE_SET,
-                        Arrays.asList(TcFeatureFactory.create(NrOfTokensPerSentence.class),
-                                TcFeatureFactory.create(NrOfTokens.class),
-                                TcFeatureFactory.create(LuceneNGram.class,
-                                        LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                                        LuceneNGram.PARAM_NGRAM_MIN_N, 2,
-                                        LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
-
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs, dimBaselineClassificationArgs, dimBaselineFeatureSets,
+                dimClassificationArgs, 
                 Dimension.create(DIM_APPLY_INSTANCE_WEIGHTING, true)
         // This last dimension is crucial for this demo
         );

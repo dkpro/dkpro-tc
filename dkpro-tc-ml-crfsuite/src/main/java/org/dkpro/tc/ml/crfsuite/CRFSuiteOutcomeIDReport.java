@@ -31,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -126,8 +125,7 @@ public class CRFSuiteOutcomeIDReport
         File storage = getContext().getFolder(CRFSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
-        File testFile = new File(storage.getAbsolutePath() + "/" + CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_FEATURE_FILE_NAME);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
 
@@ -137,8 +135,7 @@ public class CRFSuiteOutcomeIDReport
     private List<String> getGoldAndPredictions()
         throws Exception
     {
-        File predictionFile = getContext().getFile(CRFSuiteAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.predictionsFile), AccessMode.READONLY);
+        File predictionFile = getContext().getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
 
         return readLines;

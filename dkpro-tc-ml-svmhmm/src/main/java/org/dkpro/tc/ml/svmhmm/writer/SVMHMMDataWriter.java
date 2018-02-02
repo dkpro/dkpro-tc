@@ -47,7 +47,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
 
@@ -79,8 +78,6 @@ public class SVMHMMDataWriter implements DataWriter {
 	private TreeSet<String> featureNames;
 
 	private Map<String, Integer> featureNameMap;
-
-    private String[] outcomes;
 
 
 	private Integer getUniqueSequenceId(Instance instance) {
@@ -127,7 +124,7 @@ public class SVMHMMDataWriter implements DataWriter {
 		while ((line = reader.readLine()) != null) {
 			Instance[] instance = gson.fromJson(line, Instance[].class);
 			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
-			writeClassifierFormat(ins, false);
+			writeClassifierFormat(ins);
 		}
 
 		reader.close();
@@ -135,7 +132,7 @@ public class SVMHMMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void writeClassifierFormat(Collection<Instance> instances, boolean compress) throws Exception {
+	public void writeClassifierFormat(Collection<Instance> instances) throws Exception {
 		if (featureNames == null) {
 			// create feature name mapping and serialize it at first
 			// pass-through
@@ -278,9 +275,7 @@ public class SVMHMMDataWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
-        this.outcomes = outcomes;
-		classifierFormatOutputFile = new File(outputDirectory,
-				new SVMHMMAdapter().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
 
 		// Caution: DKPro Lab imports (aka copies!) the data of the train task
 		// as test task. We use
@@ -297,11 +292,6 @@ public class SVMHMMDataWriter implements DataWriter {
 	@Override
 	public boolean canStream() {
 		return true;
-	}
-
-	@Override
-	public boolean classiferReadsCompressed() {
-		return false;
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,11 +63,10 @@ public class LiblinearDataWriterTest {
 		sb.append("feature1\n");
 		sb.append("feature2\n");
 		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString(), "utf-8");
-		File outputFile = new File(outputDirectory,
-				LiblinearAdapter.getInstance().getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+		File outputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
 		LiblinearDataWriter writer = new LiblinearDataWriter();
 		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false, new String[]{"0", "1"});
-		writer.writeClassifierFormat(fs, false);
+		writer.writeClassifierFormat(fs);
 
 		Problem problem = Problem.readFromFile(outputFile, 1.0);
 		assertEquals(2, problem.l);

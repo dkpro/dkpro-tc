@@ -38,7 +38,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 
 import com.google.gson.Gson;
@@ -107,7 +106,7 @@ public class LibsvmDataWriter
         while ((line = reader.readLine()) != null) {
             Instance[] instance = gson.fromJson(line, Instance[].class);
             List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
-            writeClassifierFormat(ins, false);
+            writeClassifierFormat(ins);
         }
 
         reader.close();
@@ -115,7 +114,7 @@ public class LibsvmDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> in, boolean compress)
+    public void writeClassifierFormat(Collection<Instance> in)
         throws Exception
     {
 
@@ -230,8 +229,7 @@ public class LibsvmDataWriter
         this.useSparse = useSparse;
         this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
-        classifierFormatOutputFile = new File(outputDirectory, LibsvmAdapter.getInstance()
-                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+        classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
 
         index2instanceId = new HashMap<>();
 
@@ -251,12 +249,6 @@ public class LibsvmDataWriter
     public boolean canStream()
     {
         return true;
-    }
-
-    @Override
-    public boolean classiferReadsCompressed()
-    {
-        return false;
     }
 
     @Override

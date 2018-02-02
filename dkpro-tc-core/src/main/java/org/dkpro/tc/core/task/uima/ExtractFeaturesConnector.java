@@ -185,7 +185,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 			if (featureFilters.length > 0 || !dsw.canStream()) {
 				dsw.writeGenericFormat(instances);
 			} else {
-				dsw.writeClassifierFormat(instances, dsw.classiferReadsCompressed());
+				dsw.writeClassifierFormat(instances);
 			}
 
 		} catch (Exception e1) {

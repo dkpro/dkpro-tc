@@ -45,7 +45,6 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
@@ -125,11 +124,10 @@ public class LoadModelConnectorSvmhmm
                         true, sequenceId++));
             }
 
-            svmhmmDataWriter.writeClassifierFormat(instances, false);
+            svmhmmDataWriter.writeClassifierFormat(instances);
 
             File featureFile = new File(tmpFolderForFeatureFile.toFile() + "/"
-                    + new SVMHMMAdapter().getFrameworkFilename(
-                            TcShallowLearningAdapter.AdapterNameEntries.featureVectorsFile));
+                    + Constants.FILENAME_FEATURE_FILE_NAME);
             File augmentedTestFile = SVMHMMUtils.replaceLabelsWithIntegers(featureFile,
                     loadMapping);
 

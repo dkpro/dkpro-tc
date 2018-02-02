@@ -31,7 +31,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter.AdapterNameEntries;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
@@ -113,8 +112,7 @@ public class WekaModelSerializationDescription
 
         File arffFileTrain = new File(
                 aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
-                        + "/" + WekaClassificationAdapter.getInstance()
-                                .getFrameworkFilename(AdapterNameEntries.featureVectorsFile));
+                        + "/" + Constants.FILENAME_FEATURE_FILE_NAME);
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
         trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
