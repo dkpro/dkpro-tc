@@ -140,7 +140,12 @@ public class LiblinearDataWriter implements DataWriter {
 			List<Integer> keys = new ArrayList<Integer>(entry.keySet());
 			Collections.sort(keys);
 
-			bw.append(outcomeMap.get(inst.getOutcome()) + "\t");
+			
+			if (isRegression()) {
+				bw.append(inst.getOutcome() + "\t");
+			} else {
+				bw.append(outcomeMap.get(inst.getOutcome()) + "\t");
+			}
 			for (int i = 0; i < keys.size(); i++) {
 				Integer key = keys.get(i);
 				Double value = entry.get(key);
@@ -161,6 +166,11 @@ public class LiblinearDataWriter implements DataWriter {
 	}
 
 	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {
+		
+		if(isRegression()){
+			return;
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		for (String k : map.keySet()) {
 			sb.append(k + "\t" + map.get(k) + "\n");
@@ -248,6 +258,9 @@ public class LiblinearDataWriter implements DataWriter {
 	 * @param outcomes
 	 */
 	private void buildOutcomeMap(String[] outcomes) {
+		if(isRegression()){
+			return;
+		}
 		outcomeMap = new HashMap<>();
 		Integer i = 0;
 		List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
@@ -287,6 +300,10 @@ public class LiblinearDataWriter implements DataWriter {
 			index2instanceId.put(i + "", f.getValue() + "");
 			return;
 		}
+	}
+	
+	private boolean isRegression(){
+		return learningMode.equals(Constants.LM_REGRESSION);
 	}
 
 	@Override

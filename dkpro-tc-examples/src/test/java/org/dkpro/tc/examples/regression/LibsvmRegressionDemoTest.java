@@ -18,7 +18,7 @@
  */
 package org.dkpro.tc.examples.regression;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
@@ -58,6 +58,6 @@ public class LibsvmRegressionDemoTest extends TestCaseSuperClass
 
         EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
 		MeanSquaredError mse = new MeanSquaredError(data);
-        assertTrue(mse.getResult() > 1.0);
+        assertEquals(3.37, mse.getResult(), 0.01);
     }
 }

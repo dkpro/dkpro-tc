@@ -33,83 +33,76 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
-public class LibsvmModelSerializationDescription
-    extends ModelSerializationTask
-    implements Constants
-{
+public class LibsvmModelSerializationDescription extends ModelSerializationTask implements Constants {
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
+	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
+	private List<String> classificationArguments;
 
-    boolean trainModel = true;
+	boolean trainModel = true;
 
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        trainAndStoreModel(aContext);
+	@Override
+	public void execute(TaskContext aContext) throws Exception {
+		trainAndStoreModel(aContext);
 
-        writeModelConfiguration(aContext, LibsvmAdapter.class.getName());
-    }
+		writeModelConfiguration(aContext, LibsvmAdapter.class.getName());
+	}
 
-    private void trainAndStoreModel(TaskContext aContext)
-        throws Exception
-    {
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-        if (multiLabel) {
-            throw new TextClassificationException("Multi-label is not yet implemented");
-        }
+	private void trainAndStoreModel(TaskContext aContext) throws Exception {
+		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+		if (multiLabel) {
+			throw new TextClassificationException("Multi-label is not yet implemented");
+		}
 
-        File fileTrain = getTrainFile(aContext);
+		File fileTrain = getTrainFile(aContext);
 
-        File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
+		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 
-        LibsvmTrainModel ltm = new LibsvmTrainModel();
-        ltm.run(buildParameters(fileTrain, model));
-        copyOutcomeMappingToThisFolder(aContext);
-        copyFeatureNameMappingToThisFolder(aContext);
-    }
-    
-    private void copyOutcomeMappingToThisFolder(TaskContext aContext)
-            throws IOException
-        {
-            File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                    AccessMode.READONLY);
-            String mapping = LibsvmAdapter.getOutcomeMappingFilename();
+		LibsvmTrainModel ltm = new LibsvmTrainModel();
+		ltm.run(buildParameters(fileTrain, model));
+		copyOutcomeMappingToThisFolder(aContext);
+		copyFeatureNameMappingToThisFolder(aContext);
+	}
 
-            FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-        }
+	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
+		
+		if(isRegression()){
+			return;
+		}
+		
+		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		String mapping = LibsvmAdapter.getOutcomeMappingFilename();
 
-    private void copyFeatureNameMappingToThisFolder(TaskContext aContext)
-        throws IOException
-    {
-        File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        String mapping = LibsvmAdapter.getFeatureNameMappingFilename();
+		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+	}
+	
+	private boolean isRegression() {
+		return learningMode.equals(Constants.LM_REGRESSION);
+	}
 
-        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-    }
+	private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException {
+		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		String mapping = LibsvmAdapter.getFeatureNameMappingFilename();
 
-    private File getTrainFile(TaskContext aContext)
-    {
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+	}
 
-        return fileTrain;
-    }
+	private File getTrainFile(TaskContext aContext) {
+		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-    private String[] buildParameters(File fileTrain, File model)
-    {
-        List<String> parameters = new ArrayList<>();
-        if (classificationArguments != null) {
-            for (String a : classificationArguments) {
-                parameters.add(a);
-            }
-        }
-        parameters.add(fileTrain.getAbsolutePath());
-        parameters.add(model.getAbsolutePath());
-        return parameters.toArray(new String[0]);
-    }
+		return fileTrain;
+	}
+
+	private String[] buildParameters(File fileTrain, File model) {
+		List<String> parameters = new ArrayList<>();
+		if (classificationArguments != null) {
+			for (String a : classificationArguments) {
+				parameters.add(a);
+			}
+		}
+		parameters.add(fileTrain.getAbsolutePath());
+		parameters.add(model.getAbsolutePath());
+		return parameters.toArray(new String[0]);
+	}
 
 }

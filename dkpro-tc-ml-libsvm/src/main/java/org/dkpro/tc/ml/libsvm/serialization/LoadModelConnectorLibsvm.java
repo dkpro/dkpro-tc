@@ -114,6 +114,10 @@ public class LoadModelConnectorLibsvm
     private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation)
         throws IOException
     {
+    	if(isRegression()){
+    		return new HashMap<>();
+    	}
+    	
         Map<String, String> map = new HashMap<>();
         List<String> readLines = FileUtils
                 .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()), "utf-8");
@@ -122,6 +126,10 @@ public class LoadModelConnectorLibsvm
             map.put(split[1], split[0]);
         }
         return map;
+    }
+    
+    private boolean isRegression(){
+    	return learningMode.equals(Constants.LM_REGRESSION);
     }
 
     @Override
@@ -141,7 +149,7 @@ public class LoadModelConnectorLibsvm
 
             for (int i = 0; i < outcomes.size(); i++) {
 
-                if (learningMode.equals(Constants.LM_REGRESSION)) {
+                if (isRegression()) {
                     String val = writtenPredictions.get(i);
                     outcomes.get(i).setOutcome(val);
                 }

@@ -66,6 +66,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 	private String learningMode;
 
 	private Model liblinearModel;
+	
 	private Map<Integer, String> outcomeMapping;
 
 	private Map<String, Integer> featureMapping;
@@ -98,6 +99,11 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 	}
 
 	private Map<Integer, String> loadOutcome2IntegerMapping(File tcModelLocation) throws IOException {
+		
+		if (isRegression()){
+			return new HashMap<>();
+		}
+		
 		Map<Integer, String> map = new HashMap<>();
 		List<String> readLines = FileUtils
 				.readLines(new File(tcModelLocation, LiblinearAdapter.getOutcomeMappingFilename()), "utf-8");
@@ -108,7 +114,12 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 		return map;
 	}
 	
-	 private Double toValue(Object value)
+	private boolean isRegression() {
+		return learningMode.equals(Constants.LM_REGRESSION);
+	}
+
+
+	private Double toValue(Object value)
 	    {
 	        double v;
 	        if (value instanceof Number) {
@@ -173,7 +184,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 				Feature[] instance = testInstances[i];
 				Double prediction = Linear.predict(liblinearModel, instance);
 
-				if (learningMode.equals(Constants.LM_REGRESSION)) {
+				if (isRegression()) {
 					outcomes.get(i).setOutcome(prediction.toString());
 				} else {
 					String predictedLabel = outcomeMapping.get(prediction.intValue());

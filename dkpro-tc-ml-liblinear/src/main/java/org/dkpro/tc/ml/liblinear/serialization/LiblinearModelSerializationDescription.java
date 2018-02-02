@@ -41,7 +41,7 @@ public class LiblinearModelSerializationDescription extends ModelSerializationTa
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	private List<String> classificationArguments;
-
+	
 	boolean trainModel = true;
 
 	@Override
@@ -71,10 +71,18 @@ public class LiblinearModelSerializationDescription extends ModelSerializationTa
 	}
 
 	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
+		if(isRegression()){
+			return;
+		}
+		
 		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
 		String mapping = LiblinearAdapter.getOutcomeMappingFilename();
 
 		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+	}
+
+	private boolean isRegression() {
+		return learningMode.equals(Constants.LM_REGRESSION);
 	}
 
 	private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException {
