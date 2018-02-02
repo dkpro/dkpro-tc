@@ -229,7 +229,12 @@ public class LiblinearUtils
         }
         br.close();
         bw.close();
-
+        
+        //we overwrite the old input file with the newly created one
+        file.delete();
+        FileUtils.moveFile(outFile, file);
+        outFile = file;
+        
         return outFile;
     }
 

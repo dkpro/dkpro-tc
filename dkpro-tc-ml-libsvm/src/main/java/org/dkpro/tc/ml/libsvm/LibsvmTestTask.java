@@ -127,6 +127,11 @@ public class LibsvmTestTask
         }
 
         bw.close();
+        
+        //we overwrite the old input file with the newly created one
+        trainFile.delete();
+        FileUtils.moveFile(createTempFile, trainFile);
+        createTempFile = trainFile;
 
         return createTempFile;
     }
