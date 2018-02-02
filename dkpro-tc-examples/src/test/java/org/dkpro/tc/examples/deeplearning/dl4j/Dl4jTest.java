@@ -88,7 +88,7 @@ public class Dl4jTest extends TestCaseSuperClass
         expected.add("pct");
 
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i), outcomes.get(i));
+            assertEquals(expected.get(i), outcomes.get(i).trim());
         }
 
         return true;
@@ -141,7 +141,7 @@ public class Dl4jTest extends TestCaseSuperClass
         expected.add("''");
 
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i), content.get(i));
+            assertEquals(expected.get(i), content.get(i).trim());
         }
 
         return true;
