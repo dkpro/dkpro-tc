@@ -67,7 +67,7 @@ public class SVMHMMOutcomeIDReport
         // test file with gold labels
         File testDataStorage = getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
-        return new File(testDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
+        return new File(testDataStorage, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
     }
 
     /**

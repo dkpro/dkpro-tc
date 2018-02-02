@@ -275,7 +275,7 @@ public class SVMHMMDataWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
 			throws Exception {
 		this.outputDirectory = outputDirectory;
-		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
+		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
 		// Caution: DKPro Lab imports (aka copies!) the data of the train task
 		// as test task. We use

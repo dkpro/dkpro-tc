@@ -80,7 +80,7 @@ public class CRFSuiteModelSerializationDescription
                 AccessMode.READONLY);
 
         String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
-        String trainingDataPath = trainFolder.getPath() + "/" + Constants.FILENAME_FEATURE_FILE_NAME;
+        String trainingDataPath = trainFolder.getPath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT;
         List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath,
                 trainingDataPath, algoName, algoParameters);
 

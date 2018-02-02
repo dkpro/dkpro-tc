@@ -166,7 +166,7 @@ public interface Constants
     /**
      * File name for storing the training / testing data file 
      */
-    public static String FILENAME_FEATURE_FILE_NAME = "featureFile.txt";
+    public static String FILENAME_DATA_IN_CLASSIFIER_FORMAT = "featureFile.txt";
 
     /**
      * Developer mode enables it to use unit feature extractors in documents

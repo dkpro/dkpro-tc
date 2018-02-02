@@ -112,7 +112,7 @@ public class WekaModelSerializationDescription
 
         File arffFileTrain = new File(
                 aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
-                        + "/" + Constants.FILENAME_FEATURE_FILE_NAME);
+                        + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
         trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);

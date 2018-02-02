@@ -125,7 +125,7 @@ public class CRFSuiteOutcomeIDReport
         File storage = getContext().getFolder(CRFSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
-        File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_FEATURE_FILE_NAME);
+        File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
 

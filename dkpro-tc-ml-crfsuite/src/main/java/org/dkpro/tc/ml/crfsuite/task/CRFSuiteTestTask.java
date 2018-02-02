@@ -208,7 +208,7 @@ public class CRFSuiteTestTask
         throws Exception
     {
         File tmpFileFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        File tmpTest = new File(tmpFileFolder.getPath() + "/" + FILENAME_FEATURE_FILE_NAME);
+        File tmpTest = new File(tmpFileFolder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
         testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
 
         return wrapTestCommandAsList(testFile, executablePath, modelLocation);
@@ -257,7 +257,7 @@ public class CRFSuiteTestTask
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-        File tmpTrain = new File(trainFolder.getPath() + "/" + FILENAME_FEATURE_FILE_NAME);
+        File tmpTrain = new File(trainFolder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
 

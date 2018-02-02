@@ -160,7 +160,7 @@ public class LoadModelConnectorLiblinear extends ModelSerialization_ImplBase {
 			}
 
 			File inputData = File.createTempFile("libLinearePrediction",
-					Constants.FILENAME_FEATURE_FILE_NAME);
+					Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 			inputData.deleteOnExit();
 			FileUtils.writeStringToFile(inputData, sb.toString(), "utf-8");
 

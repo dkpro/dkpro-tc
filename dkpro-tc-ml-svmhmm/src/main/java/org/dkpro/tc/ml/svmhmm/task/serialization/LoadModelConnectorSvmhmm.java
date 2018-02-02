@@ -127,7 +127,7 @@ public class LoadModelConnectorSvmhmm
             svmhmmDataWriter.writeClassifierFormat(instances);
 
             File featureFile = new File(tmpFolderForFeatureFile.toFile() + "/"
-                    + Constants.FILENAME_FEATURE_FILE_NAME);
+                    + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
             File augmentedTestFile = SVMHMMUtils.replaceLabelsWithIntegers(featureFile,
                     loadMapping);
 

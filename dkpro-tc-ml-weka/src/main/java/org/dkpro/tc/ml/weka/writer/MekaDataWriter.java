@@ -81,7 +81,7 @@ public class MekaDataWriter
         this.applyWeighting = applyWeighting;
         this.outcomes = outcomes;
 
-        arffTarget = new File(outputFolder, Constants.FILENAME_FEATURE_FILE_NAME);
+        arffTarget = new File(outputFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         // Caution: DKPro Lab imports (aka copies!) the data of the train task
         // as test task. We use

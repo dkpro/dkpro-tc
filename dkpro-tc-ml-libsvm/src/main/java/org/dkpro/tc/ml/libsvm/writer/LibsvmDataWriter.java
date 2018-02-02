@@ -229,7 +229,7 @@ public class LibsvmDataWriter
         this.useSparse = useSparse;
         this.learningMode = learningMode;
         this.applyWeighting = applyWeighting;
-        classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
+        classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         index2instanceId = new HashMap<>();
 

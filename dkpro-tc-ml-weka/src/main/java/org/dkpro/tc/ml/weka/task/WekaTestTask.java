@@ -76,9 +76,9 @@ public class WekaTestTask
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         File arffFileTrain = WekaUtils.getFile(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA,
-        		Constants.FILENAME_FEATURE_FILE_NAME, AccessMode.READONLY);
+        		Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT, AccessMode.READONLY);
         File arffFileTest = WekaUtils.getFile(aContext, TEST_TASK_INPUT_KEY_TEST_DATA,
-        		Constants.FILENAME_FEATURE_FILE_NAME, AccessMode.READONLY);
+        		Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT, AccessMode.READONLY);
 
         Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);

@@ -63,7 +63,7 @@ public class SvmhmmModelSerializationDescription
         File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 StorageService.AccessMode.READONLY);
 
-        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
+        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         SortedSet<String> outcomeLabels = SVMHMMUtils
                 .extractOutcomeLabelsFromFeatureVectorFiles(trainingFile);

@@ -99,8 +99,8 @@ public class SVMHMMTestTask
         File testDataStorage = taskContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA,
                 StorageService.AccessMode.READONLY);
 
-        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
-        File testFile = new File(testDataStorage, Constants.FILENAME_FEATURE_FILE_NAME);
+        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        File testFile = new File(testDataStorage, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         if (!Constants.LM_SINGLE_LABEL.equals(learningMode)) {
             throw new TextClassificationException(

@@ -133,7 +133,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 		this.learningMode = learningMode;
 		this.applyWeigthing = applyWeighting;
 
-		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
+		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
 		// Caution: DKPro Lab imports (aka copies!) the data of the train task
 		// as test task. We use

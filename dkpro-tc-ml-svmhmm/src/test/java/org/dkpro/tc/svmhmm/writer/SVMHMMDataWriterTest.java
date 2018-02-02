@@ -104,7 +104,7 @@ public class SVMHMMDataWriterTest
         svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");
+                new FileInputStream(new File(temporaryFolder.getRoot(), Constants.FILENAME_FEATURES)), "utf-8");
         System.out.println(lines.subList(0, 5));
     }
 
@@ -127,7 +127,7 @@ public class SVMHMMDataWriterTest
         svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");
+                new FileInputStream(new File(temporaryFolder.getRoot(), Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT)), "utf-8");
         System.out.println(lines);
 
         // each instance must be on one line!
@@ -159,7 +159,7 @@ public class SVMHMMDataWriterTest
                 new String[] {});
         svmhmmDataWriter.writeClassifierFormat(instances);
 
-        File featureVectorsFile = new File(temporaryFolder.getRoot(), "feature-vectors.txt");
+        File featureVectorsFile = new File(temporaryFolder.getRoot(), Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         assertEquals("outcome", SVMHMMUtils
                 .extractOutcomeLabelsFromFeatureVectorFiles(featureVectorsFile).iterator().next());
@@ -193,7 +193,7 @@ public class SVMHMMDataWriterTest
         svmhmmDataWriter.writeClassifierFormat(instances);
 
         List<String> lines = IOUtils.readLines(
-                new FileInputStream(new File(temporaryFolder.getRoot(), "feature-vectors.txt")), "utf-8");
+                new FileInputStream(new File(temporaryFolder.getRoot(), Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT)), "utf-8");
 
         // each instance must be on one line!
         assertEquals(1, lines.size());

@@ -108,13 +108,13 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 
 	private File getTestFile(TaskContext aContext) {
 		File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-		File fileTest = new File(testFolder, Constants.FILENAME_FEATURE_FILE_NAME);
+		File fileTest = new File(testFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		return fileTest;
 	}
 
 	private File getTrainFile(TaskContext aContext) {
 		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File fileTrain = new File(trainFolder, Constants.FILENAME_FEATURE_FILE_NAME);
+		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
 		return fileTrain;
 	}

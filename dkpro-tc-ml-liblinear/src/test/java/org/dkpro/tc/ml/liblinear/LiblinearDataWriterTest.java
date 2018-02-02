@@ -63,7 +63,7 @@ public class LiblinearDataWriterTest {
 		sb.append("feature1\n");
 		sb.append("feature2\n");
 		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString(), "utf-8");
-		File outputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
+		File outputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		LiblinearDataWriter writer = new LiblinearDataWriter();
 		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false, new String[]{"0", "1"});
 		writer.writeClassifierFormat(fs);

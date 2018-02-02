@@ -120,7 +120,7 @@ public class CRFSuiteDataWriterTest
     private List<String> readData()
         throws Exception
     {
-        File outputFile = new File(outputDirectory, Constants.FILENAME_FEATURE_FILE_NAME);
+        File outputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
         BufferedReader br = new BufferedReader(new FileReader(outputFile));
 
         List<String> lines = new ArrayList<String>();
