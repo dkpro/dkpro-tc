@@ -135,6 +135,11 @@
 				dest="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32">
 			<mapper type="flatten" />
 		</untar>
+		
+		<move file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/svm_hmm_classify.exe" 
+				tofile="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/svm_hmm_classify"/>
+		<move file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/svm_hmm_learn.exe" 
+						tofile="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/svm_hmm_learn"/>
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/README">
 			svmhmm binary
