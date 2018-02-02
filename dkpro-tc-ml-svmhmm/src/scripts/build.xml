@@ -147,8 +147,8 @@
 
 		<propertyfile
 		    file="target/model-staging/org/dkpro/tc/ml/svmhmm/windows-x86_32/manifest.properties">
-			<entry  key="svm_hmm_classify.exe" value="executable"/>
-			<entry  key="svm_hmm_learn.exe" value="executable"/>
+			<entry  key="svm_hmm_classify" value="executable"/>
+			<entry  key="svm_hmm_learn" value="executable"/>
 		</propertyfile>		
 		
 		<!-- WINDOWS 64 bit -->
