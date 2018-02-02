@@ -51,14 +51,19 @@ public class InitTaskDeep
 
     @Discriminator(name = DIM_READER_TRAIN)
     protected CollectionReaderDescription readerTrain;
+    
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
+    
     @Discriminator(name = DIM_FEATURE_MODE)
     private String mode;
+    
     @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
+    
     @Discriminator(name = DIM_PRETRAINED_EMBEDDINGS)
-    private File embedding;
+    private String embedding;
+    
     @Discriminator(name = DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING)
     private boolean dropVocabWithoutEmbedding;
 

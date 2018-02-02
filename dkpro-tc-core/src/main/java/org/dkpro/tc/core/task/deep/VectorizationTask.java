@@ -60,14 +60,19 @@ public class VectorizationTask
 
     @Discriminator(name = DIM_FILES_ROOT)
     private File filesRoot;
+    
     @Discriminator(name = DIM_FILES_TRAINING)
     private Collection<String> files_training;
+    
     @Discriminator(name = DIM_FILES_VALIDATION)
     private Collection<String> files_validation;
+    
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
+    
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;    
+    
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private int maximumLength;
     
@@ -101,11 +106,13 @@ public class VectorizationTask
         }
         
         AggregateBuilder builder = new AggregateBuilder();
-        
-        //records which document ids are in the train / test set (this is not clear for cross-validation tasks)
+
+		// records which document ids are in the train / test set (this is not
+		// clear for cross-validation tasks)
 		builder.add(createEngineDescription(IdentificationCollector.class,
-				IdentificationCollector.PARAM_TARGET_DIRECTORY, outputDir, IdentificationCollector.PARAM_MODE,
-				featureMode, IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
+								IdentificationCollector.PARAM_TARGET_DIRECTORY, outputDir, 
+								IdentificationCollector.PARAM_MODE, featureMode, 
+								IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
 
 		AnalysisEngineDescription engine = null;
 

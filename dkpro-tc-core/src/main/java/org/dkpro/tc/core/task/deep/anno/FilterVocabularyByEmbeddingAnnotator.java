@@ -44,7 +44,7 @@ public class FilterVocabularyByEmbeddingAnnotator
 
     public static final String PARAM_EMBEDDING = "embedding";
     @ConfigurationParameter(name = PARAM_EMBEDDING, mandatory = false)
-    protected File embedding;
+    protected String embedding;
 
     Set<String> vocab = new HashSet<>();
 
@@ -63,7 +63,7 @@ public class FilterVocabularyByEmbeddingAnnotator
         String line = null;
         try {
             BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(embedding), "utf-8"));
+                    new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
                 vocab.add(split[0]);
