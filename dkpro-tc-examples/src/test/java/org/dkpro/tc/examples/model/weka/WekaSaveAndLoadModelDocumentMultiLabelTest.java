@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.model;
+package org.dkpro.tc.examples.model.weka;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +46,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
@@ -60,14 +60,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.bayes.NaiveBayes;
+import meka.classifiers.multilabel.MULAN;
+import weka.classifiers.trees.RandomForest;
 
 /**
  * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
+public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
@@ -81,25 +82,25 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
     public void setup() throws Exception
     {
     	super.setup();
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentMultiLabelTest.class.getSimpleName());
     }
 
-    private ParameterSpace documentGetParameterSpaceSingleLabel()
+    private ParameterSpace documentGetParameterSpaceMultiLabel()
         throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                ReutersCorpusReader.class, ReutersCorpusReader.PARAM_SOURCE_LOCATION,
+                documentTrainFolderReuters, ReutersCorpusReader.PARAM_GOLD_LABEL_FILE,
+                documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
+                ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+                Arrays.asList(new String[] { MULAN.class.getName(), "-S", "RAkEL2", "-W",
+                        RandomForest.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
@@ -107,23 +108,23 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
                 TcFeatureFactory.create(NrOfChars.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"), dimClassificationArgs);
         return pSpace;
     }
 
     @Test
-    public void documentRoundTripWekaSingleLabel()
+    public void documentRoundTripWekaMultiLabel()
         throws Exception
     {
 
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentMultiLabelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
-        ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
-        documentWriteModel(docParamSpace, modelFolder, true);
-        documentLoadModelSingleLabel(modelFolder);
+        ParameterSpace docParamSpace = documentGetParameterSpaceMultiLabel();
+        documentWriteModel(docParamSpace, modelFolder, false);
+        documentLoadModelMultiLabel(modelFolder);
 
         // verify created files
 
@@ -173,7 +174,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         Lab.getInstance().run(batch);
     }
 
-    private static void documentLoadModelSingleLabel(File modelFolder)
+    private static void documentLoadModelMultiLabel(File modelFolder)
         throws Exception
     {
 
@@ -191,8 +192,10 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
 
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
-        assertEquals(1, outcomes.size());
-        assertEquals("comp.graphics", outcomes.get(0).getOutcome());
+        assertEquals(2, outcomes.size());
+        assertEquals("grain", outcomes.get(0).getOutcome());
+        assertEquals("corn", outcomes.get(1).getOutcome());
+
     }
 
 }
