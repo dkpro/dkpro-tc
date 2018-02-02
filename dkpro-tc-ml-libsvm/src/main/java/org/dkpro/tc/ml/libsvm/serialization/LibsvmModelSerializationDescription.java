@@ -69,56 +69,25 @@ public class LibsvmModelSerializationDescription
             throw new TextClassificationException("Multi-label is not yet implemented");
         }
 
-        buildOutcome2IntegerMap(aContext);
-        File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
+        File fileTrain = getTrainFile(aContext);
 
         File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
-        writeOutcomeMappingToThisFolder(aContext);
+        copyOutcomeMappingToThisFolder(aContext);
         copyFeatureNameMappingToThisFolder(aContext);
     }
+    
+    private void copyOutcomeMappingToThisFolder(TaskContext aContext)
+            throws IOException
+        {
+            File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                    AccessMode.READONLY);
+            String mapping = LibsvmAdapter.getOutcomeMappingFilename();
 
-    private File replaceOutcomeByIntegers(File trainFile)
-        throws IOException
-    {
-    	File parentFile = trainFile.getParentFile();
-        File createTempFile = new File(parentFile, "libsvmTrainFile.libsvm");
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
-
-        for (String s : FileUtils.readLines(trainFile, "utf-8")) {
-            if (s.isEmpty()) {
-                continue;
-            }
-            int indexOf = s.indexOf("\t");
-            String outcome = s.substring(0, indexOf);
-            Integer integer = outcome2id.get(outcome);
-            bw.write(integer.toString());
-            bw.write(s.substring(indexOf));
-            bw.write("\n");
+            FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
         }
-
-        bw.close();
-
-        return createTempFile;
-    }
-
-    private void buildOutcome2IntegerMap(TaskContext aContext)
-        throws IOException
-    {
-        File folder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
-        File outcomes = new File(folder, Constants.FILENAME_OUTCOMES);
-
-        Set<String> uniqueOutcomes = new HashSet<>();
-        uniqueOutcomes.addAll(FileUtils.readLines(outcomes, "utf-8"));
-
-        int i = 0;
-        for (String o : uniqueOutcomes) {
-            outcome2id.put(o, i++);
-        }
-    }
 
     private void copyFeatureNameMappingToThisFolder(TaskContext aContext)
         throws IOException

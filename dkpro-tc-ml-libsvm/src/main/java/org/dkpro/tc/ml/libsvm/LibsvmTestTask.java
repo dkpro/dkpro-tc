@@ -31,11 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
@@ -60,18 +56,13 @@ public class LibsvmTestTask
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
 
-    private Map<String, Integer> outcome2id = new HashMap<>();
-
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
         exceptMultiLabelMode();
 
-        boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
-
-        buildOutcome2IntegerMap(aContext, isRegression);
-        File fileTrain = replaceOutcomeByIntegers(getTrainFile(aContext));
+        File fileTrain = getTrainFile(aContext);
 
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
                 Constants.MODEL_CLASSIFIER);
@@ -79,8 +70,6 @@ public class LibsvmTestTask
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
         prediction(model, aContext);
-
-        writeMapping(aContext,isRegression);
     }
 
     private void exceptMultiLabelMode()
@@ -89,80 +78,6 @@ public class LibsvmTestTask
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
         if (multiLabel) {
             throw new TextClassificationException("Multi-label is not supported");
-        }
-    }
-
-    private void writeMapping(TaskContext aContext, boolean isRegression)
-        throws IOException
-    {
-        if(isRegression){
-            //regression has no mapping
-            return;
-        }
-        
-        String map2String = map2String(outcome2id);
-        File file = aContext.getFile(LibsvmAdapter.getOutcomeMappingFilename(),
-                AccessMode.READWRITE);
-        FileUtils.writeStringToFile(file, map2String, "utf-8");
-    }
-
-    private File replaceOutcomeByIntegers(File trainFile)
-        throws IOException
-    {
-        File parentFile = trainFile.getParentFile();
-        File createTempFile = new File(parentFile, "libsvmTrainFile.libsvm");
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
-
-        for (String s : FileUtils.readLines(trainFile, "utf-8")) {
-            if (s.isEmpty()) {
-                continue;
-            }
-            int indexOf = s.indexOf("\t");
-            String val = map(s, indexOf);
-            bw.write(val);
-            bw.write(s.substring(indexOf));
-            bw.write("\n");
-        }
-
-        bw.close();
-        
-        //we overwrite the old input file with the newly created one
-        trainFile.delete();
-        FileUtils.moveFile(createTempFile, trainFile);
-        createTempFile = trainFile;
-
-        return createTempFile;
-    }
-
-    private String map(String s, int indexOf)
-    {
-        String outcome = s.substring(0, indexOf);
-        Integer integer = outcome2id.get(outcome);
-        if (integer == null) {
-            // happens for regression i.e. no mapping needed
-            return outcome;
-        }
-        return integer.toString();
-    }
-
-    private void buildOutcome2IntegerMap(TaskContext aContext, boolean isRegression)
-        throws IOException
-    {
-        if (isRegression) {
-            // no mapping for regression
-            return;
-        }
-
-        File outcomeFolder = aContext.getFolder(Constants.OUTCOMES_INPUT_KEY, AccessMode.READONLY);
-        File outcomeFile = new File(outcomeFolder, Constants.FILENAME_OUTCOMES);
-
-        Set<String> uniqueOutcomes = new HashSet<>();
-        uniqueOutcomes.addAll(FileUtils.readLines(outcomeFile, "utf-8"));
-
-        int i = 0;
-        for (String o : uniqueOutcomes) {
-            outcome2id.put(o, i++);
         }
     }
 
@@ -182,7 +97,7 @@ public class LibsvmTestTask
     private void prediction(File model, TaskContext aContext)
         throws Exception
     {
-        File fileTest = replaceOutcomeByIntegers(getTestFile(aContext));
+        File fileTest = getTestFile(aContext);
         LibsvmPredict predictor = new LibsvmPredict();
 
         BufferedReader r = new BufferedReader(
@@ -264,16 +179,6 @@ public class LibsvmTestTask
         File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         return fileTrain;
-    }
-
-    private String map2String(Map<String, Integer> map)
-    {
-        StringBuilder sb = new StringBuilder();
-        for (String k : map.keySet()) {
-            sb.append(k + "\t" + map.get(k) + "\n");
-        }
-
-        return sb.toString();
     }
 
 }

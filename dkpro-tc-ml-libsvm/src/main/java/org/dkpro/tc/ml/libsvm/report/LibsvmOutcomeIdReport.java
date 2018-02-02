@@ -33,7 +33,9 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
+import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;
@@ -179,9 +181,9 @@ private Map<String, String> getMapping(boolean isUnit) throws IOException {
             return new HashMap<>();
         }
         
-        File mappingFolder = getContext().getFolder("", StorageService.AccessMode.READONLY);
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
         String fileName = LibsvmAdapter.getOutcomeMappingFilename();
-        File file = new File(mappingFolder, fileName);
+        File file = new File(folder, fileName);
         Map<Integer, String> map = new HashMap<Integer, String>();
 
         List<String> lines = FileUtils.readLines(file, "utf-8");
