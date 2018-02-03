@@ -37,10 +37,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
@@ -48,76 +46,42 @@ import libsvm.svm;
 import libsvm.svm_model;
 
 public class LibsvmTestTask
-    extends ExecutableTaskBase
+    extends LibsvmDataFormatTestTask
     implements Constants
 {
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
-    @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
 
     @Override
     public void execute(TaskContext aContext)
         throws Exception
     {
-        exceptMultiLabelMode();
+        throwExceptionIfMultiLabelMode();
 
-        File fileTrain = getTrainFile(aContext);
+        runPrediction(aContext);
+    }
+    
+	@Override
+	protected void runPrediction(TaskContext aContext) throws Exception {
+		File fileTrain = getTrainFile(aContext);
+		File fileTest = getTestFile(aContext);
 
+        BufferedReader r = new BufferedReader(
+                new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+		
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
                 Constants.MODEL_CLASSIFIER);
 
         LibsvmTrainModel ltm = new LibsvmTrainModel();
         ltm.run(buildParameters(fileTrain, model));
-        prediction(model, aContext);
-    }
-
-    private void exceptMultiLabelMode()
-        throws TextClassificationException
-    {
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-        if (multiLabel) {
-            throw new TextClassificationException("Multi-label is not supported");
-        }
-    }
-
-    private String[] buildParameters(File fileTrain, File model)
-    {
-        List<String> parameters = new ArrayList<>();
-        if (classificationArguments != null) {
-            for (String a : classificationArguments) {
-                parameters.add(a);
-            }
-        }
-        parameters.add(fileTrain.getAbsolutePath());
-        parameters.add(model.getAbsolutePath());
-        return parameters.toArray(new String[0]);
-    }
-
-    private void prediction(File model, TaskContext aContext)
-        throws Exception
-    {
-        File fileTest = getTestFile(aContext);
+     
         LibsvmPredict predictor = new LibsvmPredict();
-
-        BufferedReader r = new BufferedReader(
-                new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-        File prediction = getPredictionFile(aContext);
         File predTmp = createTemporaryPredictionFile();
-
         DataOutputStream output = new DataOutputStream(new FileOutputStream(predTmp));
-        svm_model trainedModel = svm.svm_load_model(model.getAbsolutePath());
-        predictor.predict(r, output, trainedModel, 0);
+        svm_model svmModel = svm.svm_load_model(model.getAbsolutePath());
+        predictor.predict(r, output, svmModel, 0);
         output.close();
 
-        mergePredictedValuesWithExpected(fileTest, predTmp, prediction);
-    }
-
-    // We only get the predicted values but we loose the information which value was expected - we
-    // thus use the test file and restore the expected values from there
-    private void mergePredictedValuesWithExpected(File fileTest, File predTmp, File prediction)
-        throws IOException
-    {
+        
+        File prediction = getPredictionFile(aContext);
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
 
@@ -132,7 +96,22 @@ public class LibsvmTestTask
         }
         bw.close();
     }
+    
 
+    private String[] buildParameters(File fileTrain, File model)
+    {
+        List<String> parameters = new ArrayList<>();
+        if (classificationArguments != null) {
+            for (String a : classificationArguments) {
+                parameters.add(a);
+            }
+        }
+        parameters.add(fileTrain.getAbsolutePath());
+        parameters.add(model.getAbsolutePath());
+        return parameters.toArray(new String[0]);
+    }
+
+    
     private List<String> pickGold(List<String> readLines)
     {
         List<String> gold = new ArrayList<>();
@@ -159,26 +138,5 @@ public class LibsvmTestTask
         return createTempFile;
     }
 
-    private File getPredictionFile(TaskContext aContext)
-    {
-        File folder = aContext.getFolder("", AccessMode.READWRITE);
-        return new File(folder, Constants.FILENAME_PREDICTIONS);
-    }
-
-    private File getTestFile(TaskContext aContext)
-    {
-        File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        File fileTest = new File(testFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        return fileTest;
-    }
-
-    private File getTrainFile(TaskContext aContext)
-    {
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-
-        return fileTrain;
-    }
 
 }

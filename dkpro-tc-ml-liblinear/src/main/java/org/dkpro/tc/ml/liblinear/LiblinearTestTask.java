@@ -26,9 +26,8 @@ import java.util.List;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Feature;
@@ -38,14 +37,14 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
-	
+public class LiblinearTestTask extends LibsvmDataFormatTestTask implements Constants {
+
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	private List<String> classificationArguments;
-	
+
 	@Discriminator(name = DIM_FEATURE_MODE)
 	private String featureMode;
-	
+
 	@Discriminator(name = DIM_LEARNING_MODE)
 	private String learningMode;
 
@@ -55,14 +54,19 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
-		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-		if (multiLabel) {
-			throw new TextClassificationException(
-					"Multi-label requested, but LIBLINEAR only supports single label setups.");
-		}
+		throwExceptionIfMultiLabelMode();
+
+		runPrediction(aContext);
+	}
+	
+	@Override
+	protected void runPrediction(TaskContext aContext) throws Exception {
 
 		File fileTrain = getTrainFile(aContext);
 		File fileTest = getTestFile(aContext);
+		
+		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
+		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 		
 		// default for bias is -1, documentation says to set it to 1 in order to
 		// get results closer
@@ -71,37 +75,13 @@ public class LiblinearTestTask extends ExecutableTaskBase implements Constants {
 		// need to also
 		// deactivate it there
 		Problem train = Problem.readFromFile(fileTrain, 1.0);
-
 		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
 		double C = LiblinearUtils.getParameterC(classificationArguments);
 		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
-
 		Linear.setDebugOutput(null);
-
 		Parameter parameter = new Parameter(solver, C, eps);
 		Model model = Linear.train(train, parameter);
-
 		Problem test = Problem.readFromFile(fileTest, 1.0);
-
-		predict(aContext, model, test);
-	}
-
-	private File getTestFile(TaskContext aContext) {
-		File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-		File fileTest = new File(testFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		return fileTest;
-	}
-
-	private File getTrainFile(TaskContext aContext) {
-		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-
-		return fileTrain;
-	}
-
-	private void predict(TaskContext aContext, Model model, Problem test) throws Exception {
-		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
-		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 
 		BufferedWriter writer = new BufferedWriter(
 				new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
