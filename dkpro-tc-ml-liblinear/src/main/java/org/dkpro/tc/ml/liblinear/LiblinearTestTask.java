@@ -21,11 +21,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
@@ -38,15 +36,6 @@ import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearTestTask extends LibsvmDataFormatTestTask implements Constants {
-
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<String> classificationArguments;
-
-	@Discriminator(name = DIM_FEATURE_MODE)
-	private String featureMode;
-
-	@Discriminator(name = DIM_LEARNING_MODE)
-	private String learningMode;
 
 	public static final String SEPARATOR_CHAR = ";";
 	public static final double EPISILON_DEFAULT = 0.01;
