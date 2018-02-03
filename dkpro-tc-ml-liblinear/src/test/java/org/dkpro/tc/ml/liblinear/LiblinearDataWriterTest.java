@@ -27,7 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -64,7 +64,7 @@ public class LiblinearDataWriterTest {
 		sb.append("feature2\n");
 		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString(), "utf-8");
 		File outputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		LiblinearDataWriter writer = new LiblinearDataWriter();
+		LibsvmDataFormatWriter writer = new LibsvmDataFormatWriter();
 		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false, new String[]{"0", "1"});
 		writer.writeClassifierFormat(fs);
 

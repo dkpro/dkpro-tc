@@ -19,15 +19,10 @@
 package org.dkpro.tc.ml.liblinear.serialization;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.core.util.SaveModelUtils;
+import org.dkpro.tc.io.libsvm.LibsvmModelSerialization;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
@@ -37,27 +32,16 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearModelSerializationDescription extends ModelSerializationTask implements Constants {
+public class LiblinearModelSerializationDescription extends LibsvmModelSerialization implements Constants {
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<String> classificationArguments;
-	
 	boolean trainModel = true;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		trainAndStoreModel(aContext);
-
-		writeModelConfiguration(aContext, LiblinearAdapter.class.getName());
+	public void trainModel(boolean b) {
+		trainModel = b;
 	}
 
-	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-		// create mapping and persist mapping
-		File fileTrain = getTrainFile(aContext);
-
-		copyFeatureNameMappingToThisFolder(aContext);
-		copyOutcomeMappingToThisFolder(aContext);
-
+	@Override
+	protected void trainModel(File fileTrain) throws Exception {
 		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
 		double C = LiblinearUtils.getParameterC(classificationArguments);
 		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
@@ -70,36 +54,8 @@ public class LiblinearModelSerializationDescription extends ModelSerializationTa
 		model.save(new File(outputFolder, MODEL_CLASSIFIER));
 	}
 
-	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
-		if(isRegression()){
-			return;
-		}
-		
-		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		String mapping = LiblinearAdapter.getOutcomeMappingFilename();
-
-		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-	}
-
-	private boolean isRegression() {
-		return learningMode.equals(Constants.LM_REGRESSION);
-	}
-
-	private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException {
-		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		String mapping = LiblinearAdapter.getFeatureNameMappingFilename();
-
-		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-	}
-
-	private File getTrainFile(TaskContext aContext) {
-		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-
-		return fileTrain;
-	}
-
-	public void trainModel(boolean b) {
-		trainModel = b;
+	@Override
+	protected void writeAdapter() throws Exception {
+		SaveModelUtils.writeModelAdapterInformation(outputFolder, LiblinearAdapter.class.getName());
 	}
 }

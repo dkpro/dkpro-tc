@@ -8,6 +8,34 @@
   </parent>
   <dependencies>
   	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-core</artifactId>
+  	</dependency>
+  	 	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-api</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-api-features</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-io-libsvm</artifactId>
+  	</dependency>
+   <dependency>
+		<groupId>org.dkpro.tc</groupId>
+		<artifactId>dkpro-tc-ml</artifactId>
+	</dependency>
+  	<dependency>
+  		<groupId>org.apache.uima</groupId>
+  		<artifactId>uimafit-core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.lab</groupId>
+  		<artifactId>dkpro-lab-core</artifactId>
+  	</dependency>
+  	<dependency>
   		<groupId>commons-logging</groupId>
   		<artifactId>commons-logging-api</artifactId>
   	</dependency>  
@@ -18,30 +46,6 @@
   	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-ml</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-api-features</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-api</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.uima</groupId>
-  		<artifactId>uimafit-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.lab</groupId>
-  		<artifactId>dkpro-lab-core</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.uima</groupId>

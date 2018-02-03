@@ -48,14 +48,16 @@ public abstract class ModelSerializationTask
     }
 
 	
-	public void writeModelConfiguration(TaskContext aContext, String mlAdapter) throws Exception{
+	protected void writeModelConfiguration(TaskContext aContext) throws Exception{
 
 	    SaveModelUtils.writeModelParameters(aContext, outputFolder, featureSet);
         SaveModelUtils.writeFeatureMode(outputFolder, featureMode);
         SaveModelUtils.writeLearningMode(outputFolder, learningMode);
-        SaveModelUtils.writeModelAdapterInformation(outputFolder, mlAdapter);
         SaveModelUtils.writeCurrentVersionOfDKProTC(outputFolder);
 
+        writeAdapter();
 	}
+
+	protected abstract void writeAdapter() throws Exception;
    
 }

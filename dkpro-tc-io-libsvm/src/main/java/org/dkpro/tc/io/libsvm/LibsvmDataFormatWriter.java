@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.liblinear.writer;
+package org.dkpro.tc.io.libsvm;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -38,7 +38,6 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 
 import com.google.gson.Gson;
 
@@ -49,7 +48,7 @@ import com.google.gson.Gson;
  * 
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
-public class LiblinearDataWriter implements DataWriter {
+public class LibsvmDataFormatWriter implements DataWriter {
 
 	public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 
@@ -161,8 +160,8 @@ public class LiblinearDataWriter implements DataWriter {
 		bw = null;
 
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
-		writeFeatureName2idMapping(outputDirectory, LiblinearAdapter.getFeatureNameMappingFilename(), featureNames2id);
-		writeOutcomeMapping(outputDirectory, LiblinearAdapter.getOutcomeMappingFilename(), outcomeMap);
+		writeFeatureName2idMapping(outputDirectory, AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
+		writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(), outcomeMap);
 	}
 
 	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {

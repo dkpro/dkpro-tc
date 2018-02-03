@@ -28,10 +28,10 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.liblinear.report.LiblinearOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearModelSerializationDescription;
 import org.dkpro.tc.ml.liblinear.serialization.LoadModelConnectorLiblinear;
-import org.dkpro.tc.ml.liblinear.writer.LiblinearDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -73,14 +73,6 @@ public class LiblinearAdapter
 		return new LiblinearAdapter();
 	}
 	
-	public static String getOutcomeMappingFilename() {
-		return "outcome-mapping.txt";
-	}
-	
-	public static String getFeatureNameMappingFilename() {
-		return "feature-name-mapping.txt";
-	}
-	
 	@Override
 	public ExecutableTaskBase getTestTask() {
 		return new LiblinearTestTask();
@@ -88,7 +80,7 @@ public class LiblinearAdapter
 
 	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
-		return LiblinearOutcomeIdReport.class;
+		return LibsvmDataFormatOutcomeIdReport.class;
 	}
 
 	@Override
@@ -105,7 +97,7 @@ public class LiblinearAdapter
 	
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return LiblinearDataWriter.class;
+		return LibsvmDataFormatWriter.class;
 	}
 	
 	@Override

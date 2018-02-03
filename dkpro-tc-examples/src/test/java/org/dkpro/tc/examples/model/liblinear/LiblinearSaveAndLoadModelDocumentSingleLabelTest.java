@@ -56,6 +56,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -165,7 +166,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
         assertTrue(learningMode.exists());
 
         File id2outcomeMapping = new File(
-                modelFolder.getAbsolutePath() + "/" + LiblinearAdapter.getOutcomeMappingFilename());
+                modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
         assertTrue(id2outcomeMapping.exists());
     }
 
@@ -294,6 +295,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
         possibleOutcomes.add("JJ");
         possibleOutcomes.add("VBD");
         possibleOutcomes.add("NNS");
+        possibleOutcomes.add("TO");
         possibleOutcomes.add("VBN");
         possibleOutcomes.add("IN");
         possibleOutcomes.add("CC");
@@ -304,7 +306,6 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
         
         assertEquals(31, outcomes.size());
         for(TextClassificationOutcome o : outcomes){
-        	System.out.println(o.getOutcome());
         	assertTrue(possibleOutcomes.contains(o.getOutcome()));
         }
         
@@ -343,7 +344,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
         assertTrue(learningMode.exists());
 
         File id2outcomeMapping = new File(
-                modelFolder.getAbsolutePath() + "/" + LiblinearAdapter.getOutcomeMappingFilename());
+                modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
         assertTrue(id2outcomeMapping.exists());
     }
 }

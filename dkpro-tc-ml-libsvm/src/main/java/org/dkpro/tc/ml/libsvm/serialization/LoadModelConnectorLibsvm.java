@@ -21,226 +21,47 @@ package org.dkpro.tc.ml.libsvm.serialization;
 import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.util.JCasUtil;
-import org.apache.uima.jcas.JCas;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.io.libsvm.LibsvmModelLoaderConnector;
 import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
-import org.dkpro.tc.ml.uima.TcAnnotator;
 
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LoadModelConnectorLibsvm
-    extends ModelSerialization_ImplBase
-{
+public class LoadModelConnectorLibsvm extends LibsvmModelLoaderConnector {
 
-    private static final String OUTCOME_PLACEHOLDER = "-1";
+	private svm_model model;
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
-    private File tcModelLocation;
-
-    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-    protected FeatureExtractorResource_ImplBase[] featureExtractors;
-
-    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
-    private String featureMode;
-
-    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-    private String learningMode;
-
-    private svm_model model;
-
-    private Map<String, String> integer2OutcomeMapping;
-	private Map<String, Integer> featureMapping;
-
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-
-        try {
-            model = svm
-                    .svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-            integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
-            featureMapping = loadFeature2IntegerMapping(tcModelLocation);
-            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
-
-    }
-    
-	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
-		Map<String, Integer> map = new HashMap<>();
-		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, LibsvmAdapter.getFeatureNameMappingFilename()), "utf-8");
-		for (String l : readLines) {
-			String[] split = l.split("\t");
-			map.put(split[0],Integer.valueOf(split[1]));
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
+		
+		try {
+			model = svm.svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
 		}
-		return map;
+
 	}
 
-    private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation)
-        throws IOException
-    {
-    	if(isRegression()){
-    		return new HashMap<>();
-    	}
-    	
-        Map<String, String> map = new HashMap<>();
-        List<String> readLines = FileUtils
-                .readLines(new File(tcModelLocation, LibsvmAdapter.getOutcomeMappingFilename()), "utf-8");
-        for (String l : readLines) {
-            String[] split = l.split("\t");
-            map.put(split[1], split[0]);
-        }
-        return map;
-    }
-    
-    private boolean isRegression(){
-    	return learningMode.equals(Constants.LM_REGRESSION);
-    }
+	@Override
+	protected File runPrediction(File tempFile) throws Exception {
+		File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
+		LibsvmPredict predictor = new LibsvmPredict();
+		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
 
-    @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-        try {
-            File tempFile = createInputFile(jcas);
+		DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
+		predictor.predict(r, output, model, 0);
+		output.close();
 
-            File prediction = runPrediction(tempFile);
-
-            List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
-            List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
-
-            checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
-                    writtenPredictions);
-
-            for (int i = 0; i < outcomes.size(); i++) {
-
-                if (isRegression()) {
-                    String val = writtenPredictions.get(i);
-                    outcomes.get(i).setOutcome(val);
-                }
-                else {
-                    String val = writtenPredictions.get(i).replaceAll("\\.0", "");
-                    String pred = integer2OutcomeMapping.get(val);
-                    outcomes.get(i).setOutcome(pred);
-                }
-
-            }
-
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-
-    }
-
-    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
-    {
-        return new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
-    }
-
-    private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
-            List<TextClassificationOutcome> outcomes, List<String> readLines)
-    {
-        if (outcomes.size() != readLines.size()) {
-            throw new IllegalStateException("Expected [" + outcomes.size()
-                    + "] predictions but were [" + readLines.size() + "]");
-        }
-    }
-
-    private File runPrediction(File tempFile)
-        throws Exception
-    {
-        File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
-        LibsvmPredict predictor = new LibsvmPredict();
-        BufferedReader r = new BufferedReader(
-                new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
-
-        DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
-        predictor.predict(r, output, model, 0);
-        output.close();
-
-        return prediction;
-    }
-
-    private File createInputFile(JCas jcas)
-        throws Exception
-    {
-        File tempFile = FileUtil.createTempFile("libsvm", ".txmt");
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
-
-        List<Instance> inst = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true,
-                new LibsvmAdapter().useSparseFeatures());
-
-        for (Instance i : inst) {
-            bw.write(OUTCOME_PLACEHOLDER);
-            for (Feature f : i.getFeatures()) {
-                if (!sanityCheckValue(f)) {
-                    continue;
-                }
-                bw.write("\t");
-                bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
-            }
-            bw.write("\n");
-        }
-        bw.close();
-
-        return tempFile;
-    }
-
-    private boolean sanityCheckValue(Feature f)
-    {
-        if (f.getValue() instanceof Number) {
-            return true;
-        }
-        if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
-            return false;
-        }
-
-        try {
-            Double.valueOf((String) f.getValue());
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]",
-                    e);
-        }
-        return false;
-    }
-
+		return prediction;
+	}
 }

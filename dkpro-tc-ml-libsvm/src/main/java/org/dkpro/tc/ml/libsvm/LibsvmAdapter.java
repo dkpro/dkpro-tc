@@ -28,10 +28,10 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.libsvm.report.LibsvmOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
 import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
-import org.dkpro.tc.ml.libsvm.writer.LibsvmDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -86,7 +86,7 @@ public class LibsvmAdapter
     @Override
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
-        return LibsvmOutcomeIdReport.class;
+        return LibsvmDataFormatOutcomeIdReport.class;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class LibsvmAdapter
     @Override
     public Class<? extends DataWriter> getDataWriterClass()
     {
-        return LibsvmDataWriter.class;
+        return LibsvmDataFormatWriter.class;
     }
 
     @Override

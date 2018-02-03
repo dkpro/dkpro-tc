@@ -65,6 +65,10 @@
     </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-io-libsvm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-ml</artifactId>
     </dependency>
     <dependency>
