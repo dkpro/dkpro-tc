@@ -24,6 +24,10 @@
   </parent>
   <artifactId>dkpro-tc-ml-liblinear</artifactId>
   <dependencies>
+    <dependency>
+  		<groupId>commons-logging</groupId>
+  		<artifactId>commons-logging</artifactId>
+  	</dependency> 
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-core</artifactId>
@@ -31,10 +35,6 @@
    	<dependency>
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-api-features</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-api</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.dkpro.tc</groupId>
@@ -49,10 +49,6 @@
   		<artifactId>commons-io</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>commons-logging</groupId>
-  		<artifactId>commons-logging-api</artifactId>
-  	</dependency>  
-  	<dependency>
   		<groupId>de.bwaldvogel</groupId>
   		<artifactId>liblinear</artifactId>
   	</dependency>
@@ -64,6 +60,10 @@
   	<dependency>
   		<groupId>org.dkpro.lab</groupId>
   		<artifactId>dkpro-lab-core</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.uima</groupId>
+  		<artifactId>uimaj-core</artifactId>
   	</dependency>
   </dependencies>
 </project>
