@@ -56,5 +56,9 @@
   		<groupId>com.google.code.gson</groupId>
   		<artifactId>gson</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.dkpro.lab</groupId>
+  		<artifactId>dkpro-lab-core</artifactId>
+  	</dependency>
   </dependencies>
 </project>
