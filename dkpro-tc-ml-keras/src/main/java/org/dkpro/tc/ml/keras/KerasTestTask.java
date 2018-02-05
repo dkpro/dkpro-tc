@@ -54,9 +54,6 @@ public class KerasTestTask
     @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
     
-    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-    private Double biPartitionMultiLabel;
-    
 	@Discriminator(name = DIM_SEED_VALUE)
 	private String randomSeed;
 	
