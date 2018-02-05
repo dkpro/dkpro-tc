@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 
-public class CrfUtil
+public class CRFUtil
 {
 
     public static String getAlgorithm(List<String> classificationArguments)

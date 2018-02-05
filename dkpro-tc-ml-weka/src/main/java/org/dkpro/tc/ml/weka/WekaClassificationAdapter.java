@@ -32,8 +32,8 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
-import org.dkpro.tc.ml.weka.task.serialization.LoadModelConnectorWeka;
-import org.dkpro.tc.ml.weka.task.serialization.WekaModelSerializationDescription;
+import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
+import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 public class WekaClassificationAdapter 
@@ -73,12 +73,12 @@ public class WekaClassificationAdapter
 	
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return LoadModelConnectorWeka.class;
+		return WekaLoadModelConnector.class;
 	}
 
 	@Override
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-		return WekaModelSerializationDescription.class;
+		return WekaSerliazeModelConnector.class;
 	}
 	
 	@Override

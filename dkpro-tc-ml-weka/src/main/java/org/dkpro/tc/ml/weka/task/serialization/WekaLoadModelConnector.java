@@ -53,7 +53,7 @@ import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class LoadModelConnectorWeka
+public class WekaLoadModelConnector
     extends ModelSerialization_ImplBase implements Constants
 {
 

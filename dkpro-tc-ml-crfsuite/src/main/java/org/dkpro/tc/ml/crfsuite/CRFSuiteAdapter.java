@@ -29,8 +29,8 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteModelSerializationDescription;
-import org.dkpro.tc.ml.crfsuite.task.serialization.LoadModelConnectorCRFSuite;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteSerializeModelConnector;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteLoadModelConnector;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
@@ -86,13 +86,13 @@ public class CRFSuiteAdapter
     @Override
     public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
     {
-        return LoadModelConnectorCRFSuite.class;
+        return CRFSuiteLoadModelConnector.class;
     }
 
     @Override
     public Class<? extends ModelSerializationTask> getSaveModelTask()
     {
-        return CRFSuiteModelSerializationDescription.class;
+        return CRFSuiteSerializeModelConnector.class;
     }
 
     /**

@@ -36,7 +36,7 @@ import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LoadModelConnectorLibsvm extends LibsvmDataFormatLoadModelConnector {
+public class LibsvmLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
 
 	private svm_model model;
 

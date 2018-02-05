@@ -53,7 +53,7 @@ import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
-public class LoadModelConnectorSvmhmm
+public class SvmhmmLoadModelConnector
     extends ModelSerialization_ImplBase
 {
 

@@ -46,7 +46,7 @@ import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
-public class LoadModelConnectorCRFSuite
+public class CRFSuiteLoadModelConnector
     extends ModelSerialization_ImplBase
 {
 

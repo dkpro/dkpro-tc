@@ -30,8 +30,8 @@ import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
-import org.dkpro.tc.ml.libsvm.serialization.LibsvmModelSerializationDescription;
-import org.dkpro.tc.ml.libsvm.serialization.LoadModelConnectorLibsvm;
+import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
+import org.dkpro.tc.ml.libsvm.serialization.LibsvmLoadModelConnector;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
@@ -111,13 +111,13 @@ public class LibsvmAdapter
     @Override
     public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
     {
-        return LoadModelConnectorLibsvm.class;
+        return LibsvmLoadModelConnector.class;
     }
 
     @Override
     public Class<? extends ModelSerializationTask> getSaveModelTask()
     {
-        return LibsvmModelSerializationDescription.class;
+        return LibsvmSerializeModelConnector.class;
     }
     
     @Override

@@ -32,7 +32,7 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearModelSerializationDescription extends LibsvmDataFormatSerializeModelConnector implements Constants {
+public class LiblinearSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	boolean trainModel = true;
 

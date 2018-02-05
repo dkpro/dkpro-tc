@@ -32,8 +32,8 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
-import org.dkpro.tc.ml.svmhmm.task.serialization.LoadModelConnectorSvmhmm;
-import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmModelSerializationDescription;
+import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmLoadModelConnector;
+import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
 
 /**
@@ -99,12 +99,12 @@ public class SVMHMMAdapter
 
 	@Override
 	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return LoadModelConnectorSvmhmm.class;
+		return SvmhmmLoadModelConnector.class;
 	}
 
 	@Override
 	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-		return SvmhmmModelSerializationDescription.class;
+		return SvmhmmSerializeModelConnector.class;
 	}
 
 	@Override

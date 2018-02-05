@@ -33,7 +33,7 @@ import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
 
-public class SvmhmmModelSerializationDescription
+public class SvmhmmSerializeModelConnector
     extends ModelSerializationTask
     implements Constants
 {

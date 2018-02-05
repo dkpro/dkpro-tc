@@ -34,7 +34,7 @@ import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LoadModelConnectorLiblinear extends LibsvmDataFormatLoadModelConnector {
+public class LiblinearLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
 
 	private Model liblinearModel;
 	

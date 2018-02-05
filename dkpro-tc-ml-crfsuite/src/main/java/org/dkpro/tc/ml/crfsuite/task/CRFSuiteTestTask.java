@@ -86,8 +86,8 @@ public class CRFSuiteTestTask
     private void processParameters(List<String> classificationArguments)
         throws Exception
     {
-        algoName = CrfUtil.getAlgorithm(classificationArguments);
-        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+        algoName = CRFUtil.getAlgorithm(classificationArguments);
+        algoParameters = CRFUtil.getAlgorithmConfigurationParameter(classificationArguments);
     }
 
     public static String getExecutablePath()

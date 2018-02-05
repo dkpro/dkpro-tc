@@ -50,7 +50,7 @@ import weka.core.Instances;
  * saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
  * Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
  */
-public class WekaModelSerializationDescription
+public class WekaSerliazeModelConnector
     extends ModelSerializationTask
     implements Constants
 {
@@ -68,12 +68,12 @@ public class WekaModelSerializationDescription
     @Discriminator(name = DIM_APPLY_FEATURE_SELECTION)
     protected boolean applySelection;
 
-    public WekaModelSerializationDescription()
+    public WekaSerliazeModelConnector()
     {
         // required for groovy (?)
     }
 
-    public WekaModelSerializationDescription(String type, File outputFolder)
+    public WekaSerliazeModelConnector(String type, File outputFolder)
     {
         this.setType(type);
         this.setOutputFolder(outputFolder);

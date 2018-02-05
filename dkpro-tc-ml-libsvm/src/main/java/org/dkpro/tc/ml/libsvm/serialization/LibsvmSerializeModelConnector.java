@@ -28,7 +28,7 @@ import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
-public class LibsvmModelSerializationDescription extends LibsvmDataFormatSerializeModelConnector implements Constants {
+public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	@Override
 	protected void trainModel(File fileTrain) throws Exception {
