@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.io.libsvm.LibsvmModelSerialization;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
-public class LibsvmModelSerializationDescription extends LibsvmModelSerialization implements Constants {
+public class LibsvmModelSerializationDescription extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	@Override
 	protected void trainModel(File fileTrain) throws Exception {

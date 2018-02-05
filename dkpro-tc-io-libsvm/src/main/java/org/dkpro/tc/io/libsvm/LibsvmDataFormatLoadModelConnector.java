@@ -47,7 +47,7 @@ import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
-public abstract class LibsvmModelLoaderConnector
+public abstract class LibsvmDataFormatLoadModelConnector
     extends ModelSerialization_ImplBase
 {
 
@@ -65,8 +65,6 @@ public abstract class LibsvmModelLoaderConnector
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
     protected String learningMode;
 
-//    private svm_model model;
-
     protected Map<String, String> integer2OutcomeMapping;
     protected Map<String, Integer> featureMapping;
 
@@ -77,8 +75,6 @@ public abstract class LibsvmModelLoaderConnector
         super.initialize(context);
 
         try {
-//            model = svm
-//                    .svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
             integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
             featureMapping = loadFeature2IntegerMapping(tcModelLocation);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());

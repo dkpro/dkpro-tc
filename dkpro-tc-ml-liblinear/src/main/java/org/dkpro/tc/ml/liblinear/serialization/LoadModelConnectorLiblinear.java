@@ -27,14 +27,14 @@ import java.io.OutputStreamWriter;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.io.libsvm.LibsvmModelLoaderConnector;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LoadModelConnectorLiblinear extends LibsvmModelLoaderConnector {
+public class LoadModelConnectorLiblinear extends LibsvmDataFormatLoadModelConnector {
 
 	private Model liblinearModel;
 	

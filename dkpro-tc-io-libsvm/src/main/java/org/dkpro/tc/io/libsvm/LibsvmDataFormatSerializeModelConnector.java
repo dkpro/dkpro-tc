@@ -30,7 +30,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
-public abstract class LibsvmModelSerialization extends ModelSerializationTask implements Constants {
+public abstract class LibsvmDataFormatSerializeModelConnector extends ModelSerializationTask implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	protected List<String> classificationArguments;

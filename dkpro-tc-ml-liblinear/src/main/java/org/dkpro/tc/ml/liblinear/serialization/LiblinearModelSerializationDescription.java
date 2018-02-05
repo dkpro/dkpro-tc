@@ -22,7 +22,7 @@ import java.io.File;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.io.libsvm.LibsvmModelSerialization;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
@@ -32,7 +32,7 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearModelSerializationDescription extends LibsvmModelSerialization implements Constants {
+public class LiblinearModelSerializationDescription extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	boolean trainModel = true;
 

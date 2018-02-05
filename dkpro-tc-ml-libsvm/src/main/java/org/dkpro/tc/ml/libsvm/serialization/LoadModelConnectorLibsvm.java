@@ -30,13 +30,13 @@ import java.io.InputStreamReader;
 import org.apache.uima.UimaContext;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.io.libsvm.LibsvmModelLoaderConnector;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
 
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LoadModelConnectorLibsvm extends LibsvmModelLoaderConnector {
+public class LoadModelConnectorLibsvm extends LibsvmDataFormatLoadModelConnector {
 
 	private svm_model model;
 
