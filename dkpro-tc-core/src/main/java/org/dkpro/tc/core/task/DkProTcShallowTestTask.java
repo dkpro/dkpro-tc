@@ -28,13 +28,14 @@ import org.dkpro.lab.engine.TaskExecutionEngine;
 import org.dkpro.lab.engine.TaskExecutionService;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Discriminator;
+import org.dkpro.lab.task.ExecutableTask;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.util.TaskUtils;
 
-public class DkProTcShallowTestTask extends ExecutableTaskBase implements Constants {
+public class DkProTcShallowTestTask extends DefaultBatchTask implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	protected List<Object> classArgs;
@@ -47,11 +48,8 @@ public class DkProTcShallowTestTask extends ExecutableTaskBase implements Consta
 
 	private List<ReportBase> reports;
 
-	private DefaultBatchTask evaluationTask;
-
-	public DkProTcShallowTestTask(DefaultBatchTask evaluationTask, ExtractFeaturesTask featuresTrainTask, ExtractFeaturesTask featuresTestTask,
+	public DkProTcShallowTestTask(ExtractFeaturesTask featuresTrainTask, ExtractFeaturesTask featuresTestTask,
 			OutcomeCollectionTask collectionTask, List<ReportBase> reports) {
-				this.evaluationTask = evaluationTask;
 				this.featuresTrainTask = featuresTrainTask;
 				this.featuresTestTask = featuresTestTask;
 				this.collectionTask = collectionTask;
@@ -59,38 +57,63 @@ public class DkProTcShallowTestTask extends ExecutableTaskBase implements Consta
 	}
 
 	@Override
-	public void execute(TaskContext aContext) throws Exception {
-
+	public void initialize(TaskContext aContext){
+		
+		super.initialize(aContext);
+		
 		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
 		ExecutableTaskBase testTask = adapter.getTestTask();
-		testTask.initialize(aContext);
-
-		configureLabTask(aContext, testTask);
-
+		
 		testTask.addReport(adapter.getOutcomeIdReportClass());
 		for(ReportBase b : reports){
 			testTask.addReport(b);
 		}
-
+		
+		testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+				Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+		testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
+		testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+		testTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+		
 		String[] split = getType().split("-");
 		testTask.setType(testTask.getClass().getName() + "-" + split[1]);
-		
-		evaluationTask.addTask(testTask);
-		evaluationTask.analyze();
-
-		TaskExecutionService execService = aContext.getExecutionService();
-		TaskExecutionEngine engine = execService.createEngine(testTask);
-		String run = engine.run(testTask);
-		
-		testTask.markExecuted();
-		
-		
-		
-//		announceNewlyCreatedTask(run);
-		
-//		aContext.getStorageService().
+		this.addTask(testTask);
 		
 	}
+
+//	@Override
+//	public void execute(TaskContext aContext) throws Exception {
+//
+//		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
+//		ExecutableTaskBase testTask = adapter.getTestTask();
+//		
+////		this.addTask(aTask);
+//		
+//		testTask.initialize(aContext);
+//
+//		configureLabTask(aContext, testTask);
+//
+//		testTask.addReport(adapter.getOutcomeIdReportClass());
+//		for(ReportBase b : reports){
+//			testTask.addReport(b);
+//		}
+//
+//		String[] split = getType().split("-");
+//		testTask.setType(testTask.getClass().getName() + "-" + split[1]);
+//		
+//		TaskExecutionService execService = aContext.getExecutionService();
+//		TaskExecutionEngine engine = execService.createEngine(testTask);
+//		String run = engine.run(testTask);
+//		
+//		testTask.markExecuted();
+//		
+//		
+//		
+////		announceNewlyCreatedTask(run);
+//		
+////		aContext.getStorageService().
+//		
+//	}
 
 	private void configureLabTask(TaskContext aContext, ExecutableTaskBase testTask) throws LifeCycleException {
 		

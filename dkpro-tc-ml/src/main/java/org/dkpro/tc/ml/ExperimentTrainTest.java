@@ -142,7 +142,7 @@ public class ExperimentTrainTest
         List<ReportBase> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
         
-        testTask = new DkProTcShallowTestTask(this, featuresTrainTask, featuresTestTask, collectionTask, reports);//mlAdapter.getTestTask();
+        testTask = new DkProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
 
