@@ -68,7 +68,8 @@ public class LiblinearRegressionDemo
         ParameterSpace pSpace = getParameterSpace();
 
         LiblinearRegressionDemo experiment = new LiblinearRegressionDemo();
-        experiment.runTrainTest(pSpace);
+//        experiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")

@@ -53,14 +53,12 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
-		List<String> mlaContextIds = getContextIdOfMachineLearningAdapter();
+		List<String> ids = collectTasks(getSubtasks());
 
-		for (String mla : mlaContextIds) {
+		for (String mla : ids) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
 				Map<String, String> discriminatorsMap = store
 						.retrieveBinary(mla, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-				// String mode = getDiscriminatorValue(discriminatorsMap,
-				// DIM_LEARNING_MODE);
 
 				File id2outcomeFile = store.locateKey(mla, Constants.ID_OUTCOME_KEY);
 				id2outcomeFiles.add(id2outcomeFile);

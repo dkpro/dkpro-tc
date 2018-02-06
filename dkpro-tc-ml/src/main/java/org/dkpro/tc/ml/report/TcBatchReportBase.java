@@ -240,7 +240,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		for (String task : tasks) {
 			results.add(task.trim());
-			File subAttribute = getContext().getStorageService().locateKey(task, Task.ATTRIBUTES_KEY);
+			File subAttribute = getContext().getStorageService().locateKey(task.trim(), Task.ATTRIBUTES_KEY);
 			results.addAll(readSubTasks(subAttribute));
 		}
 
