@@ -18,15 +18,6 @@
 package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.DIM_APPLY_INSTANCE_WEIGHTING;
-import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_FILTERS;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
-import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +55,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Executes all feature extractors and stores the feature representation
  * (usually an Weka ARFF file) on disk.
  */
-public class ExtractFeaturesTask extends UimaTaskBase {
+public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 
 	/**
 	 * Public name of the folder where the extracted features are stored within
@@ -102,6 +93,9 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 	@Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
 	private boolean applyWeighting;
 	
+	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
+	private List<Object> classArgs;
+	
 	@Discriminator(name = DIM_FEATURE_SET)
 	private TcFeatureSet featureExtractors;
 
@@ -113,12 +107,6 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 	// could be used to automatically configure preprocessing
 	@SuppressWarnings("unused")
 	private Set<String> requiredTypes;
-
-	private TcShallowLearningAdapter mlAdapter;
-
-	public void setMlAdapter(TcShallowLearningAdapter mlAdapter) {
-		this.mlAdapter = mlAdapter;
-	}
 
 	public void setTesting(boolean isTesting) {
 		this.isTesting = isTesting;
@@ -179,17 +167,19 @@ public class ExtractFeaturesTask extends UimaTaskBase {
 		File file = new File(folder, Constants.FILENAME_OUTCOMES);
 		String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
 
+		TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
+		
 		List<Object> parameters = new ArrayList<>();
 		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
 				ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
 				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, mlAdapter.getDataWriterClass().getName(),
+				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
 				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, featureFilters,
 				ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
 				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
 				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
 				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
-				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, mlAdapter.useSparseFeatures(),
+				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, adapter.useSparseFeatures(),
 				ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes,
 		ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
 

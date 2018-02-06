@@ -28,22 +28,22 @@ import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearUtils
 {
-    public static SolverType getSolver(List<String> classificationArguments)
+    public static SolverType getSolver(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
             return SolverType.L2R_LR;
         }
 
         SolverType type = null;
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
             if (e.equals("-s")) {
                 if (i + 1 >= classificationArguments.size()) {
                     throw new IllegalArgumentException(
                             "Found parameter [-s] but no solver type was specified");
                 }
 
-                String algo = classificationArguments.get(i + 1);
+                String algo = (String) classificationArguments.get(i + 1);
                 switch (algo) {
                 case "0":
                     type = SolverType.L2R_LR;
@@ -95,14 +95,14 @@ public class LiblinearUtils
         return type;
     }
 
-    public static double getParameterC(List<String> classificationArguments)
+    public static double getParameterC(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
             return PARAM_C_DEFAULT;
         }
 
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
             if (e.equals("-c")) {
                 if (i + 1 >= classificationArguments.size()) {
                     throw new IllegalArgumentException(
@@ -111,7 +111,7 @@ public class LiblinearUtils
 
                 Double value;
                 try {
-                    value = Double.valueOf(classificationArguments.get(i + 1));
+                    value = Double.valueOf((String)classificationArguments.get(i + 1));
                 }
                 catch (NumberFormatException ex) {
                     throw new IllegalArgumentException(
@@ -128,14 +128,14 @@ public class LiblinearUtils
         return PARAM_C_DEFAULT;
     }
 
-    public static double getParameterEpsilon(List<String> classificationArguments)
+    public static double getParameterEpsilon(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
             return EPISILON_DEFAULT;
         }
 
-        for (int i = 0; i < classificationArguments.size(); i++) {
-            String e = classificationArguments.get(i);
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
             if (e.equals("-e")) {
                 if (i + 1 >= classificationArguments.size()) {
                     throw new IllegalArgumentException(
@@ -144,7 +144,7 @@ public class LiblinearUtils
 
                 Double value;
                 try {
-                    value = Double.valueOf(classificationArguments.get(i + 1));
+                    value = Double.valueOf((String)classificationArguments.get(i + 1));
                 }
                 catch (NumberFormatException ex) {
                     throw new IllegalArgumentException(

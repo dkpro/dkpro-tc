@@ -18,16 +18,6 @@
 package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.dkpro.tc.core.Constants.DIM_BIPARTITION_THRESHOLD;
-import static org.dkpro.tc.core.Constants.DIM_DEVELOPER_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
-import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
-import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
-import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
-import static org.dkpro.tc.core.Constants.FM_PAIR;
-import static org.dkpro.tc.core.Constants.PART_ONE;
-import static org.dkpro.tc.core.Constants.PART_TWO;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +37,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
@@ -54,6 +45,7 @@ import org.dkpro.tc.core.task.uima.OutcomeCollector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
+import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
@@ -64,7 +56,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
  * 
  */
 public class InitTask
-    extends UimaTaskBase
+    extends UimaTaskBase implements Constants
 {
 
     @Discriminator(name = DIM_READER_TRAIN)
@@ -87,6 +79,9 @@ public class InitTask
     
     @Discriminator(name = DIM_DEVELOPER_MODE)
     protected boolean developerMode;
+    
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    protected List<Object> classArgs;
 
     protected boolean isTesting = false;
 
@@ -104,8 +99,6 @@ public class InitTask
     public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
     
     private List<String> operativeViews;
-
-    private TcShallowLearningAdapter mlAdapter;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -197,13 +190,16 @@ public class InitTask
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
+        
+        
+        TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
 
         List<Object> parameters = new ArrayList<Object>();
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
-        parameters.add(mlAdapter.getDataWriterClass().getName());
+        parameters.add(adapter.getDataWriterClass().getName());
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);
@@ -255,11 +251,6 @@ public class InitTask
     public void setTesting(boolean isTesting)
     {
         this.isTesting = isTesting;
-    }
-
-    public void setMlAdapter(TcShallowLearningAdapter mlAdapter)
-    {
-        this.mlAdapter = mlAdapter;
     }
 
     public AnalysisEngineDescription getPreprocessing()

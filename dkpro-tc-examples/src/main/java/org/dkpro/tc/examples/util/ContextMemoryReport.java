@@ -24,42 +24,29 @@ import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 
 /**
- * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to
- * read result files in JUnit tests
+ * This is a slightly ugly solution for recording the DKPro Lab output folder of
+ * an experiment to read result files in JUnit tests
  */
-public class ContextMemoryReport
-    extends BatchReportBase
-{
+public class ContextMemoryReport extends BatchReportBase {
 
-    /**
-     * Name of the folder which will contain the id2outcome.txt that shall be used for evaluation
-     * for TrainTest scenarios this is the *TestTask class of the respective machine learning
-     * adapter e.g. Weka for CrossValidation experiments it is the ExperimentCrossValidation folder
-     */
-    public static String key; // this has to be set BEFORE the pipeline runs
+	public static File id2outcome;
 
-    public static File id2outcome;
+	@Override
+	public void execute() throws Exception {
+		for (TaskContextMetadata subcontext : getSubtasks()) {
+			StorageService storageService = getContext().getStorageService();
 
-    @Override
-    public void execute()
-        throws Exception
-    {
-        for (TaskContextMetadata subcontext : getSubtasks()) {
-            if (key != null && subcontext.getType().contains(key)) {
-                StorageService storageService = getContext().getStorageService();
-
-                if (key.contains("TestTask")) {
-                    id2outcome = storageService.locateKey(subcontext.getId(),
-                            Constants.ID_OUTCOME_KEY);
-                }
-                else {
-                    id2outcome = storageService.locateKey(subcontext.getId(),
-                            Constants.COMBINED_ID_OUTCOME_KEY);
-                }
-                return;
-            }
-        }
-    }
+			if (TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, subcontext.getId())) {
+				id2outcome = storageService.locateKey(subcontext.getId(), Constants.ID_OUTCOME_KEY);
+				return;
+			}
+			if (TcTaskTypeUtil.isCrossValidationTask(storageService, subcontext.getId())) {
+				id2outcome = storageService.locateKey(subcontext.getId(), Constants.COMBINED_ID_OUTCOME_KEY);
+				return;
+			}
+		}
+	}
 }

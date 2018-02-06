@@ -112,7 +112,6 @@ public class ExperimentCrossValidation
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
-        setMachineLearningAdapter(mlAdapter);
         setNumFolds(aNumFolds);
         setComparator(aComparator);
         // set name of overall batch task
@@ -140,7 +139,6 @@ public class ExperimentCrossValidation
 
         // initialize the setup
         initTask = new InitTask();
-        initTask.setMlAdapter(mlAdapter);
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
         initTask.setType(initTask.getType() + "-" + experimentName);
@@ -264,7 +262,6 @@ public class ExperimentCrossValidation
         extractFeaturesTrainTask.setTesting(false);
         extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
                 + experimentName);
-        extractFeaturesTrainTask.setMlAdapter(mlAdapter);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -277,7 +274,6 @@ public class ExperimentCrossValidation
         extractFeaturesTestTask.setTesting(true);
         extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
                 + experimentName);
-        extractFeaturesTestTask.setMlAdapter(mlAdapter);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
         extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,

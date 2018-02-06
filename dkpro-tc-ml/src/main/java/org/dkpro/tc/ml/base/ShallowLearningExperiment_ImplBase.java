@@ -20,13 +20,10 @@ package org.dkpro.tc.ml.base;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
 public abstract class ShallowLearningExperiment_ImplBase
     extends Experiment_ImplBase
 {
-    protected TcShallowLearningAdapter mlAdapter;
-
     Log log = LogFactory.getLog(ShallowLearningExperiment_ImplBase.class);
 
     @Override
@@ -35,16 +32,4 @@ public abstract class ShallowLearningExperiment_ImplBase
         super.initialize(aContext);
        
     }
- 
-    public void setMachineLearningAdapter(Class<? extends TcShallowLearningAdapter> mlAdapter)
-        throws IllegalArgumentException
-    {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
 }

@@ -30,7 +30,7 @@ import org.dkpro.tc.core.Constants;
 public abstract class LibsvmDataFormatTestTask extends ExecutableTaskBase implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	protected List<String> classificationArguments;
+	protected List<Object> classificationArguments;
 
 	@Discriminator(name = DIM_LEARNING_MODE)
 	protected String learningMode;

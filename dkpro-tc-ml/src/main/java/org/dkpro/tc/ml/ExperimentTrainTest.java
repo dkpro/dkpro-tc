@@ -17,19 +17,24 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dkpro.lab.reporting.Report;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.OutcomeCollectionTask;
-import org.dkpro.tc.core.task.TcTaskType;
+import org.dkpro.tc.core.task.DkProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
+import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 /**
  * Train-Test setup
  * 
@@ -53,11 +58,10 @@ public class ExperimentTrainTest
     /*
      * Preconfigured train-test setup.
      */
-    public ExperimentTrainTest(String aExperimentName, Class<? extends TcShallowLearningAdapter> mlAdapter)
+    public ExperimentTrainTest(String aExperimentName)
             throws TextClassificationException
     {
         setExperimentName(aExperimentName);
-        setMachineLearningAdapter(mlAdapter);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
         setAttribute(TC_TASK_TYPE, TcTaskType.EVALUATION.toString());
@@ -81,7 +85,6 @@ public class ExperimentTrainTest
 
         // init the train part of the experiment
         initTaskTrain = new InitTask();
-        initTaskTrain.setMlAdapter(mlAdapter);
         initTaskTrain.setPreprocessing(getPreprocessing());
         initTaskTrain.setOperativeViews(operativeViews);
         initTaskTrain.setTesting(false);
@@ -91,7 +94,6 @@ public class ExperimentTrainTest
         // init the test part of the experiment
         initTaskTest = new InitTask();
         initTaskTest.setTesting(true);
-        initTaskTest.setMlAdapter(mlAdapter);
         initTaskTest.setPreprocessing(getPreprocessing());
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
@@ -115,7 +117,6 @@ public class ExperimentTrainTest
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
-        featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.setTesting(false);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
@@ -127,7 +128,6 @@ public class ExperimentTrainTest
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
         featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
-        featuresTestTask.setMlAdapter(mlAdapter);
         featuresTestTask.setTesting(true);
         featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
@@ -137,21 +137,21 @@ public class ExperimentTrainTest
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
+
         // test task operating on the models of the feature extraction train and test tasks
-        testTask = mlAdapter.getTestTask();
+        List<ReportBase> reports = new ArrayList<>();
+        reports.add(new BasicResultReport());
+        
+        testTask = new DkProTcShallowTestTask(this, featuresTrainTask, featuresTestTask, collectionTask, reports);//mlAdapter.getTestTask();
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
                 testTask.addReport(report);
             }
         }
-
-        // always add OutcomeIdReport
-        testTask.addReport(mlAdapter.getOutcomeIdReportClass());
-        testTask.addReport(BasicResultReport.class);
-
+        
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
