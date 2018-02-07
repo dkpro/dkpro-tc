@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,9 +52,7 @@ public class LiblinearRegressionDemoTest extends TestCaseSuperClass
 
     @Test
     public void testTrainTest() throws Exception{
-        ContextMemoryReport.key = LiblinearTestTask.class.getName();
         experiment.runTrainTest(pSpace);
-        
         
         EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
 		MeanAbsoluteError mae = new MeanAbsoluteError(data);

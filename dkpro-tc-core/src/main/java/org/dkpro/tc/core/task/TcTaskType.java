@@ -19,6 +19,9 @@ package org.dkpro.tc.core.task;
 
 public enum TcTaskType
 {
+	// Shell Task that wraps a machine learning adapter task
+	SHELL_TASK,
+	
 	//Shallow tasks
     INIT_TRAIN,
     INIT_TEST,
@@ -35,5 +38,5 @@ public enum TcTaskType
     PREPARATION,
     VECTORIZATION_TRAIN,
     VECTORIZATION_TEST,
-    EMBEDDING
+    EMBEDDING, 
 }

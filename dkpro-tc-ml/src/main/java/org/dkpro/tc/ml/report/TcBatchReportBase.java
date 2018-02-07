@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
@@ -41,8 +42,9 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	/**
 	 * Retrieves the id2outcome file in a train test setup. The behavior of this
 	 * method in cross validation tasks is undefined.
+	 * 
 	 * @param id
-	 * 			context id of machine learning adapter 
+	 *            context id of machine learning adapter
 	 * 
 	 * @return file to the id2 outcome file in the machine learning adapter or
 	 *         null if the folder of machine learning adapter was not found
@@ -56,13 +58,12 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	}
 
 	/**
-	 * Retrieves the training data folder of a train-test run. Behavior is 
+	 * Retrieves the training data folder of a train-test run. Behavior is
 	 * undefined if called during cross-validation
 	 * 
-	 * @return
-	 * 		file of the training data folder
+	 * @return file of the training data folder
 	 * @throws IOException
-	 * 		in case of error
+	 *             in case of error
 	 */
 	protected File getTrainDataFolder() throws IOException {
 		StorageService store = getContext().getStorageService();
@@ -76,15 +77,14 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		return null;
 	}
-	
+
 	/**
-	 * Retrieves the test data folder of a train-test run. Behavior is 
-	 * undefined if called during cross-validation
+	 * Retrieves the test data folder of a train-test run. Behavior is undefined
+	 * if called during cross-validation
 	 * 
-	 * @return
-	 * 		file of the test data folder
+	 * @return file of the test data folder
 	 * @throws IOException
-	 * 		in case of error
+	 *             in case of error
 	 */
 	protected File getTestDataFolder() throws IOException {
 		StorageService store = getContext().getStorageService();
@@ -98,50 +98,49 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		return null;
 	}
-	
+
 	/**
-	 * Loads a mapping from the numeric values to their corresponding label. The mapping is retrieved from the header of the id2outcome result file.
-	 * The map is empty for regression which has no mapping.
+	 * Loads a mapping from the numeric values to their corresponding label. The
+	 * mapping is retrieved from the header of the id2outcome result file. The
+	 * map is empty for regression which has no mapping.
 	 * 
 	 * @param contextId
-	 * 			context id of context from which the mapping shall be loaded
-	 * @return
-	 * 			a hashmap with a integer to string mapping
+	 *            context id of context from which the mapping shall be loaded
+	 * @return a hashmap with a integer to string mapping
 	 * @throws Exception
-	 * 			in case of error
+	 *             in case of error
 	 */
-	protected Map<String, String> getInteger2LabelMapping(String contextId) throws Exception{
-		
+	protected Map<String, String> getInteger2LabelMapping(String contextId) throws Exception {
+
 		File id2Outcome = getId2Outcome(contextId);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2Outcome), "utf-8"));
-		
+
 		String line = null;
-		while((line=reader.readLine())!=null){
-			if(line.startsWith("#labels")){
+		while ((line = reader.readLine()) != null) {
+			if (line.startsWith("#labels")) {
 				break;
 			}
-			if(line.startsWith("#")){
+			if (line.startsWith("#")) {
 				continue;
 			}
 			break;
 		}
 		reader.close();
-		
-		line=line.replaceAll("#labels", "").trim();
-		
-		if(line.isEmpty()){
-			//regression mode has no mapping
+
+		line = line.replaceAll("#labels", "").trim();
+
+		if (line.isEmpty()) {
+			// regression mode has no mapping
 			return new HashMap<>();
 		}
-		
-		
+
 		Map<String, String> m = new HashMap<>();
 		String[] entries = line.split(" ");
-		for(String e : entries){
+		for (String e : entries) {
 			String[] intLabel = e.split("=");
 			m.put(intLabel[0], intLabel[1]);
 		}
-		
+
 		return m;
 	}
 
@@ -157,7 +156,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	public List<String> getContextIdOfMachineLearningAdapter() throws Exception {
 
 		File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
-		List<String> foldersOfSingleRuns = getFoldersOfSingleRuns(cvTaskAttributeFile);
+		List<String> foldersOfSingleRuns = getSubTasks(cvTaskAttributeFile);
 
 		List<String> mlaContextIdsOfCvRun = new ArrayList<>();
 		for (String f : foldersOfSingleRuns) {
@@ -169,7 +168,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		return mlaContextIdsOfCvRun;
 	}
 
-	private List<String> getFoldersOfSingleRuns(File attributesTXT) throws Exception {
+	private List<String> getSubTasks(File attributesTXT) throws Exception {
 		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
 
 		int idx = 0;
@@ -195,6 +194,86 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		return results;
+	}
+
+	/**
+	 * Collects recursively all <b>subtasks</b> stored in the <i>attributes.txt</i>.
+	 * of a task and the tasks located in a lower level in the hierarchy.
+	 * 
+	 * @param subtasks
+	 * 			list of subtasks to be iterated
+	 * @return
+	 * 			list of all task ids including the one passed as parameter
+	 * @throws Exception
+	 * 			in case of errors
+	 */
+	public List<String> collectTasks(List<String> subtasks) throws Exception {
+
+		StorageService store = getContext().getStorageService();
+
+		List<String> ids = new ArrayList<>();
+		for (String taskId: subtasks) {
+			File attributes = store.locateKey(taskId, Task.ATTRIBUTES_KEY);
+			List<String> taskIds = readSubTasks(attributes);
+
+			ids.add(taskId);
+			ids.addAll(taskIds);
+		}
+
+		return ids;
+	}
+
+	private List<String> readSubTasks(File attributesTXT) throws Exception {
+		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+
+		int idx = 0;
+		boolean found=false;
+		for (String line : readLines) {
+			if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
+				found=true;
+				break;
+			}
+			idx++;
+		}
+		
+		if(!found){
+			return new ArrayList<>();
+		}
+		
+		String line = readLines.get(idx);
+		int start = line.indexOf("[") + 1;
+		int end = line.indexOf("]");
+		String subTasks = line.substring(start, end);
+
+		String[] tasks = subTasks.split(",");
+
+		List<String> results = new ArrayList<>();
+
+		for (String task : tasks) {
+			results.add(task.trim());
+			File subAttribute = getContext().getStorageService().locateKey(task.trim(), Task.ATTRIBUTES_KEY);
+			results.addAll(readSubTasks(subAttribute));
+		}
+
+		return results;
+	}
+	
+	/**
+	 * Takes context meta data objects and returns their context ids as string values
+	 * @param subtasks
+	 * 			arbitrary number of TaskContextMetadata objects 
+	 * @return
+	 * 		list of strings with context ids extracted from the meta data
+	 */
+	public List<String> getTaskIdsFromMetaData(TaskContextMetadata... subtasks) {
+		
+		List<String> taskIds = new ArrayList<>();
+		
+		for(TaskContextMetadata tcm : subtasks){
+			taskIds.add(tcm.getId());
+		}
+		
+		return taskIds;
 	}
 
 }

@@ -33,6 +33,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
+import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
@@ -53,14 +54,12 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
-		List<String> mlaContextIds = getContextIdOfMachineLearningAdapter();
+		List<String> ids = collectTasks(getIds(getSubtasks()));
 
-		for (String mla : mlaContextIds) {
+		for (String mla : ids) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
 				Map<String, String> discriminatorsMap = store
 						.retrieveBinary(mla, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-				// String mode = getDiscriminatorValue(discriminatorsMap,
-				// DIM_LEARNING_MODE);
 
 				File id2outcomeFile = store.locateKey(mla, Constants.ID_OUTCOME_KEY);
 				id2outcomeFiles.add(id2outcomeFile);
@@ -90,6 +89,16 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		}
 
 		writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
+	}
+
+	private List<String> getIds(TaskContextMetadata[] subtasks) {
+		
+		List<String> ids = new ArrayList<>();
+		for(TaskContextMetadata tcm : subtasks){
+			ids.add(tcm.getId());
+		}
+		
+		return ids;
 	}
 
 	private void writeCombinedOutcomeReport(String payload) throws Exception {

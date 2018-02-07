@@ -87,8 +87,7 @@ public class CRFSuiteNERSequenceDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
-                CRFSuiteAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV", NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -102,8 +101,7 @@ public class CRFSuiteNERSequenceDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest",
-                CRFSuiteAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

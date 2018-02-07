@@ -30,9 +30,8 @@ import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
-import org.dkpro.tc.ml.liblinear.serialization.LiblinearSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearLoadModelConnector;
-import org.dkpro.tc.ml.report.InnerBatchReport;
+import org.dkpro.tc.ml.liblinear.serialization.LiblinearSerializeModelConnector;
 
 /**
  * <pre>
@@ -81,11 +80,6 @@ public class LiblinearAdapter
 	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
 		return LibsvmDataFormatOutcomeIdReport.class;
-	}
-
-	@Override
-	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
-		return InnerBatchReport.class;
 	}
 
 	@SuppressWarnings("unchecked")

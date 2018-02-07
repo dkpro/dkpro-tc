@@ -29,7 +29,6 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
@@ -52,11 +51,6 @@ public class WekaClassificationAdapter
 	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
 		return WekaOutcomeIDReport.class;
-	}
-
-	@Override
-	public Class<? extends ReportBase> getBatchTrainTestReportClass() {
-		return InnerBatchReport.class;
 	}
 
 	@SuppressWarnings("unchecked")

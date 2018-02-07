@@ -45,7 +45,6 @@ import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -54,103 +53,90 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class CRFSuiteBrownPosDemoSimpleDkproReader
-    implements Constants
-{
-    public static final String LANGUAGE_CODE = "en";
+public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
+	public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 2;
+	public static final int NUM_FOLDS = 2;
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
+	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-    public static void main(String[] args)
-        throws Exception
-    {
+	public static void main(String[] args) throws Exception {
 
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
+		// This is used to ensure that the required DKPRO_HOME environment
+		// variable is set.
+		// Ensures that people can run the experiments even if they haven't read
+		// the setup
+		// instructions first :)
+		DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
 
-        @SuppressWarnings("unchecked")
-        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()),null);
+		@SuppressWarnings("unchecked")
+		ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
+				Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()), null);
 
-        CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
-        experiment.runCrossValidation(pSpace);
-    }
+		CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
+		experiment.runCrossValidation(pSpace);
+	}
 
-    public static ParameterSpace getParameterSpace(String featureMode, String learningMode, Dimension<List<String>> dimClassificationArgs, Dimension<List<String>> dimFilters)
-        throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	public static ParameterSpace getParameterSpace(String featureMode, String learningMode,
+			Dimension<List<Object>> dimClassificationArgs, Dimension<List<String>> dimFilters)
+					throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS,
-                asList(INCLUDE_PREFIX + "a01.xml"));
-        dimReaders.put(DIM_READER_TRAIN, train);
-        
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS,
-                asList(INCLUDE_PREFIX + "a02.xml"));
-        dimReaders.put(DIM_READER_TEST, test);
+		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+		dimReaders.put(DIM_READER_TRAIN, train);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class,  LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4,
-                                LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
-        ParameterSpace pSpace;
-        if(dimFilters!=null){
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, learningMode),
-                    Dimension.create(DIM_FEATURE_MODE, featureMode),
-                    dimFilters,
-                    dimFeatureSets, dimClassificationArgs);
-        }
-        else{
-        pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, learningMode),
-                Dimension.create(DIM_FEATURE_MODE, featureMode),
-                dimFeatureSets, dimClassificationArgs);
-        }
+		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a02.xml"));
+		dimReaders.put(DIM_READER_TEST, test);
 
-        return pSpace;
-    }
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),
+						TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
+								LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 4, LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K,
+								50)));
+		ParameterSpace pSpace;
+		if (dimFilters != null) {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
+					dimFilters, dimFeatureSets, dimClassificationArgs);
+		} else {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
+					dimFeatureSets, dimClassificationArgs);
+		}
 
-    // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
+		return pSpace;
+	}
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite",
-                CRFSuiteAdapter.class, NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+	// ##### CV #####
+	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+		ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite", NUM_FOLDS);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(SequenceOutcomeAnnotator.class);
-    }
+		// Run
+		Lab.getInstance().run(batch);
+	}
 
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
-    {
-        ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTest", CRFSuiteAdapter.class);
-        batch.setParameterSpace(pSpace);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
-        
-        Lab.getInstance().run(batch);
-    }
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+		return createEngineDescription(SequenceOutcomeAnnotator.class);
+	}
+
+	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+		ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTest");
+		batch.setParameterSpace(pSpace);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchTrainTestReport.class);
+		batch.addReport(ContextMemoryReport.class);
+
+		Lab.getInstance().run(batch);
+	}
 }

@@ -55,6 +55,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.Before;
@@ -99,7 +100,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "100"));
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
@@ -114,9 +115,14 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                     dimFeatureSets);
         }
         else {
+        	
+        	  @SuppressWarnings("unchecked")
+              Dimension<List<Object>> dimClassArguments = Dimension
+                      .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter()));
+        	
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArguments);
         }
         return pSpace;
     }
@@ -170,8 +176,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
     private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", LibsvmAdapter.class,
-                modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(
                 createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
         batch.setParameterSpace(paramSpace);
@@ -254,7 +259,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-c", "1000"));
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "1000"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
@@ -333,8 +338,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
     private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLibsvmTestSaveModel",
-                LibsvmAdapter.class, modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLibsvmTestSaveModel", modelFolder);
         batch.setParameterSpace(paramSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);

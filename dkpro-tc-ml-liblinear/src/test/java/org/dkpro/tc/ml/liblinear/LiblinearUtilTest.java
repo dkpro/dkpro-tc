@@ -38,37 +38,37 @@ public class LiblinearUtilTest
     @Test
     public void testSetSolver()
     {
-        List<String> param = Arrays.asList("-s", "0");
+        List<Object> param = Arrays.asList(new Object(), "-s", "0");
         assertEquals(SolverType.L2R_LR, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "1");
+        param = Arrays.asList(new Object(),"-s", "1");
         assertEquals(SolverType.L2R_L2LOSS_SVC_DUAL, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "2");
+        param = Arrays.asList(new Object(),"-s", "2");
         assertEquals(SolverType.L2R_L2LOSS_SVC, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "3");
+        param = Arrays.asList(new Object(),"-s", "3");
         assertEquals(SolverType.L2R_L1LOSS_SVC_DUAL, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "4");
+        param = Arrays.asList(new Object(),"-s", "4");
         assertEquals(SolverType.MCSVM_CS, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "5");
+        param = Arrays.asList(new Object(),"-s", "5");
         assertEquals(SolverType.L1R_L2LOSS_SVC, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "6");
+        param = Arrays.asList(new Object(),"-s", "6");
         assertEquals(SolverType.L1R_LR, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "7");
+        param = Arrays.asList(new Object(),"-s", "7");
         assertEquals(SolverType.L2R_LR_DUAL, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "11");
+        param = Arrays.asList(new Object(),"-s", "11");
         assertEquals(SolverType.L2R_L2LOSS_SVR, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "12");
+        param = Arrays.asList(new Object(),"-s", "12");
         assertEquals(SolverType.L2R_L2LOSS_SVR_DUAL, LiblinearUtils.getSolver(param));
 
-        param = Arrays.asList("-s", "13");
+        param = Arrays.asList(new Object(),"-s", "13");
         assertEquals(SolverType.L2R_L1LOSS_SVR_DUAL, LiblinearUtils.getSolver(param));
 
     }
@@ -76,21 +76,21 @@ public class LiblinearUtilTest
     @Test(expected = IllegalArgumentException.class)
     public void testExceptionSetSolver()
     {
-        List<String> param = Arrays.asList("-s");
+        List<Object> param = Arrays.asList(new Object(), "-s");
         LiblinearUtils.getSolver(param);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExceptionSetParamC()
     {
-        List<String> param = Arrays.asList("-c");
+        List<Object> param = Arrays.asList(new Object(), "-c");
         LiblinearUtils.getParameterC(param);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testExceptionSetEpsilon()
     {
-        List<String> param = Arrays.asList("-e");
+        List<Object> param = Arrays.asList(new Object(), "-e");
         LiblinearUtils.getParameterEpsilon(param);
     }
 
@@ -103,7 +103,7 @@ public class LiblinearUtilTest
     @Test
     public void testSetParamC()
     {
-        List<String> param = Arrays.asList("-c", "23.2");
+        List<Object> param = Arrays.asList(new Object(), "-c", "23.2");
         assertEquals(23.2, LiblinearUtils.getParameterC(param), 0.0001);
     }
 
@@ -116,7 +116,7 @@ public class LiblinearUtilTest
     @Test
     public void testSetEpsilon()
     {
-        List<String> param = Arrays.asList("-e", "2.1");
+        List<Object> param = Arrays.asList(new Object(), "-e", "2.1");
         assertEquals(2.1, LiblinearUtils.getParameterEpsilon(param), 0.0001);
     }
 }

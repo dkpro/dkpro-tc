@@ -31,6 +31,7 @@ import org.dkpro.lab.task.impl.DefaultBatchTask
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
+import org.dkpro.tc.core.task.DKProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask
 import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
@@ -43,6 +44,7 @@ import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport
 import org.dkpro.tc.ml.weka.task.WekaTestTask
+import org.ejml.alg.dense.misc.NaiveDeterminant;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
@@ -92,18 +94,15 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [NaiveBayes.class.name],
-    [SMO.class.name])
+    [ new WekaClassificationAdapter(), SMO.class.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokens.class),
-        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MIN_N, 3)
+        TcFeatureFactory.create(NrOfTokens.class)
     ),
     new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokens.class),
-        TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MIN_N, 3)
+        TcFeatureFactory.create(NrOfTokens.class)
     )
     )
 
@@ -123,15 +122,13 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         InitTask initTaskTrain = [
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Train",
-            isTesting: false,
-			mlAdapter: WekaClassificationAdapter.instance
+            isTesting: false
         ]
 
         InitTask initTaskTest = [
             preprocessing:getPreprocessing(),
             type: "Preprocessing-TwentyNewsgroups-Test",
-            isTesting: true,
-			mlAdapter: WekaClassificationAdapter.instance
+            isTesting: true 
         ]
 
         OutcomeCollectionTask collectionTask = [
@@ -144,21 +141,21 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
         ExtractFeaturesTask featuresTrainTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Train",
-            isTesting: false,
-            mlAdapter: WekaClassificationAdapter.instance
+            isTesting: false
         ]
 
         ExtractFeaturesTask featuresTestTask = [
             type: "FeatureExtraction-TwentyNewsgroups-Test",
-            isTesting: true,
-            mlAdapter: WekaClassificationAdapter.instance
+            isTesting: true
         ]
 
-        WekaTestTask testTask = [
-            type:"TestTask-TwentyNewsgroups",
-            reports: [
-                WekaOutcomeIDReport.newInstance()]
-        ]
+        DKProTcShallowTestTask testTask = [
+				featuresTrainTask: featuresTrainTask, 
+				featuresTestTask: featuresTestTask, 
+				collectionTask: collectionTask,
+				reports: [],
+				type: "DKProTcShallowTestTask-TwentyNewsgroups"
+		]
 
 
         /*
@@ -176,7 +173,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
         featuresTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA)
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TEST_DATA)
-
+		testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
         /*
          *	Wrap wired tasks in batch task
          */

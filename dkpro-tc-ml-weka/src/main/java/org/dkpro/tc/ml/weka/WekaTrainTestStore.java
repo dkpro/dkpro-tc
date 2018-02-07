@@ -22,10 +22,8 @@ import java.io.File;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.task.Task;
-
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -45,11 +43,10 @@ public class WekaTrainTestStore extends ExperimentTrainTest {
 		/* needed for Groovy */
 	}
 
-	public WekaTrainTestStore(String aExperimentName, Class<? extends TcShallowLearningAdapter> mlAdapter,
-            File outputDirectory)
+	public WekaTrainTestStore(String aExperimentName, File outputDirectory)
             throws TextClassificationException {
 
-		super(aExperimentName, mlAdapter);
+		super(aExperimentName);
 
 		this.outputDirectory = outputDirectory;
     }

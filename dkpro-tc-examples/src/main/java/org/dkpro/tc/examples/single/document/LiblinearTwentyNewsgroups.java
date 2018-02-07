@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -52,144 +53,131 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
  * 
- * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
- * experiment is run on a server.
+ * Defining the parameters directly in this class makes on-the-fly changes more
+ * difficult when the experiment is run on a server.
  * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
- * can be changed and then executed without pre-compilation.
+ * For these cases, the self-sufficient Groovy versions are more suitable, since
+ * their source code can be changed and then executed without pre-compilation.
  */
-public class LiblinearTwentyNewsgroups
-    implements Constants
-{
-    public static final String LANGUAGE_CODE = "en";
+public class LiblinearTwentyNewsgroups implements Constants {
+	public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
+	public static final int NUM_FOLDS = 3;
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-    public static void main(String[] args)
-        throws Exception
-    {
+	public static void main(String[] args) throws Exception {
 
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
-        DemoUtils.setDkproHome(LiblinearTwentyNewsgroups.class.getSimpleName());
+		// This is used to ensure that the required DKPRO_HOME environment
+		// variable is set.
+		// Ensures that people can run the experiments even if they haven't read
+		// the setup
+		// instructions first :)
+		// Don't use this in real experiments! Read the documentation and set
+		// DKPRO_HOME as
+		// explained there.
+		DemoUtils.setDkproHome(LiblinearTwentyNewsgroups.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace(null);
+		ParameterSpace pSpace = getParameterSpace(null);
 
-        LiblinearTwentyNewsgroups experiment = new LiblinearTwentyNewsgroups();
-        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
-        experiment.runTrainTestParametrization();
-    }
+		LiblinearTwentyNewsgroups experiment = new LiblinearTwentyNewsgroups();
+		experiment.runCrossValidation(pSpace);
+		experiment.runTrainTest(pSpace);
+		experiment.runTrainTestParametrization();
+	}
 
-    public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
-        throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	public static ParameterSpace getParameterSpace(Dimension<List<Object>> dimClassificationArgs)
+			throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		// train/test will use both, while cross-validation will only use the
+		// train part
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
-        dimReaders.put(DIM_READER_TEST, readerTest);
+		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+		dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(NrOfTokens.class),
+						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
-        ParameterSpace pSpace;
+		ParameterSpace pSpace;
 
-        if (dimClassificationArgs == null) {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets);
-        }
-        else {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                    dimClassificationArgs);
-        }
+		if (dimClassificationArgs == null) {
 
-        return pSpace;
-    }
+			@SuppressWarnings("unchecked")
+			Dimension<List<Object>> dimClassificationArgsNoParam = Dimension.create(DIM_CLASSIFICATION_ARGS,
+					asList(new Object[] { new LiblinearAdapter() }));
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArgsNoParam);
+		} else {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArgs);
+		}
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                LiblinearAdapter.class, NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+		return pSpace;
+	}
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+	// ##### CV #####
+	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-    // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
-        throws Exception
-    {
+		ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", NUM_FOLDS);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                LiblinearAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
+		// Run
+		Lab.getInstance().run(batch);
+	}
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+	// ##### TRAIN-TEST #####
+	protected void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-    // ##### TRAIN-TEST #####
-    protected void runTrainTestParametrization()
-        throws Exception
-    {
+		ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchTrainTestReport.class);
+		batch.addReport(ContextMemoryReport.class);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                asList(new String[] { "-c", "100", "-c", "0.001", "-s", "5" }));
+		// Run
+		Lab.getInstance().run(batch);
+	}
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                LiblinearAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(getParameterSpace(dimClassificationArgs));
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
+	// ##### TRAIN-TEST #####
+	protected void runTrainTestParametrization() throws Exception {
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+		@SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				asList(new Object[] { new LiblinearAdapter(), "-c", "100", "-c", "0.001", "-s", "5" }));
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(BreakIteratorSegmenter.class);
-    }
+		ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(getParameterSpace(dimClassificationArgs));
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchTrainTestReport.class);
+		batch.addReport(ContextMemoryReport.class);
+
+		// Run
+		Lab.getInstance().run(batch);
+	}
+
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+		return createEngineDescription(BreakIteratorSegmenter.class);
+	}
 }

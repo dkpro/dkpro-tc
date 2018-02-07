@@ -41,6 +41,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
@@ -99,6 +100,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         WekaTwentyNewsgroupsInstanceWeightingDemo experiment = new WekaTwentyNewsgroupsInstanceWeightingDemo();
 
         experiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -129,8 +131,8 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
                 WeightedTwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -157,16 +159,27 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaClassificationAdapter.class);
-        // add a second report to TestTask which creates a report about average feature values for
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
         // each outcome label
         batch.setPreprocessing(getPreprocessing());
-        // batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchTrainTestReport.class);
-        // batch.addReport(BatchRuntimeReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    // ##### TRAIN-TEST #####
+    protected void runCrossValidation(ParameterSpace pSpace)
+        throws Exception
+    {
+
+    	ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsTrainTest", 2);
+        // each outcome label
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
         Lab.getInstance().run(batch);

@@ -53,7 +53,6 @@ import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,8 +97,8 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { MULAN.class.getName(), "-S", "RAkEL2", "-W",
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new MekaClassificationAdapter(), MULAN.class.getName(), "-S", "RAkEL2", "-W",
                         RandomForest.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
@@ -159,16 +158,9 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
                 throws Exception
     {
         ExperimentSaveModel batch;
-        if (singlelabel) {
-            batch = new ExperimentSaveModel("TestSaveModel", WekaClassificationAdapter.class,
-                    modelFolder);
-        }
-        else {
-            batch = new ExperimentSaveModel("TestSaveModel", MekaClassificationAdapter.class,
-                    modelFolder);
-        }
+        batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(
-                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+                createEngineDescription(BreakIteratorSegmenter.class));
         batch.setParameterSpace(paramSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);

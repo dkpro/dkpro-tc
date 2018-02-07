@@ -102,9 +102,10 @@ public class LibsvmTestTask
     {
         List<String> parameters = new ArrayList<>();
         if (classificationArguments != null) {
-            for (String a : classificationArguments) {
-                parameters.add(a);
-            }
+        	for (int i=1; i < classificationArguments.size(); i++){
+        		String a = (String)classificationArguments.get(i);
+        		parameters.add(a);
+        	}
         }
         parameters.add(fileTrain.getAbsolutePath());
         parameters.add(model.getAbsolutePath());

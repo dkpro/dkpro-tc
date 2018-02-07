@@ -88,8 +88,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    //	[NaiveBayes.name],
-    [SMO.name])
+    [new WekaClassificationAdapter(), SMO.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
@@ -114,7 +113,6 @@ class PairTwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

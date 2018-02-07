@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.svmhmm.task.serialization;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -39,7 +40,7 @@ public class SvmhmmSerializeModelConnector
 {
 
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
+    private List<Object> classificationArguments;
 
     private double paramC;
     private double paramEpsilon;
@@ -87,7 +88,7 @@ public class SvmhmmSerializeModelConnector
                 paramOrderT, paramEpsilon, paramB);
     }
 
-    private void processParameters(List<String> classificationArguments)
+    private void processParameters(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
             paramC = 5.0;
@@ -98,12 +99,16 @@ public class SvmhmmSerializeModelConnector
             return;
         }
 
-        paramC = SVMHMMUtils.getParameterC(classificationArguments);
-        paramEpsilon = SVMHMMUtils.getParameterEpsilon(classificationArguments);
-        paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(classificationArguments);
-        paramOrderT = SVMHMMUtils
-                .getParameterOrderT_dependencyOfTransitions(classificationArguments);
-        paramB = SVMHMMUtils.getParameterBeamWidth(classificationArguments);
+        List<String> stringArgs = new ArrayList<>();
+    	for(int i=1; i < classificationArguments.size(); i++){
+    		stringArgs.add((String)classificationArguments.get(i));
+    	}
+        
+		paramC = SVMHMMUtils.getParameterC(stringArgs);
+		paramEpsilon = SVMHMMUtils.getParameterEpsilon(stringArgs);
+		paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
+		paramOrderT = SVMHMMUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
+		paramB = SVMHMMUtils.getParameterBeamWidth(stringArgs);
     }
 
 	@Override

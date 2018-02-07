@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.DimensionBundle;
-import org.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
@@ -35,7 +35,7 @@ public interface TcShallowLearningAdapter
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
      */
-    public TaskBase getTestTask();
+    public ExecutableTaskBase getTestTask();
 
     /**
      * @return The data writer class that needs to be used with the corresponding ML framework
@@ -54,14 +54,6 @@ public interface TcShallowLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     public Class<? extends ReportBase> getOutcomeIdReportClass();
-
-    /**
-     * This report is always added to {@code crossValidationTask} reports by default in
-     * ExperimentCrossValidation.
-     *
-     * @return The report that collects the results from the different folds.
-     */
-    public Class<? extends ReportBase> getBatchTrainTestReportClass();
 
     /**
      * @param  files

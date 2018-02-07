@@ -25,8 +25,10 @@ import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 public class CRFUtil
 {
 
-    public static String getAlgorithm(List<String> classificationArguments)
+    public static String getAlgorithm(List<Object> objArgs)
     {
+    	
+    	List<String> classificationArguments =  objArgs2StringArgs(objArgs);
 
         if (classificationArguments != null) {
             for (int i = 0; i < classificationArguments.size(); i++) {
@@ -56,7 +58,16 @@ public class CRFUtil
         return CRFSuiteAdapter.ALGORITHM_LBFGS;
     }
 
-    private static boolean isValidAlgoName(String string)
+	public static List<String> objArgs2StringArgs(List<Object> objArgs) {
+		List<String> classificationArguments = new ArrayList<>();
+		for (int i = 1; i < objArgs.size(); i++) {
+			classificationArguments.add((String) objArgs.get(i));
+		}
+
+		return classificationArguments;
+	}
+
+	private static boolean isValidAlgoName(String string)
     {
         return string.equals(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR)
                 || string.equals(CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON)
@@ -65,11 +76,13 @@ public class CRFUtil
     }
 
     public static List<String> getAlgorithmConfigurationParameter(
-            List<String> classificationArguments)
+            List<Object> objArgs)
     {
-        if (classificationArguments == null) {
+        if (objArgs == null) {
             return new ArrayList<>();
         }
+        
+        List<String> classificationArguments = objArgs2StringArgs(objArgs);
 
         List<String> parameter = new ArrayList<>();
 

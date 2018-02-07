@@ -63,11 +63,13 @@ public class LiblinearRegressionDemo
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
         DemoUtils.setDkproHome(LiblinearRegressionDemo.class.getSimpleName());
+//    	DemoUtils.setDkproHome(System.getProperty("user.home")+"/Desktop/");
 
         ParameterSpace pSpace = getParameterSpace();
 
         LiblinearRegressionDemo experiment = new LiblinearRegressionDemo();
-        experiment.runTrainTest(pSpace);
+//        experiment.runTrainTest(pSpace);
+        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -92,8 +94,8 @@ public class LiblinearRegressionDemo
                 EssayScoreReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { "-s", "0"
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "0"
                 // ,"-c", "100"
         }));
 
@@ -115,8 +117,7 @@ public class LiblinearRegressionDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("LiblinearRegressionDemo",
-                LiblinearAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("LiblinearRegressionDemo");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
@@ -135,8 +136,7 @@ public class LiblinearRegressionDemo
     public void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("LiblinearRegressionDemo",
-                LiblinearAdapter.class, 2);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("LiblinearRegressionDemo", 2);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationReport.class);

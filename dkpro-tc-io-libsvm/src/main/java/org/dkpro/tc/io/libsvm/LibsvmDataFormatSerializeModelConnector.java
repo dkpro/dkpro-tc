@@ -33,7 +33,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 public abstract class LibsvmDataFormatSerializeModelConnector extends ModelSerializationTask implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	protected List<String> classificationArguments;
+	protected List<Object> classificationArguments;
 
 	boolean trainModel = true;
 

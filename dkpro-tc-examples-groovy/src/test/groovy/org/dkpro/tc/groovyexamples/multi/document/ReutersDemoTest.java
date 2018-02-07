@@ -18,50 +18,39 @@
  */
 package org.dkpro.tc.groovyexamples.multi.document;
 
-/*
- * Test is out-commented to speed up Jenkins builds 
+import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+/**
+ * This test just ensures that the experiment runs without throwing
+ * any exception.
  */
+public class ReutersDemoTest extends GroovyDemosTest_Base
+{
+    ReutersDemo experiment;
 
+    @Before
+    public void setup()
+        throws Exception
+    {
+        super.setup();
+        
+        experiment = new ReutersDemo();
+    }
 
-//import java.io.File;
-//
-//import org.junit.Before;
-//import org.junit.Ignore;
-//import org.junit.Rule;
-//import org.junit.Test;
-//import org.junit.rules.TestName;
-//
-//import org.dkpro.lab.task.ParameterSpace;
-//import org.dkpro.tc.groovyexamples.utils.GroovyDemosTest_Base;
-//
-///**
-// * This test just ensures that the experiment runs without throwing
-// * any exception.
-// */
-//public class ReutersDemoTest extends GroovyDemosTest_Base
-//{
-//    ReutersDemo experiment;
-//
-//    @Before
-//    public void setup()
-//        throws Exception
-//    {
-//        super.setup();
-//        
-//        experiment = new ReutersDemo();
-//    }
-//
-//    @Ignore
-//    public void testGroovyCrossValidation()
-//        throws Exception
-//    {
-//        experiment.runCrossValidation();
-//    }
-//
-//    @Test
-//    public void testGroovyTrainTest()
-//        throws Exception
-//    {
-//        experiment.runTrainTest();
-//    }
-//}
+    @Ignore
+    public void testGroovyCrossValidation()
+        throws Exception
+    {
+        experiment.runCrossValidation();
+    }
+
+    @Test
+    public void testGroovyTrainTest()
+        throws Exception
+    {
+        experiment.runTrainTest();
+    }
+}

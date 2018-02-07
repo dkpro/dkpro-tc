@@ -130,8 +130,7 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
     private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("regressionLibsvm",
-                LibsvmAdapter.class, modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("regressionLibsvm", modelFolder);
         batch.setParameterSpace(paramSpace);
 
         Lab.getInstance().run(batch);
@@ -149,8 +148,8 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { "-s", LibsvmAdapter.PARAM_SVM_TYPE_EPISLON_SVR_REGRESSION }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", LibsvmAdapter.PARAM_SVM_TYPE_EPISLON_SVR_REGRESSION }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

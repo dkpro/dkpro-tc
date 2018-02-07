@@ -80,7 +80,7 @@ public class RegressionDemo implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
 
     def dimClassificationArgs =
-    Dimension.create(DIM_CLASSIFICATION_ARGS, [SMOreg.name])
+    Dimension.create(DIM_CLASSIFICATION_ARGS, [new WekaRegressionAdapter(), SMOreg.name])
 
     // yields really bad results. To improve the performance, use a string similarity
     // based feature extractor
@@ -104,7 +104,6 @@ public class RegressionDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -134,7 +133,6 @@ public class RegressionDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaRegressionAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,

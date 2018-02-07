@@ -63,6 +63,7 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 import net.sf.json.JSONObject;
@@ -601,5 +602,18 @@ public class TaskUtils {
 		}
 
 		return weight;
+	}
+	
+	public static TcShallowLearningAdapter getAdapter(List<Object> classificationArguments) throws ResourceInitializationException{
+		
+		if(classificationArguments == null || classificationArguments.size() < 0 ){
+			throw new ResourceInitializationException(new IllegalArgumentException(
+					"The classifcation arguments are empty or missing; The first element in the dimension ["
+							+ Constants.DIM_CLASSIFICATION_ARGS
+							+ "] has to be an instance of the machine learning adapter!"));
+		}
+		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classificationArguments.get(0);
+		
+		return adapter;
 	}
 }

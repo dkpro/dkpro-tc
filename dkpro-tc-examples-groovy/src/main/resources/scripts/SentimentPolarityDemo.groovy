@@ -63,7 +63,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [
+    [	new WekaClassificationAdapter(),
         SMO.class.name,
         "-C",
         "10"
@@ -98,7 +98,6 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing: getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -125,7 +124,6 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,

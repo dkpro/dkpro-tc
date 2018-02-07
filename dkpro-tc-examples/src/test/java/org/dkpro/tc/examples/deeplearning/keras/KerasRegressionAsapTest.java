@@ -24,7 +24,6 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.KerasLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.keras.KerasTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
@@ -36,8 +35,6 @@ public class KerasRegressionAsapTest extends KerasLocator {
 	public void runTest() throws Exception {
 
 		DemoUtils.setDkproHome(KerasDocumentRegression.class.getSimpleName());
-
-		ContextMemoryReport.key = KerasTestTask.class.getName();
 
 		boolean testConditon = true;
 		String python3 = null;

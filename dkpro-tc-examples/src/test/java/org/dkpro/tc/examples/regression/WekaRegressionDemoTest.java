@@ -56,7 +56,6 @@ public class WekaRegressionDemoTest extends TestCaseSuperClass
     
     @Test
     public void testTrainTest() throws Exception{
-        ContextMemoryReport.key = WekaTestTask.class.getName();
         experiment.runTrainTest(pSpace);
         
         //weka offers to calculate this value too - we take weka as "reference" value 

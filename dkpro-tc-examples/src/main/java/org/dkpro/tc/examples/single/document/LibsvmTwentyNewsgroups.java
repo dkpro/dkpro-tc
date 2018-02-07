@@ -51,123 +51,112 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 /**
  * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
  * 
- * Defining the parameters directly in this class makes on-the-fly changes more difficult when the
- * experiment is run on a server.
+ * Defining the parameters directly in this class makes on-the-fly changes more
+ * difficult when the experiment is run on a server.
  * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since their source code
- * can be changed and then executed without pre-compilation.
+ * For these cases, the self-sufficient Groovy versions are more suitable, since
+ * their source code can be changed and then executed without pre-compilation.
  */
-public class LibsvmTwentyNewsgroups
-    implements Constants
-{
-    public static final String LANGUAGE_CODE = "en";
+public class LibsvmTwentyNewsgroups implements Constants {
+	public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
+	public static final int NUM_FOLDS = 3;
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-    public static void main(String[] args)
-        throws Exception
-    {
+	public static void main(String[] args) throws Exception {
 
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
-        DemoUtils.setDkproHome(LibsvmTwentyNewsgroups.class.getSimpleName());
+		// This is used to ensure that the required DKPRO_HOME environment
+		// variable is set.
+		// Ensures that people can run the experiments even if they haven't read
+		// the setup
+		// instructions first :)
+		// Don't use this in real experiments! Read the documentation and set
+		// DKPRO_HOME as
+		// explained there.
+		DemoUtils.setDkproHome(LibsvmTwentyNewsgroups.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace(null);
+		ParameterSpace pSpace = getParameterSpace(null);
 
-        LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
-//        experiment.runCrossValidation(pSpace);
-        experiment.runTrainTest(pSpace);
-    }
+		LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
+		 experiment.runCrossValidation(pSpace);
+//		experiment.runTrainTest(pSpace);
+	}
 
-    public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
-        throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
+			throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		// train/test will use both, while cross-validation will only use the
+		// train part
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+		Object readerTrain = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+				TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Object readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
-        dimReaders.put(DIM_READER_TEST, readerTest);
+		Object readerTest = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
+				TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+				TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+				TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+		dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
-        ParameterSpace pSpace;
+		ParameterSpace pSpace;
 
-        if (dimClassificationArgs == null) {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets);
-        }
-        else {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                    dimClassificationArgs);
-        }
+		if (dimClassificationArgs == null) {
+			@SuppressWarnings("unchecked")
+			Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+					Arrays.asList(new Object[] { new LibsvmAdapter() }));
 
-        return pSpace;
-    }
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArgs);
+		} else {
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArgs);
+		}
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                LibsvmAdapter.class, NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(ContextMemoryReport.class);
+		return pSpace;
+	}
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+	// ##### CV #####
+	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-    // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
-        throws Exception
-    {
+		ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", NUM_FOLDS);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
+		batch.addReport(ContextMemoryReport.class);
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                LibsvmAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
+		// Run
+		Lab.getInstance().run(batch);
+	}
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+	// ##### TRAIN-TEST #####
+	protected void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(BreakIteratorSegmenter.class);
-    }
+		ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchTrainTestReport.class);
+		batch.addReport(ContextMemoryReport.class);
+
+		// Run
+		Lab.getInstance().run(batch);
+	}
+
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+		return createEngineDescription(BreakIteratorSegmenter.class);
+	}
 }

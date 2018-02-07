@@ -23,8 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +33,7 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
+public class LibsvmBrownUnitPosDemoTest extends TestCaseSuperClass
 {
     LibsvmBrownUnitPosDemo javaExperiment;
     ParameterSpace pSpace;
@@ -54,7 +52,6 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
     public void testJavaCrossValidation()
         throws Exception
     {
-        ContextMemoryReport.key = ExperimentCrossValidation.class.getName();
         javaExperiment.runCrossValidation(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(
@@ -67,7 +64,6 @@ public class LibsvmBrownUnitPosDemoTest  extends TestCaseSuperClass
     public void testTrainTest()
         throws Exception
     {
-        ContextMemoryReport.key = LibsvmTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(

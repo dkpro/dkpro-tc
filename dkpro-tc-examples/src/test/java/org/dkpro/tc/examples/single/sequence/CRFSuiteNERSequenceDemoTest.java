@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +51,6 @@ public class CRFSuiteNERSequenceDemoTest extends TestCaseSuperClass
 
     @Test
     public void testTrainTestWithResults() throws Exception{
-        ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);

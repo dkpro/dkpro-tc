@@ -108,8 +108,8 @@ public class WekaTwitterSentimentDemo
                 LabeledTweetReader.PARAM_PATTERNS, LabeledTweetReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
 
         
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
@@ -130,8 +130,7 @@ public class WekaTwitterSentimentDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV",
-                WekaClassificationAdapter.class, 3);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwitterSentimentCV", 3);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationReport.class);
@@ -144,8 +143,7 @@ public class WekaTwitterSentimentDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest",
-                WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwitterSentimentTrainTest");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

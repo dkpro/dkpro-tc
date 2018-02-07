@@ -32,20 +32,21 @@ public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeMode
 
 	@Override
 	protected void trainModel(File fileTrain) throws Exception {
-			LibsvmTrainModel ltm = new LibsvmTrainModel();
-			File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
-			ltm.run(buildParameters(fileTrain, model));
+		LibsvmTrainModel ltm = new LibsvmTrainModel();
+		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
+		ltm.run(buildParameters(fileTrain, model));
 	}
 
 	@Override
-	protected void writeAdapter() throws Exception{
+	protected void writeAdapter() throws Exception {
 		SaveModelUtils.writeModelAdapterInformation(outputFolder, LibsvmAdapter.class.getName());
 	}
 
 	private String[] buildParameters(File fileTrain, File model) {
 		List<String> parameters = new ArrayList<>();
 		if (classificationArguments != null) {
-			for (String a : classificationArguments) {
+			for (int i = 1; i < classificationArguments.size(); i++) {
+				String a = (String) classificationArguments.get(i);
 				parameters.add(a);
 			}
 		}

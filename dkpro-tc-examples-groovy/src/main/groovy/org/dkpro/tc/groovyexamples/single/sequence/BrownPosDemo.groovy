@@ -65,6 +65,10 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                          new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class)))
+	
+	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+		[new CRFSuiteAdapter()])
+	
 
     // ##### CV #####
     protected void runCrossValidation()
@@ -75,12 +79,12 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:  getPreprocessing(),
-            machineLearningAdapter: CRFSuiteAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimFeatureSets
+                dimFeatureSets,
+				dimClassificationArgs
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [

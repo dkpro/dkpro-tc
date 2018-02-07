@@ -19,16 +19,13 @@
 package org.dkpro.tc.examples.crossvalidation;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -72,9 +69,7 @@ public class WekaManualFoldCrossValidation
         // explained there.
         DemoUtils.setDkproHome(WekaManualFoldCrossValidation.class.getSimpleName());
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV",
-                WekaClassificationAdapter.class, folds);
-        batch.setPreprocessing(getPreprocessing());
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV", folds);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
@@ -95,8 +90,8 @@ public class WekaManualFoldCrossValidation
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, 
                 new TcFeatureSet(TcFeatureFactory.create(IsSurroundedByChars.class, IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"")));
@@ -115,9 +110,4 @@ public class WekaManualFoldCrossValidation
         return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
-        return createEngineDescription(NoOpAnnotator.class);
-    }
 }

@@ -26,10 +26,10 @@ import java.util.List;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.single.sequence.CRFSuiteBrownPosDemoSimpleDkproReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,11 +41,12 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
  * This test just ensures that the experiment runs without throwing any
  * exception.
  */
-public class CRFSuiteBrownPosDemoTest  {
+public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 	CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
 
 	@Before
 	public void setup() throws Exception {
+		super.setup();
 		javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
 	}
 
@@ -63,12 +64,11 @@ public class CRFSuiteBrownPosDemoTest  {
 	public Double runTrainTestNoFilter() throws Exception {
 		// Random parameters for demonstration!
         //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new String[] { CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new Object[] { new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
-		ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
 		javaExperiment.runTrainTest(pSpace);
 
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
@@ -80,8 +80,8 @@ public class CRFSuiteBrownPosDemoTest  {
 	@SuppressWarnings("unchecked")
 	public Double runTrainTestFilter() throws Exception {
 		// Random parameters for demonstration!
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
 
 		Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
 				asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
@@ -89,7 +89,6 @@ public class CRFSuiteBrownPosDemoTest  {
 		ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
 
-		ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
 		javaExperiment.runTrainTest(pSpace);
 
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);

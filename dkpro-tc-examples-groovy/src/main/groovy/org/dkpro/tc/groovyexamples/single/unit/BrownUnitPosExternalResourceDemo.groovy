@@ -37,7 +37,7 @@ import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter
-
+import org.dkpro.tc.examples.util.DemoUtils
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -73,10 +73,11 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokens.class, NrOfTokensExternalResourceUFE.PARAM_DUMMY_RESOURCE, dummyResource)
+        TcFeatureFactory.create(NrOfTokens.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [SMO.name],[NaiveBayes.name])
+    [new WekaClassificationAdapter(), NaiveBayes.name],
+	[new WekaClassificationAdapter(), SMO.name])
 
     // ##### CV #####
     protected void runCrossValidation()
@@ -86,8 +87,6 @@ implements Constants {
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
-            preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -105,14 +104,9 @@ implements Constants {
         Lab.getInstance().run(batchTask)
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-    throws ResourceInitializationException
-    {
-        return createEngineDescription(NoOpAnnotator.class)
-    }
-
     public static void main(String[] args)
     throws Exception {
+		DemoUtils.setDkproHome(BrownUnitPosExternalResourceDemo.getSimpleName());
         new BrownUnitPosExternalResourceDemo().runCrossValidation()
     }
 }

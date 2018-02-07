@@ -28,11 +28,10 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
-import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmLoadModelConnector;
-import org.dkpro.tc.ml.report.InnerBatchReport;
+import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
 
 /**
  * Libsvm offers various configuration switches for the SVM type and Kernel we defined constant
@@ -87,12 +86,6 @@ public class LibsvmAdapter
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
         return LibsvmDataFormatOutcomeIdReport.class;
-    }
-
-    @Override
-    public Class<? extends ReportBase> getBatchTrainTestReportClass()
-    {
-        return InnerBatchReport.class;
     }
 
     @SuppressWarnings("unchecked")

@@ -17,21 +17,21 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
+
 import java.io.File;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.OutcomeCollectionTask;
-import org.dkpro.tc.core.task.TcTaskType;
+import org.dkpro.tc.core.task.DKProTcShallowSerializationTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
-import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
+import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 /**
  * Save model batch
  * 
@@ -46,20 +46,18 @@ public class ExperimentSaveModel
     private OutcomeCollectionTask collectionTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
-    private ModelSerializationTask saveModelTask;
+    private DKProTcShallowSerializationTask saveModelTask;
 
     public ExperimentSaveModel()
     {/* needed for Groovy */
     }
 
-    public ExperimentSaveModel(String aExperimentName,
-            Class<? extends TcShallowLearningAdapter> mlAdapter, File outputFolder)
+    public ExperimentSaveModel(String aExperimentName, File outputFolder)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
-        setTcMachineLearningAdapter(mlAdapter);
         setOutputFolder(outputFolder);
     }
 
@@ -81,7 +79,6 @@ public class ExperimentSaveModel
 
         // init the train part of the experiment
         initTask = new InitTask();
-        initTask.setMlAdapter(mlAdapter);
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
         initTask.setTesting(false);
@@ -103,7 +100,6 @@ public class ExperimentSaveModel
         // feature extraction on training data
         featuresTrainTask = new ExtractFeaturesTask();
         featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
-        featuresTrainTask.setMlAdapter(mlAdapter);
         featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         featuresTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
@@ -113,13 +109,12 @@ public class ExperimentSaveModel
 
         // feature extraction and prediction on test data
 		try {
-			saveModelTask = mlAdapter.getSaveModelTask().newInstance();
+			saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask, collectionTask, outputFolder);
 			saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
 			saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
 			saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
 					Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 			saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
-			saveModelTask.setOutputFolder(outputFolder);
 			saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
 		} catch (Exception e) {
@@ -149,20 +144,6 @@ public class ExperimentSaveModel
     public void setOperativeViews(List<String> operativeViews)
     {
         this.operativeViews = operativeViews;
-    }
-
-    public void setTcMachineLearningAdapter(Class<? extends TcShallowLearningAdapter> mlAdapter)
-        throws TextClassificationException
-    {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (InstantiationException e) {
-            throw new TextClassificationException(e);
-        }
-        catch (IllegalAccessException e) {
-            throw new TextClassificationException(e);
-        }
     }
 
     public void setOutputFolder(File outputFolder)

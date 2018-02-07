@@ -29,10 +29,9 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteLoadModelConnector;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
-import org.dkpro.tc.ml.report.InnerBatchReport;
 
 /**
  * CRFSuite machine learning adapter. Details about available algorithm and their configuration is
@@ -62,12 +61,6 @@ public class CRFSuiteAdapter
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
         return CRFSuiteOutcomeIDReport.class;
-    }
-
-    @Override
-    public Class<? extends ReportBase> getBatchTrainTestReportClass()
-    {
-        return InnerBatchReport.class;
     }
 
     @SuppressWarnings("unchecked")

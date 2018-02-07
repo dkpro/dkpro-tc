@@ -120,8 +120,10 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 	@Test
 	public void saveModel() throws Exception {
 		@SuppressWarnings("unchecked")
-		//increase number of iterations for real setups (default is 100 or not providing this parameters)
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS, asList(CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2"));
+		// increase number of iterations for real setups (default is 100 or not
+		// providing this parameters)
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2"));
 
 		File modelFolder = folder.newFolder();
 		ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
@@ -155,14 +157,14 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 	}
 
 	private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder) throws Exception {
-		ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", CRFSuiteAdapter.class, aModelFolder);
+		ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", aModelFolder);
 		batch.setParameterSpace(aPSpace);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		Lab.getInstance().run(batch);
 
 	}
 
-	private ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
+	private ParameterSpace getParameterSpace(Dimension<List<Object>> dimClassificationArgs)
 			throws ResourceInitializationException {
 		DemoUtils.setDkproHome(this.getClass().getName());
 
@@ -204,8 +206,9 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 	public void loadModelArow() throws Exception {
 
 		@SuppressWarnings("unchecked")
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new String[] { CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new Object[] { new CRFSuiteAdapter(),
+						CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
 						"max_iterations=2" }));
 
 		// create a model
@@ -240,9 +243,8 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 	public void loadModelArowParameters() throws Exception {
 
 		@SuppressWarnings("unchecked")
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new String[] { CRFSuiteAdapter.ALGORITHM_LBFGS, "-p",
-						"max_iterations=2" }));
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS, asList(
+				new Object[] { new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2" }));
 
 		// create a model
 		File modelFolder = folder.newFolder();
