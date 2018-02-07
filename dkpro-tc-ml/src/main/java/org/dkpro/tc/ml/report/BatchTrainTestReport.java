@@ -27,7 +27,6 @@ import java.util.Map;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
-import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
@@ -37,53 +36,51 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-public class BatchTrainTestReport
-    extends TcBatchReportBase
-    implements Constants
-{
-    private final List<String> discriminatorsToExclude = Arrays
-            .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
-    
-    public BatchTrainTestReport()
-    {
-        // required by groovy
-    }
+public class BatchTrainTestReport extends TcBatchReportBase implements Constants {
+	private final List<String> discriminatorsToExclude = Arrays
+			.asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 
-    @Override
-    public void execute()
-        throws Exception
-    {
-        StorageService store = getContext().getStorageService();
-        TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+	public BatchTrainTestReport() {
+		// required by groovy
+	}
 
-        for (TaskContextMetadata subcontext : getSubtasks()) {
+	@Override
+	public void execute() throws Exception {
+		StorageService store = getContext().getStorageService();
+		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
 
-            if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store,
-                    subcontext.getId())) {
-                continue;
-            }
-            Map<String, String> discriminatorsMap = getDiscriminators(store, subcontext.getId());
-            discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
-                    discriminatorsToExclude);
+		List<String> collectTasks = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
 
-            // add the results into the discriminator map
-            File id2o = getId2Outcome(subcontext.getId());
-            String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
-            
-            Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
-            discriminatorsMap.putAll(resultMap);
+		for (String id : collectTasks) {
 
-            table.addRow(subcontext.getLabel(), discriminatorsMap);
-        }
+			if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
+				continue;
+			}
 
-        ReportUtils.writeExcelAndCSV(
+			Map<String, String> discriminatorsMap = getDiscriminators(store, id);
+			discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
+					discriminatorsToExclude);
 
-        getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
-    }
+			// add the results into the discriminator map
+			File id2o = getId2Outcome(id);
+			String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
 
+			Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
+			discriminatorsMap.putAll(resultMap);
 
-	private Map<String, String> getDiscriminators(StorageService store, String id)
-    {
-        return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-    }
+			System.out.println(getContextLabel(id));
+			table.addRow(getContextLabel(id), discriminatorsMap);
+		}
+
+		ReportUtils.writeExcelAndCSV(getContext(), 
+									 getContextLabel(), 
+									 table, 
+									 EVAL_FILE_NAME, 
+									 SUFFIX_EXCEL, 
+									 SUFFIX_CSV);
+	}
+
+	private Map<String, String> getDiscriminators(StorageService store, String id) {
+		return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+	}
 }

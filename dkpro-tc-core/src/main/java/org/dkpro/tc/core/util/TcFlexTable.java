@@ -269,7 +269,7 @@ public class TcFlexTable<V>
         V value = getValue(aRowId, aColId);
         
         //suppress the full reader description text
-        if(isReaderDescription(value.toString())){
+        if(isReaderDescription(value)){
         	int start = value.toString().indexOf("implementationName");
         	int end = value.toString().indexOf("\n", start);
         	if(start < 0|| end <0 || end >= start){
@@ -286,8 +286,12 @@ public class TcFlexTable<V>
         }
     }
 
-    private boolean isReaderDescription(String string) {
-		return string.startsWith("org.apache.uima.collection.impl.CollectionReaderDescription_impl:");
+    private boolean isReaderDescription(V value) {
+    	if(value == null){
+    		return false;
+    	}
+    	
+		return value.toString().startsWith("org.apache.uima.collection.impl.CollectionReaderDescription_impl:");
 	}
 
 	public StreamWriter getTextWriter()
