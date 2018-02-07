@@ -68,7 +68,6 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 			Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
 			discriminatorsMap.putAll(resultMap);
 
-			System.out.println(getContextLabel(id));
 			table.addRow(getContextLabel(id), discriminatorsMap);
 		}
 
