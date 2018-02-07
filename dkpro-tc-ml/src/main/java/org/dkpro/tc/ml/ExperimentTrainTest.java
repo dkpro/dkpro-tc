@@ -77,7 +77,6 @@ public class ExperimentTrainTest
     protected void init()
     {
         if (experimentName == null)
-
         {
             throw new IllegalStateException(
                     "You must set an experiment name");

@@ -32,6 +32,7 @@ public class SentimentPolarityDemoStarter
     public static void main(String[] args)
         throws InstantiationException, IllegalAccessException, IOException
     {
+    	System.setProperty("DKPRO_HOME", "target/");
         start("scripts/SentimentPolarityDemo.groovy");
     }
 }
