@@ -100,8 +100,6 @@ public class ExperimentCrossValidation
      * must occur together in the same CV fold.
           * @param aExperimentName
      * 			the experiment name
-     * @param mlAdapter
-     * 			the ml adapter
      * @param aNumFolds
      * 			the number of folds
      * @param aComparator

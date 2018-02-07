@@ -201,8 +201,11 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * of a task and the tasks located in a lower level in the hierarchy.
 	 * 
 	 * @param subtasks
+	 * 			list of subtasks to be iterated
 	 * @return
+	 * 			list of all task ids including the one passed as parameter
 	 * @throws Exception
+	 * 			in case of errors
 	 */
 	public List<String> collectTasks(List<String> subtasks) throws Exception {
 
