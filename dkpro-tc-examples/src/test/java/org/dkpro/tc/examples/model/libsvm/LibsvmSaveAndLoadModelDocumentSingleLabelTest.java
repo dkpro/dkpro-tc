@@ -100,7 +100,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new CRFSuiteAdapter(), "-c", "100"));
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
@@ -118,7 +118,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
         	
         	  @SuppressWarnings("unchecked")
               Dimension<List<Object>> dimClassArguments = Dimension
-                      .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new CRFSuiteAdapter()));
+                      .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter()));
         	
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -259,7 +259,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new CRFSuiteAdapter(), "-c", "1000"));
+                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "1000"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

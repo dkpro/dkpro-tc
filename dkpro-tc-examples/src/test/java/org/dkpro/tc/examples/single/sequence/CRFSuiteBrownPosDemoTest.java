@@ -75,7 +75,7 @@ extends TestCaseSuperClass
         // Random parameters for demonstration!
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
-                asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+                asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
                 Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
