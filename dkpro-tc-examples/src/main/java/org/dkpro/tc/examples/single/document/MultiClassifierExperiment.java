@@ -99,11 +99,8 @@ public class MultiClassifierExperiment implements Constants {
 		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                       PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
-				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "100.0"}),
-				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", LibsvmAdapter.PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS}),
-				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", LibsvmAdapter.PARAM_SVM_TYPE_C_SVC_MULTI_CLASS}),
-				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "2", "-c", "10" }),
-				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "1", "-c", "100" })
+				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", "2", "-c", "1000", "-t", "3" }),
+				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" })
 				);
 		
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
