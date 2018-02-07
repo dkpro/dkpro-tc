@@ -35,12 +35,12 @@ import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
 import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
-public class WekaClassificationAdapter 
+public class WekaAdapter 
 	implements TcShallowLearningAdapter
 {
 
 	public static TcShallowLearningAdapter getInstance() {
-		return new WekaClassificationAdapter();
+		return new WekaAdapter();
 	}
 	
 	@Override
