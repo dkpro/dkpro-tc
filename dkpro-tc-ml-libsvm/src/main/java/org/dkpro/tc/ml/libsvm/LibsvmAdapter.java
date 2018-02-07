@@ -38,8 +38,17 @@ import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
  * values in this class with more detail explanations.
  * 
  * <pre>
- * -s svm_type (see constants)
- * -t kernel_type (see constants) 
+ * -s svm_type (default o)
+ * 		0 -- C-SVC
+ * 		1 -- nu-SVC
+ *		2 -- one-class SVM
+ *		3 -- epsilon-SVR
+ *		4 -- nu-SVR
+ * -t kernel_type (default 2)
+ * 		0 -- linear: u'*v
+ *		1 -- polynomial: (gamma*u'*v + coef0)^degree
+ *		2 -- radial basis function: exp(-gamma*|u-v|^2)
+ *		3 -- sigmoid: tanh(gamma*u'*v + coef0)
  * -d degree : set degree in kernel function (default 3) 
  * -g gamma : set gamma in kernel function (default 1/num_features) 
  * -r coef0 : set coef0 in kernel function (default 0)
@@ -117,28 +126,6 @@ public class LibsvmAdapter
 	public boolean useSparseFeatures() {
 		return true;
 	}
-
-    /** SVM type is set by switch [-s] */
-    public static final String PARAM_SVM_TYPE_C_SVC_MULTI_CLASS = "0";
-    /** SVM type is set by switch [-s] */
-    public static final String PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS = "1";
-    /** SVM type is set by switch [-s] */
-    public static final String PARAM_SVM_TYPE_ONE_CLASS_SVM = "2";
-    /** SVM type is set by switch [-s] */
-    public static final String PARAM_SVM_TYPE_EPISLON_SVR_REGRESSION = "3";
-    /** SVM type is set by switch [-s] */
-    public static final String PARAM_SVM_TYPE_NU_SVR_REGRESSION = "4";
-
-    /** Polynomial kernel = u'*v set by switch [-t] (default) */
-    public static final String PARAM_KERNEL_LINEAR = "0";
-    /** Polynomial kernel = (gamma*u'*v + coef0)^degree set by switch [-t] */
-    public static final String PARAM_KERNEL_POLYNOMIAL = "1";
-    /** Radial based = exp(-gamma*|u-v|^2) set by switch [-t] */
-    public static final String PARAM_KERNEL_RADIAL_BASED = "2";
-    /** sigmoid = tanh(gamma*u'*v + coef0) set by switch [-t] */
-    public static final String PARAM_KERNEL_SIGMOID = "3";
-    /** precomputed kernel (kernel values in training_set_file) set by switch [-t] */
-    public static final String PARAM_KERNEL_PRE_COMPUTED = "4";
     
 }
 

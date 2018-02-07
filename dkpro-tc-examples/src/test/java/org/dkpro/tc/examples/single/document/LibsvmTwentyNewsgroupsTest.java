@@ -74,8 +74,7 @@ extends TestCaseSuperClass
         Dimension<List<Object>> dimClassificationArgs = Dimension
                 .create(Constants.DIM_CLASSIFICATION_ARGS,
                         asList(new Object[] { new LibsvmAdapter(),  "-s",
-                                LibsvmAdapter.PARAM_SVM_TYPE_NU_SVC_MULTI_CLASS, "-c", "1000",
-                                "-t", LibsvmAdapter.PARAM_KERNEL_RADIAL_BASED }));
+                                "1", "-c", "1000", "-t", "2"}));
 
         pSpace = LibsvmTwentyNewsgroups.getParameterSpace(dimClassificationArgs);
 

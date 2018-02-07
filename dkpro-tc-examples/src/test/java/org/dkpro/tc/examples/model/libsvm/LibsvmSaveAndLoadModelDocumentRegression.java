@@ -149,7 +149,7 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", LibsvmAdapter.PARAM_SVM_TYPE_EPISLON_SVR_REGRESSION }));
+                Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", "3" }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

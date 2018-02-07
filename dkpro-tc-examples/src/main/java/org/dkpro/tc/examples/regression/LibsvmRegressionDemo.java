@@ -92,7 +92,7 @@ public class LibsvmRegressionDemo
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(
-                        new Object[] { new LibsvmAdapter(), "-s", LibsvmAdapter.PARAM_SVM_TYPE_NU_SVR_REGRESSION , "-c", "100"}));
+                        new Object[] { new LibsvmAdapter(), "-s", "4" , "-c", "100"}));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,

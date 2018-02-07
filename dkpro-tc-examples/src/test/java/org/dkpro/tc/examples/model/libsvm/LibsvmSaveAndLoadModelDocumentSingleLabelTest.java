@@ -55,7 +55,6 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.Before;
