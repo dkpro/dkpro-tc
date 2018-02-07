@@ -84,7 +84,7 @@ public class LibsvmTwentyNewsgroups implements Constants {
 //		experiment.runTrainTest(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace(Dimension<List<String>> dimClassificationArgs)
+	public static ParameterSpace getParameterSpace(Dimension<List<Object>> dimClassificationArgs)
 			throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		// train/test will use both, while cross-validation will only use the
