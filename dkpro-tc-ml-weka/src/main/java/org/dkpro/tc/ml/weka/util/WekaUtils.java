@@ -1201,21 +1201,21 @@ public class WekaUtils
      * @throws Exception
      * 			in case of errors
      */
-    public static Classifier getClassifier(String learningMode, List<String> classificationArguments)
+    public static Classifier getClassifier(String learningMode, List<Object> classificationArguments)
         throws Exception
     {
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         Classifier cl;
         if (multiLabel) {
-            List<String> mlArgs = classificationArguments
-                    .subList(1, classificationArguments.size());
-            cl = AbstractClassifier.forName(classificationArguments.get(0), new String[] {});
+            List<String> mlArgs = Arrays.asList(classificationArguments
+                    .subList(2, classificationArguments.size()).toArray(new String[0]));
+            cl = AbstractClassifier.forName((String)classificationArguments.get(1), new String[] {});
             ((MultiLabelClassifier) cl).setOptions(mlArgs.toArray(new String[0]));
         }
         else {
-            cl = AbstractClassifier.forName(classificationArguments.get(0), classificationArguments
-                    .subList(1, classificationArguments.size()).toArray(new String[0]));
+            cl = AbstractClassifier.forName((String)classificationArguments.get(1), classificationArguments
+                    .subList(2, classificationArguments.size()).toArray(new String[0]));
         }
         return cl;
     }

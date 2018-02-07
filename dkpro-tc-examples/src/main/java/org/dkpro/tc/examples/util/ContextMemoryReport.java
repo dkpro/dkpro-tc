@@ -39,7 +39,7 @@ public class ContextMemoryReport extends TcBatchReportBase {
 		
 		StorageService storageService = getContext().getStorageService();
 		
-		List<String> taskIds = collectTasks(getSubtasks());
+		List<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
 		
 		for (String id : taskIds) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
@@ -52,4 +52,5 @@ public class ContextMemoryReport extends TcBatchReportBase {
 			}
 		}
 	}
+
 }

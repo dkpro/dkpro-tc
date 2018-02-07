@@ -84,7 +84,7 @@ public class LibsvmBrownUnitPosDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "LibsvmCrossvalidationBrownPosDemo", LibsvmAdapter.class, NUM_FOLDS);
+                "LibsvmCrossvalidationBrownPosDemo", NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -99,8 +99,7 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo",
-                LibsvmAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -131,8 +130,8 @@ public class LibsvmBrownUnitPosDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new String[] { "-c", "10" }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new LibsvmAdapter(), "-c", "10" }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension
 				.create(Constants.DIM_FEATURE_SET,

@@ -49,21 +49,29 @@ public class WekaTestTask
     public static String featureSelectionFile = "featureSelection.txt";
     
 	@Discriminator(name=DIM_CLASSIFICATION_ARGS)
-    protected List<String> classificationArguments;
+    protected List<Object> classificationArguments;
+	
     @Discriminator(name=DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
+    
     @Discriminator(name=DIM_ATTRIBUTE_EVALUATOR_ARGS)
     protected List<String> attributeEvaluator;
+    
     @Discriminator(name=DIM_LABEL_TRANSFORMATION_METHOD)
     protected String labelTransformationMethod;
+    
     @Discriminator(name=DIM_NUM_LABELS_TO_KEEP)
     protected int numLabelsToKeep;
+    
     @Discriminator(name=DIM_APPLY_FEATURE_SELECTION)
     protected boolean applySelection;
+    
     @Discriminator(name=DIM_FEATURE_MODE)
     protected String featureMode;
+    
     @Discriminator(name=DIM_LEARNING_MODE)
     protected String learningMode;
+    
     @Discriminator(name=DIM_BIPARTITION_THRESHOLD)
     protected String threshold;
 

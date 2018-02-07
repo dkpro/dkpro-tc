@@ -27,7 +27,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.DkProTcShallowTestTask;
+import org.dkpro.tc.core.task.DKProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
@@ -142,7 +142,7 @@ public class ExperimentTrainTest
         List<ReportBase> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
         
-        testTask = new DkProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports);
+        testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
 

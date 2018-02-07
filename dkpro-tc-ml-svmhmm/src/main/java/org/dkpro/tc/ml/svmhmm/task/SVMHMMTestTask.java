@@ -32,7 +32,6 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
@@ -64,7 +63,7 @@ public class SVMHMMTestTask
     private String learningMode = LM_SINGLE_LABEL;
 
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
+    private List<Object> classificationArguments;
 
     private double paramC = 5;
 
@@ -132,14 +131,18 @@ public class SVMHMMTestTask
         testModel(taskContext, augmentedTestFile);
     }
 
-    private void processParameters(List<String> classificationArguments)
+    private void processParameters(List<Object> classificationArguments)
     {
-        paramC = SVMHMMUtils.getParameterC(classificationArguments);
-        paramEpsilon = SVMHMMUtils.getParameterEpsilon(classificationArguments);
-        paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(classificationArguments);
-        paramOrderT = SVMHMMUtils
-                .getParameterOrderT_dependencyOfTransitions(classificationArguments);
-        paramB = SVMHMMUtils.getParameterBeamWidth(classificationArguments);
+    	List<String> stringArgs = new ArrayList<>();
+    	for(int i=1; i < classificationArguments.size(); i++){
+    		stringArgs.add((String)classificationArguments.get(i));
+    	}
+
+		paramC = SVMHMMUtils.getParameterC(stringArgs);
+		paramEpsilon = SVMHMMUtils.getParameterEpsilon(stringArgs);
+		paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
+		paramOrderT = SVMHMMUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
+		paramB = SVMHMMUtils.getParameterBeamWidth(stringArgs);
     }
 
     public void testModel(TaskContext taskContext, File testFile)
@@ -227,12 +230,7 @@ public class SVMHMMTestTask
         LogFactory.getLog(getClass())
                 .info("Use following parametrization: " + toString(modelTrainCommand));
 
-        log.debug("Start training model");
-        long time = System.currentTimeMillis();
         runCommand(modelTrainCommand);
-        long completedIn = System.currentTimeMillis() - time;
-        String formattedDuration = DurationFormatUtils.formatDuration(completedIn, "HH:mm:ss:SS");
-        log.info("Training finished after " + formattedDuration);
 
         FileUtils.deleteQuietly(tmpTrainingFile);
 

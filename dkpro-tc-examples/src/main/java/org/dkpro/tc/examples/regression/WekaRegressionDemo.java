@@ -90,8 +90,8 @@ public class WekaRegressionDemo
                 "src/main/resources/data/essays/test/essay_test.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { LinearRegression.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaRegressionAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -112,8 +112,7 @@ public class WekaRegressionDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo",
-                WekaRegressionAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

@@ -607,7 +607,10 @@ public class TaskUtils {
 	public static TcShallowLearningAdapter getAdapter(List<Object> classificationArguments) throws ResourceInitializationException{
 		
 		if(classificationArguments == null || classificationArguments.size() < 0 ){
-			throw new ResourceInitializationException(new IllegalArgumentException("The classifcation arguments are empty"));
+			throw new ResourceInitializationException(new IllegalArgumentException(
+					"The classifcation arguments are empty or missing; The first element in the dimension ["
+							+ Constants.DIM_CLASSIFICATION_ARGS
+							+ "] has to be an instance of the machine learning adapter!"));
 		}
 		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classificationArguments.get(0);
 		

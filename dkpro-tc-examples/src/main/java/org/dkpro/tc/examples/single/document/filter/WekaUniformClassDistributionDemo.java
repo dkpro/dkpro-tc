@@ -111,8 +111,8 @@ public class WekaUniformClassDistributionDemo
                 TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
@@ -136,7 +136,7 @@ public class WekaUniformClassDistributionDemo
     {
 
         ExperimentCrossValidation batch = new ExperimentCrossValidation(
-                "UniformClassDistFeatureFilterCV", WekaClassificationAdapter.class, NUM_FOLDS);
+                "UniformClassDistFeatureFilterCV", NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         // batch.addInnerReport(WekaClassificationReport.class);
         // add a second report to TestTask which creates a report about average feature values for
@@ -155,18 +155,10 @@ public class WekaUniformClassDistributionDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("UniformClassDistFeatureFilterTT",
-                WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("UniformClassDistFeatureFilterTT");
         batch.setPreprocessing(getPreprocessing());
-        // batch.addInnerReport(WekaClassificationReport.class);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-        // batch.addInnerReport(WekaFeatureValuesReport.class);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        // batch.addReport(BatchTrainTestReport.class);
-        // batch.addReport(BatchOutcomeIDReport.class);
-        // batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);

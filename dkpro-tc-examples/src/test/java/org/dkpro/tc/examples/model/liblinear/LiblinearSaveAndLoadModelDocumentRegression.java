@@ -123,7 +123,7 @@ public class LiblinearSaveAndLoadModelDocumentRegression extends TestCaseSuperCl
 	}
 
 	private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
-		ExperimentSaveModel batch = new ExperimentSaveModel("regressionLiblinear", LiblinearAdapter.class, modelFolder);
+		ExperimentSaveModel batch = new ExperimentSaveModel("regressionLiblinear", modelFolder);
 		batch.setParameterSpace(paramSpace);
 		batch.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
 
@@ -139,8 +139,8 @@ public class LiblinearSaveAndLoadModelDocumentRegression extends TestCaseSuperCl
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		@SuppressWarnings("unchecked")
-		Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new String[] { "-s", "6" }));
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new Object[] {new LiblinearAdapter(),  "-s", "6" }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
 				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

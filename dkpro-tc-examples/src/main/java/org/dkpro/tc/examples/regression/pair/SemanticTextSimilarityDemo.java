@@ -102,9 +102,9 @@ public class SemanticTextSimilarityDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMOreg.class.getName() }));
+                Arrays.asList(new Object[] { new WekaRegressionAdapter(), SMOreg.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -122,8 +122,7 @@ public class SemanticTextSimilarityDemo
     protected void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV",
-                WekaRegressionAdapter.class, NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -139,8 +138,7 @@ public class SemanticTextSimilarityDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest",
-                WekaRegressionAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

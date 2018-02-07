@@ -22,7 +22,6 @@ import java.util.Collection;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
@@ -55,14 +54,6 @@ public interface TcShallowLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     public Class<? extends ReportBase> getOutcomeIdReportClass();
-
-    /**
-     * This report is always added to {@code crossValidationTask} reports by default in
-     * ExperimentCrossValidation.
-     *
-     * @return The report that collects the results from the different folds.
-     */
-    public Class<? extends ReportBase> getBatchTrainTestReportClass();
 
     /**
      * @param  files

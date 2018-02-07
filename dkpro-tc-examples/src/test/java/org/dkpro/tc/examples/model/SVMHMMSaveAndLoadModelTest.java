@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.examples.model;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -108,8 +109,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", SVMHMMAdapter.class,
-                aModelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", aModelFolder);
         batch.setParameterSpace(aPSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
@@ -138,10 +138,14 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
                 TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3),
                 TcFeatureFactory.create(NrOfChars.class)));
+        
+        @SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				asList(new Object[] { new SVMHMMAdapter() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets);
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets, dimClassificationArgs);
         return pSpace;
     }
 

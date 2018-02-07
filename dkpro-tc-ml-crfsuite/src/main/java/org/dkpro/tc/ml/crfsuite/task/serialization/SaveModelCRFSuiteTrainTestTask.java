@@ -22,7 +22,6 @@ import java.io.File;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -45,10 +44,10 @@ public class SaveModelCRFSuiteTrainTestTask
     /**
      * Preconfigured train-test setup that also stores the trained classifier.
      */
-    public SaveModelCRFSuiteTrainTestTask(String aExperimentName,  File outputFolder, Class<? extends TcShallowLearningAdapter> mlAdapter)
+    public SaveModelCRFSuiteTrainTestTask(String aExperimentName,  File outputFolder)
             throws TextClassificationException
     {
-    	super(aExperimentName, mlAdapter);
+    	super(aExperimentName);
         setOutputFolder(outputFolder);
     }
 

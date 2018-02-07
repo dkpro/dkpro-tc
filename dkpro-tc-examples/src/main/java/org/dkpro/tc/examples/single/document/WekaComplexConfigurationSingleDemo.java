@@ -111,14 +111,14 @@ public class WekaComplexConfigurationSingleDemo
 
         // We configure 3 different classifiers, which will be swept, each with a special
         // configuration.
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // "-C": complexity, "-K": kernel
-                asList(new String[] { SMO.class.getName(), "-C", "1.0", "-K",
+                asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                         PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
                 // "-I": number of trees
-                asList(new String[] { RandomForest.class.getName(), "-I", "5" }),
+                asList(new Object[] { new WekaClassificationAdapter(), RandomForest.class.getName(), "-I", "5" }),
                 // "W": base classifier
-                asList(new String[] { Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
+                asList(new Object[] { new WekaClassificationAdapter(), Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
                         "--", "-C", "0.5", "-M", "2" }));
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
@@ -155,8 +155,7 @@ public class WekaComplexConfigurationSingleDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME,
-                WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);

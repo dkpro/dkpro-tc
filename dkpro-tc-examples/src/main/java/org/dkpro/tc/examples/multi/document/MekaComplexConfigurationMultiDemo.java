@@ -110,13 +110,13 @@ public class MekaComplexConfigurationMultiDemo
 
         // We configure 3 different classifiers, which will be swept, each with a special
         // configuration.
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // Config1: "-W" is used to set a base classifer
-                asList(new String[] { BR.class.getName(), "-W", NaiveBayes.class.getName() }),
+                asList(new Object[] { new MekaClassificationAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }),
                 // Config2: "-P" sets the downsampling ratio
-                asList(new String[] { CCq.class.getName(), "-P", "0.9" }),
+                asList(new Object[] { new MekaClassificationAdapter(), CCq.class.getName(), "-P", "0.9" }),
                 // Config3: "-B": buffer size, "-S": max. num. of combs.
-                asList(new String[] { PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
+                asList(new Object[] { new MekaClassificationAdapter(), PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
@@ -152,8 +152,7 @@ public class MekaComplexConfigurationMultiDemo
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest",
-                MekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

@@ -95,7 +95,7 @@ public class LiblinearRegressionDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] {new LiblinearAdapter(), "-s", "0"
+                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "0"
                 // ,"-c", "100"
         }));
 
@@ -136,8 +136,7 @@ public class LiblinearRegressionDemo
     public void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("LiblinearRegressionDemo",
-                LiblinearAdapter.class, 2);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("LiblinearRegressionDemo", 2);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchCrossValidationReport.class);

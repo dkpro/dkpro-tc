@@ -19,7 +19,9 @@
 package org.dkpro.tc.examples.model.weka;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -123,8 +125,7 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
     private static void pairWriteModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
-                WekaRegressionAdapter.class, modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(
                 createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
         batch.setParameterSpace(paramSpace);
@@ -143,9 +144,9 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMOreg.class.getName() }));
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMOreg.class.getName() }));
 
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(

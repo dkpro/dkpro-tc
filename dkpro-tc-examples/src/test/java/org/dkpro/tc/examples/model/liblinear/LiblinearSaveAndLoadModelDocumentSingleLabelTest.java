@@ -70,281 +70,258 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
-    implements Constants
-{
-    static String documentTrainFolder = "src/main/resources/data/twitter/train";
-    static String documentTestFolder = "src/main/resources/data/twitter/test";
-    static String unitTrainFolder = "src/main/resources/data/brown_tei/";
+public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass implements Constants {
+	static String documentTrainFolder = "src/main/resources/data/twitter/train";
+	static String documentTestFolder = "src/main/resources/data/twitter/test";
+	static String unitTrainFolder = "src/main/resources/data/brown_tei/";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup() throws Exception
-    {
-    	super.setup();
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-    }
+	@Before
+	public void setup() throws Exception {
+		super.setup();
+		DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+	}
 
-    private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useClassificationArguments)
-        throws ResourceInitializationException
-    {
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useParametrizedArgs)
+			throws ResourceInitializationException {
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				documentTrainFolder, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList("-s", "6"));
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
-                        LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+		ParameterSpace pSpace;
+		if (useParametrizedArgs) {
 
-        ParameterSpace pSpace;
-        if (useClassificationArguments) {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments,
-                    dimFeatureSets);
-        }
-        else {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets);
-        }
-        return pSpace;
-    }
+			@SuppressWarnings("unchecked")
+			Dimension<List<Object>> dimClassificationArguments = Dimension.create(DIM_CLASSIFICATION_ARGS,
+					Arrays.asList(new LiblinearAdapter(), "-s", "6"));
 
-    @Test
-    public void documentRoundTripTest()
-        throws Exception
-    {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments, dimFeatureSets);
+		} else {
+			@SuppressWarnings("unchecked")
+			Dimension<List<Object>> dimClassificationArguments = Dimension.create(DIM_CLASSIFICATION_ARGS,
+					Arrays.asList(new LiblinearAdapter()));
 
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-        File modelFolder = folder.newFolder();
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArguments);
+		}
+		return pSpace;
+	}
 
-        ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel(false);
-        documentTrainAndStoreModel(docParamSpace, modelFolder);
-        documentLoadAndUseModel(modelFolder, false);
-        documentVerifyCreatedModelFiles(modelFolder);
+	@Test
+	public void documentRoundTripTest() throws Exception {
 
-        docParamSpace = documentGetParameterSpaceSingleLabel(true);
-        documentTrainAndStoreModel(docParamSpace, modelFolder);
-        documentLoadAndUseModel(modelFolder, true);
+		DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+		File modelFolder = folder.newFolder();
 
-        modelFolder.deleteOnExit();
-    }
+		ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel(false);
+		documentTrainAndStoreModel(docParamSpace, modelFolder);
+		documentLoadAndUseModel(modelFolder, false);
+		documentVerifyCreatedModelFiles(modelFolder);
 
-    private void documentVerifyCreatedModelFiles(File modelFolder)
-    {
-        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        assertTrue(classifierFile.exists());
+		docParamSpace = documentGetParameterSpaceSingleLabel(true);
+		documentTrainAndStoreModel(docParamSpace, modelFolder);
+		documentLoadAndUseModel(modelFolder, true);
 
-        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertTrue(metaOverride.exists());
+		modelFolder.deleteOnExit();
+	}
 
-        File extractorOverride = new File(
-                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertTrue(extractorOverride.exists());
+	private void documentVerifyCreatedModelFiles(File modelFolder) {
+		File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+		assertTrue(classifierFile.exists());
 
-        File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
-        assertTrue(modelMetaFile.exists());
+		File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+		assertTrue(metaOverride.exists());
 
-        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
-        assertTrue(featureMode.exists());
+		File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+		assertTrue(extractorOverride.exists());
 
-        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
-        assertTrue(learningMode.exists());
+		File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
+		assertTrue(modelMetaFile.exists());
 
-        File id2outcomeMapping = new File(
-                modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
-        assertTrue(id2outcomeMapping.exists());
-    }
+		File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+		assertTrue(featureMode.exists());
 
-    private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
-        throws Exception
-    {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", LiblinearAdapter.class,
-                modelFolder);
-        batch.setPreprocessing(
-                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
-    }
+		File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+		assertTrue(learningMode.exists());
 
-    private static void documentLoadAndUseModel(File modelFolder,
-            boolean evaluateWithClassificationArgs)
-                throws Exception
-    {
-        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+		File id2outcomeMapping = new File(
+				modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
+		assertTrue(id2outcomeMapping.exists());
+	}
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+	private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
+		ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
+		batch.setPreprocessing(createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+		batch.setParameterSpace(paramSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		Lab.getInstance().run(batch);
+	}
 
-        CollectionReader reader = CollectionReaderFactory.createReader(TextReader.class,
-                TextReader.PARAM_SOURCE_LOCATION, documentTestFolder, TextReader.PARAM_LANGUAGE,
-                "en", TextReader.PARAM_PATTERNS,
-                Arrays.asList(TextReader.INCLUDE_PREFIX + "*/*.txt"));
+	private static void documentLoadAndUseModel(File modelFolder, boolean evaluateWithClassificationArgs)
+			throws Exception {
+		AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>();
-        while (reader.hasNext()) {
-            JCas jcas = JCasFactory.createJCas();
-            reader.getNext(jcas.getCas());
-            jcas.setDocumentLanguage("en");
+		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+				TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
 
-            tokenizer.process(jcas);
-            tcAnno.process(jcas);
+		CollectionReader reader = CollectionReaderFactory.createReader(TextReader.class,
+				TextReader.PARAM_SOURCE_LOCATION, documentTestFolder, TextReader.PARAM_LANGUAGE, "en",
+				TextReader.PARAM_PATTERNS, Arrays.asList(TextReader.INCLUDE_PREFIX + "*/*.txt"));
 
-            outcomes.add(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class));
-        }
+		List<TextClassificationOutcome> outcomes = new ArrayList<>();
+		while (reader.hasNext()) {
+			JCas jcas = JCasFactory.createJCas();
+			reader.getNext(jcas.getCas());
+			jcas.setDocumentLanguage("en");
 
-        assertEquals(4, outcomes.size());
+			tokenizer.process(jcas);
+			tcAnno.process(jcas);
 
-        if (evaluateWithClassificationArgs) {
-            assertEquals(4, outcomes.size());
-            assertEquals("neutral", outcomes.get(0).getOutcome());
-            assertEquals("neutral", outcomes.get(1).getOutcome());
-            assertEquals("neutral", outcomes.get(2).getOutcome());
-            assertEquals("neutral", outcomes.get(3).getOutcome());
-        }
-        else {
-            assertEquals(4, outcomes.size());
-            assertEquals("emotional", outcomes.get(0).getOutcome());
-            assertEquals("emotional", outcomes.get(1).getOutcome());
-            assertEquals("emotional", outcomes.get(2).getOutcome());
-            assertEquals("emotional", outcomes.get(3).getOutcome());
-        }
-    }
+			outcomes.add(JCasUtil.selectSingle(jcas, TextClassificationOutcome.class));
+		}
 
-    @Test
-    public void unitRoundTripTest()
-        throws Exception
-    {
+		assertEquals(4, outcomes.size());
 
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-        File modelFolder = folder.newFolder();
+		if (evaluateWithClassificationArgs) {
+			assertEquals(4, outcomes.size());
+			assertEquals("neutral", outcomes.get(0).getOutcome());
+			assertEquals("neutral", outcomes.get(1).getOutcome());
+			assertEquals("neutral", outcomes.get(2).getOutcome());
+			assertEquals("neutral", outcomes.get(3).getOutcome());
+		} else {
+			assertEquals(4, outcomes.size());
+			assertEquals("emotional", outcomes.get(0).getOutcome());
+			assertEquals("emotional", outcomes.get(1).getOutcome());
+			assertEquals("emotional", outcomes.get(2).getOutcome());
+			assertEquals("emotional", outcomes.get(3).getOutcome());
+		}
+	}
 
-        ParameterSpace unitParamSpace = unitGetParameterSpaceSingleLabel();
-        unitTrainAndStoreModel(unitParamSpace, modelFolder);
-        unitLoadAndUseModel(modelFolder);
-        unitVerifyCreatedModelFiles(modelFolder);
+	@Test
+	public void unitRoundTripTest() throws Exception {
 
-        modelFolder.deleteOnExit();
-    }
+		DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+		File modelFolder = folder.newFolder();
 
-    public static ParameterSpace unitGetParameterSpaceSingleLabel()
-        throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+		ParameterSpace unitParamSpace = unitGetParameterSpaceSingleLabel();
+		unitTrainAndStoreModel(unitParamSpace, modelFolder);
+		unitLoadAndUseModel(modelFolder);
+		unitVerifyCreatedModelFiles(modelFolder);
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "a01.xml" });
+		modelFolder.deleteOnExit();
+	}
 
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+	public static ParameterSpace unitGetParameterSpaceSingleLabel() throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(LuceneCharacterNGram.class,
-                                LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+				BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder, BrownCorpusReader.PARAM_PATTERNS,
+				new String[] { INCLUDE_PREFIX + "a01.xml" });
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets);
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        return pSpace;
-    }
+		@SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassificationArguments = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new LiblinearAdapter()));
 
-    private static void unitLoadAndUseModel(File modelFolder)
-        throws Exception
-    {
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory
+						.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 
-        CollectionReader reader = CollectionReaderFactory.createReader(TeiReader.class,
-                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_PATTERNS, Arrays.asList(TeiReader.INCLUDE_PREFIX + "a02.xml"));
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_UNIT),
+				dimFeatureSets, dimClassificationArguments);
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>();
-        JCas jcas = JCasFactory.createJCas();
-        jcas.setDocumentLanguage("en");
-        reader.getNext(jcas.getCas());
+		return pSpace;
+	}
 
-        tcAnno.process(jcas);
+	private static void unitLoadAndUseModel(File modelFolder) throws Exception {
+		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+				TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+				TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
 
-        outcomes.addAll(JCasUtil.select(jcas, TextClassificationOutcome.class));
+		CollectionReader reader = CollectionReaderFactory.createReader(TeiReader.class, TeiReader.PARAM_SOURCE_LOCATION,
+				unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS,
+				Arrays.asList(TeiReader.INCLUDE_PREFIX + "a02.xml"));
 
-        Set<String> possibleOutcomes = new HashSet<>();
-        possibleOutcomes.add("AT");
-        possibleOutcomes.add("NP");
-        possibleOutcomes.add("pct");
-        possibleOutcomes.add("WDT");
-        possibleOutcomes.add("JJ");
-        possibleOutcomes.add("VBD");
-        possibleOutcomes.add("NNS");
-        possibleOutcomes.add("TO");
-        possibleOutcomes.add("VBN");
-        possibleOutcomes.add("IN");
-        possibleOutcomes.add("CC");
-        possibleOutcomes.add("NN");
-        possibleOutcomes.add("VBD");
-        possibleOutcomes.add("AP");
-        possibleOutcomes.add("HVD");
-        
-        assertEquals(31, outcomes.size());
-        for(TextClassificationOutcome o : outcomes){
-        	assertTrue(possibleOutcomes.contains(o.getOutcome()));
-        }
-        
-    }
+		List<TextClassificationOutcome> outcomes = new ArrayList<>();
+		JCas jcas = JCasFactory.createJCas();
+		jcas.setDocumentLanguage("en");
+		reader.getNext(jcas.getCas());
 
-    private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
-        throws Exception
-    {
-        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLiblinearTestSaveModel",
-                LiblinearAdapter.class, modelFolder);
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
-    }
+		tcAnno.process(jcas);
 
-    private void unitVerifyCreatedModelFiles(File modelFolder)
-    {
-        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        assertTrue(classifierFile.exists());
+		outcomes.addAll(JCasUtil.select(jcas, TextClassificationOutcome.class));
 
-        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertTrue(metaOverride.exists());
+		Set<String> possibleOutcomes = new HashSet<>();
+		possibleOutcomes.add("AT");
+		possibleOutcomes.add("NP");
+		possibleOutcomes.add("pct");
+		possibleOutcomes.add("WDT");
+		possibleOutcomes.add("JJ");
+		possibleOutcomes.add("VBD");
+		possibleOutcomes.add("NNS");
+		possibleOutcomes.add("TO");
+		possibleOutcomes.add("VBN");
+		possibleOutcomes.add("IN");
+		possibleOutcomes.add("CC");
+		possibleOutcomes.add("NN");
+		possibleOutcomes.add("VBD");
+		possibleOutcomes.add("AP");
+		possibleOutcomes.add("HVD");
 
-        File extractorOverride = new File(
-                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertTrue(extractorOverride.exists());
-        ;
+		assertEquals(31, outcomes.size());
+		for (TextClassificationOutcome o : outcomes) {
+			assertTrue(possibleOutcomes.contains(o.getOutcome()));
+		}
 
-        File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
-        assertTrue(modelMetaFile.exists());
+	}
 
-        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
-        assertTrue(featureMode.exists());
+	private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
+		ExperimentSaveModel batch = new ExperimentSaveModel("UnitLiblinearTestSaveModel", modelFolder);
+		batch.setParameterSpace(paramSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		Lab.getInstance().run(batch);
+	}
 
-        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
-        assertTrue(learningMode.exists());
+	private void unitVerifyCreatedModelFiles(File modelFolder) {
+		File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+		assertTrue(classifierFile.exists());
 
-        File id2outcomeMapping = new File(
-                modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
-        assertTrue(id2outcomeMapping.exists());
-    }
+		File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+		assertTrue(metaOverride.exists());
+
+		File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+		assertTrue(extractorOverride.exists());
+
+		File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
+		assertTrue(modelMetaFile.exists());
+
+		File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+		assertTrue(featureMode.exists());
+
+		File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+		assertTrue(learningMode.exists());
+
+		File id2outcomeMapping = new File(
+				modelFolder.getAbsolutePath() + "/" + AdapterFormat.getOutcomeMappingFilename());
+		assertTrue(id2outcomeMapping.exists());
+	}
 }

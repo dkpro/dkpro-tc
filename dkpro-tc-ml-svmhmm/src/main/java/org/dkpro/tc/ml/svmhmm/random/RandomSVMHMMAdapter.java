@@ -18,9 +18,7 @@
 
 package org.dkpro.tc.ml.svmhmm.random;
 
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.ml.report.InnerBatchReport;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 
 /**
@@ -34,8 +32,4 @@ public class RandomSVMHMMAdapter
         return new SVMHMMRandomTestTask();
     }
 
-    @Override public Class<? extends ReportBase> getBatchTrainTestReportClass()
-    {
-        return InnerBatchReport.class;
-    }
 }

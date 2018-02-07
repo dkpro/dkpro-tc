@@ -33,6 +33,7 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
+import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
@@ -53,7 +54,7 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
-		List<String> ids = collectTasks(getSubtasks());
+		List<String> ids = collectTasks(getIds(getSubtasks()));
 
 		for (String mla : ids) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
@@ -88,6 +89,16 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		}
 
 		writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
+	}
+
+	private List<String> getIds(TaskContextMetadata[] subtasks) {
+		
+		List<String> ids = new ArrayList<>();
+		for(TaskContextMetadata tcm : subtasks){
+			ids.add(tcm.getId());
+		}
+		
+		return ids;
 	}
 
 	private void writeCombinedOutcomeReport(String payload) throws Exception {

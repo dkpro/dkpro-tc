@@ -37,7 +37,7 @@ import org.dkpro.tc.ml.crfsuite.task.CRFUtil;
 public class CRFSuiteSerializeModelConnector extends ModelSerializationTask implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<String> classificationArguments;
+	private List<Object> classificationArguments;
 
 	boolean trainModel = true;
 
@@ -78,7 +78,7 @@ public class CRFSuiteSerializeModelConnector extends ModelSerializationTask impl
 		process.waitFor();
 	}
 
-	private void processParameters(List<String> classificationArguments) throws Exception {
+	private void processParameters(List<Object> classificationArguments) throws Exception {
 		algoName = CRFUtil.getAlgorithm(classificationArguments);
 		algoParameters = CRFUtil.getAlgorithmConfigurationParameter(classificationArguments);
 	}

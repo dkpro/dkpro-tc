@@ -22,9 +22,9 @@ import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
 import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
 import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
 import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TEST_DATA;
 import static org.dkpro.tc.core.Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA;
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,13 +46,12 @@ import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.task.OutcomeCollectionTask;
-import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.core.task.DkProTcShallowTestTask;
+import org.dkpro.tc.core.task.DKProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
+import org.dkpro.tc.core.task.OutcomeCollectionTask;
+import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.InnerBatchReport;
@@ -90,11 +89,10 @@ public class ExperimentCrossValidation
      * @throws TextClassificationException
      * 			in case of errors
      */
-    public ExperimentCrossValidation(String aExperimentName,
-            Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds)
+    public ExperimentCrossValidation(String aExperimentName, int aNumFolds)
         throws TextClassificationException
     {
-        this(aExperimentName, mlAdapter, aNumFolds, null);
+        this(aExperimentName, aNumFolds, null);
     }
 
     /**
@@ -111,8 +109,7 @@ public class ExperimentCrossValidation
      * @throws TextClassificationException
      * 			in case of errors
      */
-    public ExperimentCrossValidation(String aExperimentName,
-            Class<? extends TcShallowLearningAdapter> mlAdapter, int aNumFolds,
+    public ExperimentCrossValidation(String aExperimentName,int aNumFolds,
             Comparator<String> aComparator)
         throws TextClassificationException
     {
@@ -292,7 +289,7 @@ public class ExperimentCrossValidation
         List<ReportBase> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
         
-        testTask = new DkProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask, reports);
+        testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
 

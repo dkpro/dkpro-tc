@@ -47,8 +47,9 @@ public class CRFSuiteTestTask
 {
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
+    
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<String> classificationArguments;
+    private List<Object> classificationArguments;
 
     public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
     Log logger = null;
@@ -83,7 +84,7 @@ public class CRFSuiteTestTask
 
     }
 
-    private void processParameters(List<String> classificationArguments)
+    private void processParameters(List<Object> classificationArguments)
         throws Exception
     {
         algoName = CRFUtil.getAlgorithm(classificationArguments);

@@ -196,16 +196,24 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		return results;
 	}
 
-	public List<String> collectTasks(TaskContextMetadata[] subtasks) throws Exception {
+	/**
+	 * Collects recursively all <b>subtasks</b> stored in the <i>attributes.txt</i>.
+	 * of a task and the tasks located in a lower level in the hierarchy.
+	 * 
+	 * @param subtasks
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> collectTasks(List<String> subtasks) throws Exception {
 
 		StorageService store = getContext().getStorageService();
 
 		List<String> ids = new ArrayList<>();
-		for (TaskContextMetadata tcm : subtasks) {
-			File attributes = store.locateKey(tcm.getId(), Task.ATTRIBUTES_KEY);
+		for (String taskId: subtasks) {
+			File attributes = store.locateKey(taskId, Task.ATTRIBUTES_KEY);
 			List<String> taskIds = readSubTasks(attributes);
 
-			ids.add(tcm.getId());
+			ids.add(taskId);
 			ids.addAll(taskIds);
 		}
 
@@ -245,6 +253,24 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		return results;
+	}
+	
+	/**
+	 * Takes context meta data objects and returns their context ids as string values
+	 * @param subtasks
+	 * 			arbitrary number of TaskContextMetadata objects 
+	 * @return
+	 * 		list of strings with context ids extracted from the meta data
+	 */
+	public List<String> getTaskIdsFromMetaData(TaskContextMetadata... subtasks) {
+		
+		List<String> taskIds = new ArrayList<>();
+		
+		for(TaskContextMetadata tcm : subtasks){
+			taskIds.add(tcm.getId());
+		}
+		
+		return taskIds;
 	}
 
 }

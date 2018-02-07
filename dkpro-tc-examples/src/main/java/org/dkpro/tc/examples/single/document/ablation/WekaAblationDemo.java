@@ -54,101 +54,83 @@ import weka.classifiers.bayes.NaiveBayes;
 /**
  * Shows how to use the ablation test feature sets.
  */
-public class WekaAblationDemo
-    implements Constants
-{
-    public static final String LANGUAGE_CODE = "en";
+public class WekaAblationDemo implements Constants {
+	public static final String LANGUAGE_CODE = "en";
 
-    public static final int NUM_FOLDS = 3;
+	public static final int NUM_FOLDS = 3;
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-    public static void main(String[] args)
-        throws Exception
-    {
+	public static void main(String[] args) throws Exception {
 
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
-        DemoUtils.setDkproHome(WekaAblationDemo.class.getSimpleName());
+		// This is used to ensure that the required DKPRO_HOME environment
+		// variable is set.
+		// Ensures that people can run the experiments even if they haven't read
+		// the setup
+		// instructions first :)
+		// Don't use this in real experiments! Read the documentation and set
+		// DKPRO_HOME as
+		// explained there.
+		DemoUtils.setDkproHome(WekaAblationDemo.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
+		ParameterSpace pSpace = getParameterSpace();
 
-        WekaAblationDemo experiment = new WekaAblationDemo();
-        experiment.runCrossValidation(pSpace);
-    }
+		WekaAblationDemo experiment = new WekaAblationDemo();
+		experiment.runCrossValidation(pSpace);
+	}
 
-    @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-        
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+	@SuppressWarnings("unchecked")
+	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
+		// configure training and test data reader dimension
+		// train/test will use both, while cross-validation will only use the
+		// train part
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
-        dimReaders.put(DIM_READER_TEST, readerTest);
-        
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-//        // ##############
-//        // this is where the feature set for the ablation test are created
-//        Dimension<List<String>> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
-//                EmoticonRatio.class.getName(), NumberOfHashTags.class.getName(),
-//                NrOfTokens.class.getName());
-        
-        Dimension<TcFeatureSet> dimFeatureSets =ExperimentUtil.getAblationTestFeatures(
-                TcFeatureFactory.create(NrOfTokensPerSentence.class),
-                        TcFeatureFactory.create(EmoticonRatio.class),
-                        TcFeatureFactory.create(NumberOfHashTags.class));
+		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+		dimReaders.put(DIM_READER_TEST, readerTest);
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(
-                        DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArgs);
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
 
-        return pSpace;
-    }
+		Dimension<TcFeatureSet> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
+				TcFeatureFactory.create(NrOfTokensPerSentence.class), TcFeatureFactory.create(EmoticonRatio.class),
+				TcFeatureFactory.create(NumberOfHashTags.class));
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+				dimFeatureSets, dimClassificationArgs);
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV",
-                WekaClassificationAdapter.class, NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(BatchRuntimeReport.class);
+		return pSpace;
+	}
 
-        // Run
-        Lab.getInstance().run(batch);
-    }
+	// ##### CV #####
+	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
-    {
+		ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", NUM_FOLDS);
+		batch.setPreprocessing(getPreprocessing());
+		batch.setParameterSpace(pSpace);
+		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		batch.addReport(BatchCrossValidationReport.class);
+		batch.addReport(BatchRuntimeReport.class);
 
-        return createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        LANGUAGE_CODE));
-    }
+		// Run
+		Lab.getInstance().run(batch);
+	}
+
+	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
+
+		return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
+				createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, LANGUAGE_CODE));
+	}
 }

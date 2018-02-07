@@ -20,7 +20,6 @@ package org.dkpro.tc.examples.single.sequence;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +99,7 @@ public class SVMHMMBrownPosDemo
     }
 
     public static ParameterSpace getParameterSpace(boolean trainTest,
-            Dimension<List<String>> dimClassificationArgs)
+            Dimension<List<Object>> dimClassificationArgs)
                 throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -125,8 +124,7 @@ public class SVMHMMBrownPosDemo
             Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
                 throws Exception
     {
-        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
-                machineLearningAdapter, NUM_FOLDS);
+        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask", NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -135,12 +133,10 @@ public class SVMHMMBrownPosDemo
         Lab.getInstance().run(batch);
     }
 
-    protected void runTrainTest(ParameterSpace pSpace,
-            Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
+    protected void runTrainTest(ParameterSpace pSpace)
                 throws Exception
     {
-        final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask",
-                machineLearningAdapter);
+        final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask");
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
         batch.addReport(ContextMemoryReport.class);
@@ -153,14 +149,12 @@ public class SVMHMMBrownPosDemo
     public static void main(String[] args)
         throws Exception
     {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, new ArrayList<>());
+        Dimension<List<Object>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SVMHMMAdapter()));
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -185,7 +179,7 @@ public class SVMHMMBrownPosDemo
         // // run with a random labeler
         // experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
         // // run with an actual SVMHMM implementation
-        experiment.runTrainTest(pSpace, SVMHMMAdapter.class);
+        experiment.runTrainTest(pSpace);
     }
 
 }
