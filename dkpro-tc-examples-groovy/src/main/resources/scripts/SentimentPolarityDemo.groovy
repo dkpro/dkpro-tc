@@ -21,7 +21,7 @@ import org.dkpro.tc.examples.io.MovieReviewCorpusReader
 import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.features.ngram.LuceneNGram
 import org.dkpro.tc.features.syntax.QuestionsRatioFeatureExtractor
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
@@ -63,7 +63,7 @@ public class SentimentPolarityDemo implements GroovyExperiment, Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [	new WekaClassificationAdapter(),
+    [	new WekaAdapter(),
         SMO.class.name,
         "-C",
         "10"
