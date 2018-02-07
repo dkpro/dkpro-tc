@@ -25,6 +25,10 @@
 			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
