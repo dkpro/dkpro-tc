@@ -115,7 +115,6 @@
     <module>dkpro-tc-features-pair-similarity</module>
     <module>dkpro-tc-features-spelling</module>
 	<module>dkpro-tc-io-libsvm</module>
-    <module>dkpro-tc-integrationtest</module>
     <module>dkpro-tc-ml</module>
     <module>dkpro-tc-ml-crfsuite</module>
     <module>dkpro-tc-ml-deeplearning4j</module>
