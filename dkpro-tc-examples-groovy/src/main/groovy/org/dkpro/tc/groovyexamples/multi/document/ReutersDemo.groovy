@@ -37,7 +37,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter
+import org.dkpro.tc.ml.weka.MekaAdapter
 
 import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
@@ -89,7 +89,7 @@ public class ReutersDemo implements Constants {
     def dimClassificationArgs =
     Dimension.create(
     DIM_CLASSIFICATION_ARGS,
-     [new MekaClassificationAdapter(), BR.name, "-W", NaiveBayes.name])
+     [new MekaAdapter(), BR.name, "-W", NaiveBayes.name])
 
     def dimFeatureSelection = Dimension.createBundle("featureSelection", [
         labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",

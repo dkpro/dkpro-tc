@@ -52,7 +52,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -146,7 +146,7 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMOreg.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
 
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(

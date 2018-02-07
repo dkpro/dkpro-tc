@@ -52,7 +52,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -144,7 +144,7 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(LuceneCharacterNGram.class,

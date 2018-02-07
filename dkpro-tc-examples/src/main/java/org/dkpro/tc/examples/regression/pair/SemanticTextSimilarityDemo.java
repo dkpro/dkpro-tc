@@ -45,7 +45,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.ScatterplotReport;
-import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -104,7 +104,7 @@ public class SemanticTextSimilarityDemo
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaRegressionAdapter(), SMOreg.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,

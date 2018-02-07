@@ -41,7 +41,7 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
 import org.dkpro.tc.features.ngram.*
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport
 import org.dkpro.tc.ml.weka.task.WekaTestTask
 import org.ejml.alg.dense.misc.NaiveDeterminant;
@@ -94,7 +94,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     def dimClassificationArgs =
     Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [ new WekaClassificationAdapter(), SMO.class.name])
+    [ new WekaAdapter(), SMO.class.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,

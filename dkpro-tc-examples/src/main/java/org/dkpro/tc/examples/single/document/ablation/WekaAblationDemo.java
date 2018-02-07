@@ -45,7 +45,7 @@ import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -101,7 +101,7 @@ public class WekaAblationDemo implements Constants {
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
+				Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
 				TcFeatureFactory.create(NrOfTokensPerSentence.class), TcFeatureFactory.create(EmoticonRatio.class),

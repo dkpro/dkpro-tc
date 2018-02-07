@@ -42,7 +42,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import meka.classifiers.multilabel.BR;
@@ -112,11 +112,11 @@ public class MekaComplexConfigurationMultiDemo
         // configuration.
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // Config1: "-W" is used to set a base classifer
-                asList(new Object[] { new MekaClassificationAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }),
+                asList(new Object[] { new MekaAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }),
                 // Config2: "-P" sets the downsampling ratio
-                asList(new Object[] { new MekaClassificationAdapter(), CCq.class.getName(), "-P", "0.9" }),
+                asList(new Object[] { new MekaAdapter(), CCq.class.getName(), "-P", "0.9" }),
                 // Config3: "-B": buffer size, "-S": max. num. of combs.
-                asList(new Object[] { new MekaClassificationAdapter(), PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
+                asList(new Object[] { new MekaAdapter(), PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one

@@ -39,7 +39,7 @@ import org.dkpro.tc.examples.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -91,7 +91,7 @@ public class WekaManualFoldCrossValidation
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, 
                 new TcFeatureSet(TcFeatureFactory.create(IsSurroundedByChars.class, IsSurroundedByChars.PARAM_SURROUNDING_CHARS, "\"\"")));

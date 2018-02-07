@@ -43,7 +43,7 @@ import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.attributeSelection.InfoGainAttributeEval;
@@ -113,12 +113,12 @@ public class WekaComplexConfigurationSingleDemo
         // configuration.
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // "-C": complexity, "-K": kernel
-                asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
+                asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                         PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
                 // "-I": number of trees
-                asList(new Object[] { new WekaClassificationAdapter(), RandomForest.class.getName(), "-I", "5" }),
+                asList(new Object[] { new WekaAdapter(), RandomForest.class.getName(), "-I", "5" }),
                 // "W": base classifier
-                asList(new Object[] { new WekaClassificationAdapter(), Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
+                asList(new Object[] { new WekaAdapter(), Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
                         "--", "-C", "0.5", "-M", "2" }));
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with

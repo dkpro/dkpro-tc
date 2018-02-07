@@ -44,7 +44,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -103,7 +103,7 @@ public class MekaReutersDemoSimpleDkproReader
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(
-                        new Object[] { new MekaClassificationAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }));
+                        new Object[] { new MekaAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,

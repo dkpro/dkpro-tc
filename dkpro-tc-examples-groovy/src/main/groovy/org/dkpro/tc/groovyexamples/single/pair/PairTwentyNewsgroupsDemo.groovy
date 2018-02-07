@@ -34,7 +34,7 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.api.features.TcFeatureFactory
 import org.dkpro.tc.api.features.TcFeatureSet;
 
@@ -88,7 +88,7 @@ class PairTwentyNewsgroupsDemo implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
 
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [new WekaClassificationAdapter(), SMO.name])
+    [new WekaAdapter(), SMO.name])
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,

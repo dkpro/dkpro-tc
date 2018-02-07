@@ -47,7 +47,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.StringReader;
 import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
@@ -105,7 +105,7 @@ public class MekaSaveAndApplyModelMultilabelDemo implements Constants {
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new MekaClassificationAdapter(), MULAN.class.getName(), "-S", "RAkEL2",
+				Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S", "RAkEL2",
 						"-W", RandomForest.class.getName() }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,

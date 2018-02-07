@@ -37,7 +37,7 @@ import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -98,7 +98,7 @@ public class WekaPairTwentyNewsgroupsDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,

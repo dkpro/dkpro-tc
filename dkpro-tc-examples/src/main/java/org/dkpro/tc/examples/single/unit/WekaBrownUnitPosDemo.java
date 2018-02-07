@@ -45,7 +45,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -131,7 +131,7 @@ public class WekaBrownUnitPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

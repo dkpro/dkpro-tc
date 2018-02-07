@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet
 import weka.classifiers.bayes.NaiveBayes
@@ -111,7 +111,7 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            machineLearningAdapter: WekaAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,
@@ -140,7 +140,7 @@ public class TwentyNewsgroupsDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
+            machineLearningAdapter: WekaAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,

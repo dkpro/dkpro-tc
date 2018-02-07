@@ -52,7 +52,7 @@ import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.MekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new MekaClassificationAdapter(), MULAN.class.getName(), "-S", "RAkEL2", "-W",
+                Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S", "RAkEL2", "-W",
                         RandomForest.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(

@@ -52,7 +52,7 @@ import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,

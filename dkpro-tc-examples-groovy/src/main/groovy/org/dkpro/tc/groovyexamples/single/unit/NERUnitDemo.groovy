@@ -35,7 +35,7 @@ import org.dkpro.tc.features.length.NrOfChars
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.examples.util.DemoUtils
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
@@ -72,7 +72,7 @@ implements Constants {
         readerTrain: trainreader,
         ])
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [new WekaClassificationAdapter(), NaiveBayes.name])
+    [new WekaAdapter(), NaiveBayes.name])
 
     public static void main(String[] args)
     throws Exception {

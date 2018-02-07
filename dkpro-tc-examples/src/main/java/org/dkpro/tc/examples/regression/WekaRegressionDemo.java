@@ -43,7 +43,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;
@@ -91,7 +91,7 @@ public class WekaRegressionDemo
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaRegressionAdapter(), LinearRegression.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,

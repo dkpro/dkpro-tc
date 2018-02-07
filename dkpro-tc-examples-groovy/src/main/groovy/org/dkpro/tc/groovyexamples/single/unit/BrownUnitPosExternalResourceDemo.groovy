@@ -36,7 +36,7 @@ import org.dkpro.tc.examples.io.BrownCorpusReader
 import org.dkpro.tc.features.length.NrOfTokens
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.examples.util.DemoUtils
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
@@ -76,8 +76,8 @@ implements Constants {
         TcFeatureFactory.create(NrOfTokens.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [new WekaClassificationAdapter(), NaiveBayes.name],
-	[new WekaClassificationAdapter(), SMO.name])
+    [new WekaAdapter(), NaiveBayes.name],
+	[new WekaAdapter(), SMO.name])
 
     // ##### CV #####
     protected void runCrossValidation()

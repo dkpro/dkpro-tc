@@ -43,7 +43,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
@@ -98,7 +98,7 @@ public class WekaExternalResourceDemo implements Constants {
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName() }));
+				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
 
 		// Create the External Resource here:
 		ExternalResourceDescription gstResource = ExternalResourceFactory.createExternalResourceDescription(

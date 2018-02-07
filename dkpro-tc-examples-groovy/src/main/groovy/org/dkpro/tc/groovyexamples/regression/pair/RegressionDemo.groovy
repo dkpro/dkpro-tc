@@ -35,7 +35,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.WekaRegressionAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 
 import weka.classifiers.functions.SMOreg
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
@@ -80,7 +80,7 @@ public class RegressionDemo implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
 
     def dimClassificationArgs =
-    Dimension.create(DIM_CLASSIFICATION_ARGS, [new WekaRegressionAdapter(), SMOreg.name])
+    Dimension.create(DIM_CLASSIFICATION_ARGS, [new WekaAdapter(), SMOreg.name])
 
     // yields really bad results. To improve the performance, use a string similarity
     // based feature extractor

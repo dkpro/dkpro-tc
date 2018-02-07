@@ -54,7 +54,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.WekaRegressionAdapter;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -177,7 +177,7 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaRegressionAdapter(), LinearRegression.class.getName() }));
+                Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

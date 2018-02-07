@@ -35,7 +35,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
-import org.dkpro.tc.ml.weka.WekaClassificationAdapter
+import org.dkpro.tc.ml.weka.WekaAdapter
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.trees.RandomForest
@@ -84,8 +84,8 @@ public class TwitterSentimentDemo implements Constants {
                         TcFeatureFactory.create(EmoticonRatio.class),
                         TcFeatureFactory.create(NumberOfHashTags.class)
                 )),
-                Dimension.create(DIM_CLASSIFICATION_ARGS,[new WekaClassificationAdapter(), NaiveBayes.name], 
-														 [new WekaClassificationAdapter(), RandomForest.name])
+                Dimension.create(DIM_CLASSIFICATION_ARGS,[new WekaAdapter(), NaiveBayes.name], 
+														 [new WekaAdapter(), RandomForest.name])
             ],
             reports: [
                 BatchCrossValidationReport.newInstance()
@@ -132,8 +132,8 @@ public class TwitterSentimentDemo implements Constants {
                     )
                 ),
                 Dimension.create(DIM_CLASSIFICATION_ARGS, 
-														[new WekaClassificationAdapter(), NaiveBayes.name], 
-														[new WekaClassificationAdapter(), RandomForest.name])
+														[new WekaAdapter(), NaiveBayes.name], 
+														[new WekaAdapter(), RandomForest.name])
             ],
             reports: [BatchTrainTestReport], // collects results from folds
         ]
