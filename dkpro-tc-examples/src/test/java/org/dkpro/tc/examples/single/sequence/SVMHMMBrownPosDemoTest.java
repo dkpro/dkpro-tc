@@ -18,9 +18,8 @@
  */
 package org.dkpro.tc.examples.single.sequence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +31,6 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
 import org.dkpro.tc.ml.svmhmm.random.RandomSVMHMMAdapter;
-import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,57 +38,48 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing any exception.
+ * This test just ensures that the experiment runs without throwing any
+ * exception.
  */
-public class SVMHMMBrownPosDemoTest
-extends TestCaseSuperClass
-{
-    SVMHMMBrownPosDemo javaExperiment;
-    ParameterSpace pSpace;
+public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
+	SVMHMMBrownPosDemo javaExperiment;
+	ParameterSpace pSpace;
 
-    @Before
-    public void setup()
-        throws Exception
-    {
-        super.setup();
+	@Before
+	public void setup() throws Exception {
+		super.setup();
 
-        javaExperiment = new SVMHMMBrownPosDemo();
-    }
+		javaExperiment = new SVMHMMBrownPosDemo();
+	}
 
-    @Test
-    public void testRandomSVMHMM()
-        throws Exception
-    {
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                new ArrayList<>());
-        pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
-        javaExperiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
-    }
+	@Test
+	public void testRandomSVMHMM() throws Exception {
+		@SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new RandomSVMHMMAdapter()));
+		pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
+		javaExperiment.runTrainTest(pSpace);
+	}
 
-    @Test
-    public void testActualSVMHMM()
-        throws Exception
-    {
-        @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList("-c", "5.0", "-t", "1", "-m", "0"));
-        
-//        Dimension<List<String>> dimClassificationArgs = Dimension.create(
-//                Constants.DIM_CLASSIFICATION_ARGS,
-//                new ArrayList<>());
+	@Test
+	public void testActualSVMHMM() throws Exception {
+		@SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new SVMHMMAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
 
-        pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
+		// Dimension<List<String>> dimClassificationArgs = Dimension.create(
+		// Constants.DIM_CLASSIFICATION_ARGS,
+		// new ArrayList<>());
 
-        ContextMemoryReport.key = SVMHMMTestTask.class.getName();
-        javaExperiment.runTrainTest(pSpace, SVMHMMAdapter.class);
+		pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
 
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
-        Accuracy<String> acc = new Accuracy<String>(data);
-        
-        assertTrue(acc.getResult() > 0.5);
+		javaExperiment.runTrainTest(pSpace);
 
-    }
+		EvaluationData<String> data = Tc2LtlabEvalConverter
+				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+		Accuracy<String> acc = new Accuracy<String>(data);
+
+		assertTrue(acc.getResult() > 0.5);
+
+	}
 }

@@ -124,8 +124,7 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
     private void unitExecuteSaveModel(ParameterSpace pSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel",
-                WekaClassificationAdapter.class, modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(createEngineDescription(WekaUnitAnnotator.class));
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -144,8 +143,8 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(LuceneCharacterNGram.class,

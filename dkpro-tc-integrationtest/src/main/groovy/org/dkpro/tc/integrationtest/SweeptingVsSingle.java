@@ -130,8 +130,8 @@ public class SweeptingVsSingle
                 TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, asList("*/*.txt"));
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { SMO.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] {new WekaClassificationAdapter(), SMO.class.getName() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -146,8 +146,7 @@ public class SweeptingVsSingle
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest",
-                WekaClassificationAdapter.class);
+        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
         batch.setPreprocessing(getPreprocessing());
         // add a second report to TestTask which creates a report about average feature values for
         // each outcome label

@@ -29,7 +29,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.libsvm.LibsvmTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,6 @@ extends TestCaseSuperClass
     public void testJavaTrainTest()
         throws Exception
     {
-        ContextMemoryReport.key = LibsvmTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
 
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
@@ -72,8 +70,6 @@ extends TestCaseSuperClass
     public void testJavaTrainTestParametrization()
         throws Exception
     {
-        ContextMemoryReport.key = LibsvmTestTask.class.getName();
-
         @SuppressWarnings("unchecked")
         Dimension<List<String>> dimClassificationArgs = Dimension
                 .create(Constants.DIM_CLASSIFICATION_ARGS,

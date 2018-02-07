@@ -29,7 +29,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,13 +73,12 @@ extends TestCaseSuperClass
         throws Exception
     {
         // Random parameters for demonstration!
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
                 Constants.DIM_CLASSIFICATION_ARGS,
                 asList(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
                 Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
-        ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
 
         
@@ -91,14 +89,12 @@ extends TestCaseSuperClass
 
         // Random parameters for demonstration!
         dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-                asList(CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON, "-p",
+                asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON, "-p",
                         "feature.minfreq=3", "-p", "max_iterations=3"));
         pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
                 Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
-        ContextMemoryReport.key = CRFSuiteTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
-
         
         data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
         acc = new Accuracy<String>(data);

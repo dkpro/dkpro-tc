@@ -24,7 +24,6 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
-import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,7 +53,6 @@ public class WekaBrownUnitPosDemoTest extends TestCaseSuperClass
     public void testTrainTest()
         throws Exception
     {
-        ContextMemoryReport.key = WekaTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
  
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);

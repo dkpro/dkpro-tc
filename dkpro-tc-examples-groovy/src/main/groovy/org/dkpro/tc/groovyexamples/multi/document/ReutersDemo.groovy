@@ -89,7 +89,7 @@ public class ReutersDemo implements Constants {
     def dimClassificationArgs =
     Dimension.create(
     DIM_CLASSIFICATION_ARGS,
-    [BR.name, "-W", NaiveBayes.name])
+     [new MekaClassificationAdapter(), BR.name, "-W", NaiveBayes.name])
 
     def dimFeatureSelection = Dimension.createBundle("featureSelection", [
         labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",
@@ -103,12 +103,12 @@ public class ReutersDemo implements Constants {
     DIM_FEATURE_SET,
         new TcFeatureSet(
             TcFeatureFactory.create(NrOfTokens.class),
-            TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 3 )
+            TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 2 )
         )
     ,
         new TcFeatureSet(
             TcFeatureFactory.create(NrOfTokens.class),
-            TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 1000, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 3 )
+            TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 10, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 2 )
         )    
     )
 
@@ -128,7 +128,6 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -157,7 +156,6 @@ public class ReutersDemo implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
             preprocessing:	getPreprocessing(),
-            machineLearningAdapter: MekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimLearningMode,

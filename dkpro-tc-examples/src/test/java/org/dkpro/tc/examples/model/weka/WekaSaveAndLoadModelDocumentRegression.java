@@ -158,8 +158,7 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
     private void regressionExecuteSaveModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("regressionWeka",
-                WekaRegressionAdapter.class, modelFolder);
+        ExperimentSaveModel batch = new ExperimentSaveModel("regressionWeka", modelFolder);
         batch.setParameterSpace(paramSpace);
 
         Lab.getInstance().run(batch);
@@ -177,8 +176,8 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { LinearRegression.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaRegressionAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),

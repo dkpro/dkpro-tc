@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +53,6 @@ public class LiblinearBrownUnitPosDemoTest extends TestCaseSuperClass
     public void testTrainTest()
         throws Exception
     {
-        ContextMemoryReport.key = LiblinearTestTask.class.getName();
         javaExperiment.runTrainTest(pSpace);
         
         EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);

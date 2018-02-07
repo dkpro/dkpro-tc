@@ -52,7 +52,6 @@ import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.MekaClassificationAdapter;
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter;
 import org.junit.Before;
 import org.junit.Rule;
@@ -98,8 +97,8 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<String>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new String[] { NaiveBayes.class.getName() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new WekaClassificationAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
@@ -122,7 +121,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         File modelFolder = folder.newFolder();
 
         ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
-        documentWriteModel(docParamSpace, modelFolder, true);
+        documentWriteModel(docParamSpace, modelFolder);
         documentLoadModelSingleLabel(modelFolder);
 
         // verify created files
@@ -153,19 +152,11 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         modelFolder.deleteOnExit();
     }
 
-    private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder,
-            boolean singlelabel)
+    private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder)
                 throws Exception
     {
         ExperimentSaveModel batch;
-        if (singlelabel) {
-            batch = new ExperimentSaveModel("TestSaveModel", WekaClassificationAdapter.class,
-                    modelFolder);
-        }
-        else {
-            batch = new ExperimentSaveModel("TestSaveModel", MekaClassificationAdapter.class,
-                    modelFolder);
-        }
+        batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(
                 createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
         batch.setParameterSpace(paramSpace);
