@@ -36,7 +36,7 @@ import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaClassificationAdapter
-
+import org.dkpro.tc.examples.util.DemoUtils
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -72,10 +72,11 @@ implements Constants {
         readerTrain: trainreader,
         ])
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [SMO.name],[NaiveBayes.name])
+    [new WekaClassificationAdapter(), NaiveBayes.name])
 
     public static void main(String[] args)
     throws Exception {
+		DemoUtils.setDkproHome(BrownUnitPosExternalResourceDemo.getSimpleName());
         new NERUnitDemo().runCrossValidation() }
 
     // ##### CV #####
@@ -87,7 +88,6 @@ implements Constants {
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
             preprocessing:  getPreprocessing(),
-            machineLearningAdapter: WekaClassificationAdapter,
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,

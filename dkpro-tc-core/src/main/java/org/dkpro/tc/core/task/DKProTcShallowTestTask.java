@@ -61,6 +61,10 @@ public class DKProTcShallowTestTask extends DefaultBatchTask implements Constant
 
 	private List<ReportBase> reports;
 
+	public DKProTcShallowTestTask() {
+		// groovy
+	}
+
 	public DKProTcShallowTestTask(ExtractFeaturesTask featuresTrainTask, ExtractFeaturesTask featuresTestTask,
 			OutcomeCollectionTask collectionTask, List<ReportBase> reports) {
 		this.featuresTrainTask = featuresTrainTask;
@@ -78,8 +82,11 @@ public class DKProTcShallowTestTask extends DefaultBatchTask implements Constant
 		ExecutableTaskBase testTask = adapter.getTestTask();
 
 		testTask.addReport(adapter.getOutcomeIdReportClass());
-		for (ReportBase b : reports) {
-			testTask.addReport(b);
+
+		if (reports != null) {
+			for (ReportBase b : reports) {
+				testTask.addReport(b);
+			}
 		}
 
 		testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,

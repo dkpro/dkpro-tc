@@ -28,7 +28,7 @@ import org.dkpro.tc.features.length.NrOfTokens;
  * Extracts the number of tokens in the classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class NrOfTokensExternalResourceUFE
+public class NrOfTokensExternalResource
     extends NrOfTokens
     implements FeatureExtractor
 {

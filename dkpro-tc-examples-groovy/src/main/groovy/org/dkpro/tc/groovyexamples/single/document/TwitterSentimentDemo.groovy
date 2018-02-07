@@ -70,7 +70,6 @@ public class TwitterSentimentDemo implements Constants {
         ExperimentCrossValidation batchTask = [
             experimentName: "Twitter-Sentiment-CV",
             type: "Evaluation-Twitter-Sentiment-CV",
-            machineLearningAdapter: WekaClassificationAdapter,
             preprocessing: createEngineDescription(createEngineDescription(BreakIteratorSegmenter),createEngineDescription(
             ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default")), // Preprocessing
             parameterSpace: [
@@ -85,10 +84,11 @@ public class TwitterSentimentDemo implements Constants {
                         TcFeatureFactory.create(EmoticonRatio.class),
                         TcFeatureFactory.create(NumberOfHashTags.class)
                 )),
-                Dimension.create(DIM_CLASSIFICATION_ARGS,[NaiveBayes.name], [RandomForest.name])
+                Dimension.create(DIM_CLASSIFICATION_ARGS,[new WekaClassificationAdapter(), NaiveBayes.name], 
+														 [new WekaClassificationAdapter(), RandomForest.name])
             ],
             reports: [
-                BatchCrossValidationReport
+                BatchCrossValidationReport.newInstance()
             ], // collects results from folds
             numFolds: 2]
 
@@ -115,7 +115,6 @@ public class TwitterSentimentDemo implements Constants {
         ExperimentTrainTest batchTask = [
             experimentName: "Twitter-Sentiment-TrainTest",
             type: "Evaluation-Twitter-Sentiment-TrainTest",
-            machineLearningAdapter: WekaClassificationAdapter,
             preprocessing: createEngineDescription(createEngineDescription(BreakIteratorSegmenter),createEngineDescription(
             ArktweetPosTagger, ArktweetPosTagger.PARAM_LANGUAGE, "en", ArktweetPosTagger.PARAM_VARIANT, "default")), // Preprocessing
             parameterSpace: [
@@ -132,7 +131,9 @@ public class TwitterSentimentDemo implements Constants {
                         TcFeatureFactory.create(NumberOfHashTags.class)
                     )
                 ),
-                Dimension.create(DIM_CLASSIFICATION_ARGS, [NaiveBayes.name], [RandomForest.name])
+                Dimension.create(DIM_CLASSIFICATION_ARGS, 
+														[new WekaClassificationAdapter(), NaiveBayes.name], 
+														[new WekaClassificationAdapter(), RandomForest.name])
             ],
             reports: [BatchTrainTestReport], // collects results from folds
         ]
