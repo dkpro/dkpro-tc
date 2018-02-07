@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
@@ -73,11 +74,13 @@ public class DKProTcShallowTestTask extends DefaultBatchTask implements Constant
 		this.reports = reports;
 	}
 
+	ExecutableTaskBase tt;
+	
 	@Override
 	public void initialize(TaskContext aContext) {
 
 		super.initialize(aContext);
-
+		
 		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
 		ExecutableTaskBase testTask = adapter.getTestTask();
 
@@ -97,8 +100,31 @@ public class DKProTcShallowTestTask extends DefaultBatchTask implements Constant
 
 		String[] split = getType().split("-");
 		testTask.setType(testTask.getClass().getName() + "-" + split[1]);
-		this.addTask(testTask);
 
+		deleteOldTaskSetNewOne(testTask);
+	}
+	
+	/**
+	 * This method removes the (sub-)task storage of this task (in case another
+	 * adapter ran before, which would be stored there) and sets the new one as
+	 * only adapter
+	 * 
+	 * @param testTask
+	 *            the current new task that shall be exeucted next as machine
+	 *            learning adapter
+	 */
+	private void deleteOldTaskSetNewOne(ExecutableTaskBase testTask) {
+		tasks = new HashSet<>();
+		addTask(testTask);		
+	}
+
+	@Override
+    public boolean isInitialized()
+	{
+		// This is a hack - the facade-task has to re-initialize at every
+		// execution to load the <i>current</i> machine learning adapter from
+		// the classification arguments
+	    return false;
 	}
 
 }
