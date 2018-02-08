@@ -76,7 +76,7 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 		javaExperiment.runTrainTest(pSpace);
 
 		EvaluationData<String> data = Tc2LtlabEvalConverter
-				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		Accuracy<String> acc = new Accuracy<String>(data);
 
 		assertTrue(acc.getResult() > 0.5);

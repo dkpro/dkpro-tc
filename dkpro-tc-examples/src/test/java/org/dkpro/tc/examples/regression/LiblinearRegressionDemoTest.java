@@ -54,7 +54,7 @@ public class LiblinearRegressionDemoTest extends TestCaseSuperClass
     public void testTrainTest() throws Exception{
         experiment.runTrainTest(pSpace);
         
-        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		MeanAbsoluteError mae = new MeanAbsoluteError(data);
         assertEquals(0.54, mae.getResult(), 0.00001);
         

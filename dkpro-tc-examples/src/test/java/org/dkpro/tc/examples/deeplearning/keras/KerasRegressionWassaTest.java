@@ -49,7 +49,7 @@ public class KerasRegressionWassaTest extends KerasLocator {
 			ParameterSpace ps = KerasDocumentRegressionWassa.getParameterSpace(python3);
 			KerasDocumentRegressionWassa.runTrainTest(ps);
 
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 			Accuracy<String> acc = new Accuracy<>(data);
 			
 			assertTrue(acc.getResult() > 0.1);

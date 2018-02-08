@@ -65,10 +65,10 @@ public class SemanticTextSimilarityDemoTest extends TestCaseSuperClass
         
         //weka offers to calculate this value too - we take weka as "reference" value 
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
-                .read(new File(ContextMemoryReport.id2outcome.getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
+                .read(new File(ContextMemoryReport.id2outcomeFiles.get(0).getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
         
-        MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome));
+        MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
         
         assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.00001);
     }

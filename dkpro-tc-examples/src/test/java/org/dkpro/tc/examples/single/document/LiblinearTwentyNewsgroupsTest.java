@@ -58,7 +58,7 @@ public class LiblinearTwentyNewsgroupsTest extends TestCaseSuperClass {
 		javaExperiment.runTrainTest(pSpace);
 
 		EvaluationData<String> data = Tc2LtlabEvalConverter
-				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		Accuracy<String> acc = new Accuracy<String>(data);
 		assertEquals(0.5, acc.getResult(), 0.0001);
 	}
@@ -72,7 +72,7 @@ public class LiblinearTwentyNewsgroupsTest extends TestCaseSuperClass {
 		javaExperiment.runTrainTest(LiblinearTwentyNewsgroups.getParameterSpace(dimClassificationArgs));
 
 		EvaluationData<String> data = Tc2LtlabEvalConverter
-				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		Accuracy<String> acc = new Accuracy<String>(data);
 
 		assertTrue(acc.getResult() >= 0.7);

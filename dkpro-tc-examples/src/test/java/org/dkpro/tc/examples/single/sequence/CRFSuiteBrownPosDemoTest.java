@@ -82,7 +82,7 @@ extends TestCaseSuperClass
         javaExperiment.runTrainTest(pSpace);
 
         
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         Accuracy<String> acc = new Accuracy<String>(data);
         
         Double resultNoParams = acc.getResult();
@@ -96,7 +96,7 @@ extends TestCaseSuperClass
 
         javaExperiment.runTrainTest(pSpace);
         
-        data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         acc = new Accuracy<String>(data);
         Double resultParams = acc.getResult();
 

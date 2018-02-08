@@ -37,6 +37,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
@@ -55,7 +56,7 @@ import weka.classifiers.functions.supportVector.PolyKernel;
 public class MultiClassifierExperiment implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
-	public static final int NUM_FOLDS = 3;
+	public static final int NUM_FOLDS = 2;
 
 	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
 	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
@@ -68,6 +69,7 @@ public class MultiClassifierExperiment implements Constants {
 
 		MultiClassifierExperiment experiment = new MultiClassifierExperiment();
 		experiment.runTrainTest(pSpace);
+//		experiment.runCrossValidation(pSpace);
 	}
 
 	public static ParameterSpace getParameterSpace()
@@ -99,7 +101,7 @@ public class MultiClassifierExperiment implements Constants {
 		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                       PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
-				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", "2", "-c", "1000", "-t", "3" }),
+				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", "1", "-c", "1000", "-t", "3" }),
 				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" })
 				);
 		
@@ -118,6 +120,7 @@ public class MultiClassifierExperiment implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		batch.addReport(BatchCrossValidationReport.class);
+		batch.addReport(new ContextMemoryReport());
 
 		// Run
 		Lab.getInstance().run(batch);
@@ -131,6 +134,7 @@ public class MultiClassifierExperiment implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		batch.addReport(BatchTrainTestReport.class);
+		batch.addReport(new ContextMemoryReport());
 
 		// Run
 		Lab.getInstance().run(batch);

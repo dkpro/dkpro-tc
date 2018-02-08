@@ -49,7 +49,7 @@ public class DyNetSequenceTest extends KerasLocator {
 			ParameterSpace ps = DynetSeq2SeqTrainTest.getParameterSpace(python3);
 			DynetSeq2SeqTrainTest.runTrainTest(ps);
 
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 			Accuracy<String> acc = new Accuracy<>(data);
 
 			assertTrue(acc.getResult() > 0.000);

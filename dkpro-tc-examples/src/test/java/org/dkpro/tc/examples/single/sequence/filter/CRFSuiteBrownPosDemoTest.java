@@ -71,7 +71,7 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 
 		javaExperiment.runTrainTest(pSpace);
 
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         Accuracy<String> acc = new Accuracy<String>(data);
 		
 		return acc.getResult();
@@ -91,7 +91,7 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 
 		javaExperiment.runTrainTest(pSpace);
 
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         Accuracy<String> acc = new Accuracy<String>(data);
 		
 		return acc.getResult();

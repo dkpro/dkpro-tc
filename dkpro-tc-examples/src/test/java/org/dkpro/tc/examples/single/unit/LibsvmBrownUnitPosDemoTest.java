@@ -55,7 +55,7 @@ public class LibsvmBrownUnitPosDemoTest extends TestCaseSuperClass
         javaExperiment.runCrossValidation(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(
-				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
 
 		assertEquals(0.39175257, accuracy.getResult(), 0.09);
     }
@@ -67,7 +67,7 @@ public class LibsvmBrownUnitPosDemoTest extends TestCaseSuperClass
         javaExperiment.runTrainTest(pSpace);
         
 		Accuracy<String> accuracy = new Accuracy<>(
-				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcome));
+				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
 
         assertEquals(0.8092783505154639, accuracy.getResult(), 0.0001);
     }

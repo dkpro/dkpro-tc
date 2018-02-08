@@ -19,6 +19,7 @@
 package org.dkpro.tc.examples.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.lab.storage.StorageService;
@@ -32,7 +33,9 @@ import org.dkpro.tc.ml.report.TcBatchReportBase;
  */
 public class ContextMemoryReport extends TcBatchReportBase {
 
-	public static File id2outcome;
+	public static List<File> id2outcomeFiles = new ArrayList<>();
+	
+	public static List<String> allIds = new ArrayList<String>();
 
 	@Override
 	public void execute() throws Exception {
@@ -40,15 +43,13 @@ public class ContextMemoryReport extends TcBatchReportBase {
 		StorageService storageService = getContext().getStorageService();
 		
 		List<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
-		
+		allIds.addAll(taskIds);
 		for (String id : taskIds) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
-				id2outcome = storageService.locateKey(id, Constants.ID_OUTCOME_KEY);
-				return;
+				id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
 			}
 			if (TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
-				id2outcome = storageService.locateKey(id, Constants.COMBINED_ID_OUTCOME_KEY);
-				return;
+				id2outcomeFiles.add(storageService.locateKey(id, Constants.COMBINED_ID_OUTCOME_KEY));
 			}
 		}
 	}

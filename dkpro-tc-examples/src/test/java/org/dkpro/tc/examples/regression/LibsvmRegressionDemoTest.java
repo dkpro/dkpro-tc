@@ -54,7 +54,7 @@ public class LibsvmRegressionDemoTest extends TestCaseSuperClass
     public void testTrainTest() throws Exception{
         experiment.runTrainTest(pSpace);
 
-        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcome);
+        EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		MeanSquaredError mse = new MeanSquaredError(data);
         assertEquals(3.37, mse.getResult(), 0.01);
     }
