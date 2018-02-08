@@ -42,6 +42,10 @@ public class ContextMemoryReport extends TcBatchReportBase {
 	@Override
 	public void execute() throws Exception {
 		
+		id2outcomeFiles = new ArrayList<>();
+		crossValidationCombinedIdFiles = new ArrayList<>();
+		allIds = new ArrayList<>();
+		
 		StorageService storageService = getContext().getStorageService();
 		
 		List<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
