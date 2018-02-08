@@ -22,10 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.dkpro.tc.core.Constants;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
 import de.unidue.ltl.evaluation.measures.categorial.Fscore;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
@@ -50,50 +52,109 @@ public class MetricComputationUtil {
 			map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
 
 			Fscore<String> fmeasure = new Fscore<>(data);
-			map.put("Micro FScore", "" + fmeasure.getMicroFscore());
-			map.put("Macro FScore", "" + fmeasure.getMacroFscore());
+			map.put("Micro FScore", "" + getMicroFscore(fmeasure));
+			map.put("Macro FScore", "" + getMacroFscore(fmeasure));
 			
 			ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
 			File matrixFile = new File(id2o.getParentFile(), "confusionMatrix.txt");
-			FileUtils.writeStringToFile(matrixFile, matrix.toText(), "utf-8");
+			FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
 			
 		} else if (mode.equals(Constants.LM_REGRESSION)) {
 			
 			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2o);
 
-			RSquared rsq = new RSquared(data);
-			map.put(rsq.getClass().getSimpleName(), "" + rsq.getResult());
+			EvaluationMeasure<?> m = new RSquared(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			PearsonCorrelation pc = new PearsonCorrelation(data);
-			map.put(pc.getClass().getSimpleName(), "" + pc.getResult());
+			m = new PearsonCorrelation(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			SpearmanCorrelation sc = new SpearmanCorrelation(data);
-			map.put(sc.getClass().getSimpleName(), "" + sc.getResult());
+			m = new SpearmanCorrelation(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			MeanSquaredError mse = new MeanSquaredError(data);
-			map.put(mse.getClass().getSimpleName(), "" + mse.getResult());
+			m = new MeanSquaredError(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			MeanAbsoluteError mae = new MeanAbsoluteError(data);
-			map.put(mae.getClass().getSimpleName(), "" + mae.getResult());
+			m = new MeanAbsoluteError(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
 		} else if (mode.equals(Constants.LM_MULTI_LABEL)) {
 
 			EvaluationData<String> data = Tc2LtlabEvalConverter.convertMultiLabelModeId2Outcome(id2o);
 
-			ExactMatchRatio<String> emr = new ExactMatchRatio<>(data);
-			map.put(emr.getClass().getSimpleName(), "" + emr.getResult());
-			
+			EvaluationMeasure<?> m = new ExactMatchRatio<>(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 			
 			EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
 			
-			HammingLoss hl = new HammingLoss(dataInt);
-			map.put(hl.getClass().getSimpleName(), "" + hl.getResult());
+			m = new HammingLoss(dataInt);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 			
-			MultilabelAccuracy ma = new MultilabelAccuracy(dataInt);
-			map.put(ma.getClass().getSimpleName(), "" + ma.getResult());
+			m = new MultilabelAccuracy(dataInt);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 			
 		}
 		return map;
+	}
+
+	/**
+	 * if an exception occurs, it is caught and written to string, execution should not be interrupted at this point.
+	 * @param measure
+	 * 		the current measure
+	 * @return
+	 * 		a string with the computed measure or the exception error message if an error occurred
+	 */
+	private static String getExceptionFreeResult(EvaluationMeasure<?> measure) {
+		String val=null;
+		
+		try {
+			val = measure.getResult()+"";
+			
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+		
+		return val;
+	}
+
+	private static String getMatrix(ConfusionMatrix<String> matrix) {
+		String val = "";
+		
+		try {
+			val = matrix.toText();
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+
+		return val;
+	}
+
+	private static String getMicroFscore(Fscore<String> fmeasure) {
+		String retVal="";
+		
+		try {
+			retVal = fmeasure.getMicroFscore()+"";
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+		
+		return retVal;
+	}
+	
+	private static String getMacroFscore(Fscore<String> fmeasure) {
+		String retVal="";
+		
+		try {
+			retVal = fmeasure.getMacroFscore() + "";
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+		
+		return retVal;
 	}
 
 }
