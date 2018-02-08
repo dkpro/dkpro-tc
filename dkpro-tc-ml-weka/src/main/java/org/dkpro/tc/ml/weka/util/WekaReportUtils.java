@@ -20,56 +20,17 @@ package org.dkpro.tc.ml.weka.util;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.dkpro.tc.ml.weka.evaluation.MulanEvaluationWrapper;
 
 import mulan.evaluation.measure.MicroPrecision;
 import mulan.evaluation.measure.MicroRecall;
-import org.dkpro.tc.core.util.ReportUtils;
-import org.dkpro.tc.ml.weka.evaluation.MulanEvaluationWrapper;
 
 /**
  * Utility methods needed in reports
  */
 public class WekaReportUtils
 {
-    /*
-     * Adds results from one fold to the overall CV confusion matrix. Also updates actual and
-     * predicted label lists for the label powerset transformation
-     */
-    public static void updateTempMLConfusionMatrix(MultilabelResult r, String[] classNames,
-            List<String> actualLabelsList, List<String> predictedLabelsList,
-            HashMap<String, Map<String, Integer>> tempM)
-    {
-        for (int i = 0; i < r.getGoldstandard().length; i++) {
-            int[] prediction = r.getPredictionsBipartition()[i];
-            int[] actual = r.getGoldstandard()[i];
-
-            // in ML mode, we build the confusion matrix over the Label Power Set of all
-            // actuals/predictions
-            String predString = ReportUtils.doubleArrayToClassNames(prediction, classNames, ';');
-            String actString = ReportUtils.doubleArrayToClassNames(actual, classNames, ';');
-
-            if (!predictedLabelsList.contains(predString)) {
-                predictedLabelsList.add(predString);
-            }
-            if (tempM.get(actString) != null) {
-                if (tempM.get(actString).get(predString) != null) {
-                    tempM.get(actString).put(predString, tempM.get(actString).get(predString) + 1);
-                }
-                else {
-                    tempM.get(actString).put(predString, 1);
-                }
-            }
-            else {
-                HashMap<String, Integer> h = new HashMap<String, Integer>();
-                h.put(predString, 1);
-                tempM.put(actString, h);
-                actualLabelsList.add(actString);
-            }
-        }
-    }
 
     /*
      * Creates data for average PR curve diagram over a threshold. <br>

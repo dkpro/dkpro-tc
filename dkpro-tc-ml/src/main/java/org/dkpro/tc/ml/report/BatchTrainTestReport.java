@@ -46,6 +46,7 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 	public void execute() throws Exception {
 		StorageService store = getContext().getStorageService();
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+		table.setDefaultValue("");
 
 		List<String> collectTasks = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
 

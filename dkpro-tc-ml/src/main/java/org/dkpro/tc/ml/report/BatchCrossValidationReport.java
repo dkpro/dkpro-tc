@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
@@ -48,6 +49,7 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 		StorageService store = getContext().getStorageService();
 
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+		table.setDefaultValue("");
 		
 		List<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
@@ -62,7 +64,7 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 			File combinedId2outcome = store.locateKey(id,
 					Constants.COMBINED_ID_OUTCOME_KEY);
 
-			Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store, id,
+			Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id,
 					Task.DISCRIMINATORS_KEY);
 			
 			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
@@ -82,5 +84,10 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 
 		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
 	}
+	
+    private static Map<String,String> getDiscriminatorsForContext(StorageService store, String contextId, String discriminatorsKey)
+    {
+        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
+    }
 
 }

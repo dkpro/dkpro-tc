@@ -18,17 +18,13 @@
 package org.dkpro.tc.core.util;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
 
 /**
  * Utility methods needed in reports
@@ -37,7 +33,6 @@ public class ReportUtils implements ReportConstants
 {
     public static boolean containsExcludePattern(String string, List<String> patterns)
     {
-
         Pattern matchPattern;
         for (String pattern : patterns) {
             matchPattern = Pattern.compile(pattern);
@@ -48,55 +43,9 @@ public class ReportUtils implements ReportConstants
         return false;
     }
 
-    /**
-     * Looks into the {@link TcFlexTable} and outputs general performance numbers if available
-     * @param table
-     * 		Flextable object
-     * 
-     * @return 
-     * 		table as string
-     */
-    public static String getPerformanceOverview(TcFlexTable<String> table)
-    {
-        // output some general performance figures
-        // TODO this is a bit of a hack. Is there a better way?
-        Set<String> columnIds = new HashSet<String>(Arrays.asList(table.getColumnIds()));
-        StringBuffer buffer = new StringBuffer("\n");
-        if (columnIds.contains(PCT_CORRECT) && columnIds.contains(PCT_INCORRECT)) {
-            int i = 0;
-            buffer.append("ID\t% CORRECT\t% INCORRECT\n");
-            for (String id : table.getRowIds()) {
-                String correct = table.getValueAsString(id, PCT_CORRECT);
-                String incorrect = table.getValueAsString(id, PCT_INCORRECT);
-                buffer.append(i + "\t" + correct + "\t" + incorrect + "\n");
-                i++;
-            }
-            buffer.append("\n");
-        }
-        else if (columnIds.contains(CORRELATION)) {
-            int i = 0;
-            buffer.append("ID\tCORRELATION\n");
-            for (String id : table.getRowIds()) {
-                String correlation = table.getValueAsString(id, CORRELATION);
-                buffer.append(i + "\t" + correlation + "\n");
-                i++;
-            }
-            buffer.append("\n");
-        }
-        return buffer.toString();
-    }
-
-
-    public static Map<String,String> getDiscriminatorsForContext(StorageService store, String contextId, String discriminatorsKey)
-    {
-        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
-    }
-
     public static void writeExcelAndCSV(TaskContext context, String contextLabel, TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
     {
         StorageService store = context.getStorageService();
-        context.getLoggingService().message(contextLabel,
-                ReportUtils.getPerformanceOverview(table));
         // Excel cannot cope with more than 255 columns
         if (table.getColumnIds().length <= 255) {
             context.storeBinary(evalFileName + "_compact" + suffixExcel,
