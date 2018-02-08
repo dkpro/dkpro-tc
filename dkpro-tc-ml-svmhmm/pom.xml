@@ -22,11 +22,33 @@
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api-features</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>org.dkpro.tc.ml.svmhmm-bin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.lab</groupId>
+			<artifactId>dkpro-lab-core</artifactId>
+		</dependency>
+			<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.resources-asl
+			</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -53,16 +75,6 @@
 			<artifactId>uimafit-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.resources-asl
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
@@ -73,18 +85,6 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>org.dkpro.tc.ml.svmhmm-bin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.lab</groupId>
-			<artifactId>dkpro-lab-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>

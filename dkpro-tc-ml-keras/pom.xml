@@ -32,19 +32,18 @@
 		<groupId>org.dkpro.tc</groupId>
 		<artifactId>dkpro-tc-core</artifactId>
 	</dependency>
+	  	<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-ml</artifactId>
+  	</dependency>
 	<dependency>
 		<groupId>org.dkpro.lab</groupId>
 		<artifactId>dkpro-lab-core</artifactId>
 	</dependency>
   	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-ml</artifactId>
-  	</dependency>
-  	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
   	</dependency>
-
   	<dependency>
   		<groupId>commons-lang</groupId>
   		<artifactId>commons-lang</artifactId>

@@ -32,13 +32,13 @@
   		<groupId>org.dkpro.tc</groupId>
   		<artifactId>dkpro-tc-core</artifactId>
   	</dependency>
+  		<dependency>
+  		<groupId>org.dkpro.tc</groupId>
+  		<artifactId>dkpro-tc-ml</artifactId>
+  	</dependency>
   	<dependency>
   		<groupId>org.dkpro.lab</groupId>
   		<artifactId>dkpro-lab-core</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.tc</groupId>
-  		<artifactId>dkpro-tc-ml</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.deeplearning4j</groupId>
@@ -53,16 +53,16 @@
   		<artifactId>commons-io</artifactId>
   	</dependency>
   	<dependency>
+  		<groupId>commons-lang</groupId>
+  		<artifactId>commons-lang</artifactId>
+  	</dependency>
+  	<dependency>
   		<groupId>org.nd4j</groupId>
   		<artifactId>nd4j-api</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.nd4j</groupId>
   		<artifactId>nd4j-native-platform</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-lang</groupId>
-  		<artifactId>commons-lang</artifactId>
   	</dependency>
   </dependencies>
 	<build>

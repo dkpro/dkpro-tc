@@ -41,6 +41,10 @@
   		<artifactId>dkpro-tc-io-libsvm</artifactId>
   	</dependency>
   	<dependency>
+  		<groupId>org.dkpro.lab</groupId>
+  		<artifactId>dkpro-lab-core</artifactId>
+  	</dependency>
+  	<dependency>
   		<groupId>commons-io</groupId>
   		<artifactId>commons-io</artifactId>
   	</dependency>
@@ -52,10 +56,6 @@
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dkpro.lab</groupId>
-  		<artifactId>dkpro-lab-core</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.uima</groupId>

@@ -36,21 +36,25 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging-api</artifactId>
     </dependency>
+      <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-api</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-core</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.dkpro.lab</groupId>
       <artifactId>dkpro-lab-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-core</artifactId>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
     </dependency>
     <dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>de.tudarmstadt.ukp.dkpro.core.io.bincas-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
     </dependency>
     <dependency>
     	<groupId>de.unidue.ltl.evaluation</groupId>
@@ -75,10 +79,6 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-api</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

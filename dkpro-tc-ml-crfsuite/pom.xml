@@ -23,29 +23,31 @@
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-core</artifactId>
     </dependency>
+     <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-api-features</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>org.dkpro.tc</groupId>
+      <artifactId>dkpro-tc-ml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>org.dkpro.tc.ml.crfsuite-bin</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.dkpro.tc</groupId>
-      <artifactId>dkpro-tc-ml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.dkpro.lab</groupId>
       <artifactId>dkpro-lab-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+      <artifactId>
+			de.tudarmstadt.ukp.dkpro.core.api.resources-asl
+	  </artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.uima</groupId>
@@ -60,11 +62,9 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimafit-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>
-			de.tudarmstadt.ukp.dkpro.core.api.resources-asl
-	  </artifactId>
+     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
     	<groupId>com.google.code.gson</groupId>
