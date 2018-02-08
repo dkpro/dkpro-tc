@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class WekaPairTwentyNewsgroupsDemoTest extends TestCaseSuperClass
 {
-    WekaPairTwentyNewsgroupsDemo javaExperiment;
+    PairModeWekaDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -38,8 +38,8 @@ public class WekaPairTwentyNewsgroupsDemoTest extends TestCaseSuperClass
     {
         super.setup();
         
-        javaExperiment = new WekaPairTwentyNewsgroupsDemo();
-        pSpace = WekaPairTwentyNewsgroupsDemo.getParameterSpace();
+        javaExperiment = new PairModeWekaDemo();
+        pSpace = PairModeWekaDemo.getParameterSpace();
     }
 
     @Test

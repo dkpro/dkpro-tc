@@ -55,7 +55,7 @@ import weka.classifiers.bayes.NaiveBayes;
  * train and test datasets are from separate newsgroups.) Please see
  * TwentyNewsgroupsGroovyExperiment for a demo implementing a CV experiment.
  */
-public class WekaPairTwentyNewsgroupsDemo
+public class PairModeWekaDemo
     implements Constants
 {
 
@@ -72,10 +72,10 @@ public class WekaPairTwentyNewsgroupsDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(WekaPairTwentyNewsgroupsDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(PairModeWekaDemo.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
-        WekaPairTwentyNewsgroupsDemo experiment = new WekaPairTwentyNewsgroupsDemo();
+        PairModeWekaDemo experiment = new PairModeWekaDemo();
         experiment.runTrainTest(pSpace);
     }
 

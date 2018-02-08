@@ -43,16 +43,16 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
  * This test just ensures that the experiment runs without throwing any
  * exception.
  */
-public class MultiClassifierTest extends TestCaseSuperClass {
-	MultiClassifierExperiment javaExperiment;
+public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest extends TestCaseSuperClass {
+	MultiSvmUsingWekaLibsvmLiblinear javaExperiment;
 	ParameterSpace pSpace;
 
 	@Before
 	public void setup() throws Exception {
 		super.setup();
 
-		javaExperiment = new MultiClassifierExperiment();
-		pSpace = MultiClassifierExperiment.getParameterSpace();
+		javaExperiment = new MultiSvmUsingWekaLibsvmLiblinear();
+		pSpace = MultiSvmUsingWekaLibsvmLiblinear.getParameterSpace();
 	}
 
 	@Test

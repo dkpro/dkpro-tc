@@ -21,7 +21,7 @@ package org.dkpro.tc.examples.deeplearning.keras;
 import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.examples.deeplearning.KerasLocator;
+import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
@@ -30,7 +30,7 @@ import org.junit.Test;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
-public class KerasRegressionWassaTest extends KerasLocator {
+public class KerasRegressionWassaTest extends PythonLocator {
 	@Test
 	public void runTest() throws Exception {
 

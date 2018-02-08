@@ -31,7 +31,7 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.deeplearning.dl4j.doc.DeepLearning4jDocumentTrainTest;
 import org.dkpro.tc.examples.deeplearning.dl4j.seq.DeepLearningDl4jSeq2SeqTrainTest;
-import org.dkpro.tc.examples.single.sequence.LabFolderTrackerReport;
+import org.dkpro.tc.examples.util.LabFolderTrackerReport;
 import org.junit.Before;
 import org.junit.Test;
 

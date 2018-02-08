@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -42,88 +43,71 @@ import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.supportVector.PolyKernel;
 
-/**
- * This a pure Java-based experiment setup of the TwentyNewsgroupsExperiment.
- * 
- * Defining the parameters directly in this class makes on-the-fly changes more
- * difficult when the experiment is run on a server.
- * 
- * For these cases, the self-sufficient Groovy versions are more suitable, since
- * their source code can be changed and then executed without pre-compilation.
- */
-public class LibsvmTwentyNewsgroups implements Constants {
+public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 	public static final String LANGUAGE_CODE = "en";
 
-	public static final int NUM_FOLDS = 3;
+	public static final int NUM_FOLDS = 2;
 
 	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
 	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
 	public static void main(String[] args) throws Exception {
 
-		// This is used to ensure that the required DKPRO_HOME environment
-		// variable is set.
-		// Ensures that people can run the experiments even if they haven't read
-		// the setup
-		// instructions first :)
-		// Don't use this in real experiments! Read the documentation and set
-		// DKPRO_HOME as
-		// explained there.
-		DemoUtils.setDkproHome(LibsvmTwentyNewsgroups.class.getSimpleName());
+		DemoUtils.setDkproHome("target/");
 
-		ParameterSpace pSpace = getParameterSpace(null);
+		ParameterSpace pSpace = getParameterSpace();
 
-		LibsvmTwentyNewsgroups experiment = new LibsvmTwentyNewsgroups();
-		 experiment.runCrossValidation(pSpace);
-//		experiment.runTrainTest(pSpace);
+		MultiSvmUsingWekaLibsvmLiblinear experiment = new MultiSvmUsingWekaLibsvmLiblinear();
+		experiment.runTrainTest(pSpace);
+//		experiment.runCrossValidation(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace(Dimension<List<Object>> dimClassificationArgs)
+	public static ParameterSpace getParameterSpace()
 			throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		// train/test will use both, while cross-validation will only use the
 		// train part
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		Object readerTrain = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-				TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
 				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		Object readerTest = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-				TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE, TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-				TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
+				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(NrOfTokens.class),
+						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
 								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
-		ParameterSpace pSpace;
-
-		if (dimClassificationArgs == null) {
-			@SuppressWarnings("unchecked")
-			Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-					Arrays.asList(new Object[] { new LibsvmAdapter() }));
-
-			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+		@SuppressWarnings("unchecked")
+		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
+                      PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
+				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", "1", "-c", "1000", "-t", "3" }),
+				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" })
+				);
+		
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
 					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArgs);
-		} else {
-
-			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassificationArgs);
-		}
 
 		return pSpace;
 	}
@@ -136,7 +120,7 @@ public class LibsvmTwentyNewsgroups implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		batch.addReport(BatchCrossValidationReport.class);
-		batch.addReport(ContextMemoryReport.class);
+		batch.addReport(new ContextMemoryReport());
 
 		// Run
 		Lab.getInstance().run(batch);
@@ -150,7 +134,7 @@ public class LibsvmTwentyNewsgroups implements Constants {
 		batch.setParameterSpace(pSpace);
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		batch.addReport(BatchTrainTestReport.class);
-		batch.addReport(ContextMemoryReport.class);
+		batch.addReport(new ContextMemoryReport());
 
 		// Run
 		Lab.getInstance().run(batch);

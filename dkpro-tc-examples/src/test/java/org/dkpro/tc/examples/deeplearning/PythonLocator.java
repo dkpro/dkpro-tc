@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 
-public class KerasLocator extends TestCaseSuperClass {
+public class PythonLocator extends TestCaseSuperClass {
 
 	public static String getEnvironment() throws Exception {
 
@@ -53,7 +53,7 @@ public class KerasLocator extends TestCaseSuperClass {
 			boolean keras = output.isEmpty();
 
 			if (keras) {
-				LogFactory.getLog(KerasLocator.class.getName()).info("Use Python at [" + pathCandidate + "]");
+				LogFactory.getLog(PythonLocator.class.getName()).info("Use Python at [" + pathCandidate + "]");
 				return pathCandidate;
 			}
 		}

@@ -25,12 +25,12 @@ import java.io.File;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.deeplearning.KerasLocator;
+import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.CvContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
-public class KerasCrossValidation extends KerasLocator {
+public class KerasCrossValidation extends PythonLocator {
 	@Test
 	public void runTest() throws Exception {
 

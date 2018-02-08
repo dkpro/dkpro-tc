@@ -44,12 +44,15 @@ import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.functions.LinearRegression;
 
-public class LiblinearRegressionDemo
+public class MultiRegressionWekaLibsvmLiblinear
     implements Constants
 {
 
@@ -62,13 +65,12 @@ public class LiblinearRegressionDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(LiblinearRegressionDemo.class.getSimpleName());
-//    	DemoUtils.setDkproHome(System.getProperty("user.home")+"/Desktop/");
+        DemoUtils.setDkproHome(MultiRegressionWekaLibsvmLiblinear.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 
-        LiblinearRegressionDemo experiment = new LiblinearRegressionDemo();
-//        experiment.runTrainTest(pSpace);
+        MultiRegressionWekaLibsvmLiblinear experiment = new MultiRegressionWekaLibsvmLiblinear();
+        experiment.runTrainTest(pSpace);
         experiment.runCrossValidation(pSpace);
     }
 
@@ -84,20 +86,20 @@ public class LiblinearRegressionDemo
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/train/essay_train.txt",
-                EssayScoreReader.PARAM_LANGUAGE, "en");
+                "src/main/resources/data/essays/train/essay_train.txt", EssayScoreReader.PARAM_LANGUAGE, "en"
+                );
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/test/essay_test.txt",
-                EssayScoreReader.PARAM_LANGUAGE, "en");
+                "src/main/resources/data/essays/test/essay_test.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "0"
-                // ,"-c", "100"
-        }));
+                Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }),
+                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "6" }),
+                Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", "3" , "-c", "10" })
+                );
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
@@ -113,14 +115,28 @@ public class LiblinearRegressionDemo
         return pSpace;
     }
 
+
     // ##### TRAIN-TEST #####
     protected void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("LiblinearRegressionDemo");
+        ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo");
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(BatchTrainTestReport.class);
+        batch.addReport(ContextMemoryReport.class);
+
+        // Run
+        Lab.getInstance().run(batch);
+    }
+    
+    protected void runCrossValidation(ParameterSpace pSpace)
+        throws Exception
+    {
+    	ExperimentCrossValidation batch = new ExperimentCrossValidation("WekaRegressionDemo", 2);
+        batch.setPreprocessing(getPreprocessing());
+        batch.setParameterSpace(pSpace);
+        batch.addReport(BatchCrossValidationReport.class);
         batch.addReport(ContextMemoryReport.class);
 
         // Run
@@ -130,19 +146,6 @@ public class LiblinearRegressionDemo
     protected AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class));
-    }
-
-    public void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
-    {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("LiblinearRegressionDemo", 2);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(ContextMemoryReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }
