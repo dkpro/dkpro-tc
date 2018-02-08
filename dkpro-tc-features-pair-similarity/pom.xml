@@ -31,19 +31,7 @@
 		</license>
 	</licenses>
 	<dependencies>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.featurepath-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-uima-core-asl</artifactId>
-		</dependency>
-		<dependency>
+	<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api</artifactId>
 		</dependency>
@@ -51,27 +39,9 @@
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimafit-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.similarity</groupId>
-			<artifactId>dkpro-similarity-algorithms-api-asl</artifactId>
-		</dependency>
-		<dependency>		
-			<groupId>org.apache.uima</groupId>
-			<artifactId>uimaj-core</artifactId>
+			<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
@@ -84,8 +54,30 @@
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.segmentation-asl</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.api.featurepath-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.snowball-asl
+				de.tudarmstadt.ukp.dkpro.core.api.frequency-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.morpha-asl
+			</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
 			</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -99,8 +91,34 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.frequency-asl
+				de.tudarmstadt.ukp.dkpro.core.snowball-asl
 			</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-api-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.similarity</groupId>
+			<artifactId>dkpro-similarity-uima-core-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit-core</artifactId>
+		</dependency>
+		<dependency>		
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -110,24 +128,6 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.opennlp-asl
-			</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.morpha-asl
-			</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
