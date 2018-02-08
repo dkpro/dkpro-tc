@@ -40,7 +40,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualTreeBidiMap;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
@@ -51,21 +50,6 @@ public final class SVMHMMUtils
      * File name of serialized mapping from String labels to numbers
      */
     public static final String LABELS_TO_INTEGERS_MAPPING_FILE_NAME = "labelsToIntegersMapping_DualTreeBidiMap.bin";
-
-    /**
-     * CSV file comment
-     */
-    public static final String CSV_COMMENT = "Columns: gold, predicted, token, seqID";
-
-    /**
-     * Format of CSV files
-     */
-    public static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.withCommentMarker('#');
-
-    /**
-     * Where the gold outcomes, predicted outcomes, and tokens are stored
-     */
-    public static final String GOLD_PREDICTED_OUTCOMES_CSV = "outcomesGoldPredicted.csv";
 
     private SVMHMMUtils()
     {
