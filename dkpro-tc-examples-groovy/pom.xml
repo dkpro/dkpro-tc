@@ -36,23 +36,39 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api-features</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-examples</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-gpl</artifactId>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-features</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-features-ngram</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features-pair</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.meka</groupId>
-			<artifactId>meka</artifactId>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml-crfsuite</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml-weka</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -67,20 +83,12 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features</artifactId>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-features-ngram</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-ml-weka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-core</artifactId>
+			<groupId>net.sf.meka</groupId>
+			<artifactId>meka</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -100,20 +108,8 @@
 			<artifactId>uimaj-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-ml-crfsuite</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-ml</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api-features</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>
