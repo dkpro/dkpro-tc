@@ -59,7 +59,6 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 			if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
 				continue;
 			}
-			System.out.println(id);
 
 			File combinedId2outcome = store.locateKey(id,
 					Constants.FILE_COMBINED_ID_OUTCOME_KEY);

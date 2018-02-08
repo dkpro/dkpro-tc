@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.report;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,34 +49,42 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
 		table.setDefaultValue("");
 
-		List<String> collectTasks = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
+		List<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-		for (String id : collectTasks) {
+		for (String id : idPool) {
 
-			if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
+			if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
 				continue;
 			}
 
-			Map<String, String> discriminatorsMap = getDiscriminators(store, id);
-			discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
-					discriminatorsToExclude);
+			List<String> listWrap = new ArrayList<>();
+			listWrap.add(id);
+			List<String> subTaskId = collectTasks(listWrap);
+			subTaskId.remove(id);
 
-			// add the results into the discriminator map
-			File id2o = getId2Outcome(id);
-			String mode = getDiscriminator(store, id, DIM_LEARNING_MODE);
+			// Should be only one anyway?
+			for (String subId : subTaskId) {
 
-			Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
-			discriminatorsMap.putAll(resultMap);
+				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
+					continue;
+				}
 
-			table.addRow(getContextLabel(id), discriminatorsMap);
+				Map<String, String> discriminatorsMap = getDiscriminators(store, subId);
+				discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
+						discriminatorsToExclude);
+
+				// add the results into the discriminator map
+				File id2o = getId2Outcome(subId);
+				String mode = getDiscriminator(store, subId, DIM_LEARNING_MODE);
+
+				Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
+				discriminatorsMap.putAll(resultMap);
+
+				table.addRow(getContextLabel(subId), discriminatorsMap);
+			}
 		}
 
-		ReportUtils.writeExcelAndCSV(getContext(), 
-									 getContextLabel(), 
-									 table, 
-									 EVAL_FILE_NAME, 
-									 SUFFIX_EXCEL, 
-									 SUFFIX_CSV);
+		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
 	}
 
 	private Map<String, String> getDiscriminators(StorageService store, String id) {
