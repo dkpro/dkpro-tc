@@ -23,8 +23,8 @@
 	<artifactId>dkpro-tc-testing</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
@@ -35,22 +35,22 @@
 			<artifactId>dkpro-tc-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
+			</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.tc</groupId>
-			<artifactId>dkpro-tc-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-			<artifactId>
-				de.tudarmstadt.ukp.dkpro.core.api.metadata-asl
-			</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

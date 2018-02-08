@@ -50,6 +50,14 @@
             <groupId>org.dkpro.tc</groupId>
             <artifactId>dkpro-tc-api</artifactId>
         </dependency>
+           <dependency>
+            <groupId>org.dkpro.lab</groupId>
+            <artifactId>dkpro-lab-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.frequency-asl</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -75,14 +83,6 @@
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.dkpro.lab</groupId>
-            <artifactId>dkpro-lab-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-            <artifactId>de.tudarmstadt.ukp.dkpro.core.api.frequency-asl</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
