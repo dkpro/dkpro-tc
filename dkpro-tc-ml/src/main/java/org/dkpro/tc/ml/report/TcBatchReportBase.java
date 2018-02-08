@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
@@ -197,22 +199,22 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	}
 
 	/**
-	 * Collects recursively all <b>subtasks</b> stored in the <i>attributes.txt</i>.
-	 * of a task and the tasks located in a lower level in the hierarchy.
+	 * Collects recursively all <b>subtasks</b> stored in the
+	 * <i>attributes.txt</i>. of a task and the tasks located in a lower level
+	 * in the hierarchy.
 	 * 
 	 * @param subtasks
-	 * 			list of subtasks to be iterated
-	 * @return
-	 * 			list of all task ids including the one passed as parameter
+	 *            list of subtasks to be iterated
+	 * @return list of all task ids including the one passed as parameter
 	 * @throws Exception
-	 * 			in case of errors
+	 *             in case of errors
 	 */
 	public List<String> collectTasks(List<String> subtasks) throws Exception {
 
 		StorageService store = getContext().getStorageService();
 
 		List<String> ids = new ArrayList<>();
-		for (String taskId: subtasks) {
+		for (String taskId : subtasks) {
 			File attributes = store.locateKey(taskId, Task.ATTRIBUTES_KEY);
 			List<String> taskIds = readSubTasks(attributes);
 
@@ -227,19 +229,19 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
 
 		int idx = 0;
-		boolean found=false;
+		boolean found = false;
 		for (String line : readLines) {
 			if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
-				found=true;
+				found = true;
 				break;
 			}
 			idx++;
 		}
-		
-		if(!found){
+
+		if (!found) {
 			return new ArrayList<>();
 		}
-		
+
 		String line = readLines.get(idx);
 		int start = line.indexOf("[") + 1;
 		int end = line.indexOf("]");
@@ -257,23 +259,56 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		return results;
 	}
-	
+
 	/**
-	 * Takes context meta data objects and returns their context ids as string values
+	 * Takes context meta data objects and returns their context ids as string
+	 * values
+	 * 
 	 * @param subtasks
-	 * 			arbitrary number of TaskContextMetadata objects 
-	 * @return
-	 * 		list of strings with context ids extracted from the meta data
+	 *            arbitrary number of TaskContextMetadata objects
+	 * @return list of strings with context ids extracted from the meta data
 	 */
 	public List<String> getTaskIdsFromMetaData(TaskContextMetadata... subtasks) {
-		
+
 		List<String> taskIds = new ArrayList<>();
-		
-		for(TaskContextMetadata tcm : subtasks){
+
+		for (TaskContextMetadata tcm : subtasks) {
 			taskIds.add(tcm.getId());
 		}
-		
+
 		return taskIds;
+	}
+
+	/**
+	 * Retrieves the value of a certain key from the discriminators. A key might
+	 * occur in several tasks but it is assumed that the value of this key is
+	 * always the same, i.e. the first found entry is returned regardless in
+	 * which task this key is found
+	 * 
+	 * @param taskContext
+	 *            the current context
+	 * @param key
+	 *            the key that is to be found in the storage
+	 * @return the discriminator value if it is found otherwise null
+	 */
+	public String findDiscriminator(TaskContext taskContext, String key) {
+
+		StorageService store = taskContext.getStorageService();
+
+		Map<String, String> map = store
+				.retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+
+		if (map == null) {
+			return null;
+		}
+
+		for (String k : map.keySet()) {
+			if (k.endsWith("|" + key)) {
+				return map.get(k);
+			}
+		}
+
+		return null;
 	}
 
 }

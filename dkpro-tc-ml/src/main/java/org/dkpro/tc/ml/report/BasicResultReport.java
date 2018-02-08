@@ -22,13 +22,8 @@ import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
-import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.ExtractFeaturesTask;
-import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -37,7 +32,7 @@ import org.dkpro.tc.ml.report.util.SortedKeyProperties;
  * provide by default at least some result values.
  */
 public class BasicResultReport
-    extends ReportBase
+    extends TcBatchReportBase
     implements Constants
 {
 
@@ -52,18 +47,8 @@ public class BasicResultReport
         File id2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
                 Constants.ID_OUTCOME_KEY);
 
-        String learningMode = store
-                .retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY,
-                        new PropertiesAdapter())
-                .getMap().get(ExtractFeaturesTask.class.getName() + "|" + DIM_LEARNING_MODE);
         
-        if (learningMode == null) {
-            learningMode = store
-                    .retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY,
-                            new PropertiesAdapter())
-                    .getMap().get(VectorizationTask.class.getName() + "|" + DIM_LEARNING_MODE);
-        }
-
+        String learningMode = findDiscriminator(getContext(), DIM_LEARNING_MODE);
         
         Properties pa = new SortedKeyProperties();
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile, learningMode);
