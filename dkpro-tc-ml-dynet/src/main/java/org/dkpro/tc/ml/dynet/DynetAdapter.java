@@ -51,5 +51,8 @@ public class DynetAdapter
         return new DynetMetaReport();
     }
 
-
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }

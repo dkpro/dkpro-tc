@@ -127,5 +127,9 @@ public class LibsvmAdapter
 		return true;
 	}
     
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }
 

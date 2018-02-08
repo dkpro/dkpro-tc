@@ -108,5 +108,10 @@ public class SVMHMMAdapter
 	public static String getFeatureNameMappingFilename() {
 		return "feature-name-mapping.txt";
 	}
+	
+	@Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }
 

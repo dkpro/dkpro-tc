@@ -108,4 +108,9 @@ public class LiblinearAdapter
 	public boolean useSparseFeatures() {
 		return true;
 	}
+	
+	@Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }

@@ -53,5 +53,8 @@ public class KerasAdapter
         return new KerasMetaReport();
     }
 
-
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }

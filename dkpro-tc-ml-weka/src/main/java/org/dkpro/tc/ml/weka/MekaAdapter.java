@@ -80,5 +80,10 @@ public class MekaAdapter
     {
         return false;
     }
+    
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 
 }

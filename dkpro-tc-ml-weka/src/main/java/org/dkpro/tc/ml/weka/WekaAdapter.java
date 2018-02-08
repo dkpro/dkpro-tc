@@ -79,4 +79,9 @@ public class WekaAdapter
 	public boolean useSparseFeatures() {
 		return false;
 	}
+	
+	@Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }

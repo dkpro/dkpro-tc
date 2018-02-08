@@ -51,5 +51,8 @@ public class Deeplearning4jAdapter
         return new Deeplearning4jMetaReport();
     }
 
-
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }

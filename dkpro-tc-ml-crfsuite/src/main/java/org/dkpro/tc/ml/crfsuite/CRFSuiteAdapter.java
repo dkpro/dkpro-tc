@@ -259,4 +259,9 @@ public class CRFSuiteAdapter
     {
         return true;
     }
+    
+    @Override
+    public String toString(){
+    	return getClass().getSimpleName();
+    }
 }
