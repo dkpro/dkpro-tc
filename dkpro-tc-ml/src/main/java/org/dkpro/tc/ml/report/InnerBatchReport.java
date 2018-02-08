@@ -33,7 +33,6 @@ import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
-import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
@@ -54,14 +53,30 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
-		List<String> ids = collectTasks(getIds(getSubtasks()));
+		List<String> ids = getTaskIdsFromMetaData(getSubtasks());
+		
+		for (String id : ids) {
 
-		for (String mla : ids) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, mla)) {
+			if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
+				continue;
+			}
+
+			List<String> listWrap = new ArrayList<>();
+			listWrap.add(id);
+			List<String> subTaskId = collectTasks(listWrap);
+			subTaskId.remove(id);
+
+			// Should be only one anyway?
+			for (String subId : subTaskId) {
+
+				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
+					continue;
+				}
+
 				Map<String, String> discriminatorsMap = store
-						.retrieveBinary(mla, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+						.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-				File id2outcomeFile = store.locateKey(mla, Constants.ID_OUTCOME_KEY);
+				File id2outcomeFile = store.locateKey(subId, Constants.ID_OUTCOME_KEY);
 				id2outcomeFiles.add(id2outcomeFile);
 
 				for (Object key : discriminatorsMap.keySet()) {
@@ -73,15 +88,7 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 			}
 		}
 
-		String learningMode = null;
-		Map<String, String> map = store
-				.retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-		for (String key : map.keySet()) {
-			if (key.endsWith("|" + DIM_LEARNING_MODE)) {
-				learningMode = map.get(key);
-				break;
-			}
-		}
+		String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
 
 		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
 		for (File id2o : id2outcomeFiles) {
@@ -89,16 +96,6 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		}
 
 		writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
-	}
-
-	private List<String> getIds(TaskContextMetadata[] subtasks) {
-		
-		List<String> ids = new ArrayList<>();
-		for(TaskContextMetadata tcm : subtasks){
-			ids.add(tcm.getId());
-		}
-		
-		return ids;
 	}
 
 	private void writeCombinedOutcomeReport(String payload) throws Exception {

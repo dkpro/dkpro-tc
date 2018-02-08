@@ -287,7 +287,7 @@ public class ExperimentCrossValidation
         
         testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
+        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {

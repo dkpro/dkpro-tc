@@ -46,9 +46,8 @@ public class BasicResultReport
 
         File id2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
                 Constants.ID_OUTCOME_KEY);
-
         
-        String learningMode = findDiscriminator(getContext(), DIM_LEARNING_MODE);
+        String learningMode = getDiscriminator(getContext().getStorageService(), getContext().getId(), DIM_LEARNING_MODE);
         
         Properties pa = new SortedKeyProperties();
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile, learningMode);

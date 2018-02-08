@@ -143,7 +143,7 @@ public class ExperimentTrainTest
         
         testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.SHELL_TASK.toString());
+        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {

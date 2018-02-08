@@ -42,6 +42,11 @@ import de.unidue.ltl.evaluation.visualization.ConfusionMatrix;
 public class MetricComputationUtil {
 	
 	public static Map<String, String> getResults(File id2o, String mode) throws Exception {
+		
+		if(mode == null){
+			throw new IllegalArgumentException("The learning mode is null");
+		}
+		
 
 		Map<String, String> map = new HashMap<>();
 

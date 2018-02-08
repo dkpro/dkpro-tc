@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -285,18 +284,18 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * always the same, i.e. the first found entry is returned regardless in
 	 * which task this key is found
 	 * 
-	 * @param taskContext
-	 *            the current context
+	 * @param store
+	 *            the storage
+	 * @param contextId
+	 *            id of the context in which to look
 	 * @param key
-	 *            the key that is to be found in the storage
-	 * @return the discriminator value if it is found otherwise null
+	 *            the key that is to be found
+	 * @return value of the key if found otherwise null
 	 */
-	public String findDiscriminator(TaskContext taskContext, String key) {
-
-		StorageService store = taskContext.getStorageService();
+	public String getDiscriminator(StorageService store, String contextId, String key) {
 
 		Map<String, String> map = store
-				.retrieveBinary(getContext().getId(), Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+				.retrieveBinary(contextId, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
 		if (map == null) {
 			return null;
@@ -309,6 +308,27 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		return null;
+	}
+
+	public String getDiscriminator(StorageService store, List<String> contextIds, String key) {
+
+		for (String id : contextIds) {
+			String v = getDiscriminator(store, id, key);
+			if (v != null) {
+				return v;
+			}
+		}
+
+		return null;
+	}
+
+	
+	@Override
+	public Map<String, String> getAttributes()
+	{
+		// we override this method because we want always the attributes of
+		// 'this' task - no caching of old results this might leads to errors
+		return retrieveBinary(Task.ATTRIBUTES_KEY, new PropertiesAdapter()).getMap();
 	}
 
 }

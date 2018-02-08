@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
-import static org.dkpro.tc.core.util.ReportUtils.getDiscriminatorValue;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +61,7 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 
 			// add the results into the discriminator map
 			File id2o = getId2Outcome(id);
-			String mode = getDiscriminatorValue(discriminatorsMap, DIM_LEARNING_MODE);
+			String mode = getDiscriminator(store, id, DIM_LEARNING_MODE);
 
 			Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
 			discriminatorsMap.putAll(resultMap);

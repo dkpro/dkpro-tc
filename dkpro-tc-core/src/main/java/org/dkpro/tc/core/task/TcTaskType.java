@@ -19,8 +19,8 @@ package org.dkpro.tc.core.task;
 
 public enum TcTaskType
 {
-	// Shell Task that wraps a machine learning adapter task
-	SHELL_TASK,
+	// Facade task that wraps a machine learning adapter task
+	FACADE_TASK,
 	
 	//Shallow tasks
     INIT_TRAIN,

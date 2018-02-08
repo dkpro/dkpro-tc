@@ -19,12 +19,11 @@ package org.dkpro.tc.ml.report;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.task.Task;
-import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
@@ -35,7 +34,7 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
  * Collects the final evaluation results in a cross validation setting.
  * 
  */
-public class BatchCrossValidationReport extends BatchReportBase implements Constants {
+public class BatchCrossValidationReport extends TcBatchReportBase implements Constants {
 	boolean softEvaluation = true;
 	boolean individualLabelMeasures = false;
 
@@ -49,33 +48,30 @@ public class BatchCrossValidationReport extends BatchReportBase implements Const
 		StorageService store = getContext().getStorageService();
 
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+		
+		List<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-		for (TaskContextMetadata subcontext : getSubtasks()) {
-			if (!TcTaskTypeUtil.isCrossValidationTask(store, subcontext.getId())) {
+		String learningMode = getDiscriminator(store, idPool, DIM_LEARNING_MODE);
+		
+		for (String id : idPool) {
+			if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
 				continue;
 			}
+			System.out.println(id);
 
-			File combinedId2outcome = store.locateKey(subcontext.getId(),
+			File combinedId2outcome = store.locateKey(id,
 					Constants.COMBINED_ID_OUTCOME_KEY);
 
-			Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store, subcontext.getId(),
+			Map<String, String> discriminatorsMap = ReportUtils.getDiscriminatorsForContext(store, id,
 					Task.DISCRIMINATORS_KEY);
 			
-			String learningMode = null;
-			for (String key : discriminatorsMap.keySet()) {
-				if (key.endsWith("|" + DIM_LEARNING_MODE)) {
-					learningMode = discriminatorsMap.get(key);
-					break;
-				}
-			}
-
 			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
 
 			Map<String, String> values = new HashMap<String, String>();
 			values.putAll(discriminatorsMap);
 			values.putAll(results);
 
-			table.addRow(subcontext.getLabel(), values);
+			table.addRow(getContextLabel(id), values);
 		}
 
 		/*

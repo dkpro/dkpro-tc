@@ -27,6 +27,10 @@ import org.dkpro.tc.core.Constants;
 
 public class TcTaskTypeUtil
 {
+	public static boolean isFacadeTask(StorageService store, String id) throws IOException {
+		return isTask(TcTaskType.FACADE_TASK, store, id);
+	}
+	
     public static boolean isMachineLearningAdapterTask(StorageService store, String id)
         throws IOException
     {
