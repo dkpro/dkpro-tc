@@ -43,7 +43,7 @@ public class ScatterplotReport
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(),
                     subcontext.getId())) {
-                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), Constants.COMBINED_ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), Constants.FILE_COMBINED_ID_OUTCOME_KEY);
 
                 EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2outcomeFile);
                                 

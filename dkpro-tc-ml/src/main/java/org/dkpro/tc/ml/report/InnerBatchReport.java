@@ -99,7 +99,7 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 	}
 
 	private void writeCombinedOutcomeReport(String payload) throws Exception {
-		File file = getContext().getFile(COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
+		File file = getContext().getFile(FILE_COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 
 		writer.write(payload);

@@ -35,6 +35,8 @@ public class ContextMemoryReport extends TcBatchReportBase {
 
 	public static List<File> id2outcomeFiles = new ArrayList<>();
 	
+	public static List<File> crossValidationCombinedIdFiles = new ArrayList<>();
+	
 	public static List<String> allIds = new ArrayList<String>();
 
 	@Override
@@ -49,7 +51,9 @@ public class ContextMemoryReport extends TcBatchReportBase {
 				id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
 			}
 			if (TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
-				id2outcomeFiles.add(storageService.locateKey(id, Constants.COMBINED_ID_OUTCOME_KEY));
+				File f = storageService.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
+				id2outcomeFiles.add(f);
+				crossValidationCombinedIdFiles.add(f);
 			}
 		}
 	}

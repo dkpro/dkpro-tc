@@ -63,7 +63,7 @@ public class MultiClassifierExperiment implements Constants {
 
 	public static void main(String[] args) throws Exception {
 
-		DemoUtils.setDkproHome(MultiClassifierExperiment.class.getSimpleName());
+		DemoUtils.setDkproHome("target/");
 
 		ParameterSpace pSpace = getParameterSpace();
 

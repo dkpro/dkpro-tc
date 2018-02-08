@@ -62,7 +62,7 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 			System.out.println(id);
 
 			File combinedId2outcome = store.locateKey(id,
-					Constants.COMBINED_ID_OUTCOME_KEY);
+					Constants.FILE_COMBINED_ID_OUTCOME_KEY);
 
 			Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id,
 					Task.DISCRIMINATORS_KEY);
