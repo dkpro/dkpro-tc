@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "Demo Experiments (1.0.0 Release)"
+title: "DKPro TC basics (1.0.0 Release)"
 permalink: "/DKProTcBasics_1_0_0/"
 ---
 
@@ -51,9 +51,15 @@ ParameterSpace pSpace = new ParameterSpace(
         dimClassificationArgs
  );
 
+/* Sets the output-folder to which all data is written that is created by DKPro TC, 
+   this includes the results of the experiments. 
+   This environmental variable has to be set before the experiment runs, temporarily or permantely */
+System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
+
 // Pass this configuration to an experiment
-ExperimentTrainTest exp = new ExperimentTrainTest("BrownPosDemoCV");
+ExperimentTrainTest exp = new ExperimentTrainTest("ExperimentName");
 exp.setPreprocessing(createEngineDescription(OutcomeAnnotator.class);
+exp.addReport(new BatchTrainTestReport());
 exp.setParameterSpace(pSpace); 
 
 // Run experiment
@@ -67,3 +73,18 @@ Regarding (ii), the parameter space is main data structure which is used by DKPr
 
 ### Experiment
 DKPro TC has two experimental modi, a train-test experiment (shown in the code snippet) in which a fixed train-test data split is provided by the user or cross-validation in which DKPro TC splits the data autonomously into the number of requested folds.
+
+### Results of an experiment
+The results are written to the folder provided as `DKPRO_HOME` directory. The subfolder contain all output written by an experiment, and not just the final results. The folder with the results is the `Evaluation-*` folder. The other folders are probably not of importance for using DKPRo TC, but we explain their content yet briefly. For a train-test experiment, the following folders are created:
+
+* InitTask-Train-ExperimentName-*
+* InitTask-Test-ExperimentName-*
+* OutcomeCollectionTask-ExperimentName-*
+* MetaInfoTask-ExperimentName-*
+* ExtractFeaturesTask-Train-ExperimentName-*
+* ExtractFeaturesTask-Test-ExperimentName-*
+* DKProTcShallowTestTask-ExperimentName-*
+* <MachineLearningAdapter>-ExperimentName-*
+* Evaluation-ExperimentName-*
+
+The `InitTask` folders contain the provided training and testing data converted into an internal data format. `OutcomeCollectionTask` collects all occurring labels in the training and testing data (or nothing if its regression). `MetaInfoTask` prepares the usage of features that use a frequency cut-off, i.e. the word-ngram feature that is used in the experimental setup. `ExtractFeatureTask` contain the extracted features in the data format the respective classifier expects. `DKProTcShallowTestTask` and `<MachineLearningAdapter>` execute the actual classifier with the feature data extracted before. The results per instance and some more low-level information can be found in the `<MachineLearningAdapter>` folder.
