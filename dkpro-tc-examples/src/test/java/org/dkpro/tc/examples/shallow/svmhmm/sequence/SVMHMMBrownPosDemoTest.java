@@ -46,7 +46,7 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 	}
 
 	@Test
-	public void testActualSVMHMM() throws Exception {
+	public void testSvmHmm() throws Exception {
 
 		pSpace = SvmHmmBrownPosDemo.getParameterSpace();
 
