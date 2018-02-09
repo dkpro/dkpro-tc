@@ -63,7 +63,7 @@ Lab.getInstance().run(exp);
 ### Dimensions and the parameter space
 An experiment consists of (i) several dimensions that are combined in a (ii) parameter space and provided to an experiment. 
 Regarding (i), dimensions are the basic building blocks of an experimental setup. Almost every parameter that is altered in an experiment is changed or set via a dimension. The dimensions in the code declare three building blocks: First, the readers that provide the data for the experiment, second, the feature set that is used in this experiment, and third, the classification arguments that specify the classifier which is to be used (Liblinear in this case).
-Regarding (ii), the parameter space is main data structure which is used by DKPro TC in the background; it is important that all created dimension are added to the parameter space, otherwise they are not used. The parameter space has to additional entries which define that the experiment is a document classification task in which a single label is predicted for each document.
+Regarding (ii), the parameter space is main data structure which is used by DKPro TC in the background; it is important that all created dimension are added to the parameter space, otherwise they are not used. 
 
 ### Experiment
 DKPro TC has two experimental modi, a train-test experiment (shown in the code snippet) in which a fixed train-test data split is provided by the user or cross-validation in which DKPro TC splits the data autonomously into the number of requested folds.
