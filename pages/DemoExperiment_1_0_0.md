@@ -22,7 +22,7 @@ Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new Tc
 				TcFeatureFactory.create(LuceneCharacterNGram.class, 
 							LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
-Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
+Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				  Arrays.asList(new LiblinearAdapter()));
 
 ParameterSpace pSpace = new ParameterSpace(
