@@ -84,7 +84,7 @@ The results are written to the folder provided as `DKPRO_HOME` directory. The su
 * ExtractFeaturesTask-Train-ExperimentName-*
 * ExtractFeaturesTask-Test-ExperimentName-*
 * DKProTcShallowTestTask-ExperimentName-*
-* <MachineLearningAdapter>-ExperimentName-*
+* \<MachineLearningAdapter>-ExperimentName-*
 * Evaluation-ExperimentName-*
 
 The `InitTask` folders contain the provided training and testing data converted into an internal data format. `OutcomeCollectionTask` collects all occurring labels in the training and testing data (or nothing if its regression). `MetaInfoTask` prepares the usage of features that use a frequency cut-off, i.e. the word-ngram feature that is used in the experimental setup. `ExtractFeatureTask` contain the extracted features in the data format the respective classifier expects. `DKProTcShallowTestTask` and `<MachineLearningAdapter>` execute the actual classifier with the feature data extracted before. The results per instance and some more low-level information can be found in the `<MachineLearningAdapter>` folder.
