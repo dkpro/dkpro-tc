@@ -10,6 +10,7 @@ Subsequently, we introduce the key concepts necessary for using DKPro TC by disc
 
 ```java
 
+// Defining the readers that read the data that we use in an experiment
 CollectionReaderDescription readerTrain = CollectionReaderFactory.create..()
 CollectionReaderDescription readerTest = CollectionReaderFactory.create..();
 Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -17,26 +18,46 @@ dimReaders.put(DIM_READER_TRAIN, readerTrain);
 dimReaders.put(DIM_READER_TEST, readerTest);
 Dimension<Map<String, Object>> readersDimension = Dimension.createBundle("readers", dimReaders);
 
+/* Defining the features that we extract for training a classifier model, 
+   we use two features, the number of tokens and the 50 most frequent word ngrams */ 
+ 
+/* Classification of documents (alternative would be sinlge words, 
+either independelty or as sequence modelling task) */
+Dimension<String> dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT); 
+  
+/* Classification is done by predicting a single label for each document 
+ (alternative would be regression, i.e. no label, or multi-label) */
+Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);  
+  
+/* The feature set we use, we use two dummy features here: 
+   Number of tokens per document and the 50 most frequent
+   word ngrams over all documents */
 Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
 				TcFeatureFactory.create(NrOfTokens.class),
-				TcFeatureFactory.create(LuceneCharacterNGram.class, 
-							LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
+				TcFeatureFactory.create(LuceneNGram.class, 
+							LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
+/* The classification arguments specify which classifier we want to use, one can specify several 
+   classifiers or confirgurations of the same classifier; TC will automatically execute them all */
 Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				  Arrays.asList(new LiblinearAdapter()));
 
+// Wire everything in a parameter space
 ParameterSpace pSpace = new ParameterSpace(
-        Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-	Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), 
+	dimLearningModem,
+	dimFeatureMode,
         readersDimension,
 	dimFeatureSet, 
         dimClassificationArgs
  );
- 
-ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV");
-batch.setPreprocessing(createEngineDescription(OutcomeAnnotator.class);
-batch.setParameterSpace(pSpace); 
 
+// Pass this configuration to an experiment
+ExperimentTrainTest exp = new ExperimentTrainTest("BrownPosDemoCV");
+exp.setPreprocessing(createEngineDescription(OutcomeAnnotator.class);
+exp.setParameterSpace(pSpace); 
+
+// Run experiment
+Lab.getInstance().run(exp);
 ```
 
 ### Dimensions and the parameter space
