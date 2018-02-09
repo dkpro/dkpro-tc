@@ -42,20 +42,9 @@ public class LiblinearTestTask extends LibsvmDataFormatTestTask implements Const
 	public static final double PARAM_C_DEFAULT = 1.0;
 
 	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		throwExceptionIfMultiLabelMode();
-
-		runPrediction(aContext);
-	}
-	
-	@Override
-	protected void runPrediction(TaskContext aContext) throws Exception {
-
-		File fileTrain = getTrainFile(aContext);
-		File fileTest = getTestFile(aContext);
+	protected Object trainModel(TaskContext aContext) throws Exception {
 		
-		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
-		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
+		File fileTrain = getTrainFile(aContext);
 		
 		// default for bias is -1, documentation says to set it to 1 in order to
 		// get results closer
@@ -70,12 +59,23 @@ public class LiblinearTestTask extends LibsvmDataFormatTestTask implements Const
 		Linear.setDebugOutput(null);
 		Parameter parameter = new Parameter(solver, C, eps);
 		Model model = Linear.train(train, parameter);
-		Problem test = Problem.readFromFile(fileTest, 1.0);
+		return model;
+	}
 
+	@Override
+	protected void runPrediction(TaskContext aContext, Object trainedModel) throws Exception {
+		
+		Model model = (Model) trainedModel;
+		
+		File fileTest = getTestFile(aContext);
+		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
+		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
+		
 		BufferedWriter writer = new BufferedWriter(
 				new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
 		writer.append("#PREDICTION;GOLD" + "\n");
 
+		Problem test = Problem.readFromFile(fileTest, 1.0);
 		Feature[][] testInstances = test.x;
 		for (int i = 0; i < testInstances.length; i++) {
 			Feature[] instance = testInstances[i];

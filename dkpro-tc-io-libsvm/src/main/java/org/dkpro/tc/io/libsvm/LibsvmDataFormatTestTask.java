@@ -37,8 +37,18 @@ public abstract class LibsvmDataFormatTestTask extends ExecutableTaskBase implem
 
 	@Discriminator(name = DIM_FEATURE_MODE)
 	protected String featureMode;
+	
+	@Override
+	public void execute(TaskContext aContext) throws Exception {
+		throwExceptionIfMultiLabelMode();
+		
+		Object model = trainModel(aContext);
+		runPrediction(aContext, model);
+	}
 
-	protected abstract void runPrediction(TaskContext aContext) throws Exception;
+
+	protected abstract Object trainModel(TaskContext aContext) throws Exception;
+	protected abstract void runPrediction(TaskContext aContext, Object model) throws Exception;
 
 	protected File getPredictionFile(TaskContext aContext) {
 		File folder = aContext.getFolder("", AccessMode.READWRITE);

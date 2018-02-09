@@ -34,7 +34,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.svmhmm.util.SvmHmmUtils;
@@ -64,34 +63,11 @@ public class SvmHmmTestTask
     public void execute(TaskContext aContext)
         throws Exception
     {
-        if (!Constants.LM_SINGLE_LABEL.equals(learningMode)) {
-            throw new TextClassificationException(
-                    learningMode + " was requested but only single label setup is supported.");
-        }
-        
         processParameters(classificationArguments);
-        
-        runPrediction(aContext);
 
+        super.execute(aContext);
     }
     
-    @Override
-	protected void runPrediction(TaskContext aContext) throws Exception {
-    	
-		File fileTrain = getTrainFile(aContext);
-		File fileTest = getTestFile(aContext);
-		
-		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
-		List<String> trainCommand = buildTrainCommand(fileTrain, modelFile, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
-		runCommand(trainCommand);
-		
-		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
-		List<String> predictionCommand = buildPredictionCommand(fileTest, modelFile, predictionsFile);
-		runCommand(predictionCommand);
-		
-		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);
-	}
-
     private void combinePredictionAndExpectedGoldLabels(File fileTest, File predictionsFile) throws Exception {
     	
     	BufferedReader readerPrediction = new BufferedReader(new InputStreamReader(new FileInputStream(predictionsFile), "utf-8"));
@@ -213,5 +189,30 @@ public class SvmHmmTestTask
             throw new RuntimeException(e);
         }
     }
+
+	@Override
+	protected Object trainModel(TaskContext aContext) throws Exception {
+		
+		File fileTrain = getTrainFile(aContext);
+		
+		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
+		List<String> trainCommand = buildTrainCommand(fileTrain, modelFile, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
+		runCommand(trainCommand);
+		
+		return modelFile;
+	}
+
+	@Override
+	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
+		
+		File fileTest = getTestFile(aContext);
+		File modelFile = (File) model;
+		
+		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
+		List<String> predictionCommand = buildPredictionCommand(fileTest, modelFile, predictionsFile);
+		runCommand(predictionCommand);
+		
+		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);		
+	}
 	
 }
