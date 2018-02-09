@@ -308,7 +308,11 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		for (String k : map.keySet()) {
 			if (k.endsWith("|" + key)) {
-				return map.get(k);
+				String result = map.get(k);
+				if (result == null || result.equals("null")){
+					return null;
+				}
+				return result;
 			}
 		}
 
