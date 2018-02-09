@@ -18,8 +18,14 @@
  */
 package org.dkpro.tc.examples.util;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Task;
+import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 
 /**
@@ -37,4 +43,57 @@ public class CvContextMemoryReport
     {
     	mlaAdapters = getContextIdOfMachineLearningAdapter();
     }
+    
+    /**
+	 * Retrieves the context ids of all machine learning adapter folders that
+	 * have been created in this cross-validation run. Behavior undefined if
+	 * this method is called in a train test setup
+	 * 
+	 * @return a list of context ids of the machine learning adapter folders
+	 * @throws Exception
+	 *             in case read operations fail
+	 */
+	public List<String> getContextIdOfMachineLearningAdapter() throws Exception {
+
+		File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
+		List<String> foldersOfSingleRuns = getSubTasks(cvTaskAttributeFile);
+
+		List<String> mlaContextIdsOfCvRun = new ArrayList<>();
+		for (String f : foldersOfSingleRuns) {
+			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), f)) {
+				mlaContextIdsOfCvRun.add(f);
+			}
+		}
+
+		return mlaContextIdsOfCvRun;
+	}
+
+	private List<String> getSubTasks(File attributesTXT) throws Exception {
+		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+
+		int idx = 0;
+		for (String line : readLines) {
+			if (line.startsWith("Subtask")) {
+				break;
+			}
+			idx++;
+		}
+		String line = readLines.get(idx);
+		int start = line.indexOf("[") + 1;
+		int end = line.indexOf("]");
+		String subTasks = line.substring(start, end);
+
+		String[] tasks = subTasks.split(",");
+
+		List<String> results = new ArrayList<>();
+
+		for (String task : tasks) {
+			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), task.trim())) {
+				results.add(task.trim());
+			}
+		}
+
+		return results;
+	}
+
 }

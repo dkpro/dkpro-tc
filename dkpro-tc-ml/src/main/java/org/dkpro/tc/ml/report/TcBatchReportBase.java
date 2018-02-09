@@ -31,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.BatchReportBase;
 import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.Task;
@@ -144,58 +143,6 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		return m;
-	}
-
-	/**
-	 * Retrieves the context ids of all machine learning adapter folders that
-	 * have been created in this cross-validation run. Behavior undefined if
-	 * this method is called in a train test setup
-	 * 
-	 * @return a list of context ids of the machine learning adapter folders
-	 * @throws Exception
-	 *             in case read operations fail
-	 */
-	public List<String> getContextIdOfMachineLearningAdapter() throws Exception {
-
-		File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
-		List<String> foldersOfSingleRuns = getSubTasks(cvTaskAttributeFile);
-
-		List<String> mlaContextIdsOfCvRun = new ArrayList<>();
-		for (String f : foldersOfSingleRuns) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), f)) {
-				mlaContextIdsOfCvRun.add(f);
-			}
-		}
-
-		return mlaContextIdsOfCvRun;
-	}
-
-	private List<String> getSubTasks(File attributesTXT) throws Exception {
-		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
-
-		int idx = 0;
-		for (String line : readLines) {
-			if (line.startsWith("Subtask")) {
-				break;
-			}
-			idx++;
-		}
-		String line = readLines.get(idx);
-		int start = line.indexOf("[") + 1;
-		int end = line.indexOf("]");
-		String subTasks = line.substring(start, end);
-
-		String[] tasks = subTasks.split(",");
-
-		List<String> results = new ArrayList<>();
-
-		for (String task : tasks) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), task.trim())) {
-				results.add(task.trim());
-			}
-		}
-
-		return results;
 	}
 
 	/**
