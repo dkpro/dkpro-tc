@@ -29,7 +29,7 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.examples.io.PairTwentyNewsgroupsReader
+import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentTrainTest

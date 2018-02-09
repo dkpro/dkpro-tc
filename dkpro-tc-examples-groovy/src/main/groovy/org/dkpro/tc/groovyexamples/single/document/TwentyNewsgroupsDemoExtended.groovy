@@ -36,7 +36,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask
 import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
 import org.dkpro.tc.core.task.OutcomeCollectionTask
-import org.dkpro.tc.examples.io.TwentyNewsgroupsCorpusReader
+import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
 import org.dkpro.tc.features.ngram.*
