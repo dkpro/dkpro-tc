@@ -24,9 +24,12 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
+
+import scala.collection.parallel.Tasks;
 
 /**
  * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to
@@ -73,7 +76,7 @@ public class CvContextMemoryReport
 
 		int idx = 0;
 		for (String line : readLines) {
-			if (line.startsWith("Subtask")) {
+			if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
 				break;
 			}
 			idx++;
