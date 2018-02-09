@@ -49,7 +49,7 @@ import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerialization_ImplBase {
 
-	protected static String OUTCOME_PLACEHOLDER = "-1";
+	protected String OUTCOME_PLACEHOLDER = "-1";
 
 	@ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
 	protected File tcModelLocation;

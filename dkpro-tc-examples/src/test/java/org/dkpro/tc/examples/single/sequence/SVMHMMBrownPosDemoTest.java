@@ -18,7 +18,7 @@
  */
 package org.dkpro.tc.examples.single.sequence;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,7 +69,6 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 		Accuracy<String> acc = new Accuracy<String>(data);
 
-		assertTrue(acc.getResult() > 0.5);
-
+		assertEquals(0.5, acc.getResult(), 0.05);
 	}
 }
