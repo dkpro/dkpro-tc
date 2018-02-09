@@ -48,7 +48,7 @@ import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 /**
  * Tests SVMhmm on POS tagging of one file in Brown corpus
  */
-public class SVMHMMBrownPosDemo
+public class SvmHmmBrownPosDemo
 {
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
@@ -133,9 +133,9 @@ public class SVMHMMBrownPosDemo
         throws Exception
     {
 
-        DemoUtils.setDkproHome(SVMHMMBrownPosDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(SvmHmmBrownPosDemo.class.getSimpleName());
 
-        SVMHMMBrownPosDemo experiment = new SVMHMMBrownPosDemo();
+        SvmHmmBrownPosDemo experiment = new SvmHmmBrownPosDemo();
         experiment.runTrainTest(getParameterSpace());
     }
 

@@ -35,20 +35,20 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
  * exception.
  */
 public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
-	SVMHMMBrownPosDemo javaExperiment;
+	SvmHmmBrownPosDemo javaExperiment;
 	ParameterSpace pSpace;
 
 	@Before
 	public void setup() throws Exception {
 		super.setup();
 
-		javaExperiment = new SVMHMMBrownPosDemo();
+		javaExperiment = new SvmHmmBrownPosDemo();
 	}
 
 	@Test
 	public void testActualSVMHMM() throws Exception {
 
-		pSpace = SVMHMMBrownPosDemo.getParameterSpace();
+		pSpace = SvmHmmBrownPosDemo.getParameterSpace();
 
 		javaExperiment.runTrainTest(pSpace);
 
