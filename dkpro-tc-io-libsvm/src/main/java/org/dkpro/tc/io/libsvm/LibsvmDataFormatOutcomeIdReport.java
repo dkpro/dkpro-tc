@@ -45,7 +45,10 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 	@Override
 	public void execute() throws Exception {
 		
-		THRESHOLD_CONSTANT = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+		String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+		if(threshold != null){
+			THRESHOLD_CONSTANT = threshold;
+		}
 		
 		boolean isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
 		boolean isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
