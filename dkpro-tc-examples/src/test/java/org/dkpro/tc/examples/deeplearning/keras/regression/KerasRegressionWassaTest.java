@@ -36,7 +36,7 @@ public class KerasRegressionWassaTest extends PythonLocator {
 
 		DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-		boolean testConditon = true;
+		boolean testConditon = false;
 		String python3 = null;
 		try {
 			python3 = getEnvironment();

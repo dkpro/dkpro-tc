@@ -37,7 +37,7 @@ public class DyNetDocumentTest extends PythonLocator {
 
 		DemoUtils.setDkproHome(DynetDocumentTrainTest.class.getSimpleName());
 
-		boolean testConditon = true;
+		boolean testConditon = false;
 		String python3 = null;
 		try {
 			python3 = getEnvironment();

@@ -36,7 +36,7 @@ public class KerasCrossValidation extends PythonLocator {
 
 		DemoUtils.setDkproHome(KerasDocumentCrossValidation.class.getSimpleName());
 
-		boolean testConditon = true;
+		boolean testConditon = false;
 		String python3 = null;
 		try {
 			python3 = getEnvironment();
