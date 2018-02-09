@@ -82,7 +82,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperCl
 				0.001);
 		assertEquals(2.8,
 				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"),
-				0.1);
+				0.4);
 	}
 
 	private boolean combinedId2OutcomeReportsAreDissimilar(List<File> crossValidationTaskIds) throws IOException {
