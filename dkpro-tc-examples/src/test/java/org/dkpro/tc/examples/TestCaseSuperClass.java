@@ -34,7 +34,7 @@ public class TestCaseSuperClass {
 	static StringBuilder logInformation = new StringBuilder();
 
 	private static void logInfo(Description description, String status, long nanos) {
-		String testName = description.getMethodName();
+		String testName = description.getClassName() + "_" + description.getMethodName();
 		String l = String.format("Test %s %s, spent %d microseconds", testName, status,
 				TimeUnit.NANOSECONDS.toMicros(nanos));
 		
