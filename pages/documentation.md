@@ -31,7 +31,7 @@ _latest release_
 ### DKPro TC {{ unstable.version }}
 
 * [DKPro TC Basics](/dkpro-tc/DKProTcBasics_1_0_0/)
-* [DKPro TC Deep Learning] (/dkpro-tc/DKProTcDeepLearning_1_0_0/)
+* [DKPro TC Deep Learning](/dkpro-tc/DKProTcDeepLearning_1_0_0/)
 
 _upcoming release - links may be temporarily broken while a build is in progress_
 
