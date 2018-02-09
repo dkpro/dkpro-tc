@@ -18,13 +18,26 @@
  */
 package org.dkpro.tc.examples;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 
 public class TestCaseSuperClass {
+	
+	public final static String HOME = "target/results";
+	
 	@Before
 	public void setup() throws Exception {
 		/* Sets the logging, configuraiton files are found under src/test/* to increase verbosity for debugging */
-//		 System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-		 System.setProperty("DKPRO_HOME", "target/results");
+		 System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+		 System.setProperty("DKPRO_HOME", HOME);
 	}
+	
+	@After
+	public void cleanUp() throws Exception {
+		FileUtils.deleteDirectory(new File(HOME));
+	}
+	
 }
