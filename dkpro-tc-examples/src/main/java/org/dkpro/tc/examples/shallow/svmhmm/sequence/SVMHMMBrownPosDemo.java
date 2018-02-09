@@ -18,16 +18,11 @@
  */
 package org.dkpro.tc.examples.shallow.svmhmm.sequence;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -59,13 +54,11 @@ public class SVMHMMBrownPosDemo
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
     private static final int NUM_FOLDS = 3;
 
-    public static Map<String, Object> getDimReaders(boolean trainTest)
+    public static Map<String, Object> getDimReaders()
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> results = new HashMap<>();
-
-        if (trainTest) {
 
             CollectionReaderDescription readerTrain = CollectionReaderFactory
                     .createReaderDescription(BrownCorpusReader.class,
@@ -82,27 +75,15 @@ public class SVMHMMBrownPosDemo
 
             results.put(Constants.DIM_READER_TRAIN, readerTrain);
             results.put(Constants.DIM_READER_TEST, readerTest);
-        }
-        else {
-            CollectionReaderDescription readerTrain = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS,
-                            Arrays.asList(INCLUDE_PREFIX + "*.xml"));
-
-            results.put(Constants.DIM_READER_TRAIN, readerTrain);
-        }
 
         return results;
     }
 
-    public static ParameterSpace getParameterSpace(boolean trainTest,
-            Dimension<List<Object>> dimClassificationArgs)
+    public static ParameterSpace getParameterSpace()
                 throws ResourceInitializationException
     {
         // configure training and test data reader dimension
-        Map<String, Object> dimReaders = getDimReaders(trainTest);
+        Map<String, Object> dimReaders = getDimReaders();
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 Constants.DIM_FEATURE_SET,
@@ -111,6 +92,10 @@ public class SVMHMMBrownPosDemo
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
                                 LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3)));
+        
+        @SuppressWarnings("unchecked")
+        Dimension<List<Object>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
@@ -147,37 +132,11 @@ public class SVMHMMBrownPosDemo
     public static void main(String[] args)
         throws Exception
     {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SvmHmmAdapter()));
-
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
         DemoUtils.setDkproHome(SVMHMMBrownPosDemo.class.getSimpleName());
 
-        // run cross-validation first
-        ParameterSpace pSpace = getParameterSpace(false, dimClassificationArgs);
-
         SVMHMMBrownPosDemo experiment = new SVMHMMBrownPosDemo();
-        // run with a random labeler
-        // experiment.runCrossValidation(pSpace, RandomSVMHMMAdapter.class);
-        // run with an actual SVMHMM implementation
-        // experiment.runCrossValidation(pSpace, SVMHMMAdapter.class);
-        //
-        // // run train test
-        pSpace = getParameterSpace(true, dimClassificationArgs);
-        //
-        // experiment = new SVMHMMBrownPosDemo();
-        // // run with a random labeler
-        // experiment.runTrainTest(pSpace, RandomSVMHMMAdapter.class);
-        // // run with an actual SVMHMM implementation
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest(getParameterSpace());
     }
 
 }

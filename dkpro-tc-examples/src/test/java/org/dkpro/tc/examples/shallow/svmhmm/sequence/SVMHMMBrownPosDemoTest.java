@@ -18,19 +18,12 @@
  */
 package org.dkpro.tc.examples.shallow.svmhmm.sequence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.svmhmm.sequence.SVMHMMBrownPosDemo;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
-import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,15 +47,8 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 
 	@Test
 	public void testActualSVMHMM() throws Exception {
-		@SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
 
-		// Dimension<List<String>> dimClassificationArgs = Dimension.create(
-		// Constants.DIM_CLASSIFICATION_ARGS,
-		// new ArrayList<>());
-
-		pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
+		pSpace = SVMHMMBrownPosDemo.getParameterSpace();
 
 		javaExperiment.runTrainTest(pSpace);
 
