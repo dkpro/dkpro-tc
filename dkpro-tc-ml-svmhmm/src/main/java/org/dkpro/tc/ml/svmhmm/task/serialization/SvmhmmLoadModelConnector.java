@@ -42,7 +42,6 @@ public class SvmhmmLoadModelConnector extends LibsvmDataFormatLoadModelConnector
 	protected File runPrediction(File tempFile) throws Exception {
 
 		File prediction = FileUtil.createTempFile("svmHmmPrediction", ".svmhmm");
-		prediction.deleteOnExit();
 		
 		File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
 		
