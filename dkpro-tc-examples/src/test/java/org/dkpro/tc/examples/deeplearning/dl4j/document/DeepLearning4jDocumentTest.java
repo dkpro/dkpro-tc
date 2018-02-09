@@ -16,23 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.deeplearning.dl4j.document;
 
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
+import org.dkpro.tc.examples.deeplearning.dl4j.document.DeepLearning4jDocumentTrainTest;
 import org.junit.Test;
 
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
- */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+public class DeepLearning4jDocumentTest extends TestCaseSuperClass
 {
-
     @Test
-    public void testJavaTrainTest()
+    public void runDocumentTest()
         throws Exception
     {
-        TwentyNewsgroupsRaw.main(null);
+        DeepLearning4jDocumentTrainTest dl4j = new DeepLearning4jDocumentTrainTest();
+        dl4j.runTrainTest(DeepLearning4jDocumentTrainTest.getParameterSpace());
     }
 }

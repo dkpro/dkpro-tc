@@ -16,23 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.deeplearning.dl4j.sequence;
 
-import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
-import org.junit.Test;
+import java.io.IOException;
 
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
- */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+import org.dkpro.tc.examples.deeplearning.dl4j.sequence.BinaryWordVectorSerializer.BinaryVectorizer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+
+public class EmbeddingsFeature
+    implements Feature
 {
+    private BinaryVectorizer wordVectors;
 
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
+    public EmbeddingsFeature(BinaryVectorizer aWordVectors)
+        throws IOException
     {
-        TwentyNewsgroupsRaw.main(null);
+        wordVectors = aWordVectors;
+    }
+
+    @Override
+    public INDArray apply(String aWord)
+        throws IOException
+    {
+        return Nd4j.create(wordVectors.vectorize(aWord));
+    }
+
+    @Override
+    public int size()
+    {
+        return wordVectors.getVectorSize();
     }
 }

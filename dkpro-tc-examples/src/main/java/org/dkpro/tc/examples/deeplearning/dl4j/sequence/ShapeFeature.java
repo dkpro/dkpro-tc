@@ -16,23 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.deeplearning.dl4j.sequence;
 
-import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
-import org.junit.Test;
+import java.io.IOException;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
- */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+public class ShapeFeature
+    implements Feature
 {
+    public static final int CASE = 0;
 
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
+    @Override
+    public INDArray apply(String aWord)
+        throws IOException
     {
-        TwentyNewsgroupsRaw.main(null);
+        INDArray vector = Nd4j.zeros(1);
+        if (aWord.length() > 0) {
+            vector.putScalar(CASE, Character.isUpperCase(aWord.charAt(0)) ? 1 : 0);
+        }
+
+        return vector;
+    }
+
+    @Override
+    public int size()
+    {
+        return 1;
     }
 }

@@ -16,23 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
-
-import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
-import org.junit.Test;
-
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * Raw usage of TC feature extractors without all the "sugar".
+ *
+ * @since 0.1.0
  */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
-{
-
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
-    {
-        TwentyNewsgroupsRaw.main(null);
-    }
-}
+package org.dkpro.tc.examples.shallow.raw;

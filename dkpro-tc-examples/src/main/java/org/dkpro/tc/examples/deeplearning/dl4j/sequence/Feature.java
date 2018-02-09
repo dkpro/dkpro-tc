@@ -16,23 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.deeplearning.dl4j.sequence;
 
-import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
-import org.junit.Test;
+import java.io.IOException;
 
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
- */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+import org.nd4j.linalg.api.ndarray.INDArray;
+
+public interface Feature
 {
 
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
-    {
-        TwentyNewsgroupsRaw.main(null);
-    }
+    INDArray apply(String aWord)
+        throws IOException;
+
+    int size();
+
 }

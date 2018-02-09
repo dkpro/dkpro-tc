@@ -16,23 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.shallow.weka.document;
 
+import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * This test just ensures that the experiment runs without throwing
  * any exception.
  */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+public class WekaAblationDemoTest extends TestCaseSuperClass
 {
-
-    @Test
-    public void testJavaTrainTest()
+    WekaAblationDemo javaExperiment;
+    ParameterSpace pSpace;
+    
+    @Before
+    public void setup()
         throws Exception
     {
-        TwentyNewsgroupsRaw.main(null);
+        super.setup();
+        
+        javaExperiment = new WekaAblationDemo();
+        pSpace = WekaAblationDemo.getParameterSpace();
+    }
+
+    @Test
+    public void testJavaCrossValidation()
+        throws Exception
+    {
+        javaExperiment.runCrossValidation(pSpace);
     }
 }

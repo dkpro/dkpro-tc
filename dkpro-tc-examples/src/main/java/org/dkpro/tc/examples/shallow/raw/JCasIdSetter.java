@@ -16,23 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.raw;
+package org.dkpro.tc.examples.shallow.raw;
 
-import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
-import org.junit.Test;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.util.JCasUtil;
+import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.type.JCasId;
 
-/**
- * This test just ensures that the experiment runs without throwing
- * any exception.
- */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+public class JCasIdSetter
+    extends JCasAnnotator_ImplBase
 {
 
-    @Test
-    public void testJavaTrainTest()
-        throws Exception
+    int jcasId;
+
+    @Override
+    public void process(JCas arg0)
+        throws AnalysisEngineProcessException
     {
-        TwentyNewsgroupsRaw.main(null);
+        boolean exists = JCasUtil.exists(arg0, JCasId.class);
+        if (!exists) {
+            JCasId id = new JCasId(arg0);
+            id.setId(jcasId++);
+            id.addToIndexes();
+        }
+
     }
+
 }
