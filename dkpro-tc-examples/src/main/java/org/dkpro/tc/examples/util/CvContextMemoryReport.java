@@ -29,8 +29,6 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 
-import scala.collection.parallel.Tasks;
-
 /**
  * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to
  * read result files in JUnit tests
