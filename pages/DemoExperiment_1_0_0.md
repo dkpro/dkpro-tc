@@ -6,7 +6,7 @@ permalink: "/DemoExperiment_1_0_0/"
 
 ### Anatomy of a DKPro TC experiment
 
-Experiments in DKPro TC follow the following structure, which we briefly discuss subsequently as they are the key concepts of DKPro TC.
+Subsequently, we introduce the key concepts necessary for using DKPro TC by discussing a minimal setup and walk the reader to the building blocks of an experiment.
 
 ```java
 
