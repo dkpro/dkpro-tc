@@ -48,8 +48,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.ml.svmhmm.util.OriginalTextHolderFeatureExtractor;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 
 /**
  * Tests SVMhmm on POS tagging of one file in Brown corpus
@@ -111,8 +110,7 @@ public class SVMHMMBrownPosDemo
                         TcFeatureFactory.create(LuceneCharacterNGram.class,
                                 LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
                                 LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
-                        TcFeatureFactory.create(OriginalTextHolderFeatureExtractor.class)));
+                                LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3)));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
@@ -154,7 +152,7 @@ public class SVMHMMBrownPosDemo
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SVMHMMAdapter()));
+                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SvmHmmAdapter()));
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup

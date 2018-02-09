@@ -29,11 +29,11 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.svmhmm.report.SVMHMMOutcomeIDReport;
-import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmSerializeModelConnector;
-import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
+import org.dkpro.tc.ml.svmhmm.writer.SvmHmmDataWriter;
 
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
@@ -58,23 +58,22 @@ import org.dkpro.tc.ml.svmhmm.writer.SVMHMMDataWriter;
  *   -b       A non-zero value turns on (approximate) beam search to replace
  *               the exact Viterbi algorithm both for finding the most violated constraint, as well as for
  *               computing predictions. The value is the width of the beam used (e.g. 100). (default 0).
- * 
  * </pre>
  */
-public class SVMHMMAdapter
+public class SvmHmmAdapter
 	implements TcShallowLearningAdapter
 {
 
     @Override
     public ExecutableTaskBase getTestTask()
     {
-        return new SVMHMMTestTask();
+        return new SvmHmmTestTask();
     }
 
     @Override
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
-        return SVMHMMOutcomeIDReport.class;
+        return LibsvmDataFormatOutcomeIdReport.class;
     }
 
     @SuppressWarnings("unchecked")
@@ -87,7 +86,7 @@ public class SVMHMMAdapter
 
 	@Override
 	public Class<? extends DataWriter> getDataWriterClass() {
-		return SVMHMMDataWriter.class;
+		return SvmHmmDataWriter.class;
 	}
 
 	@Override
@@ -103,10 +102,6 @@ public class SVMHMMAdapter
 	@Override
 	public boolean useSparseFeatures() {
 		return true;
-	}
-	
-	public static String getFeatureNameMappingFilename() {
-		return "feature-name-mapping.txt";
 	}
 	
 	@Override

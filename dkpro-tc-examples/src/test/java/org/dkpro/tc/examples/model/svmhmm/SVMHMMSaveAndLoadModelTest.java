@@ -52,7 +52,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.After;
 import org.junit.Rule;
@@ -141,7 +141,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         
         @SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] { new SVMHMMAdapter() }));
+				asList(new Object[] { new SvmHmmAdapter() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -182,6 +182,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         possibleOutcome.add("JJ");
         possibleOutcome.add("pct");
         possibleOutcome.add("PPS");
+        possibleOutcome.add("VBG");
         possibleOutcome.add("DOD");
         possibleOutcome.add("IN");
         possibleOutcome.add("VB");

@@ -20,100 +20,41 @@ package org.dkpro.tc.ml.svmhmm.task.serialization;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 
-import org.apache.commons.collections.BidiMap;
-import org.codehaus.plexus.util.FileUtils;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.storage.StorageService;
-import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.ml.svmhmm.task.SVMHMMTestTask;
-import org.dkpro.tc.ml.svmhmm.util.SVMHMMUtils;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
+import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
+import org.dkpro.tc.ml.svmhmm.util.SvmHmmUtils;
 
 public class SvmhmmSerializeModelConnector
-    extends ModelSerializationTask
+    extends LibsvmDataFormatSerializeModelConnector
     implements Constants
 {
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArguments;
-
-    private double paramC;
-    private double paramEpsilon;
-    private int paramOrderE;
-    private int paramOrderT;
-    private int paramB;
-
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        trainAndStoreModel(aContext);
-        writeModelConfiguration(aContext);
-    }
-
-    private void trainAndStoreModel(TaskContext aContext)
-        throws Exception
-    {
-
-        processParameters(classificationArguments);
-
-        File trainingDataStorage = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                StorageService.AccessMode.READONLY);
-
-        File trainingFile = new File(trainingDataStorage, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-
-        SortedSet<String> outcomeLabels = SVMHMMUtils
-                .extractOutcomeLabelsFromFeatureVectorFiles(trainingFile);
-        BidiMap labelsToIntegersMapping = SVMHMMUtils.mapVocabularyToIntegers(outcomeLabels);
-        
-        //copy feature names
-        FileUtils.copyFile(new File(trainingDataStorage, FILENAME_FEATURES), new File(outputFolder, FILENAME_FEATURES));
-
-        // // save mapping to file
-        File mappingFile = new File(
-                outputFolder.toString() + "/" + SVMHMMUtils.LABELS_TO_INTEGERS_MAPPING_FILE_NAME);
-        SVMHMMUtils.saveMapping(labelsToIntegersMapping, mappingFile);
-
-        File augmentedTrainingFile = SVMHMMUtils.replaceLabelsWithIntegers(trainingFile,
-                labelsToIntegersMapping);
-
-        File classifier = new File(outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        // train the model
-        new SVMHMMTestTask().trainModel(classifier, augmentedTrainingFile, paramC, paramOrderE,
-                paramOrderT, paramEpsilon, paramB);
-    }
-
-    private void processParameters(List<Object> classificationArguments)
-    {
-        if (classificationArguments == null) {
-            paramC = 5.0;
-            paramEpsilon = 0.5;
-            paramOrderT = 1;
-            paramOrderE = 0;
-            paramB = 0;
-            return;
-        }
-
-        List<String> stringArgs = new ArrayList<>();
-    	for(int i=1; i < classificationArguments.size(); i++){
-    		stringArgs.add((String)classificationArguments.get(i));
-    	}
-        
-		paramC = SVMHMMUtils.getParameterC(stringArgs);
-		paramEpsilon = SVMHMMUtils.getParameterEpsilon(stringArgs);
-		paramOrderE = SVMHMMUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
-		paramOrderT = SVMHMMUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
-		paramB = SVMHMMUtils.getParameterBeamWidth(stringArgs);
-    }
-
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, SVMHMMAdapter.class.getName());
+		SaveModelUtils.writeModelAdapterInformation(outputFolder, SvmHmmAdapter.class.getName());
+	}
+
+	@Override
+	protected void trainModel(File fileTrain) throws Exception {
+
+		List<String> stringArgs = new ArrayList<>();
+		for (int i = 1; i < classificationArguments.size(); i++) {
+			stringArgs.add((String) classificationArguments.get(i));
+		}
+
+		double paramC = SvmHmmUtils.getParameterC(stringArgs);
+		double paramEpsilon = SvmHmmUtils.getParameterEpsilon(stringArgs);
+		int paramOrderE = SvmHmmUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
+		int paramOrderT = SvmHmmUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
+		int paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
+
+		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
+		List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(fileTrain, model, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
+		SvmHmmTestTask.runCommand(buildTrainCommand);
 	}
 
 }

@@ -29,8 +29,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
-import org.dkpro.tc.ml.svmhmm.SVMHMMAdapter;
-import org.dkpro.tc.ml.svmhmm.random.RandomSVMHMMAdapter;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,19 +52,10 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 	}
 
 	@Test
-	public void testRandomSVMHMM() throws Exception {
-		@SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new RandomSVMHMMAdapter()));
-		pSpace = SVMHMMBrownPosDemo.getParameterSpace(true, dimClassificationArgs);
-		javaExperiment.runTrainTest(pSpace);
-	}
-
-	@Test
 	public void testActualSVMHMM() throws Exception {
 		@SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new SVMHMMAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
+				Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
 
 		// Dimension<List<String>> dimClassificationArgs = Dimension.create(
 		// Constants.DIM_CLASSIFICATION_ARGS,

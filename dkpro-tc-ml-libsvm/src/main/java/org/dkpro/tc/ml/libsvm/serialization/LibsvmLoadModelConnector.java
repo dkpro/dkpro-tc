@@ -54,7 +54,9 @@ public class LibsvmLoadModelConnector extends LibsvmDataFormatLoadModelConnector
 
 	@Override
 	protected File runPrediction(File tempFile) throws Exception {
-		File prediction = FileUtil.createTempFile("libsvmPrediction", "libsvm");
+		File prediction = FileUtil.createTempFile("libsvmPrediction", ".libsvm");
+		prediction.deleteOnExit();
+		
 		LibsvmPredict predictor = new LibsvmPredict();
 		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
 

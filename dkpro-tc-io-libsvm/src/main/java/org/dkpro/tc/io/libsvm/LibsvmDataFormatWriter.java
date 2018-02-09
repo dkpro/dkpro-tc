@@ -52,28 +52,28 @@ public class LibsvmDataFormatWriter implements DataWriter {
 
 	public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 
-	File outputDirectory;
+	private File outputDirectory;
 
 	boolean useSparse;
 
-	String learningMode;
+	private String learningMode;
 
 	boolean applyWeighting;
 
-	File classifierFormatOutputFile;
+	private File classifierFormatOutputFile;
 
-	BufferedWriter bw = null;
+	private BufferedWriter bw = null;
 
-	Map<String, String> index2instanceId;
+	private Map<String, String> index2instanceId;
 
-	Gson gson = new Gson();
+	private Gson gson = new Gson();
 
-	private int maxId = 0;
+	protected int maxId = 0;
 
-	Map<String, Integer> featureNames2id;
+	private Map<String, Integer> featureNames2id;
 
-	Map<String, Integer> outcomeMap;
-
+	private Map<String, Integer> outcomeMap;
+	
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
 		initGeneric();
@@ -122,10 +122,10 @@ public class LibsvmDataFormatWriter implements DataWriter {
 
 		List<Instance> instances = new ArrayList<>(in);
 
-		for (Instance inst : instances) {
+		for (Instance instance : instances) {
 			Map<Integer, Double> entry = new HashMap<>();
-			recordInstanceId(inst, maxId++, index2instanceId);
-			for (Feature f : inst.getFeatures()) {
+			recordInstanceId(instance, maxId++, index2instanceId);
+			for (Feature f : instance.getFeatures()) {
 				Integer id = featureNames2id.get(f.getName());
 				Double val = toValue(f.getValue());
 
@@ -139,12 +139,14 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			List<Integer> keys = new ArrayList<Integer>(entry.keySet());
 			Collections.sort(keys);
 
-			
 			if (isRegression()) {
-				bw.append(inst.getOutcome() + "\t");
+				bw.append(instance.getOutcome() + "\t");
 			} else {
-				bw.append(outcomeMap.get(inst.getOutcome()) + "\t");
+				bw.append(outcomeMap.get(instance.getOutcome()) + "\t");
 			}
+			
+			bw.append(injectSequenceId(instance));
+			
 			for (int i = 0; i < keys.size(); i++) {
 				Integer key = keys.get(i);
 				Double value = entry.get(key);
@@ -162,6 +164,15 @@ public class LibsvmDataFormatWriter implements DataWriter {
 		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
 		writeFeatureName2idMapping(outputDirectory, AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
 		writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(), outcomeMap);
+	}
+
+	protected String injectSequenceId(Instance instance) {
+		
+		// this method is a place holder for SvmHmm which uses an almost
+		// identical format to the Libsvm format, except that it additionally
+		// carries a sequence information. SvmHmm overloads this method.
+		
+		return "";
 	}
 
 	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {
@@ -261,12 +272,17 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			return;
 		}
 		outcomeMap = new HashMap<>();
-		Integer i = 0;
+		Integer i = getStartIndexForOutcomeMap();
 		List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
 		Collections.sort(outcomesSorted);
 		for (String o : outcomesSorted) {
 			outcomeMap.put(o, i++);
 		}
+	}
+
+	protected Integer getStartIndexForOutcomeMap() {
+		//SvmHmm extension, which starts counting at 1
+		return 0;
 	}
 
 	@Override

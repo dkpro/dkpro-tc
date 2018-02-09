@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,37 +29,33 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.InitTask;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-/**
- * Creates id 2 outcome report
- */
-public class LibsvmDataFormatOutcomeIdReport extends ReportBase implements Constants {
-	// constant dummy value for setting as threshold which is an expected field
-	// in the evaluation
-	// module but is not needed/provided by liblinear
-	private static final String THRESHOLD_CONSTANT = "-1";
+public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implements Constants {
+
+	private String THRESHOLD_CONSTANT = "-1";
 
 	public LibsvmDataFormatOutcomeIdReport() {
-		// required by groovy
+		
 	}
 
 	@Override
 	public void execute() throws Exception {
-		boolean isRegression = isRegression();
-
-		boolean isUnit = getDiscriminators().get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
-				.equals(Constants.FM_UNIT);
+		
+		THRESHOLD_CONSTANT = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+		
+		boolean isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
+		boolean isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
+		boolean isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 		String header = buildHeader(id2label, isRegression);
 
 		List<String> predictions = readPredictions();
-		Map<String, String> index2instanceIdMap = getMapping(isUnit);
+		Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
 
 		Properties prop = new SortedKeyProperties();
 		int lineCounter = 0;
@@ -87,17 +82,6 @@ public class LibsvmDataFormatOutcomeIdReport extends ReportBase implements Const
 		prop.store(fw, header);
 		fw.close();
 
-	}
-
-	private boolean isRegression() {
-
-		Collection<String> keys = getDiscriminators().keySet();
-		for (String k : keys) {
-			if (k.endsWith("|" + Constants.DIM_LEARNING_MODE)) {
-				return getDiscriminators().get(k).equals(Constants.LM_REGRESSION);
-			}
-		}
-		return false;
 	}
 
 	private Map<String, String> getMapping(boolean isUnit) throws IOException {
