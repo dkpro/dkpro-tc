@@ -29,6 +29,7 @@ _latest release_
 
 {% unless unstable.version == null %}
 ### DKPro TC {{ unstable.version }}
+* [Getting Started] (/dkpro-tc/DemoExperiment_1_0_0/)
 _upcoming release - links may be temporarily broken while a build is in progress_
 
 {% unless unstable.user_guide_url == null %}* [User Guide]({{ unstable.user_guide_url }}){% endunless %}
