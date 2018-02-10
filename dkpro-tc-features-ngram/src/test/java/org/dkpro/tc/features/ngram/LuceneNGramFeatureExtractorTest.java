@@ -96,7 +96,7 @@ public class LuceneNGramFeatureExtractorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
                 Collections.emptyList(), fes, new String[]{});
 
         // run meta collector
@@ -161,7 +161,7 @@ public class LuceneNGramFeatureExtractorTest
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false, false,
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
                 Collections.emptyList(), fes, new String[]{});
 
         // run meta collector
