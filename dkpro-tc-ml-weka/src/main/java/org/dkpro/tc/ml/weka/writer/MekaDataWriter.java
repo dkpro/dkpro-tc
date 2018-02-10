@@ -35,10 +35,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -269,7 +269,7 @@ public class MekaDataWriter
             if (!attributeStore.containsAttributeName(featureName)) {
                 FeatureType type = FeatureType.valueOf(split[1]);
                 String enumType = null;
-                if (type == FeatureType.ENUM) {
+                if (type == FeatureType.ENUMERATION) {
                     enumType = split[2];
                 }
                 Attribute attribute = WekaFeatureEncoder

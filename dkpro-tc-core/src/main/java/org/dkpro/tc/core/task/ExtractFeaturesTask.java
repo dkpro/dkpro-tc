@@ -87,9 +87,6 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 	@Discriminator(name = DIM_FEATURE_MODE)
 	private String featureMode;
 	
-	@Discriminator(name = DIM_DEVELOPER_MODE)
-	private boolean developerMode;
-	
 	@Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
 	private boolean applyWeighting;
 	
@@ -175,7 +172,6 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
 				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
 				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, featureFilters,
-				ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
 				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
 				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
 				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,

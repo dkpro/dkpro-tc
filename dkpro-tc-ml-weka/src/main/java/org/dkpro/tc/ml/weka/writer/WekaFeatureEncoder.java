@@ -23,8 +23,8 @@ import java.util.Collection;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 
 import weka.core.Attribute;
@@ -63,12 +63,13 @@ public class WekaFeatureEncoder
         String name = Utils.quote(featureName);
         Attribute attribute;
         // if value is a number then create a numeric attribute
-        if (value.equals(FeatureType.NUM) || value.equals(FeatureType.NUM_FLOATING_POINT)
-                || value.equals(FeatureType.NUM_INTEGER) || value.equals(FeatureType.BOOLEAN)|| value.equals(FeatureType.STRING)) {
+        if (value.equals(FeatureType.NUMERIC) || value.equals(FeatureType.BOOLEAN)) {
             attribute = new Attribute(name);
+        }else if(value.equals(FeatureType.STRING)){
+        	attribute = new Attribute(name, true);
         }
         // if value is an Enum thene create a nominal attribute
-        else if (value.equals(FeatureType.ENUM)) {
+        else if (value.equals(FeatureType.ENUMERATION)) {
             Class<?> forName=null;
             try {
                 forName = Class.forName(enumType);

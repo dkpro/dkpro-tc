@@ -151,7 +151,7 @@ public class WekaLoadModelConnector
         Instance instance = null;
         try {
             instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
-                    false, useSparse);
+                    useSparse);
         }
         catch (Exception e1) {
             throw new AnalysisEngineProcessException(e1);

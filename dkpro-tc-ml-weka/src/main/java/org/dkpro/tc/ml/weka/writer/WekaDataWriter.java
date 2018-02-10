@@ -34,10 +34,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
-import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -164,19 +164,23 @@ public class WekaDataWriter
                 Object featureValue = feature.getValue();
 
                 double attributeValue;
-                if (featureValue instanceof Number) {
+                if (feature.getType() == FeatureType.NUMERIC) {
                     // numeric attribute
                     attributeValue = ((Number) feature.getValue()).doubleValue();
                 }
-                else if (featureValue instanceof Boolean) {
+                else if (feature.getType() == FeatureType.BOOLEAN) {
                     // boolean attribute
-                    attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
-                }
-                else if (featureValue == null) {
-                    // null
-                    throw new IllegalArgumentException(
-                            "You have an instance which doesn't specify a value for the feature "
-                                    + feature.getName());
+                	if (featureValue instanceof Boolean){
+                		//value is provided as true/false value
+                		attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+					} else {
+						// we already have numerical values
+						if (featureValue instanceof Double) {
+							attributeValue = (Double) featureValue;
+						} else {
+							attributeValue = ((Integer) featureValue).doubleValue();
+						}
+					}
                 }
                 else {
                     // nominal or string
@@ -279,7 +283,7 @@ public class WekaDataWriter
             if (!attributeStore.containsAttributeName(featureName)) {
                 FeatureType type = FeatureType.valueOf(split[1]);
                 String enumType = null;
-                if (type == FeatureType.ENUM) {
+                if (type == FeatureType.ENUMERATION) {
                     enumType = split[2];
                 }
                 Attribute attribute = WekaFeatureEncoder

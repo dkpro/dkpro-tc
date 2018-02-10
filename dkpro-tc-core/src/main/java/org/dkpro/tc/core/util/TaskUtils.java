@@ -202,7 +202,6 @@ public class TaskUtils {
 				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
 				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
 				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(new String[0]),
-				ExtractFeaturesConnector.PARAM_DEVELOPER_MODE, developerMode,
 				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
 				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
 				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
@@ -288,7 +287,7 @@ public class TaskUtils {
 	 * 			in case of any error
 	 */
 	public static Instance getSingleInstance(String featureMode, FeatureExtractorResource_ImplBase[] featureExtractors,
-			JCas jcas, boolean developerMode, boolean addInstanceId, boolean supportSparseFeatures) throws Exception {
+			JCas jcas, boolean addInstanceId, boolean supportSparseFeatures) throws Exception {
 
 		Instance instance = new Instance();
 
@@ -298,7 +297,7 @@ public class TaskUtils {
 		} else if (featureMode.equals(Constants.FM_PAIR)) {
 			instance = getSingleInstancePair(instance, featureExtractors, jcas, addInstanceId);
 		} else if (featureMode.equals(Constants.FM_UNIT)) {
-			instance = getSingleInstanceUnit(instance, featureExtractors, jcas, addInstanceId, developerMode,
+			instance = getSingleInstanceUnit(instance, featureExtractors, jcas, addInstanceId, 
 					supportSparseFeatures);
 		}
 
@@ -335,7 +334,7 @@ public class TaskUtils {
 	 */
 	private static Instance getSingleInstanceUnit(Instance instance,
 			FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas, boolean addInstanceId,
-			boolean developerMode, boolean supportsSparseFeature) throws Exception {
+			boolean supportsSparseFeature) throws Exception {
 		int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
 		TextClassificationTarget unit = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
 
@@ -543,7 +542,7 @@ public class TaskUtils {
 				for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
 					if (!(featExt instanceof FeatureExtractor)) {
 						throw new TextClassificationException(
-								"Using non-unit FE in sequence mode: " + featExt.getResourceName());
+								"Feature extractors must implement the interface ["+ FeatureExtractor.class.getName() + "]: " + featExt.getResourceName());
 					}
 					instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, unit));
 				}

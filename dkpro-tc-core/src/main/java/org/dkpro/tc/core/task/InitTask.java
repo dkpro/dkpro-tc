@@ -77,9 +77,6 @@ public class InitTask
     @Discriminator(name = DIM_FEATURE_SET)
     protected TcFeatureSet featureExtractors;
     
-    @Discriminator(name = DIM_DEVELOPER_MODE)
-    protected boolean developerMode;
-    
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     protected List<Object> classArgs;
 
@@ -206,8 +203,6 @@ public class InitTask
         parameters.add(threshold);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_EXTRACTORS);
         parameters.add(getFeatureExtractorNames(featureExtractors));
-        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
-        parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
@@ -242,8 +237,6 @@ public class InitTask
         parameters.add(learningMode);
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);
-        parameters.add(ValidityCheckConnector.PARAM_DEVELOPER_MODE);
-        parameters.add(developerMode);
 
         return createEngineDescription(ValidityCheckConnectorPost.class, parameters.toArray());
     }

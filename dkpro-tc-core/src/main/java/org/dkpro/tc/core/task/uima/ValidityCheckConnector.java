@@ -60,9 +60,6 @@ public class ValidityCheckConnector
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
-    @ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
-    private boolean developerMode;
-
     private boolean firstCall;
     private int featureModeI;
     private int learningModeI;

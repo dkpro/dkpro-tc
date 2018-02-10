@@ -62,12 +62,6 @@ public abstract class ConnectorBase
     public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
 
     /**
-     * Switches to developer mode with less restrictive settings. For example, using document level
-     * feature extractors in unit mode will not cause an exception
-     */
-    public static final String PARAM_DEVELOPER_MODE = "developerMode";
-
-    /**
      * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
      */
     public static final String PARAM_IS_TESTING = "isTesting";

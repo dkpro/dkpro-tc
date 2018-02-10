@@ -23,6 +23,4 @@ public enum FeatureType
     ENUMERATION, 
     NUMERIC, 
     BOOLEAN, 
-    UNKNOWN,
-
 }

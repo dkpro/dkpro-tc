@@ -20,13 +20,9 @@ package org.dkpro.tc.core.task.uima;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -47,7 +43,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.filter.FeatureFilter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
-import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
@@ -91,9 +86,6 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
 	private String featureMode;
 
-	@ConfigurationParameter(name = PARAM_DEVELOPER_MODE, mandatory = true, defaultValue = "false")
-	private boolean developerMode;
-
 	@ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
 	private boolean applyWeighting;
 
@@ -105,22 +97,29 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	DataWriter dsw;
 
-	TreeSet<String> featureNames;
 	boolean writeFeatureNames = true;
 
 	BufferedWriter documentIdLogger; // writes the document ids stored in the
 										// DocumentMetaData object
 
+	InstanceExtractor instanceExtractor;
+	
+	FeatureMetaData featureMeta;
+	
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 		try {
 			
 			initDocumentMetaDataLogger();
+			
+			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors);
+			featureMeta = new FeatureMetaData();
 
 			if (isTesting) {
 				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-				featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
+				TreeSet<String> featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
+				featureMeta.setFeatureNames(featureNames);
 			}
 
 			if (featureExtractors.length == 0) {
@@ -146,36 +145,26 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	}
 
 	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
-				+ JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+				+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 		
 		DocumentMetaData dmd = null;
 		try{
-			dmd = JCasUtil.selectSingle(jcas, DocumentMetaData.class);
+			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
 			documentIdLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
 			documentIdLogger.write("\n");
 		}catch(Exception e){
 			//annotation missing
 		}
 
-		if (featureNames == null) {
-			getFeatureNames(jcas);
+		if (!featureMeta.didCollect()) {
+			getFeatureNames(aJCas);
 		}
 
-		List<Instance> instances = new ArrayList<Instance>();
 		try {
-			if (featureMode.equals(Constants.FM_SEQUENCE)) {
-				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId,
-						useSparseFeatures);
-			} else if (featureMode.equals(Constants.FM_UNIT)) {
-				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId,
-						useSparseFeatures);
-			} else {
-				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
-						addInstanceId, useSparseFeatures));
-			}
 
+			List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
 			/*
 			 * filter-out feature names which did not occur during training if
 			 * we are in the testing stage
@@ -188,79 +177,24 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 				dsw.writeClassifierFormat(instances);
 			}
 
-		} catch (Exception e1) {
-			throw new AnalysisEngineProcessException(e1);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 
-		if (writeFeatureNames) {
-			writeFeatureNames();
-			writeFeatureNames = false;
-		}
 	}
 
 	private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException {
 		// We run one time through feature extraction to get all features names
 		try {
-			List<Instance> instances = new ArrayList<>();
-			if (featureMode.equals(Constants.FM_SEQUENCE)) {
-				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, jcas, addInstanceId, false);
-			} else if (featureMode.equals(Constants.FM_UNIT)) {
-				instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, addInstanceId, false);
-			} else {
-				instances.add(TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, developerMode,
-						addInstanceId, false));
-			}
-
-			Map<String, FeatureDescription> featDesc = new HashMap<>();
-			featureNames = new TreeSet<>();
-			for (Feature f : instances.get(0).getFeatures()) {
-				featureNames.add(f.getName());
-
-				if (!featDesc.containsKey(f.getName())) {
-					featDesc.put(f.getName(), determineType(f));
-				}
-			}
-
-			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
-
-			StringBuilder sb = new StringBuilder();
-			List<String> keyList = new ArrayList<String>(featDesc.keySet());
-			Collections.sort(keyList);
-			for (String k : keyList) {
-				FeatureDescription fd = featDesc.get(k);
-				sb.append(k + "\t" + fd.getDescription());
-				if (fd.getEnumType() != null) {
-					sb.append("\t" + fd.getEnumType());
-				}
-				sb.append(System.lineSeparator());
-			}
-			FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION),
-					sb.toString(), "utf-8");
+			List<Instance> instances = instanceExtractor.getInstances(jcas, false);
+			featureMeta.collectMetaData(instances);
+			featureMeta.writeMetaData(outputDirectory);
 
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private FeatureDescription determineType(Feature f) {
-		Object value = f.getValue();
-		if (value instanceof Double) {
-			return new FeatureDescription(FeatureType.NUM_FLOATING_POINT);
-		} else if (value instanceof Integer) {
-			return new FeatureDescription(FeatureType.NUM_INTEGER);
-		} else if (value instanceof Number) {
-			return new FeatureDescription(FeatureType.NUM);
-		} else if (value instanceof Enum) {
-			FeatureDescription featureDescription = new FeatureDescription(FeatureType.ENUM);
-			featureDescription.setEnumType((Enum) value);
-			return featureDescription;
-		} else if (value instanceof Boolean) {
-			return new FeatureDescription(FeatureType.BOOLEAN);
-		}
-
-		return new FeatureDescription(FeatureType.UNKNOWN);
-	}
 
 	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
 		if (!isTesting) {
@@ -272,7 +206,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 		for (Instance i : instances) {
 			List<Feature> newFeatures = new ArrayList<>();
 			for (Feature feat : i.getFeatures()) {
-				if (!featureNames.contains(feat.getName())) {
+				if (!featureMeta.getFeatureNames().contains(feat.getName())) {
 					continue;
 				}
 				newFeatures.add(feat);
@@ -293,10 +227,6 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 				applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
 			}
 
-			if (!isTesting) {
-				writeFeatureNames();
-			}
-
 			if (featureFilters.length > 0 || !dsw.canStream()) {
 				// if we use generic mode we have to finalize the feature
 				// extraction by transforming
@@ -312,14 +242,6 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 
-	}
-
-	private void writeFeatureNames() throws AnalysisEngineProcessException {
-		try {
-			FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), featureNames);
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
 	}
 
 	private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException {
