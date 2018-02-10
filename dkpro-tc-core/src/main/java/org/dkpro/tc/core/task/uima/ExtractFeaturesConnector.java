@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.uima;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -99,18 +96,18 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	boolean writeFeatureNames = true;
 
 	private InstanceExtractor instanceExtractor;
-	
+
 	private FeatureMetaData featureMeta;
 
 	private DocumentMetaLogger documentMetaLogger;
-	
+
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 		try {
-			
+
 			initDocumentMetaDataLogger();
-			
+
 			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors, addInstanceId);
 			featureMeta = new FeatureMetaData();
 
@@ -134,8 +131,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	private void initDocumentMetaDataLogger() throws Exception {
 		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
-		documentMetaLogger.write(
-				"# Order in which JCas documents have been processed");
+		documentMetaLogger.write("# Order in which JCas documents have been processed");
 		documentMetaLogger.write("\n");
 		documentMetaLogger.write("#ID\tTitle");
 		documentMetaLogger.write("\n");
@@ -145,38 +141,40 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
 				+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
-		
-		DocumentMetaData dmd = null;
-		try{
-			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-			documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
-		}catch(Exception e){
-			//annotation missing
-		}
+
+		recordDocumentMetaLog(aJCas);
 
 		if (!featureMeta.didCollect()) {
 			getFeatureNames(aJCas);
 		}
 
-		try {
 
-			List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
-			/*
-			 * filter-out feature names which did not occur during training if
-			 * we are in the testing stage
-			 */
-			instances = enforceMatchingFeatures(instances);
+		List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
+		/*
+		 * filter-out feature names which did not occur during training if we
+		 * are in the testing stage
+		 */
+		instances = enforceMatchingFeatures(instances);
 
-			if (featureFilters.length > 0 || !dsw.canStream()) {
-				dsw.writeGenericFormat(instances);
-			} else {
-				dsw.writeClassifierFormat(instances);
-			}
-
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
+		if (isFilteringRequestedOrNoStreamingAvailable()) {
+			dsw.writeGenericFormat(instances);
+		} else {
+			dsw.writeClassifierFormat(instances);
 		}
+	}
 
+	private boolean isFilteringRequestedOrNoStreamingAvailable() {
+		return featureFilters.length > 0 || !dsw.canStream();
+	}
+
+	private void recordDocumentMetaLog(JCas aJCas) {
+		DocumentMetaData dmd = null;
+		try {
+			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+			documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
+		} catch (Exception e) {
+			// annotation missing
+		}
 	}
 
 	private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException {
@@ -190,7 +188,6 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 			throw new AnalysisEngineProcessException(e);
 		}
 	}
-
 
 	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
 		if (!isTesting) {
@@ -231,7 +228,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 			}
 
 			dsw.close();
-			
+
 			documentMetaLogger.close();
 
 		} catch (Exception e) {

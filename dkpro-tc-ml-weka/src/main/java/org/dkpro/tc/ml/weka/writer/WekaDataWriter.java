@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
@@ -53,126 +54,116 @@ import weka.core.converters.Saver;
 /*
  * Datawriter for the Weka machine learning tool.
  */
-public class WekaDataWriter
-    implements DataWriter, Constants
-{
-    BufferedWriter bw = null;
-    Gson gson = new Gson();
-    private boolean useSparse;
-    private boolean applyWeighting;
-    private File outputFolder;
-    private File arffTarget;
-    boolean isRegression;
+public class WekaDataWriter implements DataWriter, Constants {
+	BufferedWriter bw = null;
+	Gson gson = new Gson();
+	private boolean useSparse;
+	private boolean applyWeighting;
+	private File outputFolder;
+	private File arffTarget;
+	boolean isRegression;
 
-    AttributeStore attributeStore;
-    Attribute outcomeAttribute;
-    ArffSaver saver;
-    Instances masterInstance;
-    private String[] outcomes;
+	AttributeStore attributeStore;
+	Attribute outcomeAttribute;
+	ArffSaver saver;
+	Instances masterInstance;
+	private String[] outcomes;
 
-    @Override
-    public void init(File outputFolder, boolean useSparse, String learningMode,
-            boolean applyWeighting, String [] outcomes)
-                throws Exception
-    {
-        this.outputFolder = outputFolder;
-        this.useSparse = useSparse;
-        this.applyWeighting = applyWeighting;
-        this.outcomes = outcomes;
+	@Override
+	public void init(File outputFolder, boolean useSparse, String learningMode, boolean applyWeighting,
+			String[] outcomes) throws Exception {
+		this.outputFolder = outputFolder;
+		this.useSparse = useSparse;
+		this.applyWeighting = applyWeighting;
+		this.outcomes = outcomes;
 
-        arffTarget = new File(outputFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		arffTarget = new File(outputFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        // Caution: DKPro Lab imports (aka copies!) the data of the train task
-        // as test task. We use
-        // appending mode for streaming. We might errornously append the old
-        // training file with
-        // testing data!
-        // Force delete the old training file to make sure we start with a
-        // clean, empty file
-        if (arffTarget.exists()) {
-            FileUtils.forceDelete(arffTarget);
-        }
+		// Caution: DKPro Lab imports (aka copies!) the data of the train task
+		// as test task. We use
+		// appending mode for streaming. We might errornously append the old
+		// training file with
+		// testing data!
+		// Force delete the old training file to make sure we start with a
+		// clean, empty file
+		if (arffTarget.exists()) {
+			FileUtils.forceDelete(arffTarget);
+		}
 
-        isRegression = learningMode.equals(LM_REGRESSION);
+		isRegression = learningMode.equals(LM_REGRESSION);
 
-        if (!arffTarget.exists()) {
-            arffTarget.mkdirs();
-            arffTarget.createNewFile();
-        }
+		if (!arffTarget.exists()) {
+			arffTarget.mkdirs();
+			arffTarget.createNewFile();
+		}
 
-    }
+	}
 
-    @Override
-    public void writeGenericFormat(Collection<Instance> instances)
-        throws Exception
-    {
-        initGeneric();
+	@Override
+	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		try {
+			initGeneric();
 
-        bw.write(gson.toJson(instances.toArray(new Instance[0])) + System.lineSeparator());
+			bw.write(gson.toJson(instances.toArray(new Instance[0])) + System.lineSeparator());
 
-        bw.close();
-        bw = null;
-    }
+			bw.close();
+			bw = null;
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
-    private void initGeneric()
-        throws IOException
-    {
-        if (bw != null) {
-            return;
-        }
-        bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
-    }
+	private void initGeneric() throws IOException {
+		if (bw != null) {
+			return;
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
+	}
 
-    @Override
-    public void transformFromGeneric()
-        throws Exception
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
+	@Override
+	public void transformFromGeneric() throws Exception {
+		BufferedReader reader = new BufferedReader(
+				new InputStreamReader(new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            Instance[] restoredInstances = gson.fromJson(line, Instance[].class);
-            writeClassifierFormat(Arrays.asList(restoredInstances));
-        }
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			Instance[] restoredInstances = gson.fromJson(line, Instance[].class);
+			writeClassifierFormat(Arrays.asList(restoredInstances));
+		}
 
-        reader.close();
-        FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
-    }
+		reader.close();
+		FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
+	}
 
-    private Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
-    {
-        if (isRegresion) {
-            return new Attribute(CLASS_ATTRIBUTE_NAME);
-        }
-        else {
-            // make the order of the attributes predictable
-            Collections.sort(outcomeValues);
-            return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
-        }
-    }
+	private Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion) {
+		if (isRegresion) {
+			return new Attribute(CLASS_ATTRIBUTE_NAME);
+		} else {
+			// make the order of the attributes predictable
+			Collections.sort(outcomeValues);
+			return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
+		}
+	}
 
-    private double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
-    {
-        double[] featureValues = new double[attributeStore.getAttributes().size()];
+	private double[] getFeatureValues(AttributeStore attributeStore, Instance instance) {
+		double[] featureValues = new double[attributeStore.getAttributes().size()];
 
-        for (Feature feature : instance.getFeatures()) {
-            
-            try {
-                Attribute attribute = attributeStore.getAttribute(feature.getName());
-                Object featureValue = feature.getValue();
+		for (Feature feature : instance.getFeatures()) {
 
-                double attributeValue;
-                if (feature.getType() == FeatureType.NUMERIC) {
-                    // numeric attribute
-                    attributeValue = ((Number) feature.getValue()).doubleValue();
-                }
-                else if (feature.getType() == FeatureType.BOOLEAN) {
-                    // boolean attribute
-                	if (featureValue instanceof Boolean){
-                		//value is provided as true/false value
-                		attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+			try {
+				Attribute attribute = attributeStore.getAttribute(feature.getName());
+				Object featureValue = feature.getValue();
+
+				double attributeValue;
+				if (feature.getType() == FeatureType.NUMERIC) {
+					// numeric attribute
+					attributeValue = ((Number) feature.getValue()).doubleValue();
+				} else if (feature.getType() == FeatureType.BOOLEAN) {
+					// boolean attribute
+					if (featureValue instanceof Boolean) {
+						// value is provided as true/false value
+						attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
 					} else {
 						// we already have numerical values
 						if (featureValue instanceof Double) {
@@ -181,155 +172,144 @@ public class WekaDataWriter
 							attributeValue = ((Integer) featureValue).doubleValue();
 						}
 					}
-                }
-                else {
-                    // nominal or string
-                    Object stringValue = feature.getValue();
-                    if (!attribute.isNominal() && !attribute.isString()) {
-                        throw new IllegalArgumentException(
-                                "Attribute neither nominal nor string: " + stringValue);
-                    }
+				} else {
+					// nominal or string
+					Object stringValue = feature.getValue();
+					if (!attribute.isNominal() && !attribute.isString()) {
+						throw new IllegalArgumentException("Attribute neither nominal nor string: " + stringValue);
+					}
 
-                    int valIndex = attribute.indexOfValue(stringValue.toString());
-                    if (valIndex == -1) {
-                        if (attribute.isNominal()) {
-                            throw new IllegalArgumentException(
-                                    "Value not defined for given nominal attribute!");
-                        }
-                        else {
-                            attribute.addStringValue(stringValue.toString());
-                            valIndex = attribute.indexOfValue(stringValue.toString());
-                        }
-                    }
-                    attributeValue = valIndex;
-                }
-                int offset = attributeStore.getAttributeOffset(attribute.name());
+					int valIndex = attribute.indexOfValue(stringValue.toString());
+					if (valIndex == -1) {
+						if (attribute.isNominal()) {
+							throw new IllegalArgumentException("Value not defined for given nominal attribute!");
+						} else {
+							attribute.addStringValue(stringValue.toString());
+							valIndex = attribute.indexOfValue(stringValue.toString());
+						}
+					}
+					attributeValue = valIndex;
+				}
+				int offset = attributeStore.getAttributeOffset(attribute.name());
 
-                if (offset != -1) {
-                    featureValues[offset] = attributeValue;
-                }
-            }
-            catch (NullPointerException e) {
-                // ignore unseen attributes
-            }
-        }
-        return featureValues;
-    }
+				if (offset != -1) {
+					featureValues[offset] = attributeValue;
+				}
+			} catch (NullPointerException e) {
+				// ignore unseen attributes
+			}
+		}
+		return featureValues;
+	}
 
-    @Override
-    public void writeClassifierFormat(Collection<Instance> instances)
-        throws Exception
-    {
+	@Override
+	public void writeClassifierFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
 
-        Instances masterInstance = initalConfiguration(instances);
+		try {
 
-        // Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
-        // attributeStore.getAttributes(), instances.size());
-        // wekaInstances.setClass(outcomeAttribute);
+			Instances masterInstance = initalConfiguration(instances);
 
-        for (Instance inst : instances) {
-            double[] featureValues = getFeatureValues(attributeStore, inst);
+			// Instances wekaInstances = new Instances(WekaUtils.RELATION_NAME,
+			// attributeStore.getAttributes(), instances.size());
+			// wekaInstances.setClass(outcomeAttribute);
 
-            weka.core.Instance wekaInstance;
+			for (Instance inst : instances) {
+				double[] featureValues = getFeatureValues(attributeStore, inst);
 
-            if (useSparse) {
-                wekaInstance = new SparseInstance(1.0, featureValues);
-            }
-            else {
-                wekaInstance = new DenseInstance(1.0, featureValues);
-            }
+				weka.core.Instance wekaInstance;
 
-            wekaInstance.setDataset(masterInstance);
+				if (useSparse) {
+					wekaInstance = new SparseInstance(1.0, featureValues);
+				} else {
+					wekaInstance = new DenseInstance(1.0, featureValues);
+				}
 
-            String outcome = inst.getOutcome();
-            if (isRegression) {
-                wekaInstance.setClassValue(Double.parseDouble(outcome));
-            }
-            else {
-                wekaInstance.setClassValue(outcome);
-            }
+				wekaInstance.setDataset(masterInstance);
 
-            Double instanceWeight = inst.getWeight();
-            if (applyWeighting) {
-                wekaInstance.setWeight(instanceWeight);
-            }
+				String outcome = inst.getOutcome();
+				if (isRegression) {
+					wekaInstance.setClassValue(Double.parseDouble(outcome));
+				} else {
+					wekaInstance.setClassValue(outcome);
+				}
 
-            // preprocessingFilter.input(wekaInstance);
-            // saver.writeIncremental(preprocessingFilter.output());
-            saver.writeIncremental(wekaInstance);
-        }
-    }
+				Double instanceWeight = inst.getWeight();
+				if (applyWeighting) {
+					wekaInstance.setWeight(instanceWeight);
+				}
 
-    private Instances initalConfiguration(Collection<Instance> instances)
-        throws TextClassificationException, IOException
-    {
-        if (saver != null) {
-            return masterInstance;
-        }
-        saver = new ArffSaver();
-        saver.setRetrieval(Saver.INCREMENTAL);
-        saver.setFile(arffTarget);
-        saver.setCompressOutput(false);
+				// preprocessingFilter.input(wekaInstance);
+				// saver.writeIncremental(preprocessingFilter.output());
+				saver.writeIncremental(wekaInstance);
+			}
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
-        attributeStore = new AttributeStore();
+	private Instances initalConfiguration(Collection<Instance> instances)
+			throws TextClassificationException, IOException {
+		if (saver != null) {
+			return masterInstance;
+		}
+		saver = new ArffSaver();
+		saver.setRetrieval(Saver.INCREMENTAL);
+		saver.setFile(arffTarget);
+		saver.setCompressOutput(false);
 
-        List<String> lines = FileUtils.readLines(
-                new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), "utf-8");
+		attributeStore = new AttributeStore();
 
-        for (String l : lines) {
-            String[] split = l.split("\t");
-            String featureName = split[0];
+		List<String> lines = FileUtils.readLines(new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION),
+				"utf-8");
 
-            if (!attributeStore.containsAttributeName(featureName)) {
-                FeatureType type = FeatureType.valueOf(split[1]);
-                String enumType = null;
-                if (type == FeatureType.NOMINAL) {
-                    enumType = split[2];
-                }
-                Attribute attribute = WekaFeatureEncoder
-                        .featureToAttributeUsingFeatureDescription(featureName, type, enumType);
-                attributeStore.addAttribute(featureName, attribute);
-            }
+		for (String l : lines) {
+			String[] split = l.split("\t");
+			String featureName = split[0];
 
-        }
+			if (!attributeStore.containsAttributeName(featureName)) {
+				FeatureType type = FeatureType.valueOf(split[1]);
+				String enumType = null;
+				if (type == FeatureType.NOMINAL) {
+					enumType = split[2];
+				}
+				Attribute attribute = WekaFeatureEncoder.featureToAttributeUsingFeatureDescription(featureName, type,
+						enumType);
+				attributeStore.addAttribute(featureName, attribute);
+			}
 
-        // Make sure "outcome" is not the name of an attribute
-         List<String> outcomeList = Arrays.asList(outcomes);
-        outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
-        if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
-            System.err.println(
-                    "A feature with name \"outcome\" was found. Renaming outcome attribute");
-            outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
-        }
-        attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
+		}
 
-        masterInstance = new Instances(WekaUtils.RELATION_NAME, attributeStore.getAttributes(),
-                instances.size());
-        masterInstance.setClass(outcomeAttribute);
-        // FIXME: darf man vermutlich auch nur einmal machen
-        saver.setInstances(masterInstance);
+		// Make sure "outcome" is not the name of an attribute
+		List<String> outcomeList = Arrays.asList(outcomes);
+		outcomeAttribute = createOutcomeAttribute(outcomeList, isRegression);
+		if (attributeStore.containsAttributeName(CLASS_ATTRIBUTE_NAME)) {
+			System.err.println("A feature with name \"outcome\" was found. Renaming outcome attribute");
+			outcomeAttribute = outcomeAttribute.copy(CLASS_ATTRIBUTE_PREFIX + CLASS_ATTRIBUTE_NAME);
+		}
+		attributeStore.addAttribute(outcomeAttribute.name(), outcomeAttribute);
 
-        return masterInstance;
+		masterInstance = new Instances(WekaUtils.RELATION_NAME, attributeStore.getAttributes(), instances.size());
+		masterInstance.setClass(outcomeAttribute);
+		// FIXME: darf man vermutlich auch nur einmal machen
+		saver.setInstances(masterInstance);
 
-    }
+		return masterInstance;
 
-    @Override
-    public boolean canStream()
-    {
-        return true;
-    }
+	}
 
-    @Override
-    public String getGenericFileName()
-    {
-        return GENERIC_FEATURE_FILE;
-    }
+	@Override
+	public boolean canStream() {
+		return true;
+	}
 
-    @Override
-    public void close()
-        throws Exception
-    {
-        saver.writeIncremental(null);
-    }
+	@Override
+	public String getGenericFileName() {
+		return GENERIC_FEATURE_FILE;
+	}
+
+	@Override
+	public void close() throws Exception {
+		saver.writeIncremental(null);
+	}
 
 }

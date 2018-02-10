@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
@@ -50,16 +51,21 @@ public class CRFSuiteDataWriter implements DataWriter {
 	private File classifierFormatOutputFile;
 
 	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
-		initGeneric();
+	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		try {
+			initGeneric();
 
-		// bulk-write - in sequence mode this keeps the instances together that
-		// belong to the same sequence!
-		Instance[] array = instances.toArray(new Instance[0]);
-		bw.write(gson.toJson(array) + System.lineSeparator());
+			// bulk-write - in sequence mode this keeps the instances together
+			// that
+			// belong to the same sequence!
+			Instance[] array = instances.toArray(new Instance[0]);
+			bw.write(gson.toJson(array) + System.lineSeparator());
 
-		bw.close();
-		bw = null;
+			bw.close();
+			bw = null;
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 
 	private void initGeneric() throws IOException {
@@ -81,7 +87,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			Instance [] instance = gson.fromJson(line, Instance[].class);
+			Instance[] instance = gson.fromJson(line, Instance[].class);
 			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
 
 			Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(ins);
@@ -99,20 +105,24 @@ public class CRFSuiteDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void writeClassifierFormat(Collection<Instance> instances) throws Exception {
-		initClassifierFormat();
+	public void writeClassifierFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		try {
+			initClassifierFormat();
 
-		Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
-				new ArrayList<Instance>(instances));
+			Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
+					new ArrayList<Instance>(instances));
 
-		while (sequenceIterator.hasNext()) {
-			String features = sequenceIterator.next().toString();
-			bw.write(features);
-			bw.write("\n");
+			while (sequenceIterator.hasNext()) {
+				String features = sequenceIterator.next().toString();
+				bw.write(features);
+				bw.write("\n");
+			}
+
+			bw.close();
+			bw = null;
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
-
-		bw.close();
-		bw = null;
 	}
 
 	private void initClassifierFormat() throws Exception {
@@ -126,8 +136,8 @@ public class CRFSuiteDataWriter implements DataWriter {
 	}
 
 	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
-			throws Exception {
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
+			String[] outcomes) throws Exception {
 		this.outputDirectory = outputDirectory;
 		this.useSparse = useSparse;
 		this.learningMode = learningMode;
@@ -157,11 +167,9 @@ public class CRFSuiteDataWriter implements DataWriter {
 		return Constants.GENERIC_FEATURE_FILE;
 	}
 
-    @Override
-    public void close()
-        throws Exception
-    {
-        
-    }
+	@Override
+	public void close() throws Exception {
+
+	}
 
 }

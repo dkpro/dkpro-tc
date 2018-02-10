@@ -20,6 +20,7 @@ package org.dkpro.tc.core.task.uima;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -45,22 +46,29 @@ public class InstanceExtractor implements Constants {
 		this.addInstanceId = addInstanceId;
 	}
 
-	public List<Instance> getInstances(JCas aJCas, boolean extractSparse) throws Exception {
+	public List<Instance> getInstances(JCas aJCas, boolean extractSparse) throws AnalysisEngineProcessException {
 
 		List<Instance> extractedInstances = new ArrayList<>();
 
-		if (featureMode.equals(Constants.FM_SEQUENCE)) {
-			List<Instance> instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, aJCas,
-					addInstanceId, extractSparse);
-			extractedInstances.addAll(instances);
-		} else if (featureMode.equals(Constants.FM_UNIT)) {
-			List<Instance> instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, aJCas, addInstanceId,
-					extractSparse);
-			extractedInstances.addAll(instances);
-		} else {
-			Instance instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, aJCas,
-					addInstanceId, extractSparse);
-			extractedInstances.add(instance);
+		try {
+			if (featureMode.equals(Constants.FM_SEQUENCE)) {
+				List<Instance> instances;
+
+				instances = TaskUtils.getMultipleInstancesSequenceMode(featureExtractors, aJCas, addInstanceId,
+						extractSparse);
+				extractedInstances.addAll(instances);
+			} else if (featureMode.equals(Constants.FM_UNIT)) {
+				List<Instance> instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, aJCas,
+						addInstanceId, extractSparse);
+				extractedInstances.addAll(instances);
+			} else {
+				Instance instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, aJCas, addInstanceId,
+						extractSparse);
+				extractedInstances.add(instance);
+			}
+
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 
 		return extractedInstances;

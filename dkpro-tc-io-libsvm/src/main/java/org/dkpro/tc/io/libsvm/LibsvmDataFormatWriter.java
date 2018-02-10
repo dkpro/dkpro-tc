@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
@@ -73,9 +74,11 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	private Map<String, Integer> featureNames2id;
 
 	private Map<String, Integer> outcomeMap;
-	
+
 	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws Exception {
+	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		
+		try{
 		initGeneric();
 
 		// bulk-write - in sequence mode this keeps the instances together that
@@ -85,6 +88,9 @@ public class LibsvmDataFormatWriter implements DataWriter {
 
 		bw.close();
 		bw = null;
+		}catch(Exception e){
+			throw new AnalysisEngineProcessException(e);
+		}
 	}
 
 	private void initGeneric() throws IOException {
@@ -112,75 +118,80 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	}
 
 	@Override
-	public void writeClassifierFormat(Collection<Instance> in) throws Exception {
+	public void writeClassifierFormat(Collection<Instance> in) throws AnalysisEngineProcessException {
 
-		if (featureNames2id == null) {
-			createFeatureNameMap();
-		}
+		try {
+			if (featureNames2id == null) {
+				createFeatureNameMap();
+			}
 
-		initClassifierFormat();
+			initClassifierFormat();
 
-		List<Instance> instances = new ArrayList<>(in);
+			List<Instance> instances = new ArrayList<>(in);
 
-		for (Instance instance : instances) {
-			Map<Integer, Double> entry = new HashMap<>();
-			recordInstanceId(instance, maxId++, index2instanceId);
-			for (Feature f : instance.getFeatures()) {
-				Integer id = featureNames2id.get(f.getName());
-				Double val = toValue(f.getValue());
+			for (Instance instance : instances) {
+				Map<Integer, Double> entry = new HashMap<>();
+				recordInstanceId(instance, maxId++, index2instanceId);
+				for (Feature f : instance.getFeatures()) {
+					Integer id = featureNames2id.get(f.getName());
+					Double val = toValue(f.getValue());
 
-				if (Math.abs(val) < 0.00000001) {
-					// skip zero values
-					continue;
+					if (Math.abs(val) < 0.00000001) {
+						// skip zero values
+						continue;
+					}
+
+					entry.put(id, val);
+				}
+				List<Integer> keys = new ArrayList<Integer>(entry.keySet());
+				Collections.sort(keys);
+
+				if (isRegression()) {
+					bw.append(instance.getOutcome() + "\t");
+				} else {
+					bw.append(outcomeMap.get(instance.getOutcome()) + "\t");
 				}
 
-				entry.put(id, val);
-			}
-			List<Integer> keys = new ArrayList<Integer>(entry.keySet());
-			Collections.sort(keys);
+				bw.append(injectSequenceId(instance));
 
-			if (isRegression()) {
-				bw.append(instance.getOutcome() + "\t");
-			} else {
-				bw.append(outcomeMap.get(instance.getOutcome()) + "\t");
-			}
-			
-			bw.append(injectSequenceId(instance));
-			
-			for (int i = 0; i < keys.size(); i++) {
-				Integer key = keys.get(i);
-				Double value = entry.get(key);
-				bw.append("" + key.toString() + ":" + value.toString());
-				if (i + 1 < keys.size()) {
-					bw.append("\t");
+				for (int i = 0; i < keys.size(); i++) {
+					Integer key = keys.get(i);
+					Double value = entry.get(key);
+					bw.append("" + key.toString() + ":" + value.toString());
+					if (i + 1 < keys.size()) {
+						bw.append("\t");
+					}
 				}
+				bw.append("\n");
 			}
-			bw.append("\n");
+
+			bw.close();
+			bw = null;
+
+			writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+			writeFeatureName2idMapping(outputDirectory, AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
+			writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(), outcomeMap);
+
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
-
-		bw.close();
-		bw = null;
-
-		writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
-		writeFeatureName2idMapping(outputDirectory, AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
-		writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(), outcomeMap);
 	}
 
 	protected String injectSequenceId(Instance instance) {
-		
+
 		// this method is a place holder for SvmHmm which uses an almost
 		// identical format to the Libsvm format, except that it additionally
 		// carries a sequence information. SvmHmm overloads this method.
-		
+
 		return "";
 	}
 
 	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {
-		
-		if(isRegression()){
+
+		if (isRegression()) {
 			return;
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 		for (String k : map.keySet()) {
 			sb.append(k + "\t" + map.get(k) + "\n");
@@ -268,7 +279,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	 * @param outcomes
 	 */
 	private void buildOutcomeMap(String[] outcomes) {
-		if(isRegression()){
+		if (isRegression()) {
 			return;
 		}
 		outcomeMap = new HashMap<>();
@@ -281,7 +292,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	}
 
 	protected Integer getStartIndexForOutcomeMap() {
-		//SvmHmm extension, which starts counting at 1
+		// SvmHmm extension, which starts counting at 1
 		return 0;
 	}
 
@@ -316,8 +327,8 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			return;
 		}
 	}
-	
-	private boolean isRegression(){
+
+	private boolean isRegression() {
 		return learningMode.equals(Constants.LM_REGRESSION);
 	}
 

@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 
@@ -33,83 +34,74 @@ import com.google.gson.Gson;
 /**
  * Writes the feature store to a JSON file. Mainly used for testing purposes.
  */
-public class JsonDataWriter
-    implements DataWriter, Constants
-{
-    /**
-     * Public name of the JSON dump file
-     */
-    public static final String JSON_FILE_NAME = "fs.json";
-    
-    BufferedWriter bw = null;
+public class JsonDataWriter implements DataWriter, Constants {
+	/**
+	 * Public name of the JSON dump file
+	 */
+	public static final String JSON_FILE_NAME = "fs.json";
 
-    private Gson gson = new Gson();
+	BufferedWriter bw = null;
 
-    private File outputDirectory;
+	private Gson gson = new Gson();
 
+	private File outputDirectory;
 
-    @Override
-    public void writeGenericFormat(Collection<Instance> instances)
-        throws Exception
-    {
-        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
-    }
+	@Override
+	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		throw new UnsupportedOperationException(
+				"Not supported in this implementation - use classifier specific methods instead");
+	}
 
-    @Override
-    public void transformFromGeneric()
-        throws Exception
-    {
-        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
-    }
+	@Override
+	public void transformFromGeneric() throws Exception {
+		throw new UnsupportedOperationException(
+				"Not supported in this implementation - use classifier specific methods instead");
+	}
 
-    @Override
-    public void writeClassifierFormat(Collection<Instance> instances)
-        throws Exception
-    {
-        init();
+	@Override
+	public void writeClassifierFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
+		try {
+			init();
 
-        Iterator<Instance> iterator = instances.iterator();
-        while (iterator.hasNext()) {
-            Instance next = iterator.next();
-            bw.write(gson.toJson(next) + System.lineSeparator());
-        }
-        bw.close();
-        bw = null;   
-    }
+			Iterator<Instance> iterator = instances.iterator();
+			while (iterator.hasNext()) {
+				Instance next = iterator.next();
+				bw.write(gson.toJson(next) + System.lineSeparator());
+			}
+			bw.close();
+			bw = null;
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
-    private void init() throws IOException
-    {
-        if (bw != null) {
-            return;
-        }
-        bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputDirectory, JSON_FILE_NAME), true), "utf-8"));        
-    }
+	private void init() throws IOException {
+		if (bw != null) {
+			return;
+		}
+		bw = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(new File(outputDirectory, JSON_FILE_NAME), true), "utf-8"));
+	}
 
-    @Override
-    public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting, String [] outcomes)
-                throws Exception
-    {
-        this.outputDirectory = outputDirectory;
-    }
+	@Override
+	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
+			String[] outcomes) throws Exception {
+		this.outputDirectory = outputDirectory;
+	}
 
-    @Override
-    public boolean canStream()
-    {
-        return true;
-    }
+	@Override
+	public boolean canStream() {
+		return true;
+	}
 
-    @Override
-    public String getGenericFileName()
-    {
-        throw new UnsupportedOperationException("Not supported in this implementation - use classifier specific methods instead");
-    }
+	@Override
+	public String getGenericFileName() {
+		throw new UnsupportedOperationException(
+				"Not supported in this implementation - use classifier specific methods instead");
+	}
 
-    @Override
-    public void close()
-        throws Exception
-    {
-        
-    }
+	@Override
+	public void close() throws Exception {
+
+	}
 }
