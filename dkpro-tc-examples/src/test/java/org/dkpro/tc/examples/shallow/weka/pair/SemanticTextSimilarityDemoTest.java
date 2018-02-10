@@ -70,6 +70,6 @@ public class SemanticTextSimilarityDemoTest extends TestCaseSuperClass
         
         MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
         
-        assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.00001);
+        assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.1);
     }
 }
