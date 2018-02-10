@@ -62,7 +62,7 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest extends 
 		assertEquals(getSumOfExpectedTasksForTrainTest().intValue(), ContextMemoryReport.allIds.size());
 		assertEquals(getSumOfMachineLearningAdapterTasks().intValue(), ContextMemoryReport.id2outcomeFiles.size());
 
-		assertEquals(0.5, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.001);
+		assertEquals(0.8, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.001);
 		assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.001);
 		assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.001);
 	}
@@ -74,7 +74,7 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest extends 
 		assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(), ContextMemoryReport.allIds.size());
 		assertTrue(combinedId2OutcomeReportsAreDissimilar(ContextMemoryReport.crossValidationCombinedIdFiles));
 		
-		assertEquals(0.625, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.001);
+		assertEquals(1.0, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.001);
 		assertEquals(0.75, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.001);
 		assertEquals(0.875, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.001);
 	}
