@@ -19,9 +19,8 @@ package org.dkpro.tc.testing;
 
 import java.util.Set;
 
-import org.junit.Assert;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.MissingValue;
+import org.junit.Assert;
 
 /**
  * Utils for testing feature extractors
@@ -29,23 +28,6 @@ import org.dkpro.tc.api.features.MissingValue;
 public class FeatureTestUtil
 {
 
-    /**
-     * Shortcut for JUnit assert that test whether a feature has a missing value
-     * 
-     * @param expectedName
-     * 			expected
-     * @param expectedValue
-     * 			actual
-     * @param actualFeature
-     * 			feature
-     */
-    public static void assertFeature(String expectedName, MissingValue expectedValue,
-            Feature actualFeature)
-    {
-        Assert.assertNotNull(actualFeature);
-        Assert.assertEquals(expectedName, actualFeature.getName());
-        Assert.assertEquals(expectedValue, actualFeature.getValue());
-    }
 
     /**
      * Shortcut for JUnit assert that test whether a feature has the correct name and value

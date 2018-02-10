@@ -20,14 +20,10 @@ package org.dkpro.tc.ml.weka.writer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.api.features.MissingValue.MissingValueType;
 import org.dkpro.tc.core.task.uima.FeatureType;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 
@@ -115,52 +111,10 @@ public class WekaFeatureEncoder
             }
             attribute = new Attribute(name, attributeValues);
         }
-        // if the value has a missing value, determine its type according to the missing value type
-        else if (value instanceof MissingValue) {
-            switch (((MissingValue) value).getType()) {
-            case NUMERIC:
-                attribute = new Attribute(name);
-                break;
-            case NOMINAL:
-                Object[] enumConstants = ((MissingValue) value).getNominalClass()
-                        .getEnumConstants();
-                ArrayList<String> attributeValues = new ArrayList<String>(enumConstants.length);
-                for (Object enumConstant : enumConstants) {
-                    attributeValues.add(enumConstant.toString());
-                }
-                attribute = new Attribute(name, attributeValues);
-                break;
-            case BOOLEAN:
-                attribute = new Attribute(name);
-                break;
-            case STRING:
-                attribute = new Attribute(null);
-                break;
-            default:
-                throw new TextClassificationException("Type of missing value is unknown.");
-            }
-        }
-        // if value is not a number, boolean, enum, or missing value then we will create a
-        // string attribute
         else {
             attribute = new Attribute(name, (ArrayList<String>) null);
         }
         return attribute;
     }
 
-    /**
-     * A map returning a double value for each valid
-     * @return
-     * 			map
-     */
-    public static Map<MissingValueType, Double> getMissingValueConversionMap()
-    {
-        Map<MissingValueType, Double> map = new HashMap<MissingValueType, Double>();
-        // Weka internal representation fopr missing values
-        map.put(MissingValueType.BOOLEAN, Double.NaN);
-        map.put(MissingValueType.NUMERIC, Double.NaN);
-        map.put(MissingValueType.NOMINAL, Double.NaN);
-        map.put(MissingValueType.STRING, Double.NaN);
-        return map;
-    }
 }

@@ -48,7 +48,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.features.MissingValue;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.writer.WekaFeatureEncoder;
@@ -642,11 +641,6 @@ public class WekaUtils
                 else if (featureValue instanceof Boolean) {
                     // boolean attribute
                     attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
-                }
-                else if (featureValue instanceof MissingValue) {
-                    // missing value
-                    attributeValue = WekaFeatureEncoder.getMissingValueConversionMap().get(
-                            ((MissingValue) featureValue).getType());
                 }
                 else if (featureValue == null) {
                     // null
