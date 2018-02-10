@@ -64,7 +64,7 @@ implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                         new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class)))
+                         new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class)))
 	
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 		[new CrfSuiteAdapter()])

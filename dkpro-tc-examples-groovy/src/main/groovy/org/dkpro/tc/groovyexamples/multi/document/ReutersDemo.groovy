@@ -102,12 +102,12 @@ public class ReutersDemo implements Constants {
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
         new TcFeatureSet(
-            TcFeatureFactory.create(NrOfTokens.class),
+            TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
             TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 2 )
         )
     ,
         new TcFeatureSet(
-            TcFeatureFactory.create(NrOfTokens.class),
+            TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
             TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 10, LuceneNGram.PARAM_NGRAM_MIN_N, 1,LuceneNGram.PARAM_NGRAM_MIN_N, 2 )
         )    
     )
