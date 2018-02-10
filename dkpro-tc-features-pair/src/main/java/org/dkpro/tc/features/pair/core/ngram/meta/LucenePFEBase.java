@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 
@@ -72,10 +73,10 @@ public abstract class LucenePFEBase
                 value = viewNgrams.getCount(ngram);
             }
             if (viewNgrams.contains(ngram)) {
-                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value, FeatureType.NUMERIC));
             }
             else {
-                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0, FeatureType.NUMERIC));
             }
         }
         return features;

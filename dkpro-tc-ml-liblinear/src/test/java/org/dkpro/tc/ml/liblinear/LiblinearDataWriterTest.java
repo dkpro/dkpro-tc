@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
@@ -45,12 +46,12 @@ public class LiblinearDataWriterTest {
 		List<Instance> fs = new ArrayList<Instance>();
 
 		List<Feature> features1 = new ArrayList<>();
-		features1.add(new Feature("feature1", 1.0));
-		features1.add(new Feature("feature2", 0.0));
+		features1.add(new Feature("feature1", 1.0, FeatureType.NUMERIC));
+		features1.add(new Feature("feature2", 0.0, FeatureType.NUMERIC));
 
 		List<Feature> features2 = new ArrayList<>();
-		features2.add(new Feature("feature2", 0.5));
-		features2.add(new Feature("feature1", 0.5));
+		features2.add(new Feature("feature2", 0.5, FeatureType.NUMERIC));
+		features2.add(new Feature("feature1", 0.5, FeatureType.NUMERIC));
 
 		Instance instance1 = new Instance(features1, "0");
 		Instance instance2 = new Instance(features2, "1");

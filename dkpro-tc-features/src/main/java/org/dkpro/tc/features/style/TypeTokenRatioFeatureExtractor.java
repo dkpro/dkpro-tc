@@ -25,6 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -54,5 +55,5 @@ public class TypeTokenRatioFeatureExtractor
             ttr = (double) fd.getB() / fd.getN();
         }
 
-        return new Feature(FN_TTR, ttr).asSet();    }
+        return new Feature(FN_TTR, ttr, FeatureType.NUMERIC).asSet();    }
 }

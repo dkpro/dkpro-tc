@@ -25,6 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
@@ -47,10 +48,10 @@ public class InitialCharacterUpperCase
 
         boolean bool = false;
         if (Character.isUpperCase(token.charAt(0))) {
-            return new Feature(INITIAL_CH_UPPER_CASE, !bool).asSet();
+            return new Feature(INITIAL_CH_UPPER_CASE, !bool, FeatureType.BOOLEAN).asSet();
         }
         else {
-            return new Feature(INITIAL_CH_UPPER_CASE, bool).asSet();
+            return new Feature(INITIAL_CH_UPPER_CASE, bool, FeatureType.BOOLEAN).asSet();
         }
     }
 }

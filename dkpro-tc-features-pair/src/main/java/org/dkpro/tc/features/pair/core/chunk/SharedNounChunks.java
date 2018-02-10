@@ -28,6 +28,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -48,10 +49,10 @@ public class SharedNounChunks
     {
 
         if (normalizeWithFirst) {
-            return new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2)).asSet();
+            return new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2), FeatureType.NUMERIC).asSet();
         }
         else {
-            return new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1)).asSet();
+            return new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1), FeatureType.NUMERIC).asSet();
         }
 
     }

@@ -25,6 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
@@ -45,6 +46,6 @@ public class NrOfChars
         throws TextClassificationException
     {
         int nrOfChars = target.getEnd() - target.getBegin();
-        return new Feature(NR_OF_CHARS, nrOfChars).asSet();
+        return new Feature(NR_OF_CHARS, nrOfChars, FeatureType.NUMERIC).asSet();
     }
 }

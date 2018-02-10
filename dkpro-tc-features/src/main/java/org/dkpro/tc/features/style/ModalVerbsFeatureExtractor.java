@@ -25,6 +25,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
@@ -117,18 +118,18 @@ public class ModalVerbsFeatureExtractor
 
         Set<Feature> features = new HashSet<Feature>();
         if (n > 0) {
-            features.add(new Feature(FN_CAN, (double) can * 100 / n));
-            features.add(new Feature(FN_COULD, (double) could * 100 / n));
-            features.add(new Feature(FN_MIGHT, (double) might * 100 / n));
-            features.add(new Feature(FN_MAY, (double) may * 100 / n));
-            features.add(new Feature(FN_MUST, (double) must * 100 / n));
-            features.add(new Feature(FN_SHOULD, (double) should * 100 / n));
-            features.add(new Feature(FN_WILL, (double) will * 100 / n));
-            features.add(new Feature(FN_WOULD, (double) would * 100 / n));
-            features.add(new Feature(FN_SHALL, (double) shall * 100 / n));
-            features.add(new Feature(FN_ALL, (double) modals * 100 / n));
+            features.add(new Feature(FN_CAN, (double) can * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_COULD, (double) could * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_MIGHT, (double) might * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_MAY, (double) may * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_MUST, (double) must * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_SHOULD, (double) should * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_WILL, (double) will * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_WOULD, (double) would * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_SHALL, (double) shall * 100 / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_ALL, (double) modals * 100 / n, FeatureType.NUMERIC));
             features.add(new Feature(FN_UNCERT, (double) (modals - will - must)
-                    * 100 / n));
+                    * 100 / n, FeatureType.NUMERIC));
         }
 
         return features;

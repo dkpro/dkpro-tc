@@ -25,6 +25,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
@@ -113,16 +114,15 @@ public class AdjectiveEndingFeatureExtractor
         }
 
 		Set<Feature> featSet = new HashSet<Feature>();
-		featSet.add(new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING2, n > 0 ? al * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING3, n > 0 ? ful * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING4, n > 0 ? ible * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING5, n > 0 ? less * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING6, n > 0 ? ous * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING7, n > 0 ? ive * 100 / n : 0, n == 0));
-		featSet.add(new Feature(ADJ_ENDING8, n > 0 ? ic * 100 / n : 0, n == 0));
-
-		featSet.add(new Feature(ADV_ENDING9, m > 0 ? ly * 100 / m : 0, n == 0));
+		featSet.add(new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING2, n > 0 ? al * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING3, n > 0 ? ful * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING4, n > 0 ? ible * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING5, n > 0 ? less * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING6, n > 0 ? ous * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING7, n > 0 ? ive * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADJ_ENDING8, n > 0 ? ic * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+		featSet.add(new Feature(ADV_ENDING9, m > 0 ? ly * 100 / m : 0, n == 0, FeatureType.NUMERIC));
 
         return featSet;
     }

@@ -28,6 +28,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
@@ -83,15 +84,15 @@ public class ContextualityMeasureFeatureExtractor
         double contextualityMeasure = 0.5
                 * (noun + adj + prep + art - pro - verb - adv - interj + 100);
 
-        featSet.add(new Feature("NounRate", noun));
-        featSet.add(new Feature("AdjectiveRate", adj));
-        featSet.add(new Feature("PrepositionRate", prep));
-        featSet.add(new Feature("ArticleRate", art));
-        featSet.add(new Feature("PronounRate", pro));
-        featSet.add(new Feature("VerbRate", verb));
-        featSet.add(new Feature("AdverbRate", adv));
-        featSet.add(new Feature("InterjectionRate", interj));
-        featSet.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure));
+        featSet.add(new Feature("NounRate", noun, FeatureType.NUMERIC));
+        featSet.add(new Feature("AdjectiveRate", adj, FeatureType.NUMERIC));
+        featSet.add(new Feature("PrepositionRate", prep, FeatureType.NUMERIC));
+        featSet.add(new Feature("ArticleRate", art, FeatureType.NUMERIC));
+        featSet.add(new Feature("PronounRate", pro, FeatureType.NUMERIC));
+        featSet.add(new Feature("VerbRate", verb, FeatureType.NUMERIC));
+        featSet.add(new Feature("AdverbRate", adv, FeatureType.NUMERIC));
+        featSet.add(new Feature("InterjectionRate", interj, FeatureType.NUMERIC));
+        featSet.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure, FeatureType.NUMERIC));
 
         return featSet;
     }

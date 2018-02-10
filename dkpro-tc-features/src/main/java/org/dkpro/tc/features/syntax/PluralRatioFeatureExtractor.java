@@ -25,6 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NOUN;
@@ -60,10 +61,10 @@ public class PluralRatioFeatureExtractor
         }
         if ((singular + plural) > 0) {
             return new Feature(FN_PLURAL_RATIO, (double) plural
-                    / (singular + plural)).asSet();
+                    / (singular + plural), FeatureType.NUMERIC).asSet();
         }
         else {
-        	return new Feature(FN_PLURAL_RATIO, 0.0).asSet();
+        	return new Feature(FN_PLURAL_RATIO, 0.0, FeatureType.NUMERIC).asSet();
         }
     }
 }

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task;
 
-import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +27,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -37,11 +36,14 @@ import org.dkpro.tc.core.Constants;
  * train/test the outcomes and merge them here to ensure that we know all outcomes in our data.
  */
 public class OutcomeCollectionTask
-    extends ExecutableTaskBase
+    extends ExecutableTaskBase implements Constants
 {
     
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
+    
+    @Discriminator(name = DIM_FEATURE_SET)
+	private TcFeatureSet featureExtractors;
 
     /**
      * Public name of the task key

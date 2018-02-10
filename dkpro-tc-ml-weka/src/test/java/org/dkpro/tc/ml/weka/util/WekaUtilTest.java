@@ -27,9 +27,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.features.MissingValue;
-import org.dkpro.tc.api.features.MissingValue.MissingValueNonNominalType;
 import org.junit.Test;
 
 import weka.core.Attribute;
@@ -44,40 +43,30 @@ public class WekaUtilTest
     {
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
-        i1.addFeature(new Feature("feature4", Values.VALUE_1));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature2", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
+        i1.addFeature(new Feature("feature4", Values.VALUE_1, FeatureType.NUMERIC));
         i1.setOutcomes("1");
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature2", 1));
-        i2.addFeature(new Feature("feature3_{{", "b"));
-        i2.addFeature(new Feature("feature4", Values.VALUE_2));
+        i2.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature2", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
+        i2.addFeature(new Feature("feature4", Values.VALUE_2, FeatureType.NUMERIC));
         i2.setOutcomes("2");
 
         Instance i3 = new Instance();
-        i3.addFeature(new Feature("feature1", 1));
-        i3.addFeature(new Feature("feature2", 1));
-        i3.addFeature(new Feature("feature3_{{", "b"));
-        i3.addFeature(new Feature("feature4", Values.VALUE_3));
+        i3.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i3.addFeature(new Feature("feature2", 1, FeatureType.NUMERIC));
+        i3.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
+        i3.addFeature(new Feature("feature4", Values.VALUE_3, FeatureType.NUMERIC));
         i3.setOutcomes("2");
-
-        // test missing values
-        Instance i4 = new Instance();
-        i4.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
-        i4.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
-        i4.addFeature(new Feature("feature3_{{",
-                new MissingValue(MissingValueNonNominalType.STRING)));
-        i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
-        i4.setOutcomes("2");
 
         List<Instance> iList = new ArrayList<>();
         iList.add(i1);
         iList.add(i2);
         iList.add(i3);
-        iList.add(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
@@ -94,41 +83,30 @@ public class WekaUtilTest
         throws Exception
     {
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
-        i1.addFeature(new Feature("feature4", Values.VALUE_1));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature2", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
+        i1.addFeature(new Feature("feature4", Values.VALUE_1, FeatureType.NUMERIC));
         i1.setOutcomes("1", "2");
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature2", 1));
-        i2.addFeature(new Feature("feature3_{{", "b"));
-        i2.addFeature(new Feature("feature4", Values.VALUE_2));
+        i2.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature2", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
+        i2.addFeature(new Feature("feature4", Values.VALUE_2, FeatureType.NUMERIC));
         i2.setOutcomes("2", "3");
 
         Instance i3 = new Instance();
-        i3.addFeature(new Feature("feature1", 1));
-        i3.addFeature(new Feature("feature2", 1));
-        i3.addFeature(new Feature("feature3_{{", "b"));
-        i3.addFeature(new Feature("feature4", Values.VALUE_3));
+        i3.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i3.addFeature(new Feature("feature2", 1, FeatureType.NUMERIC));
+        i3.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
+        i3.addFeature(new Feature("feature4", Values.VALUE_3, FeatureType.NUMERIC));
         i3.setOutcomes("2");
 
-        // test missing values
-        Instance i4 = new Instance();
-        i4.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
-        i4.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
-        i4.addFeature(new Feature("feature3_{{",
-                new MissingValue(MissingValueNonNominalType.STRING)));
-        i4.addFeature(new Feature("feature4", new MissingValue(Values.class)));
-        i4.setOutcomes("1", "3");
-
-        
         List<Instance> instances = new ArrayList<>();
         instances.add(i1);
         instances.add(i2);
         instances.add(i3);
-        instances.add(i4);
 
         File outfile = new File("target/test/out.txt");
         outfile.mkdirs();
@@ -146,14 +124,14 @@ public class WekaUtilTest
     {
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature2", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature4", "val_1"));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature4", "val_1", FeatureType.STRING));
+        i2.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
 
         ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature5"));
@@ -185,14 +163,14 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature2", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature4", "val_1"));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature4", "val_1", FeatureType.STRING));
+        i2.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
 
         ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature5"));
@@ -203,18 +181,9 @@ public class WekaUtilTest
         
         Instances trainingData = new Instances("test", attributes, 0);
 
-        // test missing values
-        Instance i3 = new Instance();
-        i3.addFeature(new Feature("feature1", new MissingValue(MissingValueNonNominalType.BOOLEAN)));
-        i3.addFeature(new Feature("feature2", new MissingValue(MissingValueNonNominalType.NUMERIC)));
-        i3.addFeature(new Feature("feature3_{{",
-                new MissingValue(MissingValueNonNominalType.STRING)));
-
         weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
                 outcomeValues, false);
         weka.core.Instance wekaInstance2 = WekaUtils.tcInstanceToWekaInstance(i2, trainingData,
-                outcomeValues, false);
-        weka.core.Instance wekaInstance3 = WekaUtils.tcInstanceToWekaInstance(i3, trainingData,
                 outcomeValues, false);
 
         assertEquals(true, wekaInstance1.equalHeaders(wekaInstance2));
@@ -222,10 +191,8 @@ public class WekaUtilTest
 
         wekaInstance1.dataset().add(wekaInstance1);
         wekaInstance2.dataset().add(wekaInstance2);
-        wekaInstance3.dataset().add(wekaInstance3);
         System.out.println(wekaInstance1.dataset() + "\n");
         System.out.println(wekaInstance2.dataset() + "\n");
-        System.out.println(wekaInstance3.dataset() + "\n");
     }
 
     @Test
@@ -235,14 +202,14 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature2", 2));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature2", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
 
         Instance i2 = new Instance();
-        i2.addFeature(new Feature("feature1", 1));
-        i2.addFeature(new Feature("feature4", "val_1"));
-        i2.addFeature(new Feature("feature3_{{", "b"));
+        i2.addFeature(new Feature("feature1", 1, FeatureType.NUMERIC));
+        i2.addFeature(new Feature("feature4", "val_1", FeatureType.STRING));
+        i2.addFeature(new Feature("feature3_{{", "b", FeatureType.STRING));
 
         ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("outc_1", Arrays.asList(new String[] { "0", "1" })));
@@ -276,9 +243,9 @@ public class WekaUtilTest
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
         Instance i1 = new Instance();
-        i1.addFeature(new Feature("feature1", 2));
-        i1.addFeature(new Feature("feature4", "val_1"));
-        i1.addFeature(new Feature("feature3_{{", "a"));
+        i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
+        i1.addFeature(new Feature("feature4", "val_1", FeatureType.STRING));
+        i1.addFeature(new Feature("feature3_{{", "a", FeatureType.STRING));
 
         ArrayList<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute("feature2"));

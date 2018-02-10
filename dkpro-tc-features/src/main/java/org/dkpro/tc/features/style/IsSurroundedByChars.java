@@ -31,6 +31,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
@@ -91,13 +92,13 @@ public class IsSurroundedByChars
                 Token f = followingTokens.get(0);
                 if (p.getCoveredText().equals(String.valueOf(leftBoundary))
                         && f.getCoveredText().equals(String.valueOf(rightBoundary))) {
-                    featSet.add(new Feature(SURROUNDED_BY_CHARS, true));
+                    featSet.add(new Feature(SURROUNDED_BY_CHARS, true, FeatureType.BOOLEAN));
                     return featSet;
                 }
             }
         }
 
-        featSet.add(new Feature(SURROUNDED_BY_CHARS, false));
+        featSet.add(new Feature(SURROUNDED_BY_CHARS, false, FeatureType.BOOLEAN));
         return featSet;
     }
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.junit.Before;
 import org.junit.Rule;
@@ -54,14 +55,14 @@ public class CrfSuiteFeatureFormatExtractionIteratorTest
         fs = new ArrayList<>();
 
         List<Feature> features1 = new ArrayList<Feature>();
-        features1.add(new Feature("feature1", 1.0));
-        features1.add(new Feature("feature2", 0.0));
-        features1.add(new Feature("feature3", "Water"));
+        features1.add(new Feature("feature1", 1.0, FeatureType.NUMERIC));
+        features1.add(new Feature("feature2", 0.0, FeatureType.NUMERIC));
+        features1.add(new Feature("feature3", "Water", FeatureType.STRING));
 
         List<Feature> features2 = new ArrayList<Feature>();
-        features2.add(new Feature("feature2", 0.5));
-        features2.add(new Feature("feature1", 0.5));
-        features2.add(new Feature("feature3", "Fanta"));
+        features2.add(new Feature("feature2", 0.5, FeatureType.NUMERIC));
+        features2.add(new Feature("feature1", 0.5, FeatureType.NUMERIC));
+        features2.add(new Feature("feature3", "Fanta", FeatureType.STRING));
 
         Instance instance1 = new Instance(features1, "1");
         instance1.setJcasId(0);

@@ -27,6 +27,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
@@ -81,17 +82,17 @@ public class POSRatioFeatureExtractor
         double punc = selectCovered(jcas, POS_PUNCT.class, target).size() / total;
         double verb = selectCovered(jcas, POS_VERB.class, target).size() / total;
 
-        features.add(new Feature(FN_ADJ_RATIO, adj));
-        features.add(new Feature(FN_ADV_RATIO, adv));
-        features.add(new Feature(FN_ART_RATIO, art));
-        features.add(new Feature(FN_CARD_RATIO, card));
-        features.add(new Feature(FN_CONJ_RATIO, conj));
-        features.add(new Feature(FN_N_RATIO, noun+propNoun));
-        features.add(new Feature(FN_O_RATIO, other));
-        features.add(new Feature(FN_PR_RATIO, pron));
-        features.add(new Feature(FN_PP_RATIO, prep));
-        features.add(new Feature(FN_PUNC_RATIO, punc));
-        features.add(new Feature(FN_V_RATIO, verb));
+        features.add(new Feature(FN_ADJ_RATIO, adj, FeatureType.NUMERIC));
+        features.add(new Feature(FN_ADV_RATIO, adv, FeatureType.NUMERIC));
+        features.add(new Feature(FN_ART_RATIO, art, FeatureType.NUMERIC));
+        features.add(new Feature(FN_CARD_RATIO, card, FeatureType.NUMERIC));
+        features.add(new Feature(FN_CONJ_RATIO, conj, FeatureType.NUMERIC));
+        features.add(new Feature(FN_N_RATIO, noun+propNoun, FeatureType.NUMERIC));
+        features.add(new Feature(FN_O_RATIO, other, FeatureType.NUMERIC));
+        features.add(new Feature(FN_PR_RATIO, pron, FeatureType.NUMERIC));
+        features.add(new Feature(FN_PP_RATIO, prep, FeatureType.NUMERIC));
+        features.add(new Feature(FN_PUNC_RATIO, punc, FeatureType.NUMERIC));
+        features.add(new Feature(FN_V_RATIO, verb, FeatureType.NUMERIC));
 
         return features;
     }

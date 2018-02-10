@@ -27,6 +27,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -63,6 +64,6 @@ public class QuestionsRatioFeatureExtractor
             questionRatio = (double) matches / nrOfSentences;
         }
 
-        return new Feature(FN_QUESTION_RATIO, questionRatio).asSet();
+        return new Feature(FN_QUESTION_RATIO, questionRatio, FeatureType.NUMERIC).asSet();
     }
 }

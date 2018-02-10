@@ -23,6 +23,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -33,7 +34,7 @@ public class InstanceIdFeature
         throws TextClassificationException
     {
         String fullId = getFullId(jcas);
-        return new Feature(ID_FEATURE_NAME, fullId);
+        return new Feature(ID_FEATURE_NAME, fullId, FeatureType.STRING);
     };
 
     public static Feature retrieve(JCas jcas, TextClassificationTarget unit)
@@ -48,7 +49,7 @@ public class InstanceIdFeature
 
         }
 
-        return new Feature(ID_FEATURE_NAME, fullId);
+        return new Feature(ID_FEATURE_NAME, fullId, FeatureType.STRING);
     };
 
     public static Feature retrieve(JCas jcas, TextClassificationTarget unit, Integer sequenceId)
@@ -64,7 +65,7 @@ public class InstanceIdFeature
             fullId = fullId + "_" + suffix;
         }
 
-        return new Feature(ID_FEATURE_NAME, fullId);
+        return new Feature(ID_FEATURE_NAME, fullId, FeatureType.STRING);
     };
 
     private static String getFullId(JCas jcas)

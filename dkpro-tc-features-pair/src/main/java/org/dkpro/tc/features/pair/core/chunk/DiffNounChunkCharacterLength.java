@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -44,7 +45,7 @@ public class DiffNounChunkCharacterLength
 
         return new Feature("DiffNounPhraseCharacterLength",
                         getAverageNounPhraseCharacterLength(view1)
-                                - getAverageNounPhraseCharacterLength(view2)).asSet();
+                                - getAverageNounPhraseCharacterLength(view2), FeatureType.NUMERIC).asSet();
 
     }
 

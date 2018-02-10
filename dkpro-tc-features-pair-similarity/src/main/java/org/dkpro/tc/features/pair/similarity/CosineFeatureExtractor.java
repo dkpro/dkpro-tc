@@ -31,6 +31,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -142,7 +143,7 @@ public class CosineFeatureExtractor<T extends Annotation>
             	similarity = 0.0;
             }
             
-            return new Feature("Similarity" + measure.getName(), similarity).asSet();
+            return new Feature("Similarity" + measure.getName(), similarity, FeatureType.NUMERIC).asSet();
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);

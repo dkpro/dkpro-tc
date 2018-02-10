@@ -26,6 +26,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -78,8 +79,8 @@ public class LongWordsFeatureExtractor
         }
 
         Set<Feature> featSet = new HashSet<Feature>();
-        featSet.add(new Feature(FN_LW_RATIO, longTokenRatio));
-        featSet.add(new Feature(FN_SW_RATIO, shortTokenRatio));
+        featSet.add(new Feature(FN_LW_RATIO, longTokenRatio, FeatureType.NUMERIC));
+        featSet.add(new Feature(FN_SW_RATIO, shortTokenRatio, FeatureType.NUMERIC));
 
         return featSet;
     }

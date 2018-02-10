@@ -25,6 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.tweet.POS_EMO;
@@ -53,6 +54,6 @@ public class EmoticonRatio
         int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, target).size();
         int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, target).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
-        return new Feature(EmoticonRatio.class.getSimpleName(), ratio).asSet();
+        return new Feature(EmoticonRatio.class.getSimpleName(), ratio, FeatureType.NUMERIC).asSet();
     }
 }

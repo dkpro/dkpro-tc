@@ -26,6 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
@@ -90,13 +91,13 @@ public class PronounRatioFeatureExtractor
 
         Set<Feature> features = new HashSet<Feature>();
         if (n > 0) {
-            features.add(new Feature(FN_HE_RATIO, (double) heCount / n));
-            features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n));
-            features.add(new Feature(FN_I_RATIO, (double) iCount / n));
-            features.add(new Feature(FN_WE_RATIO, (double) weCount / n));
-            features.add(new Feature(FN_THEY_RATIO, (double) theyCount / n));
-            features.add(new Feature(FN_US_RATIO, (double) usCount / n));
-            features.add(new Feature(FN_YOU_RATIO, (double) youCount / n));
+            features.add(new Feature(FN_HE_RATIO, (double) heCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_I_RATIO, (double) iCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_WE_RATIO, (double) weCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_THEY_RATIO, (double) theyCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_US_RATIO, (double) usCount / n, FeatureType.NUMERIC));
+            features.add(new Feature(FN_YOU_RATIO, (double) youCount / n, FeatureType.NUMERIC));
         }
 
         return features;

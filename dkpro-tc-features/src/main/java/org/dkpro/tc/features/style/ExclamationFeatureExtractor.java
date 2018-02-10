@@ -27,6 +27,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -59,7 +60,7 @@ public class ExclamationFeatureExtractor
             matches++;
         }
 
-        return new Feature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0).asSet();
+        return new Feature(FEATURE_NAME, sentences > 0 ? (matches / sentences) : 0, FeatureType.NUMERIC).asSet();
     }
 
 }

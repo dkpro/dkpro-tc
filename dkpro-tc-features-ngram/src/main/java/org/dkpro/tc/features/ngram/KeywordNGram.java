@@ -32,6 +32,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -79,10 +80,10 @@ public class KeywordNGram
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
             }
         }
         return features;

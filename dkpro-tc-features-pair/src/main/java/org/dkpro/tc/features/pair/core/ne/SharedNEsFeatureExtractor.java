@@ -30,6 +30,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -45,7 +46,7 @@ public class SharedNEsFeatureExtractor
         throws TextClassificationException
     {
         return new Feature("SharedNEs", !Collections.disjoint(getNEs(view1),
-                getNEs(view2))).asSet();
+                getNEs(view2)), FeatureType.NUMERIC).asSet();
 
     }
 

@@ -26,6 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
@@ -51,7 +52,7 @@ public class NumberOfHashTags
         while (hashTagMatcher.find()) {
             numberOfHashTags++;
         }
-        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags).asSet();
+        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags, FeatureType.NUMERIC).asSet();
     }
 
 }

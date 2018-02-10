@@ -32,6 +32,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.featurepath.FeaturePathFactory;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import dkpro.similarity.algorithms.api.JCasTextSimilarityMeasure;
 import dkpro.similarity.algorithms.api.SimilarityException;
@@ -91,7 +92,7 @@ public class SimilarityPairFeatureExtractor
                 similarity = textSimilarityResource.getSimilarity(f1, f2);
             }
 
-            return new Feature("Similarity" + textSimilarityResource.getName(), similarity).asSet();
+            return new Feature("Similarity" + textSimilarityResource.getName(), similarity, FeatureType.NUMERIC).asSet();
         }
         catch (FeaturePathException e) {
             throw new TextClassificationException(e);

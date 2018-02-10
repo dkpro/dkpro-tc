@@ -24,6 +24,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -41,7 +42,7 @@ public class DiffNrOfCharactersPairFeatureExtractor
     {
         return new Feature("DiffNrOfCharacters",
                         view1.getDocumentText().length() -
-                                view2.getDocumentText().length()).asSet();
+                                view2.getDocumentText().length(), FeatureType.NUMERIC).asSet();
 
     }
 }

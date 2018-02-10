@@ -41,6 +41,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -229,10 +230,10 @@ public class LuceneNGramPFE
                 value = viewNgrams.getCount(ngram);
             }
             if (viewNgrams.contains(ngram)) {
-                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, value, FeatureType.NUMERIC));
             }
             else {
-                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0));
+                features.add(new Feature(prefix + NGRAM_GLUE + ngram, 0, FeatureType.NUMERIC));
             }
         }
         return features;

@@ -26,6 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
@@ -74,8 +75,8 @@ public class SuperlativeRatioFeatureExtractor
         }
 
         Set<Feature> features = new HashSet<Feature>();
-        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADJ, adjRatio));
-        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADV, advRatio));
+        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADJ, adjRatio, FeatureType.NUMERIC));
+        features.add(new Feature(FN_SUPERLATIVE_RATIO_ADV, advRatio, FeatureType.NUMERIC));
 
         return features;
     }

@@ -24,6 +24,7 @@ import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
@@ -63,7 +64,7 @@ public class TargetSurfaceFormContextFeature
         Integer targetIdx = currentTargetIdx + shiftIdx;
 
         String featureVal = getTargetText(targetIdx);
-        return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal).asSet();
+        return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal, FeatureType.NUMERIC).asSet();
     }
 
     private String toHumanReadable(Integer shiftIdx)

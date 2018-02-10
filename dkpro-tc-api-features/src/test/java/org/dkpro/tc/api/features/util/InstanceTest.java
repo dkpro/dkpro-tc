@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.junit.Test;
 
@@ -37,8 +38,8 @@ public class InstanceTest {
 
 	@Test
 	public void instanceInitializationByListTest() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
@@ -49,8 +50,8 @@ public class InstanceTest {
 	
 	@Test
 	public void instanceInitializationWithArrayOfOutcomes() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
@@ -62,8 +63,8 @@ public class InstanceTest {
 	
 	@Test
 	public void instanceInitializationWithListOfOutcomes() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
@@ -78,8 +79,8 @@ public class InstanceTest {
 	
 	@Test
 	public void instanceInitializationBySetTest() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		Set<Feature> features = new HashSet<Feature>();
 		features.add(f1);
 		features.add(f2);
@@ -94,21 +95,21 @@ public class InstanceTest {
 
 		assertEquals(0, instance.getFeatures().size());
 
-		Feature f3 = new Feature("feature3", "value1");
+		Feature f3 = new Feature("feature3", "value1", FeatureType.STRING);
 		instance.addFeature(f3);
 		assertEquals(1, instance.getFeatures().size());
 	}
 
 	@Test
 	public void instanceAddSingleFeatureTest() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
 		Instance instance = new Instance(features, "outcome");
 
-		Feature f3 = new Feature("feature3", "value1");
+		Feature f3 = new Feature("feature3", "value1", FeatureType.STRING);
 		instance.addFeature(f3);
 		assertEquals(3, instance.getFeatures().size());
 	}
@@ -116,16 +117,16 @@ public class InstanceTest {
 
 	@Test
 	public void instanceAddFeatureSetTest() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
 		Instance instance = new Instance(features, "outcome");
 
 		Set<Feature> s = new HashSet<Feature>();
-		Feature f3 = new Feature("feature3", "value3");
-		Feature f4 = new Feature("feature4", "value4");
+		Feature f3 = new Feature("feature3", "value3", FeatureType.STRING);
+		Feature f4 = new Feature("feature4", "value4", FeatureType.STRING);
 		s.add(f3);
 		s.add(f4);
 
@@ -137,16 +138,16 @@ public class InstanceTest {
 	
 	@Test
 	public void instanceAddFeatureListTest() throws Exception {
-		Feature f1 = new Feature("feature1", "value1");
-		Feature f2 = new Feature("feature2", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+		Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
 		List<Feature> features = new ArrayList<>();
 		features.add(f1);
 		features.add(f2);
 		Instance instance = new Instance(features, "outcome");
 
 		List<Feature> s = new ArrayList<Feature>();
-		Feature f3 = new Feature("feature3", "value3");
-		Feature f4 = new Feature("feature4", "value4");
+		Feature f3 = new Feature("feature3", "value3", FeatureType.STRING);
+		Feature f4 = new Feature("feature4", "value4", FeatureType.STRING);
 		s.add(f3);
 		s.add(f4);
 
@@ -159,7 +160,7 @@ public class InstanceTest {
 	@Test
 	public void instanceSetSingleOutcomeTest() throws Exception {
 
-		Feature f1 = new Feature("feature1", "value1");
+		Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
 		Instance instance = new Instance();
 		instance.addFeature(f1);
 
@@ -179,8 +180,8 @@ public class InstanceTest {
 	@Test
     public void instanceSetSeveralOutcomesTest() throws Exception {
 
-	    Feature f1 = new Feature("feature1", "value1");
-        Feature f2 = new Feature("feature2", "value1");
+	    Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+        Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
         List<Feature> features = new ArrayList<>();
         features.add(f1);
         features.add(f2);
@@ -197,16 +198,16 @@ public class InstanceTest {
 	
 	@Test
 	public void instanceSetNewFeatureCollectionBySetterTest() throws TextClassificationException {
-	    Feature f1 = new Feature("feature1", "value1");
-        Feature f2 = new Feature("feature2", "value1");
+	    Feature f1 = new Feature("feature1", "value1", FeatureType.STRING);
+        Feature f2 = new Feature("feature2", "value1", FeatureType.STRING);
         List<Feature> features = new ArrayList<>();
         features.add(f1);
         features.add(f2);
         Instance instance = new Instance(features, "outcome");
         
         
-        Feature f3 = new Feature("feature3", "value1");
-        Feature f4 = new Feature("feature4", "value1");
+        Feature f3 = new Feature("feature3", "value1", FeatureType.STRING);
+        Feature f4 = new Feature("feature4", "value1", FeatureType.STRING);
         Set<Feature> newFeatures = new HashSet<>();
         newFeatures.add(f3);
         newFeatures.add(f4);
@@ -230,7 +231,7 @@ public class InstanceTest {
 	
 	@Test
 	public void testSetterAndGetter(){
-	    Instance i = new Instance(Arrays.asList(new Feature("dummy", 0)), "RESULT");
+	    Instance i = new Instance(Arrays.asList(new Feature("dummy", 0, FeatureType.STRING)), "RESULT");
 	    i.setJcasId(4711);
 	    i.setSequenceId(234);
 	    i.setWeight(2.0);

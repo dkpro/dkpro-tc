@@ -30,6 +30,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
@@ -62,10 +63,10 @@ public class LuceneSkipCharacterNGram
 
         for (String topNgram : topKSet.getKeys()) {
             if (charNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
             }
         }
         return features;

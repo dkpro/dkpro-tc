@@ -25,6 +25,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
@@ -77,9 +78,9 @@ public class PastVsFutureFeatureExtractor
         }
 
         Set<Feature> features = new HashSet<Feature>();
-        features.add(new Feature(FN_PAST_RATIO, pastRatio));
-        features.add(new Feature(FN_FUTURE_RATIO, futureRatio));
-        features.add(new Feature(FN_FUTURE_VS_PAST_RATIO, futureToPastRatio));
+        features.add(new Feature(FN_PAST_RATIO, pastRatio, FeatureType.NUMERIC));
+        features.add(new Feature(FN_FUTURE_RATIO, futureRatio, FeatureType.NUMERIC));
+        features.add(new Feature(FN_FUTURE_VS_PAST_RATIO, futureToPastRatio, FeatureType.NUMERIC));
 
         return features;
     }

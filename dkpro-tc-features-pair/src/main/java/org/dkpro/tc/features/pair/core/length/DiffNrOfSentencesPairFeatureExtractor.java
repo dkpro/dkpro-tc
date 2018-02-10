@@ -26,6 +26,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -43,6 +44,6 @@ public class DiffNrOfSentencesPairFeatureExtractor
     {
         return new Feature("DiffNrOfSentences",
                         JCasUtil.select(view1, Sentence.class).size() -
-                                JCasUtil.select(view2, Sentence.class).size()).asSet();
+                                JCasUtil.select(view2, Sentence.class).size(), FeatureType.NUMERIC).asSet();
     }
 }

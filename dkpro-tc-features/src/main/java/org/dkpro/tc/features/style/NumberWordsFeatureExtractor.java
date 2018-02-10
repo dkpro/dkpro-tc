@@ -27,6 +27,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -60,6 +61,6 @@ public class NumberWordsFeatureExtractor
                 System.out.println(t + " matches Words With Numbers");
             }
         }
-        return new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens).asSet();
+        return new Feature(FEATURE_NAME, (double) pmatches / nrOfTokens, FeatureType.NUMERIC).asSet();
     }
 }

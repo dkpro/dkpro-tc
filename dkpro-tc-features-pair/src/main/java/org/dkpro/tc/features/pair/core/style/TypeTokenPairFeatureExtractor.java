@@ -27,6 +27,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 
 /**
@@ -43,7 +44,7 @@ public class TypeTokenPairFeatureExtractor
         throws TextClassificationException
     {
         return new Feature("DiffTypeTokenRatio",
-                        getTypeTokenRatio(view1) / getTypeTokenRatio(view2)
+                        getTypeTokenRatio(view1) / getTypeTokenRatio(view2), FeatureType.NUMERIC
                 ).asSet();
     }
 
