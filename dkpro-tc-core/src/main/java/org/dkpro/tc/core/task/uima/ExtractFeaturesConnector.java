@@ -113,7 +113,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 			
 			initDocumentMetaDataLogger();
 			
-			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors);
+			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors, addInstanceId);
 			featureMeta = new FeatureMetaData();
 
 			if (isTesting) {
