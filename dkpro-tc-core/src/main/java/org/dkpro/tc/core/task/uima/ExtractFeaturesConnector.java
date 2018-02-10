@@ -40,7 +40,6 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.feature.filter.FeatureFilter;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 
@@ -245,19 +244,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	}
 
 	private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException {
-		// apply filters that influence the whole feature store
-		// filters are applied in the order that they appear as parameters
-		for (String filterString : featureFilters) {
-			FeatureFilter filter;
-			try {
-				filter = (FeatureFilter) Class.forName(filterString).newInstance();
-
-				if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
-					filter.applyFilter(jsonTempFile);
-				}
-			} catch (Exception e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}
+		InstanceFilter filter = new InstanceFilter(featureFilters, isTesting);
+		filter.filter(jsonTempFile);
 	}
 }
