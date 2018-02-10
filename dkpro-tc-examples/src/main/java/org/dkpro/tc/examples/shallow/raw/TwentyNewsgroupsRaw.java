@@ -29,8 +29,8 @@ import java.io.File;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
-import org.dkpro.tc.features.length.NrOfSentences;
-import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -77,9 +77,9 @@ public class TwentyNewsgroupsRaw
                         ExtractFeaturesConnector.PARAM_OUTCOMES,
                         new String[] { "alt.atheism", "comp.graphics" },
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
-                        asList(createExternalResourceDescription(NrOfTokens.class,
-                                NrOfTokens.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
-                                createExternalResourceDescription(NrOfSentences.class,
-                                        NrOfSentences.PARAM_UNIQUE_EXTRACTOR_NAME, "1234"))));
+                        asList(createExternalResourceDescription(LuceneNumberOfTokensRatio.class,
+                        		LuceneNumberOfTokensRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),
+                                createExternalResourceDescription(LuceneNumberOfSentencesRatio.class,
+                                		LuceneNumberOfSentencesRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "1234"))));
     }
 }

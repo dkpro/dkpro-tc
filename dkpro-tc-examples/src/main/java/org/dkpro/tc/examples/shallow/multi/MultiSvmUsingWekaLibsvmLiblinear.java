@@ -39,8 +39,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -93,7 +93,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(NrOfTokens.class),
+				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
 						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 500,
 								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 

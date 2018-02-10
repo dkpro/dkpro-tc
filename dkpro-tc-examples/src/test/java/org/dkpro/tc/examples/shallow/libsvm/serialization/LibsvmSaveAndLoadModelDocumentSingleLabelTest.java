@@ -51,9 +51,9 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -102,7 +102,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class), TcFeatureFactory.create(
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class), TcFeatureFactory.create(
                         LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
 
@@ -261,7 +261,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "1000"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
                                   TcFeatureFactory.create(LuceneCharacterNGram.class)
                                   )
                 );

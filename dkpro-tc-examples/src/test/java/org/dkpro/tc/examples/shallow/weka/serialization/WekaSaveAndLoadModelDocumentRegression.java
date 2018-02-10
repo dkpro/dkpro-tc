@@ -19,7 +19,6 @@
 package org.dkpro.tc.examples.shallow.weka.serialization;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -49,9 +48,9 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfSentences;
-import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
+import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -101,11 +100,11 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
         regressionLoadModel(modelFolder);
 
         File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertFalse(metaOverride.exists());
+        assertTrue(metaOverride.exists());
 
         File extractorOverride = new File(
                 modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertFalse(extractorOverride.exists());
+        assertTrue(extractorOverride.exists());
 
         // verify that all expected files have been created
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
@@ -160,6 +159,7 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("regressionWeka", modelFolder);
         batch.setParameterSpace(paramSpace);
+        batch.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
 
         Lab.getInstance().run(batch);
     }
@@ -180,8 +180,8 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
                 Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(NrOfSentences.class),
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
+                        TcFeatureFactory.create(LuceneNumberOfSentencesRatio.class),
                         TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

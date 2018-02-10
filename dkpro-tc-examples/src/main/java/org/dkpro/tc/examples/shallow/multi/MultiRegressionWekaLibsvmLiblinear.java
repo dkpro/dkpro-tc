@@ -38,9 +38,9 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfSentences;
-import org.dkpro.tc.features.length.NrOfTokens;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
+import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -103,8 +103,8 @@ public class MultiRegressionWekaLibsvmLiblinear
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(NrOfSentences.class),
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
+                        TcFeatureFactory.create(LuceneNumberOfSentencesRatio.class),
                         TcFeatureFactory.create(LengthFeatureNominal.class),
                         TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 

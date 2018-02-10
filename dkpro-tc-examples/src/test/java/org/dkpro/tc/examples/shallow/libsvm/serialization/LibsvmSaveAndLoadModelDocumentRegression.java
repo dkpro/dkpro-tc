@@ -48,8 +48,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfSentences;
-import org.dkpro.tc.features.length.NrOfTokens;
+import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -152,8 +152,8 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
                 Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", "3" }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
-                        TcFeatureFactory.create(NrOfSentences.class)
+                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
+                        TcFeatureFactory.create(LuceneNumberOfSentencesRatio.class)
                         ));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

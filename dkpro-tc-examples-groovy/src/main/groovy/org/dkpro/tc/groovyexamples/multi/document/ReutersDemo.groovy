@@ -33,6 +33,8 @@ import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
+import org.dkpro.tc.features.length.*
+import org.dkpro.tc.features.ngram.*
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
@@ -43,8 +45,6 @@ import weka.attributeSelection.InfoGainAttributeEval
 import weka.classifiers.bayes.NaiveBayes
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter
-import org.dkpro.tc.features.length.*
-import org.dkpro.tc.features.ngram.*
 
 /**
  * Groovy-Version of the ReutersTextClassificationExperiment
