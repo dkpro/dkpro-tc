@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
-public class CRFSuiteTestTask
+public class CrfSuiteTestTask
     extends ExecutableTaskBase
     implements Constants
 {
@@ -87,8 +87,8 @@ public class CRFSuiteTestTask
     private void processParameters(List<Object> classificationArguments)
         throws Exception
     {
-        algoName = CRFUtil.getAlgorithm(classificationArguments);
-        algoParameters = CRFUtil.getAlgorithmConfigurationParameter(classificationArguments);
+        algoName = CrfUtil.getAlgorithm(classificationArguments);
+        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
     }
 
     public static String getExecutablePath()
@@ -98,7 +98,7 @@ public class CRFSuiteTestTask
         if (runtimeProvider == null) {
             PlatformDetector pd = new PlatformDetector();
             String platform = pd.getPlatformId();
-            LogFactory.getLog(CRFSuiteTestTask.class.getName())
+            LogFactory.getLog(CrfSuiteTestTask.class.getName())
                     .info("Load binary for platform: [" + platform + "]");
 
             runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/crfsuite/");
@@ -106,7 +106,7 @@ public class CRFSuiteTestTask
 
         String executablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
 
-        LogFactory.getLog(CRFSuiteTestTask.class.getName())
+        LogFactory.getLog(CrfSuiteTestTask.class.getName())
                 .info("Will use binary: [" + executablePath + "]");
 
         return executablePath;

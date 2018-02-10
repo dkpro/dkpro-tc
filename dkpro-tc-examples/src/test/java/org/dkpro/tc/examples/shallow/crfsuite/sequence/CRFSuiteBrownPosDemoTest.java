@@ -29,7 +29,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.crfsuite.sequence.filter.FilterLuceneCharacterNgramStartingWithLetter;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 		// Random parameters for demonstration!
         //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] { new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
+				asList(new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
@@ -81,7 +81,7 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 	public Double runTrainTestFilter() throws Exception {
 		// Random parameters for demonstration!
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+				asList(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
 
 		Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
 				asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));

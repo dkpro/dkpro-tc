@@ -31,13 +31,13 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  */
-public class CRFSuiteOutcomeIDReport
+public class CrfSuiteOutcomeIDReport
     extends ReportBase
 {
 
@@ -50,7 +50,7 @@ public class CRFSuiteOutcomeIDReport
 
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
     
-    public CRFSuiteOutcomeIDReport(){
+    public CrfSuiteOutcomeIDReport(){
         //requried by groovy
     }
 
@@ -122,7 +122,7 @@ public class CRFSuiteOutcomeIDReport
     private List<String> getTestData()
         throws Exception
     {
-        File storage = getContext().getFolder(CRFSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
+        File storage = getContext().getFolder(CrfSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
         File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);

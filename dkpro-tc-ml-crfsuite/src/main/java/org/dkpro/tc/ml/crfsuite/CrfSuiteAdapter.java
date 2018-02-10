@@ -28,22 +28,22 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteLoadModelConnector;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CRFSuiteSerializeModelConnector;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CrfSuiteLoadModelConnector;
+import org.dkpro.tc.ml.crfsuite.task.serialization.CrfSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 
 /**
  * CRFSuite machine learning adapter. Details about available algorithm and their configuration is
  * provided in this class see constants prefixed with ALGORITHM.
  */
-public class CRFSuiteAdapter
+public class CrfSuiteAdapter
     implements TcShallowLearningAdapter
 {
 
     public static TcShallowLearningAdapter getInstance()
     {
-        return new CRFSuiteAdapter();
+        return new CrfSuiteAdapter();
     }
 
     public static String getOutcomeMappingFilename()
@@ -54,13 +54,13 @@ public class CRFSuiteAdapter
     @Override
     public ExecutableTaskBase getTestTask()
     {
-        return new CRFSuiteTestTask();
+        return new CrfSuiteTestTask();
     }
 
     @Override
     public Class<? extends ReportBase> getOutcomeIdReportClass()
     {
-        return CRFSuiteOutcomeIDReport.class;
+        return CrfSuiteOutcomeIDReport.class;
     }
 
     @SuppressWarnings("unchecked")
@@ -79,13 +79,13 @@ public class CRFSuiteAdapter
     @Override
     public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
     {
-        return CRFSuiteLoadModelConnector.class;
+        return CrfSuiteLoadModelConnector.class;
     }
 
     @Override
     public Class<? extends ModelSerializationTask> getSaveModelTask()
     {
-        return CRFSuiteSerializeModelConnector.class;
+        return CrfSuiteSerializeModelConnector.class;
     }
 
     /**

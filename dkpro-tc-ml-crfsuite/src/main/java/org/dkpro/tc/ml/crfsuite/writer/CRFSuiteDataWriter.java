@@ -40,7 +40,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import com.google.gson.Gson;
 
 public class CRFSuiteDataWriter implements DataWriter {
-	CRFSuiteFeatureStoreSequenceIterator iterator;
+	CrfSuiteFeatureFormatExtractionIterator iterator;
 	File outputDirectory;
 	boolean useSparse;
 	String learningMode;
@@ -84,7 +84,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 			Instance [] instance = gson.fromJson(line, Instance[].class);
 			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
 
-			Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(ins);
+			Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(ins);
 
 			while (sequenceIterator.hasNext()) {
 				String features = sequenceIterator.next().toString();
@@ -102,7 +102,7 @@ public class CRFSuiteDataWriter implements DataWriter {
 	public void writeClassifierFormat(Collection<Instance> instances) throws Exception {
 		initClassifierFormat();
 
-		Iterator<StringBuilder> sequenceIterator = new CRFSuiteFeatureStoreSequenceIterator(
+		Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
 				new ArrayList<Instance>(instances));
 
 		while (sequenceIterator.hasNext()) {

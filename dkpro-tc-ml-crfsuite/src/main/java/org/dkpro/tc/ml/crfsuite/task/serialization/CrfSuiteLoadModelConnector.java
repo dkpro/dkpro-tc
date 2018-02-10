@@ -42,11 +42,11 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteFeatureStoreSequenceIterator;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
-public class CRFSuiteLoadModelConnector
+public class CrfSuiteLoadModelConnector
     extends ModelSerialization_ImplBase
 {
 
@@ -67,7 +67,7 @@ public class CRFSuiteLoadModelConnector
         super.initialize(context);
 
         try {
-            executablePath = CRFSuiteTestTask.getExecutablePath();
+            executablePath = CrfSuiteTestTask.getExecutablePath();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
             SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
         }
@@ -91,7 +91,7 @@ public class CRFSuiteLoadModelConnector
                         jcas, seq, true, sequenceId++));
             }
 
-            CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(
+            CrfSuiteFeatureFormatExtractionIterator iterator = new CrfSuiteFeatureFormatExtractionIterator(
                     instance);
 
             //takes N sequences and classifies them - all results are hold in memory
@@ -132,7 +132,7 @@ public class CRFSuiteLoadModelConnector
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
         writer.write(buffer.toString());
         writer.close();
-        return CRFSuiteTestTask.captureProcessOutput(process);
+        return CrfSuiteTestTask.captureProcessOutput(process);
     }
 
     private List<String> buildCommand() throws Exception

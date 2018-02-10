@@ -30,11 +30,11 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
-import org.dkpro.tc.ml.crfsuite.task.CRFSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.CRFUtil;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
 
-public class CRFSuiteSerializeModelConnector extends ModelSerializationTask implements Constants {
+public class CrfSuiteSerializeModelConnector extends ModelSerializationTask implements Constants {
 
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	private List<Object> classificationArguments;
@@ -71,7 +71,7 @@ public class CRFSuiteSerializeModelConnector extends ModelSerializationTask impl
 
 		String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
 		String trainingDataPath = trainFolder.getPath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT;
-		List<String> commandTrainModel = CRFSuiteTestTask.getTrainCommand(classifierPath, trainingDataPath, algoName,
+		List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(classifierPath, trainingDataPath, algoName,
 				algoParameters);
 
 		Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
@@ -79,8 +79,8 @@ public class CRFSuiteSerializeModelConnector extends ModelSerializationTask impl
 	}
 
 	private void processParameters(List<Object> classificationArguments) throws Exception {
-		algoName = CRFUtil.getAlgorithm(classificationArguments);
-		algoParameters = CRFUtil.getAlgorithmConfigurationParameter(classificationArguments);
+		algoName = CrfUtil.getAlgorithm(classificationArguments);
+		algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
 	}
 
 	public void trainModel(boolean b) {
@@ -89,6 +89,6 @@ public class CRFSuiteSerializeModelConnector extends ModelSerializationTask impl
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, CRFSuiteAdapter.class.getName());
+		SaveModelUtils.writeModelAdapterInformation(outputFolder, CrfSuiteAdapter.class.getName());
 	}
 }

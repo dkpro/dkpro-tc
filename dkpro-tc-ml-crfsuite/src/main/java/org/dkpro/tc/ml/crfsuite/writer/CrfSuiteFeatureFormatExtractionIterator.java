@@ -24,17 +24,17 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 
 /**
- * Takes a feature store and returns the string representation of a sequence that can be provided as
- * is to CrfSuite
+ * Takes instances and returns the string representation of a sequence 
+ * that can be provided as-is to CrfSuite
  */
-public class CRFSuiteFeatureStoreSequenceIterator
+public class CrfSuiteFeatureFormatExtractionIterator
     implements Iterator<StringBuilder>
 {
     static final String idInitVal = "ü+Ü**'?=?=)(ÖÄ:";
     int insIdx;
     private List<Instance> instances;
 
-    public CRFSuiteFeatureStoreSequenceIterator(List<Instance> instances)
+    public CrfSuiteFeatureFormatExtractionIterator(List<Instance> instances)
     {
         this.instances = instances;
     }

@@ -46,7 +46,7 @@ import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -133,7 +133,7 @@ public class CRFSuiteNERSequenceDemo
         //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
         @SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] {new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
+				asList(new Object[] {new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfChars.class),

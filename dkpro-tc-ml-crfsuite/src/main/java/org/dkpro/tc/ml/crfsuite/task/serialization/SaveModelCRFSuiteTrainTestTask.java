@@ -34,7 +34,7 @@ public class SaveModelCRFSuiteTrainTestTask
     extends ExperimentTrainTest
 {
 
-    private CRFSuiteSerializeModelConnector saveModelTask;
+    private CrfSuiteSerializeModelConnector saveModelTask;
     private File outputFolder;
 
     public SaveModelCRFSuiteTrainTestTask()
@@ -61,7 +61,7 @@ public class SaveModelCRFSuiteTrainTestTask
        super.init();
         
         // store the model
-        saveModelTask = new CRFSuiteSerializeModelConnector();
+        saveModelTask = new CrfSuiteSerializeModelConnector();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,

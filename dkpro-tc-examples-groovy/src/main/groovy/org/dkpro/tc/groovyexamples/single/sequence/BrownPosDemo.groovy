@@ -30,7 +30,7 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.NrOfTokens
@@ -67,7 +67,7 @@ implements Constants {
                          new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class)))
 	
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-		[new CRFSuiteAdapter()])
+		[new CrfSuiteAdapter()])
 	
 
     // ##### CV #####

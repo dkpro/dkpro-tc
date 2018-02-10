@@ -31,7 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class CRFSuiteFeatureStoreSequenceIteratorTest
+public class CrfSuiteFeatureFormatExtractionIteratorTest
 {
 
     @Rule
@@ -97,7 +97,7 @@ public class CRFSuiteFeatureStoreSequenceIteratorTest
         throws Exception
     {
 
-        CRFSuiteFeatureStoreSequenceIterator iterator = new CRFSuiteFeatureStoreSequenceIterator(fs);
+        CrfSuiteFeatureFormatExtractionIterator iterator = new CrfSuiteFeatureFormatExtractionIterator(fs);
 
         List<String> output = new ArrayList<String>();
         while (iterator.hasNext()) {

@@ -52,7 +52,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.After;
 import org.junit.Before;
@@ -123,7 +123,7 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 		// increase number of iterations for real setups (default is 100 or not
 		// providing this parameters)
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2"));
+				asList(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2"));
 
 		File modelFolder = folder.newFolder();
 		ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
@@ -207,8 +207,8 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 
 		@SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] { new CRFSuiteAdapter(),
-						CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+				asList(new Object[] { new CrfSuiteAdapter(),
+						CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
 						"max_iterations=2" }));
 
 		// create a model
@@ -244,7 +244,7 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 
 		@SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS, asList(
-				new Object[] { new CRFSuiteAdapter(), CRFSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2" }));
+				new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2" }));
 
 		// create a model
 		File modelFolder = folder.newFolder();

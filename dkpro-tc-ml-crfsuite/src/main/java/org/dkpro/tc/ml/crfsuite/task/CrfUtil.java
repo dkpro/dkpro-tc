@@ -20,9 +20,9 @@ package org.dkpro.tc.ml.crfsuite.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dkpro.tc.ml.crfsuite.CRFSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 
-public class CRFUtil
+public class CrfUtil
 {
 
     public static String getAlgorithm(List<Object> objArgs)
@@ -43,7 +43,7 @@ public class CRFUtil
                     if (!isValidAlgoName(classificationArguments.get(i + 1))) {
                         throw new IllegalArgumentException("The algorithm name ["
                                 + classificationArguments.get(i + 1) + "] is unknown - see ["
-                                + CRFSuiteAdapter.class.getName() + "] for available algorithm");
+                                + CrfSuiteAdapter.class.getName() + "] for available algorithm");
                     }
 
                     return classificationArguments.get(i + 1);
@@ -55,7 +55,7 @@ public class CRFUtil
             }
         }
 
-        return CRFSuiteAdapter.ALGORITHM_LBFGS;
+        return CrfSuiteAdapter.ALGORITHM_LBFGS;
     }
 
 	public static List<String> objArgs2StringArgs(List<Object> objArgs) {
@@ -69,10 +69,10 @@ public class CRFUtil
 
 	private static boolean isValidAlgoName(String string)
     {
-        return string.equals(CRFSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR)
-                || string.equals(CRFSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON)
-                || string.equals(CRFSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT)
-                || string.equals(CRFSuiteAdapter.ALGORITHM_LBFGS);
+        return string.equals(CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR)
+                || string.equals(CrfSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON)
+                || string.equals(CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT)
+                || string.equals(CrfSuiteAdapter.ALGORITHM_LBFGS);
     }
 
     public static List<String> getAlgorithmConfigurationParameter(

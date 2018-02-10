@@ -34,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class CRFSuiteDataWriterTest
+public class CrfSuiteDataWriterTest
 {
 
     @Rule
