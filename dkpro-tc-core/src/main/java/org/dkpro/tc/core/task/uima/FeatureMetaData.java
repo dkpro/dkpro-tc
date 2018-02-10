@@ -56,7 +56,7 @@ public class FeatureMetaData implements Constants {
 				featDesc.put(f.getName(), f.getType());
 			}
 			
-			if(f.getType() == FeatureType.ENUMERATION){
+			if(f.getType() == FeatureType.NOMINAL){
 				enumFeatureName.put(f.getName(), f.getValue().getClass().getName());
 			}
 		}
@@ -72,7 +72,7 @@ public class FeatureMetaData implements Constants {
 			FeatureType type = featDesc.get(k);
 			sb.append(k + "\t" + type.toString());
 			
-			if(type == FeatureType.ENUMERATION){
+			if(type == FeatureType.NOMINAL){
 				sb.append("\t" + enumFeatureName.get(k));
 			}
 			

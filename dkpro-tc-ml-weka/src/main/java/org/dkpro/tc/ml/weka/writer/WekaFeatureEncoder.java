@@ -69,7 +69,7 @@ public class WekaFeatureEncoder
         	attribute = new Attribute(name, true);
         }
         // if value is an Enum thene create a nominal attribute
-        else if (value.equals(FeatureType.ENUMERATION)) {
+        else if (value.equals(FeatureType.NOMINAL)) {
             Class<?> forName=null;
             try {
                 forName = Class.forName(enumType);

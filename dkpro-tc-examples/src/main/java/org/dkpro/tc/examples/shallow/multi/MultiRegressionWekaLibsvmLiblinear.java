@@ -71,7 +71,7 @@ public class MultiRegressionWekaLibsvmLiblinear
 
         MultiRegressionWekaLibsvmLiblinear experiment = new MultiRegressionWekaLibsvmLiblinear();
         experiment.runTrainTest(pSpace);
-        experiment.runCrossValidation(pSpace);
+//        experiment.runCrossValidation(pSpace);
     }
 
     @SuppressWarnings("unchecked")
@@ -105,6 +105,7 @@ public class MultiRegressionWekaLibsvmLiblinear
                 DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokens.class),
                         TcFeatureFactory.create(NrOfSentences.class),
+                        TcFeatureFactory.create(LengthFeatureNominal.class),
                         TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

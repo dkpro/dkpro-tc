@@ -283,7 +283,7 @@ public class WekaDataWriter
             if (!attributeStore.containsAttributeName(featureName)) {
                 FeatureType type = FeatureType.valueOf(split[1]);
                 String enumType = null;
-                if (type == FeatureType.ENUMERATION) {
+                if (type == FeatureType.NOMINAL) {
                     enumType = split[2];
                 }
                 Attribute attribute = WekaFeatureEncoder
