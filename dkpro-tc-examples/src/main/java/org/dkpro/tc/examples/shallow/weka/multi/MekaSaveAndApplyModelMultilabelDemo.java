@@ -43,8 +43,8 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.MekaAdapter;
@@ -109,9 +109,9 @@ public class MekaSaveAndApplyModelMultilabelDemo implements Constants {
 						"-W", RandomForest.class.getName() }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
-						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 100,
-								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+				new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
+						TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 100,
+								WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),

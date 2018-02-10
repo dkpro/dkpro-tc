@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -34,30 +33,30 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PhoneticNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
- * Extracts token n-grams within the given text classification unit
+ * Extracts token ngrams where tokens are first converted to their phonetic representation (e.g.
+ * Soundex).
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LuceneNGram
+public class PhoneticNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-
+    
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
-        Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentNgrams = null;
 
-        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, target, ngramLowerCase,
-                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
+        Set<Feature> features = new HashSet<Feature>();
+        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentPhoneticNgrams(jcas,
+                target, ngramMinN, ngramMaxN);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
@@ -69,46 +68,29 @@ public class LuceneNGram
         }
         return features;
     }
-
+    
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(
-                new MetaCollectorConfiguration(LuceneNGramMetaCollector.class, parameterSettings)
-                        .addStorageMapping(LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
-                                LuceneNGram.PARAM_SOURCE_LOCATION,
-                                LuceneNGramMetaCollector.LUCENE_DIR));
-    }
-
-    @Override
-    protected void logSelectionProcess(long N)
-    {
-        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
-                + "]-GRAMS (" + caseSensitivity() + ")");
-    }
-
-    private String range()
-    {
-        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
-    }
-
-    private String caseSensitivity()
-    {
-        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
+        return Arrays.asList(new MetaCollectorConfiguration(PhoneticNGramMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        PhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        PhoneticNGram.PARAM_SOURCE_LOCATION,
+                        PhoneticNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_NGRAM_FIELD + featureExtractorName;
+        return PhoneticNGramMetaCollector.LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return "ngram";
+        return PhoneticNGramMetaCollector.LUCENE_PHONETIC_NGRAM_FIELD;
     }
 
     @Override

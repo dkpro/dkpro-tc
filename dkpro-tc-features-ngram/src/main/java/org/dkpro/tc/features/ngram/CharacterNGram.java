@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneCharacterNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.CharacterNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 /**
  * Extracts character n-grams.
  */
-public class LuceneCharacterNGram
+public class CharacterNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
@@ -68,13 +68,13 @@ public class LuceneCharacterNGram
     @Override
     protected String getFieldName()
     {
-        return LuceneCharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+        return CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return LuceneCharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD;
+        return CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD;
     }
 
     @Override
@@ -88,11 +88,11 @@ public class LuceneCharacterNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneCharacterNGramMetaCollector.class,
+        return Arrays.asList(new MetaCollectorConfiguration(CharacterNGramMetaCollector.class,
                 parameterSettings).addStorageMapping(
-                        LuceneCharacterNGramMetaCollector.PARAM_TARGET_LOCATION,
-                        LuceneCharacterNGram.PARAM_SOURCE_LOCATION,
-                        LuceneCharacterNGramMetaCollector.LUCENE_DIR));
+                        CharacterNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        CharacterNGram.PARAM_SOURCE_LOCATION,
+                        CharacterNGramMetaCollector.LUCENE_DIR));
     }
 
     @Override

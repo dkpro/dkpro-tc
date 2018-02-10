@@ -24,7 +24,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -34,19 +34,19 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
  * covers only a subset of the document text or several targets exist and (ii) you wish that the
  * information in the resulting frequency distribution contains only text that is covered by those
  * frequency distributions. If you have only one target which spans over the entire document text 0
- * to document-length than you should use {@link org.dkpro.tc.features.ngram.meta.LuceneCharacterNGramMetaCollector}
+ * to document-length than you should use {@link org.dkpro.tc.features.ngram.meta.CharacterNGramMetaCollector}
  */
-public class LuceneCharacterNGramUnitMetaCollector
-    extends LuceneBasedMetaCollector
+public class CharacterNGramUnitMetaCollector
+    extends LuceneMetaCollector
 {
 
-    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
-    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
 
-    @ConfigurationParameter(name = LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringLowerCase;
     
     boolean lowerCase = true;
@@ -78,6 +78,6 @@ public class LuceneCharacterNGramUnitMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneCharacterNGram.LUCENE_NGRAM_FIELD + featureExtractorName;
+        return CharacterNGram.LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 }

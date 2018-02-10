@@ -21,14 +21,14 @@ package org.dkpro.tc.groovyexamples.single.unit;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
 
 /**
  * Extracts the number of tokens in the classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NrOfTokensExternalResource
-    extends LuceneNumberOfTokensRatio
+    extends NumberOfTokensRatio
     implements FeatureExtractor
 {
     /**

@@ -50,7 +50,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -183,8 +183,8 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-				TcFeatureFactory.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 50,
-						LuceneCharacterNGram.PARAM_NGRAM_MIN_N, 1, LuceneCharacterNGram.PARAM_NGRAM_MAX_N, 3),
+				TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50,
+						CharacterNGram.PARAM_NGRAM_MIN_N, 1, CharacterNGram.PARAM_NGRAM_MAX_N, 3),
 				// This is the only model store/load demo at the moment that
 				// makes use of a
 				// resources in the file system which is loaded - please keep

@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -147,8 +147,8 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
                 Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(LuceneCharacterNGram.class,
-                        LuceneCharacterNGram.PARAM_NGRAM_USE_TOP_K, 20)));
+                new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class,
+                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 20)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

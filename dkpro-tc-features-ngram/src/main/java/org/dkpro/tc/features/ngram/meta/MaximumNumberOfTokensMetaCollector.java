@@ -29,7 +29,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class LuceneMaximumNumberOfSentencesMetaCollector extends LuceneBasedMetaCollector {
+public class MaximumNumberOfTokensMetaCollector extends LuceneMetaCollector {
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -49,5 +49,4 @@ public class LuceneMaximumNumberOfSentencesMetaCollector extends LuceneBasedMeta
 	protected String getFieldName() {
 		return featureExtractorName;
 	}
-	
 }

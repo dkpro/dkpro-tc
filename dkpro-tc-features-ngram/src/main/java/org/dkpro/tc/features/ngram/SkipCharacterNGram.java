@@ -34,37 +34,35 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.CharSkipNgramMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
- * Extracts POS n-grams.
+ * Extracts characters skip-ngrams.
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LucenePOSNGram
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+public class SkipCharacterNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
 
-    public static final String PARAM_USE_CANONICAL_POS = "useCanonicalPos";
-    @ConfigurationParameter(name = PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
-    protected boolean useCanonicalTags;
+    public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
+    @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    protected int charSkipSize;
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationTarget classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
-
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentPOSNgrams = null;
-        documentPOSNgrams = NGramUtils.getDocumentPosNgrams(view, classificationUnit, ngramMinN,
-                ngramMaxN, useCanonicalTags);
+
+        FrequencyDistribution<String> charNgrams = NGramUtils.getCharacterSkipNgrams(jcas, target,
+                ngramLowerCase, ngramMinN, ngramMaxN, charSkipSize);
 
         for (String topNgram : topKSet.getKeys()) {
-            if (documentPOSNgrams.getKeys().contains(topNgram)) {
+            if (charNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
@@ -79,25 +77,25 @@ public class LucenePOSNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(
-                new MetaCollectorConfiguration(LucenePOSNGramMetaCollector.class, parameterSettings)
-                        .addStorageMapping(LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION,
-                                LucenePOSNGram.PARAM_SOURCE_LOCATION,
-                                LucenePOSNGramMetaCollector.LUCENE_DIR));
+        return Arrays.asList(new MetaCollectorConfiguration(CharSkipNgramMetaCollector.class,
+                parameterSettings).addStorageMapping(
+                        CharSkipNgramMetaCollector.PARAM_TARGET_LOCATION,
+                        SkipCharacterNGram.PARAM_SOURCE_LOCATION,
+                        CharSkipNgramMetaCollector.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return LucenePOSNGramMetaCollector.LUCENE_POS_NGRAM_FIELD + featureExtractorName;
+        return CharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return "posngram";
+        return CharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD;
     }
-    
+
     @Override
     protected int getTopN()
     {

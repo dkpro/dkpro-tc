@@ -28,7 +28,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 
@@ -126,7 +126,7 @@ public class LuceneNGramPMetaCollector
     @Override
     protected String getFieldName()
     {
-        return LuceneNGram.LUCENE_NGRAM_FIELD;
+        return WordNGram.LUCENE_NGRAM_FIELD;
     }
 
     @Override

@@ -43,7 +43,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LucenePOSNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PosNGramMetaCollector;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +54,7 @@ import com.google.gson.Gson;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LucenePOSNGramFeatureExtractorTest {
+public class PosNGramFeatureExtractorTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
@@ -69,12 +69,12 @@ public class LucenePOSNGramFeatureExtractorTest {
 		File luceneFolder = folder.newFolder();
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { LucenePOSNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-				LucenePOSNGram.PARAM_NGRAM_USE_TOP_K, "5", LucenePOSNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), LucenePOSNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+		Object[] parameters = new Object[] { PosNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+				PosNGram.PARAM_NGRAM_USE_TOP_K, "5", PosNGram.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), PosNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(LucenePOSNGram.class, parameters);
+				.createExternalResourceDescription(PosNGram.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -91,7 +91,7 @@ public class LucenePOSNGramFeatureExtractorTest {
 				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(LucenePOSNGramMetaCollector.class, parameterList.toArray());
+				.createEngineDescription(PosNGramMetaCollector.class, parameterList.toArray());
 
 		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
 				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,

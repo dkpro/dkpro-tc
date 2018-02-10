@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LuceneMaximumSentenceLengthMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaximumSentenceLengthMetaCollector;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -58,7 +58,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneAvgSentenceLengthTest {
+public class AvgSentenceLengthTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
@@ -104,14 +104,14 @@ public class LuceneAvgSentenceLengthTest {
 	private File runFeatureExtractor(File luceneFolder) throws Exception {
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { LuceneAvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				LuceneAvgSentencesLength.PARAM_NGRAM_USE_TOP_K, "1", LuceneAvgSentencesLength.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), LuceneMaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), LuceneAvgSentencesLength.PARAM_NGRAM_MIN_N, "1",
-				LuceneAvgSentencesLength.PARAM_NGRAM_MAX_N, "1", };
+		Object[] parameters = new Object[] { AvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgSentencesLength.PARAM_NGRAM_USE_TOP_K, "1", AvgSentencesLength.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), MaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), AvgSentencesLength.PARAM_NGRAM_MIN_N, "1",
+				AvgSentencesLength.PARAM_NGRAM_MAX_N, "1", };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(LuceneAvgSentencesLength.class, parameters);
+				.createExternalResourceDescription(AvgSentencesLength.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -142,11 +142,11 @@ public class LuceneAvgSentenceLengthTest {
 
 	private void runMetaCollection(File luceneFolder) throws Exception {
 
-		Object[] parameters = new Object[] { LuceneAvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				LuceneAvgSentencesLength.PARAM_NGRAM_USE_TOP_K, 1, LuceneAvgSentencesLength.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), LuceneMaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), LuceneAvgSentencesLength.PARAM_NGRAM_MIN_N, 1,
-				LuceneAvgSentencesLength.PARAM_NGRAM_MAX_N, 1 };
+		Object[] parameters = new Object[] { AvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgSentencesLength.PARAM_NGRAM_USE_TOP_K, 1, AvgSentencesLength.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), MaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), AvgSentencesLength.PARAM_NGRAM_MIN_N, 1,
+				AvgSentencesLength.PARAM_NGRAM_MAX_N, 1 };
 
 		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -158,7 +158,7 @@ public class LuceneAvgSentenceLengthTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(LuceneMaximumSentenceLengthMetaCollector.class, parameterList.toArray());
+				.createEngineDescription(MaximumSentenceLengthMetaCollector.class, parameterList.toArray());
 
 		// run meta collector
 		SimplePipeline.runPipeline(reader, segmenter, metaCollector);

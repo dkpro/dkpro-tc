@@ -30,8 +30,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.features.length.NrOfChars;
-import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
-import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;

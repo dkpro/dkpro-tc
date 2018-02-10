@@ -33,27 +33,36 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneMaximumNumberOfSentencesMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaximumSentenceLengthMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class LuceneNumberOfSentencesRatio extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public class AvgSentencesLength extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
-	public static final String FEATURE_NAME = "NumberOfSentencesRatio";
+	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
 
-		long maxLen = getMaximalNumberOfSentencesLength();
+		long maxLen = getMaximumLength();
 
+		double avgLength=0.0;
+		
 		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
-		double ratio = getRatio(sentences.size(), maxLen);
-		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+		for (Sentence s : sentences) {
+			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+			avgLength += getRatio(tokens.size(), maxLen);
+		}
+
+		avgLength /= sentences.size();
+
+		return new Feature(FEATURE_NAME, avgLength , FeatureType.NUMERIC).asSet();
 	}
 
 	private double getRatio(int size, long maxLen) throws TextClassificationException {
@@ -72,7 +81,7 @@ public class LuceneNumberOfSentencesRatio extends LuceneFeatureExtractorBase imp
 		return value;
 	}
 
-	private long getMaximalNumberOfSentencesLength() throws TextClassificationException {
+	private long getMaximumLength() throws TextClassificationException {
 
 		String string = "-1";
 		try {
@@ -88,10 +97,10 @@ public class LuceneNumberOfSentencesRatio extends LuceneFeatureExtractorBase imp
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(LuceneMaximumNumberOfSentencesMetaCollector.class, parameterSettings)
-						.addStorageMapping(LuceneMaximumNumberOfSentencesMetaCollector.PARAM_TARGET_LOCATION,
-								LuceneNumberOfSentencesRatio.PARAM_SOURCE_LOCATION,
-								LuceneMaximumNumberOfSentencesMetaCollector.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaximumSentenceLengthMetaCollector.class, parameterSettings)
+						.addStorageMapping(MaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
+								AvgSentencesLength.PARAM_SOURCE_LOCATION,
+								MaximumSentenceLengthMetaCollector.LUCENE_DIR));
 	}
 
 	@Override
@@ -106,11 +115,6 @@ public class LuceneNumberOfSentencesRatio extends LuceneFeatureExtractorBase imp
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxNumSentRatio";
-	}
-
-	@Override
-	protected void logSelectionProcess(long N) {
-		// no log message for this feature
+		return "sentLen";
 	}
 }

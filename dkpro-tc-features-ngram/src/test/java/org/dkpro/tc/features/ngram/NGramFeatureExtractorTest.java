@@ -42,7 +42,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LuceneNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.WordNGramMetaCollector;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,7 +52,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneNGramFeatureExtractorTest
+public class NGramFeatureExtractorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -72,13 +72,13 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3", LuceneNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), LuceneNGramMetaCollector.PARAM_TARGET_LOCATION,
+        Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                WordNGram.PARAM_NGRAM_USE_TOP_K, "3", WordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), WordNGramMetaCollector.PARAM_TARGET_LOCATION,
                 luceneFolder.toString() };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(LuceneNGram.class, parameters);
+                .createExternalResourceDescription(WordNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
 
@@ -92,7 +92,7 @@ public class LuceneNGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(WordNGramMetaCollector.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
@@ -137,10 +137,10 @@ public class LuceneNGramFeatureExtractorTest
         File luceneFolder = folder.newFolder();
         File outputPath = folder.newFolder();
 
-        Object[] parameters = new Object[] { LuceneNGram.PARAM_NGRAM_USE_TOP_K, "3",
-                LuceneNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123", LuceneNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), LuceneNGram.PARAM_NGRAM_FREQ_THRESHOLD, "0.1f",
-                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+        Object[] parameters = new Object[] { WordNGram.PARAM_NGRAM_USE_TOP_K, "3",
+                WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123", WordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), WordNGram.PARAM_NGRAM_FREQ_THRESHOLD, "0.1f",
+                WordNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -152,10 +152,10 @@ public class LuceneNGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(LuceneNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(WordNGramMetaCollector.class, parameterList.toArray());
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(LuceneNGram.class, parameters);
+                .createExternalResourceDescription(WordNGram.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
 

@@ -40,7 +40,7 @@ import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
-import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -126,13 +126,13 @@ public class WekaComplexConfigurationSingleDemo
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokensPerSentence.class),
                         TcFeatureFactory.create(NrOfChars.class),
-                        TcFeatureFactory.create(LuceneNGram.class,
-                                LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                                LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N,
+                        TcFeatureFactory.create(WordNGram.class,
+                                WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
+                                WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
                                 3)),
-                new TcFeatureSet(TcFeatureFactory.create(LuceneNGram.class,
-                        LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50, LuceneNGram.PARAM_NGRAM_MIN_N, 1,
-                        LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+                new TcFeatureSet(TcFeatureFactory.create(WordNGram.class,
+                        WordNGram.PARAM_NGRAM_USE_TOP_K, 50, WordNGram.PARAM_NGRAM_MIN_N, 1,
+                        WordNGram.PARAM_NGRAM_MAX_N, 3)));
 
         // single-label feature selection (Weka specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();

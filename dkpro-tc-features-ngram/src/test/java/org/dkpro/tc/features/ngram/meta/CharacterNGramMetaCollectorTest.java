@@ -20,6 +20,8 @@ package org.dkpro.tc.features.ngram.meta;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
@@ -38,7 +40,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
-import org.dkpro.tc.features.ngram.LuceneNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -46,15 +48,14 @@ import org.junit.rules.TemporaryFolder;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LuceneNGramMetaCollectorTest
+public class CharacterNGramMetaCollectorTest
 {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    public static String UNIQUE_FEATURE_NAME = "123";
-    
+    @SuppressWarnings("unused")
     @Test
-    public void luceneNgramMetaCollectorTest()
+    public void luceneCharacterNgramMetaCollectorTest()
         throws Exception
     {
         File tmpDir = folder.newFolder();
@@ -63,7 +64,7 @@ public class LuceneNGramMetaCollectorTest
                 TextReader.class, 
                 TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/",
                 TextReader.PARAM_LANGUAGE, "en",
-                TextReader.PARAM_PATTERNS, "text*.txt"
+                TextReader.PARAM_PATTERNS, "charMetaCollectorTest.txt"
         );
         
         AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
@@ -73,14 +74,18 @@ public class LuceneNGramMetaCollectorTest
                 DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramMetaCollector.class,
-                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
-                LuceneNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME
+                CharacterNGramMetaCollector.class,
+                CharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                CharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                CharacterNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
+                CharacterNGram.PARAM_SOURCE_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
-            System.out.println(jcas.getDocumentText().length());
+//            System.out.println(jcas.getDocumentText().length());
         }
+        
+        Set<String> freq2terms = new HashSet<>();
         
         int i = 0;
         IndexReader index;
@@ -88,17 +93,15 @@ public class LuceneNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(LuceneNGram.LUCENE_NGRAM_FIELD+UNIQUE_FEATURE_NAME);
+                Terms terms = fields.terms(CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD+"123");
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-                        
-                        if (text.utf8ToString().equals("this")) {
-                            assertEquals(2, termsEnum.docFreq());
-                            assertEquals(3, termsEnum.totalTermFreq());
+                        if(termsEnum.totalTermFreq() == 2){
+                            freq2terms.add(text.utf8ToString());
                         }
-                        
+//                        System.out.println(text.utf8ToString() + " " + termsEnum.totalTermFreq());
                         i++;
                     }
                 }
@@ -108,36 +111,8 @@ public class LuceneNGramMetaCollectorTest
             throw new ResourceInitializationException(e);
         }
         
-       assertEquals(35, i);    
+       assertEquals(10, i);    
+       assertEquals(1, freq2terms.size());
     }
     
-    @SuppressWarnings("unused")
-    @Test
-    public void emptyDocumentTest()
-        throws Exception
-    {
-        File tmpDir = folder.newFolder();
-
-        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TextReader.class, 
-                TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/empty/",
-                TextReader.PARAM_LANGUAGE, "en",
-                TextReader.PARAM_PATTERNS, "empty*.txt"
-        );
-        
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
-        
-        AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-        
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramMetaCollector.class,
-                LuceneNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir
-        );
-
-        for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {
-//            System.out.println(jcas.getDocumentText().length());
-        }
-    }
 }

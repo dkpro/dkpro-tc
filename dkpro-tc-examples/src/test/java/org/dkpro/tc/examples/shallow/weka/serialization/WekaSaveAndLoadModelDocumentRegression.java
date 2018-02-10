@@ -49,8 +49,8 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
-import org.dkpro.tc.features.ngram.LuceneNumberOfSentencesRatio;
-import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
+import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -180,8 +180,8 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
                 Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
-                        TcFeatureFactory.create(LuceneNumberOfSentencesRatio.class),
+                new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
+                        TcFeatureFactory.create(NumberOfSentencesRatio.class),
                         TcFeatureFactory.create(NrOfTokensPerSentence.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

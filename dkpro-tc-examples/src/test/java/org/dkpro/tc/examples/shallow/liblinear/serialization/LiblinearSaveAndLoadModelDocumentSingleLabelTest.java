@@ -53,9 +53,9 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.LuceneCharacterNGram;
-import org.dkpro.tc.features.ngram.LuceneNGram;
-import org.dkpro.tc.features.ngram.LuceneNumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.CharacterNGram;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -96,9 +96,9 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class),
-						TcFeatureFactory.create(LuceneNGram.class, LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50,
-								LuceneNGram.PARAM_NGRAM_MIN_N, 1, LuceneNGram.PARAM_NGRAM_MAX_N, 3)));
+				new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
+						TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
+								WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
 
 		ParameterSpace pSpace;
 		if (useParametrizedArgs) {
@@ -242,8 +242,8 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
 				Arrays.asList(new LiblinearAdapter()));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(LuceneNumberOfTokensRatio.class), TcFeatureFactory
-						.create(LuceneCharacterNGram.class, LuceneCharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
+				new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class), TcFeatureFactory
+						.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_UNIT),

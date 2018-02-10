@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -34,35 +34,33 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneCharSkipNgramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.WordNGramMetaCollector;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
- * Extracts characters skip-ngrams.
+ * Extracts token n-grams within the given text classification unit
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class LuceneSkipCharacterNGram
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+public class WordNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-
-    public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
-    @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
-    protected int charSkipSize;
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
+        FrequencyDistribution<String> documentNgrams = null;
 
-        FrequencyDistribution<String> charNgrams = NGramUtils.getCharacterSkipNgrams(jcas, target,
-                ngramLowerCase, ngramMinN, ngramMaxN, charSkipSize);
+        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, target, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
 
         for (String topNgram : topKSet.getKeys()) {
-            if (charNgrams.getKeys().contains(topNgram)) {
+            if (documentNgrams.getKeys().contains(topNgram)) {
                 features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
@@ -77,23 +75,40 @@ public class LuceneSkipCharacterNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneCharSkipNgramMetaCollector.class,
-                parameterSettings).addStorageMapping(
-                        LuceneCharSkipNgramMetaCollector.PARAM_TARGET_LOCATION,
-                        LuceneSkipCharacterNGram.PARAM_SOURCE_LOCATION,
-                        LuceneCharSkipNgramMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(WordNGramMetaCollector.class, parameterSettings)
+                        .addStorageMapping(WordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                                WordNGram.PARAM_SOURCE_LOCATION,
+                                WordNGramMetaCollector.LUCENE_DIR));
+    }
+
+    @Override
+    protected void logSelectionProcess(long N)
+    {
+        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
+                + "]-GRAMS (" + caseSensitivity() + ")");
+    }
+
+    private String range()
+    {
+        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
+    }
+
+    private String caseSensitivity()
+    {
+        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
     }
 
     @Override
     protected String getFieldName()
     {
-        return LuceneCharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return LuceneCharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD;
+        return "ngram";
     }
 
     @Override

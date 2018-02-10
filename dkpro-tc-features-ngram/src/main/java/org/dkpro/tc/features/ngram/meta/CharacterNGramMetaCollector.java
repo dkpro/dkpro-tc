@@ -22,27 +22,27 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.LuceneSkipCharacterNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class LuceneCharSkipNgramMetaCollector
-    extends LuceneBasedMetaCollector
+/**
+ * Creates a frequency distribution over all characters occurring in the entire document text i.e. index zero to document-length.
+ * For considering only a subset of the document text and working with several target annotations {@link org.dkpro.tc.features.ngram.meta.CharacterNGramUnitMetaCollector}
+ */
+public class CharacterNGramMetaCollector
+    extends LuceneMetaCollector
 {
+    public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
 
-    public static final String LUCENE_CHAR_SKIP_NGRAM_FIELD = "charskipngram";
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
-    private int minN;
-
-    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int maxN;
-
-    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
-    private int skipSize;
-
-    @ConfigurationParameter(name = LuceneSkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
+    
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringLowerCase;
     
     boolean lowerCase = true;
@@ -56,19 +56,16 @@ public class LuceneCharSkipNgramMetaCollector
         lowerCase = Boolean.valueOf(stringLowerCase);
         
     }
-
+    
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
-    {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
-        return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
-                skipSize);
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
+                ngramMinN, ngramMaxN);
     }
-
+    
     @Override
-    protected String getFieldName()
-    {
-        return LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+    protected String getFieldName(){
+        return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 }

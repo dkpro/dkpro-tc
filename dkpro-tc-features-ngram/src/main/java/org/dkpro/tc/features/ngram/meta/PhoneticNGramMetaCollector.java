@@ -19,40 +19,38 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.LucenePOSNGram;
+import org.dkpro.tc.features.ngram.PhoneticNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class LucenePOSNGramMetaCollector
-    extends LuceneBasedMetaCollector
+public class PhoneticNGramMetaCollector
+    extends LuceneMetaCollector
 {
-    public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
-    
-    @ConfigurationParameter(name = LucenePOSNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    public static final String LUCENE_PHONETIC_NGRAM_FIELD = "phoneticngram";
+
+
+    @ConfigurationParameter(name = PhoneticNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
-    @ConfigurationParameter(name = LucenePOSNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = PhoneticNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int ngramMaxN;
-
-    @ConfigurationParameter(name = LucenePOSNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
-    private boolean useCanonical;
 
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-
-        return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN,
-                useCanonical);
+        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN,
+                ngramMaxN);
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
-
 }

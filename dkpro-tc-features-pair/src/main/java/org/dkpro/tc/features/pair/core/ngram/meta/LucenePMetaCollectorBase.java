@@ -29,10 +29,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.meta.LuceneBasedMetaCollector;
+import org.dkpro.tc.features.ngram.meta.LuceneMetaCollector;
 
 public abstract class LucenePMetaCollectorBase
-    extends LuceneBasedMetaCollector
+    extends LuceneMetaCollector
     implements Constants
 {
     @Override

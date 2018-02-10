@@ -26,15 +26,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.LuceneSkipNGram;
+import org.dkpro.tc.features.ngram.SkipNGram;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class LuceneSkipNgramMetaCollector
-    extends LuceneBasedMetaCollector
+public class SkipNgramMetaCollector
+    extends LuceneMetaCollector
 {
     public static final String LUCENE_SKIP_NGRAM_FIELD = "skipngram";
     
@@ -44,7 +44,7 @@ public class LuceneSkipNgramMetaCollector
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int maxN;
 
-    @ConfigurationParameter(name = LuceneSkipNGram.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    @ConfigurationParameter(name = SkipNGram.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
     private int skipSize;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)

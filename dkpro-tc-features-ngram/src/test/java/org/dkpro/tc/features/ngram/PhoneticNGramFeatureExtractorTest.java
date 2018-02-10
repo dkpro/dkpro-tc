@@ -39,7 +39,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.LucenePhoneticNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PhoneticNGramMetaCollector;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,7 +49,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LucenePhoneticNGramFeatureExtractorTest {
+public class PhoneticNGramFeatureExtractorTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
@@ -64,13 +64,13 @@ public class LucenePhoneticNGramFeatureExtractorTest {
 		File luceneFolder = folder.newFolder();
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { LucenePhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-				LucenePhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", LucenePhoneticNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), LucenePhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
+		Object[] parameters = new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+				PhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", PhoneticNGram.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), PhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(LucenePhoneticNGram.class, parameters);
+				.createExternalResourceDescription(PhoneticNGram.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -82,7 +82,7 @@ public class LucenePhoneticNGramFeatureExtractorTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(LucenePhoneticNGramMetaCollector.class, parameters);
+				.createEngineDescription(PhoneticNGramMetaCollector.class, parameters);
 
 		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
 				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,

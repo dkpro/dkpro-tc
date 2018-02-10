@@ -33,36 +33,27 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneMaximumSentenceLengthMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaximumNumberOfTokensMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class LuceneAvgSentencesLength extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
-	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
+	public static final String FEATURE_NAME = "NumberOfTokensRatio";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
 
-		long maxLen = getMaximumLength();
+		long maxLen = getMaximalNumberOfTokens();
 
-		double avgLength=0.0;
-		
 		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
-		for (Sentence s : sentences) {
-			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-			avgLength += getRatio(tokens.size(), maxLen);
-		}
-
-		avgLength /= sentences.size();
-
-		return new Feature(FEATURE_NAME, avgLength , FeatureType.NUMERIC).asSet();
+		double ratio = getRatio(sentences.size(), maxLen);
+		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}
 
 	private double getRatio(int size, long maxLen) throws TextClassificationException {
@@ -81,7 +72,7 @@ public class LuceneAvgSentencesLength extends LuceneFeatureExtractorBase impleme
 		return value;
 	}
 
-	private long getMaximumLength() throws TextClassificationException {
+	private long getMaximalNumberOfTokens() throws TextClassificationException {
 
 		String string = "-1";
 		try {
@@ -97,10 +88,10 @@ public class LuceneAvgSentencesLength extends LuceneFeatureExtractorBase impleme
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(LuceneMaximumSentenceLengthMetaCollector.class, parameterSettings)
-						.addStorageMapping(LuceneMaximumSentenceLengthMetaCollector.PARAM_TARGET_LOCATION,
-								LuceneAvgSentencesLength.PARAM_SOURCE_LOCATION,
-								LuceneMaximumSentenceLengthMetaCollector.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaximumNumberOfTokensMetaCollector.class, parameterSettings)
+						.addStorageMapping(MaximumNumberOfTokensMetaCollector.PARAM_TARGET_LOCATION,
+								NumberOfTokensRatio.PARAM_SOURCE_LOCATION,
+								MaximumNumberOfTokensMetaCollector.LUCENE_DIR));
 	}
 
 	@Override
@@ -115,6 +106,11 @@ public class LuceneAvgSentencesLength extends LuceneFeatureExtractorBase impleme
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "sentLen";
+		return "maxTokenCountDoc";
+	}
+
+	@Override
+	protected void logSelectionProcess(long N) {
+		// no log message for this feature
 	}
 }

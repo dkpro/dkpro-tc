@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneMaximumNumberOfTokensMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaximumNumberOfSentencesMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
@@ -41,15 +41,15 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class LuceneNumberOfTokensRatio extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public class NumberOfSentencesRatio extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
-	public static final String FEATURE_NAME = "NumberOfTokensRatio";
+	public static final String FEATURE_NAME = "NumberOfSentencesRatio";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
 
-		long maxLen = getMaximalNumberOfTokens();
+		long maxLen = getMaximalNumberOfSentencesLength();
 
 		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
 		double ratio = getRatio(sentences.size(), maxLen);
@@ -72,7 +72,7 @@ public class LuceneNumberOfTokensRatio extends LuceneFeatureExtractorBase implem
 		return value;
 	}
 
-	private long getMaximalNumberOfTokens() throws TextClassificationException {
+	private long getMaximalNumberOfSentencesLength() throws TextClassificationException {
 
 		String string = "-1";
 		try {
@@ -88,10 +88,10 @@ public class LuceneNumberOfTokensRatio extends LuceneFeatureExtractorBase implem
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(LuceneMaximumNumberOfTokensMetaCollector.class, parameterSettings)
-						.addStorageMapping(LuceneMaximumNumberOfTokensMetaCollector.PARAM_TARGET_LOCATION,
-								LuceneNumberOfTokensRatio.PARAM_SOURCE_LOCATION,
-								LuceneMaximumNumberOfTokensMetaCollector.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaximumNumberOfSentencesMetaCollector.class, parameterSettings)
+						.addStorageMapping(MaximumNumberOfSentencesMetaCollector.PARAM_TARGET_LOCATION,
+								NumberOfSentencesRatio.PARAM_SOURCE_LOCATION,
+								MaximumNumberOfSentencesMetaCollector.LUCENE_DIR));
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class LuceneNumberOfTokensRatio extends LuceneFeatureExtractorBase implem
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxTokenCountDoc";
+		return "maxNumSentRatio";
 	}
 
 	@Override

@@ -99,10 +99,10 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     new TcFeatureSet(
-        TcFeatureFactory.create(LuceneNumberOfTokensRatio.class)
+        TcFeatureFactory.create(NumberOfTokensRatio.class)
     ),
     new TcFeatureSet(
-        TcFeatureFactory.create(LuceneNumberOfTokensRatio.class)
+        TcFeatureFactory.create(NumberOfTokensRatio.class)
     )
     )
 
