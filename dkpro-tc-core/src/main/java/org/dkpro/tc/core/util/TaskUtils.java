@@ -194,7 +194,7 @@ public class TaskUtils {
 
 	public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter,
 			String learningMode, String featureMode, boolean useSparseFeatures, boolean addInstanceId,
-			boolean developerMode, boolean isTesting, boolean applyWeighting, List<String> filters,
+			 boolean isTesting, boolean applyWeighting, List<String> filters,
 			List<ExternalResourceDescription> extractorResources, String [] outcomes) throws ResourceInitializationException {
 		List<Object> parameters = new ArrayList<>();
 		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
@@ -271,9 +271,6 @@ public class TaskUtils {
 	 * @param jcas
 	 * 			the jcas object 
 	 * 
-	 * @param developerMode
-	 * 			deactivates some sanity checks
-	 * 
 	 * @param addInstanceId
 	 * 			if the instance id should be created as feature
 	 * 
@@ -316,9 +313,6 @@ public class TaskUtils {
 	 * 
 	 * @param jcas
 	 * 			the jcas object 
-	 * 
-	 * @param developerMode
-	 * 			deactivates some sanity checks
 	 * 
 	 * @param addInstanceId
 	 * 			if the instance id should be created as feature
