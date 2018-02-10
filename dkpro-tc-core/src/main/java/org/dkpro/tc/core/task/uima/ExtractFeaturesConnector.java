@@ -98,12 +98,11 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	boolean writeFeatureNames = true;
 
-	BufferedWriter documentIdLogger; // writes the document ids stored in the
-										// DocumentMetaData object
-
-	InstanceExtractor instanceExtractor;
+	private InstanceExtractor instanceExtractor;
 	
-	FeatureMetaData featureMeta;
+	private FeatureMetaData featureMeta;
+
+	private DocumentMetaLogger documentMetaLogger;
 	
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -134,13 +133,12 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 	}
 
 	private void initDocumentMetaDataLogger() throws Exception {
-		documentIdLogger = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG))));
-		documentIdLogger.write(
-				"# Order in which JCas documents have been processed and their information from DocumentMetaData");
-		documentIdLogger.write("\n");
-		documentIdLogger.write("#ID\tTitle");
-		documentIdLogger.write("\n");
+		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+		documentMetaLogger.write(
+				"# Order in which JCas documents have been processed");
+		documentMetaLogger.write("\n");
+		documentMetaLogger.write("#ID\tTitle");
+		documentMetaLogger.write("\n");
 	}
 
 	@Override
@@ -151,8 +149,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 		DocumentMetaData dmd = null;
 		try{
 			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-			documentIdLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
-			documentIdLogger.write("\n");
+			documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
 		}catch(Exception e){
 			//annotation missing
 		}
@@ -235,7 +232,7 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 			dsw.close();
 			
-			documentIdLogger.close();
+			documentMetaLogger.close();
 
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
