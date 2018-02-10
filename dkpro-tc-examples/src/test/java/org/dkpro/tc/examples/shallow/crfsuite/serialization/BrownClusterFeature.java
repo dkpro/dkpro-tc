@@ -36,6 +36,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class BrownClusterFeature
@@ -97,11 +98,11 @@ public class BrownClusterFeature
     private Feature getFeature(String bitCode, int i)
     {
         if(bitCode == null || bitCode.isEmpty()){
-            return new Feature("brown_" + i , NOT_SET, true);
+            return new Feature("brown_" + i , NOT_SET, true, FeatureType.STRING);
         }
         
         String value = bitCode.length() >= i ? bitCode.substring(0, i) : NOT_SET; 
-        return new Feature("brown_" + i , value, value.equals(NOT_SET));
+        return new Feature("brown_" + i , value, value.equals(NOT_SET), FeatureType.STRING);
     }
 
     private void init()
