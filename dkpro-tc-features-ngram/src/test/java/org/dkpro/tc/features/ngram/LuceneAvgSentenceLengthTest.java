@@ -117,7 +117,7 @@ public class LuceneAvgSentenceLengthTest {
 
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text4.txt",
+				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/sentAvg/text4.txt",
 				TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, false);
 
 		AnalysisEngineDescription segmenter = AnalysisEngineFactory
@@ -152,7 +152,7 @@ public class LuceneAvgSentenceLengthTest {
 
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text4.txt");
+				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/sentAvg/text4.txt");
 
 		AnalysisEngineDescription segmenter = AnalysisEngineFactory
 				.createEngineDescription(BreakIteratorSegmenter.class);
