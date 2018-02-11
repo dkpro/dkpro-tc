@@ -20,6 +20,7 @@ package org.dkpro.tc.examples.shallow.weka.document;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
+import org.dkpro.tc.examples.shallow.weka.document.weighting.WekaTwentyNewsgroupsInstanceWeightingDemo;
 import org.junit.Before;
 import org.junit.Test;
 
