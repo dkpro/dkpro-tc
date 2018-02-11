@@ -36,7 +36,7 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
  */
 public class LiblinearBrownUnitPosDemoTest extends TestCaseSuperClass
 {
-    LiblinearBrownUnitSimpleDkproReader javaExperiment;
+    LiblinearUnitDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -45,8 +45,8 @@ public class LiblinearBrownUnitPosDemoTest extends TestCaseSuperClass
     {
         super.setup();
         
-        javaExperiment = new LiblinearBrownUnitSimpleDkproReader();
-        pSpace = LiblinearBrownUnitSimpleDkproReader.getParameterSpace();
+        javaExperiment = new LiblinearUnitDemo();
+        pSpace = LiblinearUnitDemo.getParameterSpace();
     }
 
     @Test
