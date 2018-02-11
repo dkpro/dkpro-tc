@@ -55,7 +55,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
  * this is only to showcase the concept.
  * 
  */
-public class LiblinearBrownUnitSimpleDkproReader implements Constants {
+public class LiblinearUnitDemo implements Constants {
 
 	public static final String LANGUAGE_CODE = "en";
 
@@ -72,9 +72,9 @@ public class LiblinearBrownUnitSimpleDkproReader implements Constants {
 		// Don't use this in real experiments! Read the documentation and set
 		// DKPRO_HOME as
 		// explained there.
-		DemoUtils.setDkproHome(LiblinearBrownUnitSimpleDkproReader.class.getSimpleName());
+		DemoUtils.setDkproHome(LiblinearUnitDemo.class.getSimpleName());
 
-		new LiblinearBrownUnitSimpleDkproReader().runTrainTest(getParameterSpace());
+		new LiblinearUnitDemo().runTrainTest(getParameterSpace());
 		// new
 		// LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
 	}
