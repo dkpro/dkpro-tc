@@ -18,25 +18,15 @@
  */
 package org.dkpro.tc.ml.weka.evaluation;
 
-import static org.dkpro.tc.core.util.ReportConstants.AVERAGE_THRESHOLD;
-import static org.dkpro.tc.core.util.ReportConstants.EMPTY_VECTORS;
-import static org.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_PRED;
-import static org.dkpro.tc.core.util.ReportConstants.LABEL_CARDINALITY_REAL;
-import static org.dkpro.tc.core.util.ReportConstants.NUMBER_EXAMPLES;
-import static org.dkpro.tc.core.util.ReportConstants.NUMBER_LABELS;
-import static org.dkpro.tc.core.util.ReportConstants.PRECISION;
-import static org.dkpro.tc.core.util.ReportConstants.RECALL;
-import static org.dkpro.tc.core.util.ReportConstants.ZERO_ONE_LOSS;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import org.apache.commons.math.stat.descriptive.moment.Mean;
 
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Metrics;
 import meka.core.ThresholdUtils;
-
-import org.apache.commons.math.stat.descriptive.moment.Mean;
 
 /**
  * Originally written by Jesse Read. Small adaptions by Johannes Daxenberger.
@@ -68,13 +58,13 @@ public class MekaEvaluationUtils
         HashMap<String, Double> results = new LinkedHashMap<String, Double>();
         Mean mean = new Mean();
 
-        results.put(NUMBER_LABELS, (double) L);
-        results.put(NUMBER_EXAMPLES, (double) N);
-        results.put(ZERO_ONE_LOSS, Metrics.L_ZeroOne(goldStandard, Ypred));
-        results.put(LABEL_CARDINALITY_PRED, MLUtils.labelCardinality(Ypred));
-        results.put(LABEL_CARDINALITY_REAL, MLUtils.labelCardinality(goldStandard));
-        results.put(AVERAGE_THRESHOLD, mean.evaluate(t, 0, t.length)); // average
-        results.put(EMPTY_VECTORS, MLUtils.emptyVectors(Ypred));
+        results.put("Number labels", (double) L);
+        results.put("Number examples", (double) N);
+        results.put("Zero-one-loss", Metrics.L_ZeroOne(goldStandard, Ypred));
+        results.put("Label cardinality predicted", MLUtils.labelCardinality(Ypred));
+        results.put("Label cardinality actual", MLUtils.labelCardinality(goldStandard));
+        results.put("Average threshold", mean.evaluate(t, 0, t.length)); // average
+        results.put("Empy vectors", MLUtils.emptyVectors(Ypred));
 
         return results;
     }
@@ -104,9 +94,9 @@ public class MekaEvaluationUtils
         for (int j = 0; j < L; j++) {
             results.put(HAMMING_ACCURACY + " [" + classNames[j] + "]",
                     Metrics.P_Hamming(goldStandard, Ypred, j));
-            results.put(PRECISION + " [" + classNames[j] + "]",
+            results.put("Precision" + " [" + classNames[j] + "]",
                     Metrics.P_Precision(goldStandard, Ypred, j));
-            results.put(RECALL + " [" + classNames[j] + "]",
+            results.put("Recall" + " [" + classNames[j] + "]",
                     Metrics.P_Recall(goldStandard, Ypred, j));
         }
         return results;
