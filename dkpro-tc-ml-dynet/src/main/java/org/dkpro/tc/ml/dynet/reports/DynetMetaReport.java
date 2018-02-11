@@ -62,7 +62,7 @@ public class DynetMetaReport extends ReportBase {
 		return getVersion(python, "import numpy; print(numpy.__version__)");
 	}
 
-	private String getVersion(String python, String cmd) throws IOException, InterruptedException {
+	private String getVersion(String python, String cmd) {
 		try {
 			List<String> command = new ArrayList<>();
 			command.add(python);

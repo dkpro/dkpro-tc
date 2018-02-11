@@ -87,7 +87,6 @@ public class KerasMetaReport
     }
 
     private String getVersion(String python, String cmd)
-        throws IOException, InterruptedException
     {
 		try {
 			List<String> command = new ArrayList<>();
