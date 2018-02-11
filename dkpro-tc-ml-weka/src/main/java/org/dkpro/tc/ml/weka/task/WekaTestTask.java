@@ -46,7 +46,7 @@ public class WekaTestTask
     implements Constants
 {
 
-    public static String featureSelectionFile = "featureSelection.txt";
+    public final static String featureSelectionFile = "featureSelection.txt";
     
 	@Discriminator(name=DIM_CLASSIFICATION_ARGS)
     protected List<Object> classificationArguments;

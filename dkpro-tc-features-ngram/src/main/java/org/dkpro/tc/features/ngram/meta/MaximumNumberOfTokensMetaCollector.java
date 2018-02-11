@@ -30,6 +30,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 public class MaximumNumberOfTokensMetaCollector extends LuceneMetaCollector {
+	
+	Random r = new Random();
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -41,7 +43,7 @@ public class MaximumNumberOfTokensMetaCollector extends LuceneMetaCollector {
 
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
-		fd.addSample(select.size() + "_" + new Random().nextLong(), select.size());
+		fd.addSample(select.size() + "_" + r.nextLong(), select.size());
 		return fd;
 	}
 

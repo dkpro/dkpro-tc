@@ -137,10 +137,6 @@ public final class SvmHmmUtils
                     "Dependency of emission parameter [-e] has to be either zero (default) or one");
         }
         
-        if(p < 0){
-            throw new IllegalArgumentException("Parameter order-e is < 0");
-        }
-        
         return p;
     }
     

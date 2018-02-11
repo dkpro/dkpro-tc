@@ -80,7 +80,7 @@ public class NumberOfSentencesRatio extends LuceneFeatureExtractorBase implement
 		} catch (ResourceInitializationException e) {
 			throw new TextClassificationException(e);
 		}
-		return Long.valueOf(string);
+		return Long.parseLong(string);
 	}
 
 	@Override

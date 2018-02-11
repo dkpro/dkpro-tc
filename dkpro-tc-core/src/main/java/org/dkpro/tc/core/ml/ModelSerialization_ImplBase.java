@@ -28,5 +28,5 @@ public abstract class ModelSerialization_ImplBase
 {
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
     @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-    private File outputDirectory;
+    protected File outputDirectory;
 }

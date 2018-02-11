@@ -92,7 +92,7 @@ public class SvmHmmTestTask
     		gold = gold.split("\t")[0];
     		writer.write(prediction + ";" + gold+"\n");
     		
-    	}while(prediction!= null && gold != null);
+    	}while(true);
     	
     	writer.close();
     	readerGold.close();

@@ -101,6 +101,8 @@ public class MetaInfoTask
     private boolean recordContext;
 
     private Set<String> featureExtractorNames = new HashSet<>();
+    
+    private Random r = new Random();
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -228,7 +230,7 @@ public class MetaInfoTask
 				Map<String, Object> empty = new HashMap<>();
 				MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class, empty);
 
-				int rnd = new Random().nextInt();
+				int rnd = r.nextInt();
 				String val = new String("" + (rnd > 0 ? rnd : rnd * -1));
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
@@ -243,8 +245,8 @@ public class MetaInfoTask
                 MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
                         SequenceContextMetaCollector.class, empty);
 
-                int rnd = new Random().nextInt();
-				String val = new String("" + (rnd > 0 ? rnd : rnd * -1));
+                int rnd = r.nextInt();
+				String val = "" + (rnd > 0 ? rnd : rnd * -1);
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
                 

@@ -119,14 +119,24 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			if (line.startsWith("#labels")) {
+				//the line we are looking for
 				break;
 			}
 			if (line.startsWith("#")) {
+				// misc. comment line
 				continue;
 			}
-			break;
+			
+			if (!line.startsWith("#")) {
+				// something went wrong, we should have found the labels by now
+				break;
+			}
 		}
 		reader.close();
+		
+		if(line == null){
+			throw new NullPointerException("Failed to find label-mapping in [" + id2Outcome.getAbsolutePath() + "]");
+		}
 
 		line = line.replaceAll("#labels", "").trim();
 

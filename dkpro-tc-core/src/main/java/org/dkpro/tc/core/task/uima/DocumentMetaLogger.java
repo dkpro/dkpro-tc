@@ -19,7 +19,6 @@ package org.dkpro.tc.core.task.uima;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -30,10 +29,9 @@ public class DocumentMetaLogger implements Constants {
 
 	private BufferedWriter logger;
 
-	public DocumentMetaLogger(File outputDirectory) throws FileNotFoundException {
-
-		logger = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG))));
+	public DocumentMetaLogger(File outputDirectory) throws Exception {
+		File file = new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		logger = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 	}
 
 	public void write(String s) throws IOException {

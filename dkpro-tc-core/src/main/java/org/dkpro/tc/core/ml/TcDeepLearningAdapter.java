@@ -25,27 +25,27 @@ import org.dkpro.lab.task.impl.TaskBase;
  */
 public interface TcDeepLearningAdapter
 {
-    public static final String PREPARATION_FOLDER = "preparationFolder";
+    static final String PREPARATION_FOLDER = "preparationFolder";
 
     /*
      * Usually the init-test task to retrieve that document/instance N was document/instance
      * ABC.txt/walking
      */
-    public static final String TARGET_ID_MAPPING_TRAIN = "targetIdFolderTrain";
-    public static final String TARGET_ID_MAPPING_TEST = "targetIdFolderTest";
+    static final String TARGET_ID_MAPPING_TRAIN = "targetIdFolderTrain";
+    static final String TARGET_ID_MAPPING_TEST = "targetIdFolderTest";
 
-    public static final String EMBEDDING_FOLDER = "embeddingFolder";
+    static final String EMBEDDING_FOLDER = "embeddingFolder";
 
-    public static final String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
+    static final String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
     
-	public static final String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
+	static final String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
 
 
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
      */
-    public TaskBase getTestTask();
+    TaskBase getTestTask();
 
     /**
      * This report is always added to {@code testTask} reports by default in
@@ -53,7 +53,7 @@ public interface TcDeepLearningAdapter
      *
      * @return The report that collects the outcomeId to prediction values.
      */
-    public ReportBase getOutcomeIdReportClass();
+    ReportBase getOutcomeIdReportClass();
 
     /**
      * The lowest index from which transformation into integer values will start. Normally, this
@@ -64,7 +64,7 @@ public interface TcDeepLearningAdapter
      * @return 
      * 		the lowest index that should be used to identify data values
      */
-    public int lowestIndex();
+    int lowestIndex();
 
     /**
      * An optional report which is intended to record the environment versions of non-Java
@@ -73,6 +73,6 @@ public interface TcDeepLearningAdapter
      * @return
      * 		Meta collection report object for collecting relevant information of this adapter
      */
-    public ReportBase getMetaCollectionReport();
+    ReportBase getMetaCollectionReport();
 
 }

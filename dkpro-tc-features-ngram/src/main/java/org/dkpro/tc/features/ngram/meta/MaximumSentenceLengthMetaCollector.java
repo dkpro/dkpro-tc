@@ -49,7 +49,7 @@ public class MaximumSentenceLengthMetaCollector extends LuceneMetaCollector {
 				sb.append(t.getCoveredText() + "_");
 			}
 
-			String key = tokens.size() + "_" + Math.abs(sb.toString().hashCode());
+			String key = tokens.size() + "_" + sb.toString().hashCode();
 			if (fd.contains(key)) {
 				// do not add ''same'' sentences multiple times 
 				continue;

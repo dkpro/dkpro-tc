@@ -89,7 +89,7 @@ public class AvgSentencesLength extends LuceneFeatureExtractorBase implements Fe
 		} catch (ResourceInitializationException e) {
 			throw new TextClassificationException(e);
 		}
-		return Long.valueOf(string);
+		return Long.parseLong(string);
 	}
 
 	@Override
