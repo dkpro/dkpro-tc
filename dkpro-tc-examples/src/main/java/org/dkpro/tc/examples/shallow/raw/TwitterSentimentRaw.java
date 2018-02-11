@@ -28,9 +28,9 @@ import java.io.File;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import org.dkpro.tc.examples.shallow.io.LabeledTweetReader;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.arktools.ArktweetPosTagger;
@@ -55,9 +55,9 @@ public class TwitterSentimentRaw
 
         runPipeline(
                 // Reader
-                createReaderDescription(LabeledTweetReader.class,
-                        LabeledTweetReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        LabeledTweetReader.PARAM_LANGUAGE, "en"),
+                createReaderDescription(FolderwiseDataReader.class,
+                		FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                		FolderwiseDataReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),
