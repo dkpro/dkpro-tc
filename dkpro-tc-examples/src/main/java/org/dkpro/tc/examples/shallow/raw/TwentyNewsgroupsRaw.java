@@ -28,10 +28,8 @@ import java.io.File;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.features.length.NrOfChars;
-import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
-import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -56,9 +54,9 @@ public class TwentyNewsgroupsRaw
         
         runPipeline(
                 // Reader
-                createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-                        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en"),
+                createReaderDescription(FolderwiseDataReader.class,
+                		FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                		FolderwiseDataReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),

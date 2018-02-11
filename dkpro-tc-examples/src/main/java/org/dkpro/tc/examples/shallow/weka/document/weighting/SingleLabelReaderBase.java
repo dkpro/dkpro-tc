@@ -15,28 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.io;
+package org.dkpro.tc.examples.shallow.weka.document.weighting;
 
 import java.io.IOException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
-import org.dkpro.tc.api.io.TCReaderSequence;
+import org.dkpro.tc.api.io.TCReaderSingleLabel;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 /**
- * Base class for sequence label readers.
+ * Base class for single-label readers
  */
-public abstract class SequenceLabelReaderBase
+public abstract class SingleLabelReaderBase
     extends TextReader
-    implements TCReaderSequence
+    implements TCReaderSingleLabel
 {
 
     @Override
@@ -53,18 +51,27 @@ public abstract class SequenceLabelReaderBase
             throw new CollectionException();
         }
 
-        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas, TextClassificationTarget.class, JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
-            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
-            outcome.setOutcome(getTextClassificationOutcome(jcas, unit));
-            outcome.setWeight(getTextClassificationOutcomeWeight(jcas, unit));
-            outcome.addToIndexes();
-        }
+        TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+        outcome.setOutcome(getTextClassificationOutcome(jcas));
+        outcome.setWeight(getTextClassificationOutcomeWeight(jcas));
+        outcome.addToIndexes();
+        
+        new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
     }
-    
-	public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationTarget unit) {
-    	/**
-    	 * By default, set all the instance outcome weights equally to one
-    	 */
+
+
+    /**
+     * This methods adds a (default) weight to instances. Readers which assign specific weights to
+     * instances need to override this method.
+     * 
+     * @param jcas
+     *            the JCas to add the annotation to
+     * @return a double between zero and one
+     * @throws CollectionException if an error occurs
+     */
+	public double getTextClassificationOutcomeWeight(JCas jcas)
+			throws CollectionException {
 		return 1.0;
 	}
+    
 }

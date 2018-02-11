@@ -36,11 +36,11 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -69,27 +69,23 @@ public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 
 		MultiSvmUsingWekaLibsvmLiblinear experiment = new MultiSvmUsingWekaLibsvmLiblinear();
 		experiment.runTrainTest(pSpace);
-//		experiment.runCrossValidation(pSpace);
+		// experiment.runCrossValidation(pSpace);
 	}
 
-	public static ParameterSpace getParameterSpace()
-			throws ResourceInitializationException {
+	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
 		// configure training and test data reader dimension
 		// train/test will use both, while cross-validation will only use the
 		// train part
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-				corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE, FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-				corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+				FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE, FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
@@ -100,14 +96,13 @@ public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 		@SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
-                      PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
-				Arrays.asList(new Object[] { new LibsvmAdapter() , "-s", "1", "-c", "1000", "-t", "3" }),
-				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" })
-				);
-		
+						PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
+				Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" }),
+				Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" }));
+
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-					Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-					Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArgs);
+				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+				dimFeatureSets, dimClassArgs);
 
 		return pSpace;
 	}

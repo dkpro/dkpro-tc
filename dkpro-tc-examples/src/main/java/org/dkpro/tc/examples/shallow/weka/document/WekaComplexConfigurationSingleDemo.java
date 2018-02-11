@@ -21,7 +21,6 @@ package org.dkpro.tc.examples.shallow.weka.document;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +35,11 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -94,19 +93,17 @@ public class WekaComplexConfigurationSingleDemo
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, CORPUS_FILEPATH_TRAIN,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                FolderwiseDataReader.class,
+                FolderwiseDataReader.PARAM_SOURCE_LOCATION, CORPUS_FILEPATH_TRAIN,
+                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, COPRUS_FILEPATH_TEST,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+                FolderwiseDataReader.class,
+                FolderwiseDataReader.PARAM_SOURCE_LOCATION, COPRUS_FILEPATH_TEST,
+                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         // We configure 3 different classifiers, which will be swept, each with a special

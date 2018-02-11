@@ -36,7 +36,7 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask
 import org.dkpro.tc.core.task.InitTask
 import org.dkpro.tc.core.task.MetaInfoTask
 import org.dkpro.tc.core.task.OutcomeCollectionTask
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader
+import org.dkpro.tc.io.FolderwiseDataReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
 import org.dkpro.tc.features.ngram.*
@@ -72,16 +72,16 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
 
     // === DIMENSIONS===========================================================
     
-    def testreader = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-        TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-        TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
-        TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+    def testreader = CollectionReaderFactory.createReaderDescription(FolderwiseDataReader.class,
+        FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+        FolderwiseDataReader.PARAM_LANGUAGE, languageCode,
+        FolderwiseDataReader.PARAM_PATTERNS, FolderwiseDataReader.INCLUDE_PREFIX + "*/*.txt"
        );
    
-   def trainreader = CollectionReaderFactory.createReaderDescription(TwentyNewsgroupsCorpusReader.class,
-       TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-       TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, languageCode,
-       TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"
+   def trainreader = CollectionReaderFactory.createReaderDescription(FolderwiseDataReader.class,
+       FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       FolderwiseDataReader.PARAM_LANGUAGE, languageCode,
+       FolderwiseDataReader.PARAM_PATTERNS, FolderwiseDataReader.INCLUDE_PREFIX + "*/*.txt"
       );
 
     def dimReaders = Dimension.createBundle("readers", [

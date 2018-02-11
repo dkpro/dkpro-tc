@@ -49,11 +49,11 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -90,11 +90,10 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TwentyNewsgroupsCorpusReader.class,
-                TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
-                TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, "en",
-                TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-                Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+                FolderwiseDataReader.class,
+                FolderwiseDataReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
+                FolderwiseDataReader.PARAM_LANGUAGE, "en",
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")

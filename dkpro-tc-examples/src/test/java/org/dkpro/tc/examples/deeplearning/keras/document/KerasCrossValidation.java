@@ -21,12 +21,9 @@ package org.dkpro.tc.examples.deeplearning.keras.document;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
-import org.dkpro.tc.examples.util.CvContextMemoryReport;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
@@ -48,10 +45,12 @@ public class KerasCrossValidation extends PythonLocator {
 		if (testConditon) {
 			ParameterSpace ps = KerasDocumentCrossValidation.getParameterSpace(python3);
 			KerasDocumentCrossValidation.runCrossValidation(ps);
-			
-			assertEquals(2, CvContextMemoryReport.mlaAdapters);
-			assertTrue(new File(CvContextMemoryReport.mlaAdapters.get(0)+"/" + Constants.ID_OUTCOME_KEY).exists());
-			assertTrue(new File(CvContextMemoryReport.mlaAdapters.get(1)+"/" + Constants.ID_OUTCOME_KEY).exists());
+
+			//The comined file in the CV folder + 2 single files in the per-fold folder
+			assertEquals(3, ContextMemoryReport.id2outcomeFiles.size());
+			assertTrue(ContextMemoryReport.id2outcomeFiles.get(0).exists());
+			assertTrue(ContextMemoryReport.id2outcomeFiles.get(1).exists());
+			assertTrue(ContextMemoryReport.id2outcomeFiles.get(2).exists());
 		}
 	}
 }

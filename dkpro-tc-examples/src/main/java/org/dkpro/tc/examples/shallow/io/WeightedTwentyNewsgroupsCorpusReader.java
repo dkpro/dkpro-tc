@@ -32,9 +32,9 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.examples.shallow.weka.document.weighting.SingleLabelReaderBase;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import org.dkpro.tc.core.io.SingleLabelReaderBase;
 
 /**
  * Reads the classical TwentyNewsgroups text classification corpus with instance weights.

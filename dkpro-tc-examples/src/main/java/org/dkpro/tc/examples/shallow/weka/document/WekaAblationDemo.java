@@ -37,11 +37,11 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ExperimentUtil;
-import org.dkpro.tc.examples.shallow.io.TwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
@@ -88,16 +88,15 @@ public class WekaAblationDemo implements Constants {
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-				corpusFilePathTrain, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS,
-				Arrays.asList(TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt"));
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				TwentyNewsgroupsCorpusReader.class, TwentyNewsgroupsCorpusReader.PARAM_SOURCE_LOCATION,
-				corpusFilePathTest, TwentyNewsgroupsCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-				TwentyNewsgroupsCorpusReader.PARAM_PATTERNS, TwentyNewsgroupsCorpusReader.INCLUDE_PREFIX + "*/*.txt");
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+				corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+				FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
