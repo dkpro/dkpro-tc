@@ -35,12 +35,12 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
 import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
 import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -85,14 +85,22 @@ public class MultiRegressionWekaLibsvmLiblinear
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/train/essay_train.txt", EssayScoreReader.PARAM_LANGUAGE, "en"
+        		LinwiseTextOutcomeReader.class, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
+				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt", 
+                LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en"
                 );
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/test/essay_test.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
+        		LinwiseTextOutcomeReader.class, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
+				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/test/essay_test.txt", 
+                LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
