@@ -19,6 +19,7 @@ package org.dkpro.tc.features.ngram.base;
 
 import java.io.File;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -47,45 +48,24 @@ public abstract class LuceneFeatureExtractorBase
     
     public static final String LUCENE_NGRAM_FIELD = "ngram";
 
+    
+    private MinMaxPriorityQueue<TermFreqTuple> topN;
+    private long maxNgramSum=0;
+    
     @Override
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {
-
+    	maxNgramSum = 0;
+    	topN = readIndex();
+    	
     	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
-        
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN()).create();
-
-        long ngramVocabularySize = 0;
-        IndexReader reader;
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-            Fields fields = MultiFields.getFields(reader);
-            if (fields != null) {
-                Terms terms = fields.terms(getFieldName());
-                if (terms != null) {
-                    TermsEnum termsEnum = terms.iterator(null);
-                    BytesRef text = null;
-                    while ((text = termsEnum.next()) != null) {
-                        String term = text.utf8ToString();
-                        long freq = termsEnum.totalTermFreq();
-                        if(passesScreening(term)){
-                            topN.add(new TermFreqTuple(term, freq));
-                            ngramVocabularySize += freq;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            throw new ResourceInitializationException(e);
-        }
         
         int size = topN.size();
         for (int i=0; i < size; i++) {
             TermFreqTuple tuple = topN.poll();
             long absCount = tuple.getFreq();
-            double relFrequency = ((double) absCount) / ngramVocabularySize;
+            double relFrequency = ((double) absCount) / maxNgramSum;
             
             if( relFrequency >= ngramFreqThreshold ) {
                 topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
@@ -96,6 +76,39 @@ public abstract class LuceneFeatureExtractorBase
 
         return topNGrams;
     }
+    
+    private MinMaxPriorityQueue<TermFreqTuple> readIndex() throws ResourceInitializationException {
+		MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN()).create();
+
+		IndexReader reader;
+		try {
+			reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+			Fields fields = MultiFields.getFields(reader);
+			if (fields == null) {
+				IOUtils.closeQuietly(reader);
+				return topN;
+			}
+			Terms terms = fields.terms(getFieldName());
+			if (terms == null) {
+				IOUtils.closeQuietly(reader);
+				return topN;
+			}
+			TermsEnum termsEnum = terms.iterator(null);
+			BytesRef text = null;
+			while ((text = termsEnum.next()) != null) {
+				String term = text.utf8ToString();
+				long freq = termsEnum.totalTermFreq();
+				if (passesScreening(term)) {
+					topN.add(new TermFreqTuple(term, freq));
+					maxNgramSum += freq;
+				}
+			}
+			reader.close();
+		} catch (Exception e) {
+			throw new ResourceInitializationException(e);
+		}
+		return topN;
+	}
         
     protected void logSelectionProcess(long N) {
     	getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");		
