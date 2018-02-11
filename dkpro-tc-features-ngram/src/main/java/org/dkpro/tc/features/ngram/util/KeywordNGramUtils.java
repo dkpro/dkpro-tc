@@ -131,10 +131,9 @@ public class KeywordNGramUtils
         FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
 
         for (JCas view : jcases) {
-            FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
             TextClassificationTarget target = JCasUtil.selectSingle(view,
                     TextClassificationTarget.class);
-            oneViewsNgrams = getDocumentKeywordNgrams(view, target, minN, maxN,
+            FrequencyDistribution<String> oneViewsNgrams = getDocumentKeywordNgrams(view, target, minN, maxN,
                     markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
             // This is a hack because there's no method to combine 2 FD's
             for (String key : oneViewsNgrams.getKeys()) {
