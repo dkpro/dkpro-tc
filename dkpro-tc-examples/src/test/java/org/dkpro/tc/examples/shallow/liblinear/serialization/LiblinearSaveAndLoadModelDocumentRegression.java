@@ -46,12 +46,12 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.EssayScoreReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.length.NrOfTokensPerSentence;
-import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
 import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -98,8 +98,12 @@ public class LiblinearSaveAndLoadModelDocumentRegression extends TestCaseSuperCl
 	}
 
 	private void regressionLoadModel(File modelFolder) throws UIMAException, IOException {
-		CollectionReader reader = CollectionReaderFactory.createReader(EssayScoreReader.class,
-				EssayScoreReader.PARAM_SOURCE_LOCATION, regressionTest, EssayScoreReader.PARAM_LANGUAGE, "en");
+		CollectionReader reader = CollectionReaderFactory.createReader(
+				LinwiseTextOutcomeReader.class, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION, regressionTest, 
+				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
 
 		AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
@@ -134,8 +138,13 @@ public class LiblinearSaveAndLoadModelDocumentRegression extends TestCaseSuperCl
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				EssayScoreReader.class, EssayScoreReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", EssayScoreReader.PARAM_LANGUAGE, "en");
+				LinwiseTextOutcomeReader.class, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/essays/train/essay_train.txt",
+				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		@SuppressWarnings("unchecked")
