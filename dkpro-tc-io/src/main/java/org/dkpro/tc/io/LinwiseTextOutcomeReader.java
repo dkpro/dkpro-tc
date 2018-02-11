@@ -82,19 +82,27 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		int entryStart = documentText.length();
 		int entryEnd = documentText.length() + text.length();
 
-		TextClassificationTarget classificationTarget = new TextClassificationTarget(aJCas, entryStart, entryEnd);
-		classificationTarget.addToIndexes();
-
-		TextClassificationOutcome classificationOutcome = new TextClassificationOutcome(aJCas, entryStart, entryEnd);
-		classificationOutcome.setOutcome(outcome);
-		classificationOutcome.addToIndexes();
+		setTextClassificationTarget(aJCas, entryStart, entryEnd);
+		setTextClassificationOutcome(aJCas, outcome, entryStart, entryEnd);
 
 		documentText.append(text + " ");
 
 		aJCas.setDocumentText(documentText.toString().trim());
 	}
+	
+	protected void setTextClassificationTarget(JCas aJCas, int begin, int end) {
+		TextClassificationTarget target = new TextClassificationTarget(aJCas, begin, end);
+		target.addToIndexes();
+	}
 
-	private void initializeJCas(JCas aJCas) {
+	protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end)
+			throws IOException {
+		TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
+		tco.setOutcome(outcome);
+		tco.addToIndexes();
+	}
+
+	protected void initializeJCas(JCas aJCas) {
 		DocumentMetaData data = new DocumentMetaData(aJCas);
 		data.setDocumentId(runningId + "");
 		data.addToIndexes();
@@ -131,16 +139,16 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		return true;
 	}
 
-	private boolean skipEmptyLines() {
+	protected boolean skipEmptyLines() {
 		return nextDocument != null && nextDocument.isEmpty();
 	}
 
-	private boolean skipLine() {
+	protected boolean skipLine() {
 		return skipLinePrefix != null && 
 				nextDocument.split(separatingChar)[textIdx].startsWith(skipLinePrefix);
 	}
 
-	private Resource getNextResource() {
+	protected Resource getNextResource() {
 		Resource next = null;
 		try {
 			next = nextFile();
@@ -150,7 +158,7 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		return next;
 	}
 
-	private String read() {
+	protected String read() {
 		try {
 			return reader.readLine();
 		} catch (IOException e) {
@@ -158,7 +166,7 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		}
 	}
 
-	private void initReader(Resource nextFile) {
+	protected void initReader(Resource nextFile) {
 		try {
 			reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), "utf-8"));
 		} catch (Exception e) {

@@ -29,8 +29,12 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 
 /**
- * This reader reads folder wise data, the name of the folder is set as
- * {@link org.dkpro.tc.api.type.TextClassificationOutcome}. The reader assumes
+ * This reader is suited when several text documents (without any labels) are
+ * placed in a folder and the folder name is a suited a label. The text of a
+ * single file in a folder is read as self-contained document and the entire
+ * file-text is annotated as
+ * {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is
+ * set as {@link org.dkpro.tc.api.type.TextClassificationOutcome}.
  */
 public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase {
 
@@ -50,14 +54,24 @@ public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase 
 				buffer.append(line + System.lineSeparator());
 			}
 
-			TextClassificationTarget target = new TextClassificationTarget(aJCas, 0, buffer.toString().trim().length());
-			target.addToIndexes();
+			String text = buffer.toString().trim();
+			
+			setTextClassificationTarget(aJCas, currentFile, 0, text.length());
+			setTextClassificationOutcome(aJCas, currentFile, 0, text.length());
 
-			TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas, 0, buffer.toString().trim().length());
-			outcome.setOutcome(currentFile.getResource().getFile().getParentFile().getName());
-			outcome.addToIndexes();
-
-			aJCas.setDocumentText(buffer.toString().trim());
+			aJCas.setDocumentText(text.trim());
 		}
+	}
+
+	protected void setTextClassificationTarget(JCas aJCas, Resource currentFile, int begin, int end) {
+		TextClassificationTarget target = new TextClassificationTarget(aJCas, begin, end);
+		target.addToIndexes();
+	}
+
+	protected void setTextClassificationOutcome(JCas aJCas, Resource currentFile, int begin, int end)
+			throws IOException {
+		TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
+		tco.setOutcome(currentFile.getResource().getFile().getParentFile().getName());
+		tco.addToIndexes();
 	}
 }
