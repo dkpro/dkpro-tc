@@ -44,8 +44,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
@@ -150,8 +150,10 @@ public class WekaLoadModelConnector
 
         Instance instance = null;
         try {
-            instance = TaskUtils.getSingleInstance(featureMode, featureExtractors, jcas, false,
-                    useSparse);
+        	
+        	InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, false);
+        	List<Instance> instances = extractor.getInstances(jcas, useSparse);
+            instance = instances.get(0);
         }
         catch (Exception e1) {
             throw new AnalysisEngineProcessException(e1);

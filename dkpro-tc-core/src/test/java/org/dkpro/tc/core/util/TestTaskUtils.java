@@ -32,6 +32,8 @@ import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -47,8 +49,9 @@ public class TestTaskUtils
         JCas jCas = initJCas(true);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesUnitMode(
-                featureExtractors, jCas, true, false);
+        
+        InstanceExtractor ie = new InstanceExtractor(Constants.FM_UNIT, featureExtractors, true);
+        List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 
@@ -102,8 +105,9 @@ public class TestTaskUtils
         JCas jCas = initJCas(true);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesSequenceMode(
-                featureExtractors, jCas, true, false);
+        
+        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors, true);
+        List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 
@@ -157,8 +161,9 @@ public class TestTaskUtils
         JCas jCas = initJCas(false);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        List<Instance> multipleInstances = TaskUtils.getMultipleInstancesSequenceMode(
-                featureExtractors, jCas, true, false);
+        
+        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors, true);
+        List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 

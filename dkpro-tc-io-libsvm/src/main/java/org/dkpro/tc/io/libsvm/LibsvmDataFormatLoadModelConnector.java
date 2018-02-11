@@ -43,8 +43,8 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.core.util.SaveModelUtils;
-import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerialization_ImplBase {
@@ -161,7 +161,8 @@ public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerializat
 		
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
 
-		List<Instance> instances = TaskUtils.getMultipleInstancesUnitMode(featureExtractors, jcas, true, true);
+		InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, true);
+		List<Instance> instances =extractor.getInstances(jcas, true);
 
 		for (Instance instance : instances) {
 			bw.write(OUTCOME_PLACEHOLDER);
