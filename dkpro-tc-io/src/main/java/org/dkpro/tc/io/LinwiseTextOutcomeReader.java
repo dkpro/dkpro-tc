@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -28,6 +29,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * This is a line-wise reader which reads textual information and an associated
@@ -54,13 +56,22 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 	public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
 	@ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
 	private Integer outcomeIdx;
+	
+	public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
+	@ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
+	private String skipLinePrefix;
 
 	private BufferedReader reader;
 
-	String nextDocument = null;
+	private String nextDocument = null;
+
+	private int runningId = 0;
 
 	@Override
 	public void getNext(JCas aJCas) throws IOException, CollectionException {
+
+		initializeJCas(aJCas);
+
 		StringBuilder documentText = new StringBuilder();
 
 		String[] split = nextDocument.split(separatingChar);
@@ -83,6 +94,14 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		aJCas.setDocumentText(documentText.toString().trim());
 	}
 
+	private void initializeJCas(JCas aJCas) {
+		DocumentMetaData data = new DocumentMetaData(aJCas);
+		data.setDocumentId(runningId + "");
+		data.addToIndexes();
+
+		runningId++;
+	}
+
 	@Override
 	public boolean hasNext() {
 
@@ -94,15 +113,31 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 			initReader(nextFile);
 		}
 
-		nextDocument = read();
+		do {
+			nextDocument = read();
+		} while (skipEmptyLines());
+		
 
 		if (nextDocument == null) {
 			close();
 			reader = null;
 			return hasNext();
 		}
+		
+		if (skipLine()) {
+			return hasNext();
+		}
 
 		return true;
+	}
+
+	private boolean skipEmptyLines() {
+		return nextDocument != null && nextDocument.isEmpty();
+	}
+
+	private boolean skipLine() {
+		return skipLinePrefix != null && 
+				nextDocument.split(separatingChar)[textIdx].startsWith(skipLinePrefix);
 	}
 
 	private Resource getNextResource() {
@@ -134,7 +169,7 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 	@Override
 	public void close() {
 		try {
-			reader.close();
+			IOUtils.closeQuietly(reader);
 			super.close();
 		} catch (Exception e) {
 			throw new UnsupportedOperationException(e);
