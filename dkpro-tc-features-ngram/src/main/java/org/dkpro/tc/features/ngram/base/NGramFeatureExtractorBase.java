@@ -75,19 +75,10 @@ public abstract class NGramFeatureExtractorBase
     protected DfModel dfStore;
     protected String prefix;
 
-    /**
-     * @return Name of the field
-     */
     protected abstract String getFieldName();
 
-    /**
-     * @return Prefix which will be used to name to feature
-     */
     protected abstract String getFeaturePrefix();
 
-    /**
-     * @return How many of the most frequent ngrams should be returned.
-     */
     protected abstract int getTopN();
 
     @Override
@@ -98,20 +89,23 @@ public abstract class NGramFeatureExtractorBase
             return false;
         }
 
-        try {
-            stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
-        }
-        catch (IOException e) {
-            throw new ResourceInitializationException(e);
-        }
+		stopwords = getStopwords();
 
-        topKSet = getTopNgrams();
+		topKSet = getTopNgrams();
 
-        prefix = getFeaturePrefix();
+		prefix = getFeaturePrefix();
 
-        return true;
+		return true;
     }
 
-    protected abstract FrequencyDistribution<String> getTopNgrams()
+	private Set<String> getStopwords() throws ResourceInitializationException {
+		try {
+			return FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+		} catch (IOException e) {
+			throw new ResourceInitializationException(e);
+		}
+	}
+
+	protected abstract FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException;
 }
