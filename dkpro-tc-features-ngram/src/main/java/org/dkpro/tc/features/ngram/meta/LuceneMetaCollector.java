@@ -43,155 +43,130 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 
-public abstract class LuceneMetaCollector
-    extends MetaCollector
-{
-    public final static String LUCENE_DIR = "lucene";
+public abstract class LuceneMetaCollector extends MetaCollector {
+	public final static String LUCENE_DIR = "lucene";
 
-    public static final String LUCENE_ID_FIELD = "id";
+	public static final String LUCENE_ID_FIELD = "id";
 
+	public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
+	@ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
+	private File luceneDir;
 
-    public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
-     @ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
-    private File luceneDir;
+	// this is a static singleton as different Lucene-based meta collectors will
+	// use the same writer
+	protected static IndexWriter indexWriter = null;
 
-    // this is a static singleton as different Lucene-based meta collectors will use the same writer
-    protected static IndexWriter indexWriter = null;
+	private String currentDocumentId;
+	private Document currentDocument;
 
-    private String currentDocumentId;
-    private Document currentDocument;
+	private FieldType fieldType;
 
-    private FieldType fieldType;
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
 
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
 
-        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+		if (indexWriter == null) {
+			try {
+				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+			} catch (IOException e) {
+				throw new ResourceInitializationException(e);
+			}
+		}
 
-        if (indexWriter == null) {
-            try {
-                indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-            }
-            catch (IOException e) {
-                throw new ResourceInitializationException(e);
-            }
-        }
+		currentDocumentId = null;
+		currentDocument = null;
 
-        currentDocumentId = null;
-        currentDocument = null;
+		fieldType = new FieldType();
+		fieldType.setIndexed(true);
+		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		fieldType.setStored(true);
+		fieldType.setOmitNorms(true);
+		fieldType.setTokenized(false);
+		fieldType.freeze();
+	}
 
-        fieldType = new FieldType();
-        fieldType.setIndexed(true);
-        fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
-        fieldType.setStored(true);
-        fieldType.setOmitNorms(true);
-        fieldType.setTokenized(false);
-        fieldType.freeze();
-    }
+	protected void initializeDocument(JCas jcas) {
+		if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
+			currentDocumentId = getDocumentId(jcas);
+			if (currentDocumentId == null) {
+				throw new IllegalArgumentException(
+						"Document has no id. id: " + DocumentMetaData.get(jcas).getDocumentId() + ", title: "
+								+ DocumentMetaData.get(jcas).getDocumentTitle() + ", uri: "
+								+ DocumentMetaData.get(jcas).getDocumentUri());
+			}
+			currentDocument = new Document();
+			currentDocument.add(new StringField(LUCENE_ID_FIELD, currentDocumentId, Field.Store.YES));
+		}
+	}
 
-    protected void initializeDocument(JCas jcas)
-    {
-        if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
-            currentDocumentId = getDocumentId(jcas);
-            if (currentDocumentId == null) {
-                throw new IllegalArgumentException(
-                        "Document has no id. id: " + DocumentMetaData.get(jcas).getDocumentId()
-                                + ", title: " + DocumentMetaData.get(jcas).getDocumentTitle()
-                                + ", uri: " + DocumentMetaData.get(jcas).getDocumentUri());
-            }
-            currentDocument = new Document();
-            currentDocument
-                    .add(new StringField(LUCENE_ID_FIELD, currentDocumentId, Field.Store.YES));
-        }
-    }
+	@Override
+	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		try {
 
-    @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
-    {
-        initializeDocument(jcas);
-        FrequencyDistribution<String> documentNGrams;
-        try {
-            documentNGrams = getNgramsFD(jcas);
-        }
-        catch (TextClassificationException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+			initializeDocument(jcas);
+			FrequencyDistribution<String> documentNGrams;
+			documentNGrams = getNgramsFD(jcas);
 
-        for (String ngram : documentNGrams.getKeys()) {
-            // As a result of discussion, we add a field for each ngram per doc,
-            // not just each ngram type per doc.
-            for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-                addField(jcas, getFieldName(), ngram);
-            }
-        }
+			for (String ngram : documentNGrams.getKeys()) {
+				// As a result of discussion, we add a field for each ngram per
+				// doc,
+				// not just each ngram type per doc.
+				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
+					addField(jcas, getFieldName(), ngram);
+				}
+			}
 
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
-    }
+			writeToIndex();
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
+		}
+	}
 
-    protected void addField(JCas jcas, String fieldName, String value)
-        throws AnalysisEngineProcessException
-    {
-        if (currentDocument == null) {
-            throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
-                    + "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
-        }
+	protected void addField(JCas jcas, String fieldName, String value) throws AnalysisEngineProcessException {
+		if (currentDocument == null) {
+			throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
+					+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
+		}
 
-        Field field = new Field(fieldName, value, fieldType);
-        currentDocument.add(field);
-    }
+		Field field = new Field(fieldName, value, fieldType);
+		currentDocument.add(field);
+	}
 
-    protected void writeToIndex()
-        throws IOException
-    {
-        if (currentDocument == null) {
-            throw new IOException("Lucene document not initialized. Fatal error.");
-        }
-        indexWriter.addDocument(currentDocument);
-    }
+	protected void writeToIndex() throws IOException {
+		if (currentDocument == null) {
+			throw new IOException("Lucene document not initialized. Fatal error.");
+		}
+		indexWriter.addDocument(currentDocument);
+	}
 
-    @Override
-    public void collectionProcessComplete()
-        throws AnalysisEngineProcessException
-    {
-        super.collectionProcessComplete();
+	@Override
+	public void collectionProcessComplete() throws AnalysisEngineProcessException {
+		super.collectionProcessComplete();
 
-        if (indexWriter != null) {
-            try {
-                indexWriter.commit();
-                indexWriter.close();
-                indexWriter = null;
-            }
-            catch (AlreadyClosedException e) {
-                // ignore, as multiple meta collectors write in the same index
-                // and will all try to close the index
-            }
-            catch (CorruptIndexException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-            catch (IOException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
-        }
+		if (indexWriter != null) {
+			try {
+				indexWriter.commit();
+				indexWriter.close();
+				indexWriter = null;
+			} catch (AlreadyClosedException e) {
+				// ignore, as multiple meta collectors write in the same index
+				// and will all try to close the index
+			} catch (CorruptIndexException e) {
+				throw new AnalysisEngineProcessException(e);
+			} catch (IOException e) {
+				throw new AnalysisEngineProcessException(e);
+			}
+		}
 
-    }
+	}
 
+	protected String getDocumentId(JCas jcas) {
+		return DocumentMetaData.get(jcas).getDocumentId();
+	}
 
-    protected String getDocumentId(JCas jcas)
-    {
-        return DocumentMetaData.get(jcas).getDocumentId();
-    }
+	protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException;
 
-    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas)
-                throws TextClassificationException;
-
-    protected abstract String getFieldName();
+	protected abstract String getFieldName();
 }
