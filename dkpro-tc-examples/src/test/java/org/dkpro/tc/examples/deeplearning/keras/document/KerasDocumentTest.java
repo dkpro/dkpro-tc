@@ -37,7 +37,7 @@ public class KerasDocumentTest extends PythonLocator {
 
 		DemoUtils.setDkproHome(KerasDocumentTrainTest.class.getSimpleName());
 
-		boolean testConditon = false;
+		boolean testConditon = true;
 		String python3 = null;
 		try {
 			python3 = getEnvironment();

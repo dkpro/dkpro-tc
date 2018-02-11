@@ -36,7 +36,7 @@ public class DyNetSequenceTest extends PythonLocator {
 
 		DemoUtils.setDkproHome(DynetSeq2SeqTrainTest.class.getSimpleName());
 
-		boolean testConditon = false;
+		boolean testConditon = true;
 		String python3 = null;
 		try {
 			python3 = getEnvironment();
