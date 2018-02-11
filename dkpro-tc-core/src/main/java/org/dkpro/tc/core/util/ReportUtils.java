@@ -29,7 +29,7 @@ import org.dkpro.lab.storage.StorageService;
 /**
  * Utility methods needed in reports
  */
-public class ReportUtils implements ReportConstants
+public class ReportUtils
 {
     public static boolean containsExcludePattern(String string, List<String> patterns)
     {
