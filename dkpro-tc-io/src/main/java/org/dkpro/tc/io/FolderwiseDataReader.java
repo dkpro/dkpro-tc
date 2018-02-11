@@ -30,10 +30,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBas
 
 /**
  * This reader is suited when several text documents (without any labels) are
- * placed in a folder and the folder name is a suited a label. The text of a
- * single file in a folder is read as self-contained document and the entire
- * file-text is annotated as
- * {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is
+ * placed in a folder and the folder name is a suited label. 
+ * 
+ * The text of a file in a folder is read as self-contained document into a JCas and the entire
+ * text-span is {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is
  * set as {@link org.dkpro.tc.api.type.TextClassificationOutcome}.
  */
 public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase {

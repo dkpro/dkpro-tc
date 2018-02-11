@@ -34,7 +34,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 /**
  * This is a line-wise reader which reads textual information and an associated
  * outcome from a single line of text that is separated by a character, which
- * allows separating both information. The text is annotated as
+ * allows separating both information. Each line in a text file is read as own
+ * document into a JCas
+ * 
+ * The text is annotated as
  * {@link org.dkpro.tc.api.type.TextClassificationTarget} and the outcome is
  * annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}, which
  * are the data types DKPro TC requires for processing the read data.
@@ -56,7 +59,7 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 	public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
 	@ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
 	private Integer outcomeIdx;
-	
+
 	public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
 	@ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
 	private String skipLinePrefix;
@@ -89,14 +92,13 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 
 		aJCas.setDocumentText(documentText.toString().trim());
 	}
-	
+
 	protected void setTextClassificationTarget(JCas aJCas, int begin, int end) {
 		TextClassificationTarget target = new TextClassificationTarget(aJCas, begin, end);
 		target.addToIndexes();
 	}
 
-	protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end)
-			throws IOException {
+	protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end) throws IOException {
 		TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
 		tco.setOutcome(outcome);
 		tco.addToIndexes();
@@ -124,14 +126,13 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 		do {
 			nextDocument = read();
 		} while (skipEmptyLines());
-		
 
 		if (nextDocument == null) {
 			close();
 			reader = null;
 			return hasNext();
 		}
-		
+
 		if (skipLine()) {
 			return hasNext();
 		}
@@ -144,8 +145,7 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 	}
 
 	protected boolean skipLine() {
-		return skipLinePrefix != null && 
-				nextDocument.split(separatingChar)[textIdx].startsWith(skipLinePrefix);
+		return skipLinePrefix != null && nextDocument.split(separatingChar)[textIdx].startsWith(skipLinePrefix);
 	}
 
 	protected Resource getNextResource() {
