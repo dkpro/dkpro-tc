@@ -58,6 +58,10 @@
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-features-pair</artifactId>
 		</dependency>
+			<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-io</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml</artifactId>
@@ -87,6 +91,10 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.dkpro.lab</groupId>
+			<artifactId>dkpro-lab-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.meka</groupId>
 			<artifactId>meka</artifactId>
 		</dependency>
@@ -106,10 +114,6 @@
 		<dependency>		
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dkpro.lab</groupId>
-			<artifactId>dkpro-lab-core</artifactId>
 		</dependency>
 	</dependencies>
 	<properties>
