@@ -19,12 +19,12 @@ package org.dkpro.tc.features.ngram.meta;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -55,8 +55,8 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 	// this is a static singleton as different Lucene-based meta collectors will
 	// use the same writer
 	protected static IndexWriter indexWriter = null;
+	static AtomicInteger activeMetaWriter=null; //used to known when we can close the index
 
-	private String currentDocumentId;
 	private Document currentDocument;
 
 	private FieldType fieldType;
@@ -66,6 +66,7 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 		super.initialize(context);
 
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 
 		if (indexWriter == null) {
 			try {
@@ -75,8 +76,9 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 			}
 		}
 
-		currentDocumentId = null;
-		currentDocument = null;
+		currentDocument = new Document();
+		currentDocument
+				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
 
 		fieldType = new FieldType();
 		fieldType.setIndexed(true);
@@ -85,53 +87,31 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 		fieldType.setOmitNorms(true);
 		fieldType.setTokenized(false);
 		fieldType.freeze();
-	}
 
-	protected void initializeDocument(JCas jcas) {
-		if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
-			currentDocumentId = getDocumentId(jcas);
-			if (currentDocumentId == null) {
-				throw new IllegalArgumentException(
-						"Document has no id. id: " + DocumentMetaData.get(jcas).getDocumentId() + ", title: "
-								+ DocumentMetaData.get(jcas).getDocumentTitle() + ", uri: "
-								+ DocumentMetaData.get(jcas).getDocumentUri());
-			}
-			currentDocument = new Document();
-			currentDocument.add(new StringField(LUCENE_ID_FIELD, currentDocumentId, Field.Store.YES));
+		if (activeMetaWriter == null) {
+			activeMetaWriter = new AtomicInteger(0);
 		}
+		activeMetaWriter.incrementAndGet();
 	}
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
 
-			initializeDocument(jcas);
 			FrequencyDistribution<String> documentNGrams;
 			documentNGrams = getNgramsFD(jcas);
-
 			for (String ngram : documentNGrams.getKeys()) {
 				// As a result of discussion, we add a field for each ngram per
-				// doc,
-				// not just each ngram type per doc.
+				// doc, not just each ngram type per doc.
+				Field field = new Field(getFieldName(), ngram, fieldType);
 				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-					addField(jcas, getFieldName(), ngram);
+					currentDocument.add(field);
 				}
 			}
 
-			writeToIndex();
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
-	}
-
-	protected void addField(JCas jcas, String fieldName, String value) throws AnalysisEngineProcessException {
-		if (currentDocument == null) {
-			throw new AnalysisEngineProcessException(new Throwable("Document not initialized. "
-					+ "Probably a lucene-based meta collector that calls addField() before initializeDocument()"));
-		}
-
-		Field field = new Field(fieldName, value, fieldType);
-		currentDocument.add(field);
 	}
 
 	protected void writeToIndex() throws IOException {
@@ -145,21 +125,21 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 	public void collectionProcessComplete() throws AnalysisEngineProcessException {
 		super.collectionProcessComplete();
 
-		if (indexWriter != null) {
-			try {
-				indexWriter.commit();
+		try {
+			writeToIndex();
+			indexWriter.commit();
+
+			int accessingMetaWriters = activeMetaWriter.decrementAndGet();
+			if (accessingMetaWriters == 0) {
 				indexWriter.close();
 				indexWriter = null;
-			} catch (AlreadyClosedException e) {
-				// ignore, as multiple meta collectors write in the same index
-				// and will all try to close the index
-			} catch (CorruptIndexException e) {
-				throw new AnalysisEngineProcessException(e);
-			} catch (IOException e) {
-				throw new AnalysisEngineProcessException(e);
 			}
+		} catch (AlreadyClosedException e) {
+			// ignore, as multiple meta collectors write in the same index
+			// and will all try to close the index
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
-
 	}
 
 	protected String getDocumentId(JCas jcas) {
