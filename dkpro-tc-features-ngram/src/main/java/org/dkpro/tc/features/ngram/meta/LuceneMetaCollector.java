@@ -115,12 +115,14 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 
 			for (String ngram : documentNGrams.getKeys()) {
 				// As a result of discussion, we add a field for each ngram per
-				// doc, not just each ngram type per doc.
+				// doc,
+				// not just each ngram type per doc.
 				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
 					addField(jcas, getFieldName(), ngram);
 				}
 			}
 
+			writeToIndex();
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
@@ -149,7 +151,6 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 
 		if (indexWriter != null) {
 			try {
-				writeToIndex();
 				indexWriter.commit();
 				indexWriter.close();
 				indexWriter = null;
