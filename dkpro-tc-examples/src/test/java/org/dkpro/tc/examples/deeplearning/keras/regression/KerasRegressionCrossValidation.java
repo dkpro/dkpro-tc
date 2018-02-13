@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.deeplearning.keras.document;
+package org.dkpro.tc.examples.deeplearning.keras.regression;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,13 +28,13 @@ import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
-public class KerasDocumentTest extends PythonLocator {
+public class KerasRegressionCrossValidation extends PythonLocator {
 	@Test
 	public void runTest() throws Exception {
 
-		DemoUtils.setDkproHome(KerasDocumentTrainTest.class.getSimpleName());
+		DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
 		boolean testConditon = true;
 		String python3 = null;
@@ -44,15 +44,16 @@ public class KerasDocumentTest extends PythonLocator {
 			System.err.println("Failed to locate Python with Keras - will skip this test case");
 			testConditon = false;
 		}
-		
-		if (testConditon) {
-			ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
-			KerasDocumentTrainTest.runTrainTest(ps);
 
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
-			Accuracy<String> acc = new Accuracy<>(data);
+		if (testConditon) {
+			ParameterSpace ps = KerasRegression.getParameterSpace(python3);
+			KerasRegression.runCrossValidation(ps);
+
+			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.crossValidationCombinedIdFiles.get(0));
+			SpearmanCorrelation spear = new SpearmanCorrelation(data);
 			
-			assertTrue(acc.getResult() > 0.2);
+			
+			assertTrue(spear.getResult() > 0.1);
 		}
 	}
 }

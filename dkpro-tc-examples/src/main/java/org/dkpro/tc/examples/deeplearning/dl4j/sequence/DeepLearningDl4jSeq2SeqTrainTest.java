@@ -38,6 +38,7 @@ import org.dkpro.tc.examples.shallow.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -107,6 +108,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		if(r != null){
 		    batch.addReport(r);
 		}
+		batch.addReport(new BatchTrainTestReport());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(batch);

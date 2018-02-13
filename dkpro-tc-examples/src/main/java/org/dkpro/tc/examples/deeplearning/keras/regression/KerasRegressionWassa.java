@@ -37,6 +37,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -95,6 +96,7 @@ public class KerasRegressionWassa implements Constants {
 		batch.setPreprocessing(getPreprocessing());
 		batch.setParameterSpace(pSpace);
 		batch.addReport(ContextMemoryReport.class);
+		batch.addReport(new BatchTrainTestReport());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run

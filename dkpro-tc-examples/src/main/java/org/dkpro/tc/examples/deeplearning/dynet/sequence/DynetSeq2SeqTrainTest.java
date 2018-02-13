@@ -37,6 +37,7 @@ import org.dkpro.tc.examples.shallow.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -103,6 +104,7 @@ public class DynetSeq2SeqTrainTest implements Constants {
 		batch.setPreprocessing(getPreprocessing());
 		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 		batch.addReport(ContextMemoryReport.class);
+		batch.addReport(new BatchTrainTestReport());
 		Lab.getInstance().run(batch);
 	}
 }

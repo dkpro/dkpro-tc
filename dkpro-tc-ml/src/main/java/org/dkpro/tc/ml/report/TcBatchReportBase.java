@@ -22,10 +22,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -161,19 +162,17 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * in the hierarchy.
 	 * 
 	 * @param subtasks
-	 *            list of subtasks to be iterated
-	 * @return list of all task ids including the one passed as parameter
+	 *            set of subtasks to be iterated
+	 * @return set of all task ids including the one passed as parameter
 	 * @throws Exception
 	 *             in case of errors
 	 */
-	public List<String> collectTasks(List<String> subtasks) throws Exception {
+	public Set<String> collectTasks(Set<String> subtasks) throws Exception {
 
-		StorageService store = getContext().getStorageService();
-
-		List<String> ids = new ArrayList<>();
+		Set<String> ids = new HashSet<>();
 		for (String taskId : subtasks) {
-			File attributes = store.locateKey(taskId, Task.ATTRIBUTES_KEY);
-			List<String> taskIds = readSubTasks(attributes);
+
+			Set<String> taskIds = collectSubtasks(taskId);
 
 			ids.add(taskId);
 			ids.addAll(taskIds);
@@ -181,8 +180,31 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		return ids;
 	}
+	
 
-	private List<String> readSubTasks(File attributesTXT) throws Exception {
+	/**
+	 * Collects recursively all <b>subtasks</b> stored in the
+	 * <i>attributes.txt</i>. of a task and the tasks located in a lower level
+	 * in the hierarchy.
+	 * 
+	 * @param subtasks
+	 *            the subtask for which subtasks are being located
+	 * @return list of all task ids including the one passed as parameter
+	 * @throws Exception
+	 *             in case of errors
+	 */
+	public Set<String> collectSubtasks(String contextId) throws Exception{
+		Set<String> ids = new HashSet<>();
+		StorageService store = getContext().getStorageService();
+		File attributes = store.locateKey(contextId, Task.ATTRIBUTES_KEY);
+		Set<String> taskIds = readSubTasks(attributes);
+
+		ids.add(contextId);
+		ids.addAll(taskIds);
+		return ids;
+	}
+
+	private Set<String> readSubTasks(File attributesTXT) throws Exception {
 		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
 
 		int idx = 0;
@@ -196,7 +218,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		}
 
 		if (!found) {
-			return new ArrayList<>();
+			return new HashSet<>();
 		}
 
 		String line = readLines.get(idx);
@@ -206,7 +228,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 
 		String[] tasks = subTasks.split(",");
 
-		List<String> results = new ArrayList<>();
+		Set<String> results = new HashSet<>();
 
 		for (String task : tasks) {
 			results.add(task.trim());
@@ -223,11 +245,11 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * 
 	 * @param subtasks
 	 *            arbitrary number of TaskContextMetadata objects
-	 * @return list of strings with context ids extracted from the meta data
+	 * @return collection of strings with context ids extracted from the meta data
 	 */
-	public List<String> getTaskIdsFromMetaData(TaskContextMetadata... subtasks) {
+	public Set<String> getTaskIdsFromMetaData(TaskContextMetadata... subtasks) {
 
-		List<String> taskIds = new ArrayList<>();
+		Set<String> taskIds = new HashSet<>();
 
 		for (TaskContextMetadata tcm : subtasks) {
 			taskIds.add(tcm.getId());
@@ -276,7 +298,7 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 		return null;
 	}
 
-	public String getDiscriminator(StorageService store, List<String> contextIds, String key) {
+	public String getDiscriminator(StorageService store, Set<String> contextIds, String key) {
 
 		for (String id : contextIds) {
 			String v = getDiscriminator(store, id, key);

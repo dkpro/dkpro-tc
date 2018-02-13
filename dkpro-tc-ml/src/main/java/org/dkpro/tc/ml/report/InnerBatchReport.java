@@ -53,7 +53,7 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
-		List<String> ids = getTaskIdsFromMetaData(getSubtasks());
+		Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
 		
 		for (String id : ids) {
 
@@ -61,9 +61,9 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 				continue;
 			}
 
-			List<String> listWrap = new ArrayList<>();
-			listWrap.add(id);
-			List<String> subTaskId = collectTasks(listWrap);
+			Set<String> wrap = new HashSet<>();
+			wrap.add(id);
+			Set<String> subTaskId = collectTasks(wrap);
 			subTaskId.remove(id);
 
 			// Should be only one anyway?

@@ -19,8 +19,8 @@ package org.dkpro.tc.ml.report;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -50,22 +50,20 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
 		table.setDefaultValue("");
-		
-		List<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-		String learningMode = getDiscriminator(store, idPool, DIM_LEARNING_MODE);
+		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+
+		String learningMode = determineLearningMode(store, idPool);
 		
 		for (String id : idPool) {
 			if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
 				continue;
 			}
 
-			File combinedId2outcome = store.locateKey(id,
-					Constants.FILE_COMBINED_ID_OUTCOME_KEY);
+			File combinedId2outcome = store.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
 
-			Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id,
-					Task.DISCRIMINATORS_KEY);
-			
+			Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id, Task.DISCRIMINATORS_KEY);
+
 			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
 
 			Map<String, String> values = new HashMap<String, String>();
@@ -83,10 +81,24 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 
 		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
 	}
-	
-    private static Map<String,String> getDiscriminatorsForContext(StorageService store, String contextId, String discriminatorsKey)
-    {
-        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
-    }
+
+	private String determineLearningMode(StorageService store, Set<String> idPool) throws Exception {
+		String learningMode = getDiscriminator(store, idPool, DIM_LEARNING_MODE);
+		if (learningMode == null) {
+			for (String id : idPool) {
+				Set<String> collectSubtasks = collectSubtasks(id);
+				learningMode = getDiscriminator(store, collectSubtasks, DIM_LEARNING_MODE);
+				if (learningMode != null) {
+					break;
+				}
+			}
+		}
+		return learningMode;
+	}
+
+	private static Map<String, String> getDiscriminatorsForContext(StorageService store, String contextId,
+			String discriminatorsKey) {
+		return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
+	}
 
 }

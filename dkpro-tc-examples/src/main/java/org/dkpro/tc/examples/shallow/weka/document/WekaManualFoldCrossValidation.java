@@ -39,6 +39,7 @@ import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.style.IsSurroundedByChars;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -72,6 +73,7 @@ public class WekaManualFoldCrossValidation
         ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV", folds);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        batch.addReport(new BatchCrossValidationReport());
 
         // Run
         Lab.getInstance().run(batch);

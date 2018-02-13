@@ -35,8 +35,9 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -54,7 +55,7 @@ public class KerasRegression
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        KerasRegression.runTrainTest(pSpace);
+        KerasRegression.runCrossValidation(pSpace);
     }
 
     public static ParameterSpace getParameterSpace(String pythonPath)
@@ -66,8 +67,8 @@ public class KerasRegression
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
 				LinwiseTextOutcomeReader.class, 
-				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 2, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
 				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
 				"src/main/resources/data/essays/train/essay_train.txt", 
 				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
@@ -75,8 +76,8 @@ public class KerasRegression
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
         		LinwiseTextOutcomeReader.class, 
-				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 2, 
+				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
 				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
 				"src/main/resources/data/essays/train/essay_test.txt", 
 				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
@@ -98,16 +99,16 @@ public class KerasRegression
         return pSpace;
     }
 
-    // ##### TRAIN-TEST #####
-    public static void runTrainTest(ParameterSpace pSpace)
+    public static void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasRegressionTrainTest",
-                KerasAdapter.class);
+        DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasRegressionCrossValidation",
+                KerasAdapter.class, 2);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.addReport(ContextMemoryReport.class);
+        batch.addReport(BatchCrossValidationReport.class);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

@@ -21,6 +21,7 @@ package org.dkpro.tc.examples.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.tc.core.Constants;
@@ -48,7 +49,7 @@ public class ContextMemoryReport extends TcBatchReportBase {
 		
 		StorageService storageService = getContext().getStorageService();
 		
-		List<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
+		Set<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
 		allIds.addAll(taskIds);
 		for (String id : taskIds) {
 			if (TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {

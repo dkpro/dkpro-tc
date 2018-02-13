@@ -18,10 +18,11 @@
 package org.dkpro.tc.ml.report;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -49,7 +50,7 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
 		table.setDefaultValue("");
 
-		List<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
 		for (String id : idPool) {
 
@@ -57,9 +58,9 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 				continue;
 			}
 
-			List<String> listWrap = new ArrayList<>();
-			listWrap.add(id);
-			List<String> subTaskId = collectTasks(listWrap);
+			Set<String> wrapped = new HashSet<>();
+			wrapped.add(id);
+			Set<String> subTaskId = collectTasks(wrapped);
 			subTaskId.remove(id);
 
 			// Should be only one anyway?
