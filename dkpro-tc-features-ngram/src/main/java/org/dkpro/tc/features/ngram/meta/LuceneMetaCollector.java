@@ -88,11 +88,7 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 	}
 
 	protected void initializeDocument(JCas jcas) {
-		
-		//Issue #396 - opening a new document for each JCAS leads to unreasonably large index files which blow up serialized models that use lucene-based features.
-		// if a single document causes problems, too, a more intelligent re-openen/re-using of documents must be implemented
-//		if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
-		if (currentDocument == null){
+		if (currentDocument == null || !currentDocumentId.equals(getDocumentId(jcas))) {
 			currentDocumentId = getDocumentId(jcas);
 			if (currentDocumentId == null) {
 				throw new IllegalArgumentException(
