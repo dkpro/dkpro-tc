@@ -95,7 +95,7 @@ public class WordNGramMetaCollectorTest
                     while ((text = termsEnum.next()) != null) {
                         
                         if (text.utf8ToString().equals("this")) {
-                            assertEquals(2, termsEnum.docFreq());
+                            assertEquals(1, termsEnum.docFreq());
                             assertEquals(3, termsEnum.totalTermFreq());
                         }
                         
