@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.lucene.document.Field;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -72,8 +73,6 @@ public class IdfPairMetaCollector<T extends Annotation>
             throw new AnalysisEngineProcessException(e);
         }
 
-        initializeDocument(jcas);
-
         FrequencyDistribution<String> document1NGrams;
         FrequencyDistribution<String> document2NGrams;
         try {
@@ -97,7 +96,8 @@ public class IdfPairMetaCollector<T extends Annotation>
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-                addField(jcas, getFieldName(), ngram);
+            	Field field = new Field(getFieldName(), ngram, fieldType);
+            	currentDocument.add(field);
             }
         }
 
