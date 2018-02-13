@@ -63,8 +63,8 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperCl
 		assertEquals(getSumOfExpectedTasksForTrainTest().intValue(), ContextMemoryReport.allIds.size());
 		assertEquals(getSumOfMachineLearningAdapterTasks().intValue(), ContextMemoryReport.id2outcomeFiles.size());
 
-		assertEquals(0.698, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.01);
-		assertEquals(2.0, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.01);
+		assertEquals(2.0, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+		assertEquals(2.0, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
 		assertEquals(2.62, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
 	}
 
@@ -79,7 +79,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperCl
 				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
 		assertEquals(3.23,
 				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"),
-				0.01);
+				0.1);
 		assertEquals(4.6,
 				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"),
 				0.4);
