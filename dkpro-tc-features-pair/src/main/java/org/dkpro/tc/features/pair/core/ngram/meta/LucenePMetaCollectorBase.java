@@ -17,19 +17,19 @@
  ******************************************************************************/
 package org.dkpro.tc.features.pair.core.ngram.meta;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.document.Field;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.meta.LuceneMetaCollector;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public abstract class LucenePMetaCollectorBase
     extends LuceneMetaCollector
@@ -48,8 +48,6 @@ public abstract class LucenePMetaCollectorBase
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-
-        initializeDocument(jcas);
 
         List<JCas> jcases = new ArrayList<JCas>();
         jcases.add(view1);
@@ -71,29 +69,28 @@ public abstract class LucenePMetaCollectorBase
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-                addField(jcas, getFieldName(), ngram);
+                addField(getFieldName(), ngram);
             }
         }
         for (String ngram : view1NGrams.getKeys()) {
             for (int i = 0; i < view1NGrams.getCount(ngram); i++) {
-                addField(jcas, getFieldNameView1(), ngram);
+                addField(getFieldNameView1(), ngram);
             }
         }
         for (String ngram : view2NGrams.getKeys()) {
             for (int i = 0; i < view2NGrams.getCount(ngram); i++) {
-                addField(jcas, getFieldNameView2(), ngram);
+                addField(getFieldNameView2(), ngram);
             }
         }
 
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
     }
 
-    protected abstract FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
+    protected void addField(String fieldName, String ngram) {
+    	Field field = new Field(fieldName, ngram, fieldType);
+    	currentDocument.add(field);
+	}
+
+	protected abstract FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException;
 
     protected abstract FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)

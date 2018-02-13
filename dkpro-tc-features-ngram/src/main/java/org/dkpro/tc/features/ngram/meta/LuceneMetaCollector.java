@@ -57,9 +57,9 @@ public abstract class LuceneMetaCollector extends MetaCollector {
 	protected static IndexWriter indexWriter = null;
 	static AtomicInteger activeMetaWriter=null; //used to known when we can close the index
 
-	private Document currentDocument;
+	protected Document currentDocument;
 
-	private FieldType fieldType;
+	protected FieldType fieldType;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {

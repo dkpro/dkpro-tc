@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.features.pair.core.ngram.meta;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +46,6 @@ public abstract class LuceneCPMetaCollectorBase
             throw new AnalysisEngineProcessException(e);
         }
         
-        initializeDocument(jcas);
-        
         List<JCas> jcases = new ArrayList<JCas>();
         jcases.add(view1);
         jcases.add(view2);
@@ -69,17 +66,17 @@ public abstract class LuceneCPMetaCollectorBase
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i=0;i<documentNGrams.getCount(ngram);i++){
-                addField(jcas, getFieldName(), ngram); 
+                addField(getFieldName(), ngram); 
             }
         }
         for (String ngram : view1NGrams.getKeys()) {
             for (int i=0;i<view1NGrams.getCount(ngram);i++){
-                addField(jcas, getFieldNameView1(), ngram); 
+                addField(getFieldNameView1(), ngram); 
             }
         }
         for (String ngram : view2NGrams.getKeys()) {
             for (int i=0;i<view2NGrams.getCount(ngram);i++){
-                addField(jcas, getFieldNameView2(), ngram); 
+                addField(getFieldNameView2(), ngram); 
             }
         }
         for (String ngram1: view1NGrams.getKeys()){
@@ -92,20 +89,13 @@ public abstract class LuceneCPMetaCollectorBase
                     // set count = 1, for doc freq and not total term freq
                 	long count = view1NGrams.getCount(ngram1) * view2NGrams.getCount(ngram2);
                 	for(int i=0;i<count;i++){
-	                    addField(jcas, 
-	                            getFieldNameCombo(),
+	                    addField(getFieldNameCombo(),
 	                            ngram1 + ComboUtils.JOINT + ngram2);
                 	}
                 }
             }
         }
         
-        try {
-            writeToIndex();
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
     }   
     
     protected abstract int getNgramMinNCombo();
