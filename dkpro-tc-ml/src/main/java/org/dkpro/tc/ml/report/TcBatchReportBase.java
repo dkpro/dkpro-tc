@@ -187,9 +187,9 @@ public abstract class TcBatchReportBase extends BatchReportBase {
 	 * <i>attributes.txt</i>. of a task and the tasks located in a lower level
 	 * in the hierarchy.
 	 * 
-	 * @param subtasks
-	 *            the subtask for which subtasks are being located
-	 * @return list of all task ids including the one passed as parameter
+	 * @param contextId
+	 *            the current context id
+	 * @return set of all task ids including the one passed as parameter
 	 * @throws Exception
 	 *             in case of errors
 	 */
