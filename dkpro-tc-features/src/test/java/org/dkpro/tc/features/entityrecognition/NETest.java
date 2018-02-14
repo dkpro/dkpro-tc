@@ -60,7 +60,7 @@ public class NETest
         s1.addToIndexes();
         s2.addToIndexes();
 
-        NEFeatureExtractor extractor = new NEFeatureExtractor();
+        NamedEntityPerSentenceRatio extractor = new NamedEntityPerSentenceRatio();
 
         Set<Feature> features1 = extractor.extract(jcas, target);
         assertEquals(6, features1.size());

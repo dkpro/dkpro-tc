@@ -39,7 +39,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_DET;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_NOUN;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
 
 /**
  * Heylighen &amp; Dewaele (2002): Variation in the contextuality of language The contextuality
@@ -70,19 +69,10 @@ public class ContextualityMeasureFeatureExtractor
         double verb = selectCovered(jcas, POS_VERB.class, target).size() / total;
         double adv = selectCovered(jcas, POS_ADV.class, target).size() / total;
 
-        int interjCount = 0;
-        for (POS tag : JCasUtil.select(jcas, POS_X.class)) {
-            // FIXME Issue 123: this is tagset specific
-            if (tag.getPosValue().contains("UH")) {
-                interjCount++;
-            }
-        }
-        double interj = interjCount / total;
-
         // noun freq + adj.freq. + prepositions freq. + article freq. - pronoun freq. - verb f. -
         // adverb - interjection + 100
         double contextualityMeasure = 0.5
-                * (noun + adj + prep + art - pro - verb - adv - interj + 100);
+                * (noun + adj + prep + art - pro - verb - adv + 100);
 
         featSet.add(new Feature("NounRate", noun, FeatureType.NUMERIC));
         featSet.add(new Feature("AdjectiveRate", adj, FeatureType.NUMERIC));
@@ -91,7 +81,6 @@ public class ContextualityMeasureFeatureExtractor
         featSet.add(new Feature("PronounRate", pro, FeatureType.NUMERIC));
         featSet.add(new Feature("VerbRate", verb, FeatureType.NUMERIC));
         featSet.add(new Feature("AdverbRate", adv, FeatureType.NUMERIC));
-        featSet.add(new Feature("InterjectionRate", interj, FeatureType.NUMERIC));
         featSet.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure, FeatureType.NUMERIC));
 
         return featSet;

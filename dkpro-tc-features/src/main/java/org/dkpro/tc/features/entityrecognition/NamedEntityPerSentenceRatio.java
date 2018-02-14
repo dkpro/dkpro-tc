@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 /**
  * Extracts the ratio of named entities per sentence
  */
-public class NEFeatureExtractor
+public class NamedEntityPerSentenceRatio
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
 {
