@@ -19,9 +19,12 @@ package org.dkpro.tc.features.pair.core.ngram.meta;
 
 import static org.dkpro.tc.core.Constants.NGRAM_GLUE;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
@@ -63,6 +66,18 @@ public abstract class LucenePFEBase
     protected String fieldOfTheMoment;
     protected int topNOfTheMoment;
 	
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+        throws ResourceInitializationException
+    {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
+
+        forceRereadFromIndex = true;
+
+		return true;
+    }
 
     protected Set<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
             FrequencyDistribution<String> topKSet, Set<Feature> features)

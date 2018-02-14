@@ -52,6 +52,7 @@ public abstract class LuceneFeatureExtractorBase
     private MinMaxPriorityQueue<TermFreqTuple> topN;
     private long maxNgramSum=0;
     
+    protected boolean forceRereadFromIndex = false; //hack for pair-mode
     
     private FrequencyDistribution<String> topNGrams=null;
     
@@ -59,7 +60,7 @@ public abstract class LuceneFeatureExtractorBase
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {
-    	if(topNGrams != null){
+    	if(topNGrams != null && !forceRereadFromIndex){
     		return topNGrams;
     	}
     	
