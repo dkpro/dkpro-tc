@@ -19,13 +19,9 @@
 package org.dkpro.tc.examples.shallow.multi;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
