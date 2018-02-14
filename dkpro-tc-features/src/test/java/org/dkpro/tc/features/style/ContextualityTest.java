@@ -71,7 +71,7 @@ public class ContextualityTest
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
 
-        Assert.assertEquals(9, features.size());
+        Assert.assertEquals(8, features.size());
 
         for (Feature feature : features) {
             if (feature.getName().equals(CONTEXTUALITY_MEASURE_FN)) {
