@@ -51,7 +51,7 @@ public class ContextMemoryReport extends TcBatchReportBase {
 		StorageService storageService = getContext().getStorageService();
 		
 		Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
-		allIds.addAll(taskIds);
+		allIds.addAll(collectTasks(taskIds));
 		for (String id : taskIds) {
 			processFacadeId(storageService, id);
 			processMachineLearningAdapterId(storageService, id);
