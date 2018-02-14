@@ -28,20 +28,18 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaximumNumberOfTokensPerCasMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensPerCasMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Extracts the number of sentences in this classification unit
+ * Ratio of the number of tokens in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public class NumberOfTokensRatio extends MaxNormalizationExtractorBase {
 
 	public static final String FEATURE_NAME = "NumberOfTokensRatio";
 
@@ -49,38 +47,11 @@ public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements F
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
 
-		long maxLen = getMaximalNumberOfTokens();
+		long maxLen = getMax();
 
 		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
 		double ratio = getRatio(sentences.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
-	}
-
-	private double getRatio(int size, long maxLen) throws TextClassificationException {
-
-		double value = (double) size / maxLen;
-
-		if (value > 1.0) {
-			// a larger value that during training was encountered; cap to 1.0
-			value = 1.0;
-		}
-
-		if (value < 0) {
-			throw new TextClassificationException("Negative sentence length encountered");
-		}
-
-		return value;
-	}
-
-	private long getMaximalNumberOfTokens() throws TextClassificationException {
-
-		String string = "-1";
-		try {
-			string = getTopNgrams().getSampleWithMaxFreq().split("_")[0];
-		} catch (ResourceInitializationException e) {
-			throw new TextClassificationException(e);
-		}
-		return Long.parseLong(string);
 	}
 
 	@Override
@@ -88,20 +59,15 @@ public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements F
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaximumNumberOfTokensPerCasMetaCollector.class, parameterSettings)
-						.addStorageMapping(MaximumNumberOfTokensPerCasMetaCollector.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxNrOfTokensPerCasMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensPerCasMC.PARAM_TARGET_LOCATION,
 								NumberOfTokensRatio.PARAM_SOURCE_LOCATION,
-								MaximumNumberOfTokensPerCasMetaCollector.LUCENE_DIR));
+								MaxNrOfTokensPerCasMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaximumNumberOfTokensPerCasMetaCollector.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
-	}
-
-	@Override
-	protected int getTopN() {
-		return 1;
+		return MaxNrOfTokensPerCasMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
 	}
 
 	@Override
@@ -109,8 +75,4 @@ public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements F
 		return "maxTokenCountDoc";
 	}
 
-	@Override
-	protected void logSelectionProcess(long N) {
-		// no log message for this feature
-	}
 }

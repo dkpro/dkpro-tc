@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -30,25 +31,26 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllSentenceMC;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Ratio of the number of tokens in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NumberOfCharsRatio extends MaxNormalizationExtractorBase  {
+public class NumberOfTokensPerSentenceRatio extends MaxNormalizationExtractorBase {
 
-	public static final String FEATURE_NAME = "NumberOfCharsPertokenRatio";
+	public static final String FEATURE_NAME = "NumberOfTokensPerSentenceRatio";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
 
-		int len = target.getCoveredText().length();
-		
-		double ratio = getRatio(len, maxLen);
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
+		double ratio = getRatio(sentences.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}
 
@@ -57,20 +59,20 @@ public class NumberOfCharsRatio extends MaxNormalizationExtractorBase  {
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfCharsPerCasMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
-								NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
-								MaxNrOfCharsPerCasMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
+								NumberOfTokensPerSentenceRatio.PARAM_SOURCE_LOCATION,
+								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfCharsPerCasMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+		return MaxNrOfTokensOverAllSentenceMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxTokenCountPerToken";
+		return "maxTokenPerSentences";
 	}
 
 }

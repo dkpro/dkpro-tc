@@ -30,15 +30,15 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerTokenMC;
 
 /**
  * Ratio of the number of characters in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NumberOfCharsRatio extends MaxNormalizationExtractorBase  {
+public class NumberOfCharsPerTokenRatio extends MaxNormalizationExtractorBase  {
 
-	public static final String FEATURE_NAME = "NumberOfCharsPertokenRatio";
+	public static final String FEATURE_NAME = "NumberOfCharsPerTokenRatio";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
@@ -57,20 +57,20 @@ public class NumberOfCharsRatio extends MaxNormalizationExtractorBase  {
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfCharsPerCasMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
-								NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
-								MaxNrOfCharsPerCasMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfCharsPerTokenMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfCharsPerTokenMC.PARAM_TARGET_LOCATION,
+								NumberOfCharsPerTokenRatio.PARAM_SOURCE_LOCATION,
+								MaxNrOfCharsPerTokenMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfCharsPerCasMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+		return MaxNrOfCharsPerTokenMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxTokenCountPerToken";
+		return "maxTokenCountDoc";
 	}
 
 }

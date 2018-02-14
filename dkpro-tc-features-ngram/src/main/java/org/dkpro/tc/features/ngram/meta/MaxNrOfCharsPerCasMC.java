@@ -26,7 +26,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class MaximumNumberOfCharsPerCasMetaCollector extends LuceneMetaCollector {
+public class MaxNrOfCharsPerCasMC extends LuceneMetaCollector {
 	
 	public static final String LUCENE_MAX_CHAR_FIELD = "maxNumChars";
 	Random r = new Random();

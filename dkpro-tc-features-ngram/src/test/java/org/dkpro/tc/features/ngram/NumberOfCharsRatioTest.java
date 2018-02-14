@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.MaximumNumberOfCharsPerCasMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerCasMC;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -112,7 +111,7 @@ public class NumberOfCharsRatioTest {
 
 		Object[] parameters = new Object[] { NumberOfCharsRatio.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				NumberOfCharsRatio.PARAM_NGRAM_USE_TOP_K, "1", NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaximumNumberOfCharsPerCasMetaCollector.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), NumberOfCharsRatio.PARAM_NGRAM_MIN_N, "1",
 				NumberOfCharsRatio.PARAM_NGRAM_MAX_N, "1", };
 
@@ -150,7 +149,7 @@ public class NumberOfCharsRatioTest {
 
 		Object[] parameters = new Object[] { NumberOfCharsRatio.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				NumberOfCharsRatio.PARAM_NGRAM_USE_TOP_K, "1", NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaximumNumberOfCharsPerCasMetaCollector.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), NumberOfCharsRatio.PARAM_NGRAM_MIN_N, "1",
 				NumberOfCharsRatio.PARAM_NGRAM_MAX_N, "1", };
 
@@ -166,7 +165,7 @@ public class NumberOfCharsRatioTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(MaximumNumberOfCharsPerCasMetaCollector.class, parameterList.toArray());
+				.createEngineDescription(MaxNrOfCharsPerCasMC.class, parameterList.toArray());
 
 		// run meta collector
 		SimplePipeline.runPipeline(reader, segmenter, metaCollector);

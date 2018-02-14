@@ -28,7 +28,7 @@ import java.io.File;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import org.dkpro.tc.features.length.NrOfChars;
+import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
@@ -76,7 +76,7 @@ public class TwentyNewsgroupsRaw
                         ExtractFeaturesConnector.PARAM_OUTCOMES,
                         new String[] { "alt.atheism", "comp.graphics" },
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
-                        asList(createExternalResourceDescription(NrOfChars.class,
-                        		NrOfChars.PARAM_UNIQUE_EXTRACTOR_NAME, "123"))));
+                        asList(createExternalResourceDescription(InitialCharacterUpperCase.class,
+                        		InitialCharacterUpperCase.PARAM_UNIQUE_EXTRACTOR_NAME, "123"))));
     }
 }

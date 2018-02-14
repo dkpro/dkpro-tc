@@ -27,12 +27,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class MaximumNumberOfTokensPerCasMetaCollector extends LuceneMetaCollector {
+public class MaxNrOfSentencesPerCasMC extends LuceneMetaCollector {
 	
-	public static final String LUCENE_MAX_TOKEN_FIELD = "maxToken";
-	Random r = new Random();
+	public static final String LUCENE_MAX_SENTENCE_FIELD = "maximumSentences";
+	Random random = new Random();
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -43,13 +43,14 @@ public class MaximumNumberOfTokensPerCasMetaCollector extends LuceneMetaCollecto
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
 
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Collection<Token> select = JCasUtil.select(jcas, Token.class);
-		fd.addSample(select.size() + "_" + r.nextLong(), select.size());
+		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
+		fd.addSample(select.size() + "_" + random.nextLong(), select.size());
 		return fd;
 	}
 
 	@Override
 	protected String getFieldName() {
-		return LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
+		return LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
 	}
+	
 }

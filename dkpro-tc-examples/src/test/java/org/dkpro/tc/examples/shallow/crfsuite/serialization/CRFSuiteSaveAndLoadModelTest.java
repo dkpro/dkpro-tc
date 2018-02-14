@@ -49,8 +49,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfChars;
 import org.dkpro.tc.features.ngram.CharacterNGram;
+import org.dkpro.tc.features.ngram.NumberOfCharsPerTokenRatio;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -194,7 +194,7 @@ public class CRFSuiteSaveAndLoadModelTest extends TestCaseSuperClass implements 
 				// :)
 				TcFeatureFactory.create(BrownClusterFeature.class, BrownClusterFeature.PARAM_BROWN_CLUSTERS_LOCATION,
 						"src/test/resources/brownCluster/enTweetBrownC1000F40"),
-				TcFeatureFactory.create(NrOfChars.class)));
+				TcFeatureFactory.create(NumberOfCharsPerTokenRatio.class)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE),

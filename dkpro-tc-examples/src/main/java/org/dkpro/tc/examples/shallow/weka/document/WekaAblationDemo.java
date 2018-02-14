@@ -38,7 +38,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.ExperimentUtil;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.length.NrOfTokensPerSentence;
+import org.dkpro.tc.features.ngram.NumberOfTokensPerSentenceRatio;
 import org.dkpro.tc.features.twitter.EmoticonRatio;
 import org.dkpro.tc.features.twitter.NumberOfHashTags;
 import org.dkpro.tc.io.FolderwiseDataReader;
@@ -103,7 +103,7 @@ public class WekaAblationDemo implements Constants {
 				Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
-				TcFeatureFactory.create(NrOfTokensPerSentence.class), TcFeatureFactory.create(EmoticonRatio.class),
+				TcFeatureFactory.create(NumberOfTokensPerSentenceRatio.class), TcFeatureFactory.create(EmoticonRatio.class),
 				TcFeatureFactory.create(NumberOfHashTags.class));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
