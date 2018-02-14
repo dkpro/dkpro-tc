@@ -19,6 +19,7 @@
 package org.dkpro.tc.examples.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -49,18 +50,41 @@ public class ContextMemoryReport extends TcBatchReportBase {
 		
 		StorageService storageService = getContext().getStorageService();
 		
-		Set<String> taskIds = collectTasks(getTaskIdsFromMetaData(getSubtasks()));
+		Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
 		allIds.addAll(taskIds);
 		for (String id : taskIds) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
-				id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
-			}
-			if (TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
-				File f = storageService.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
-				id2outcomeFiles.add(f);
-				crossValidationCombinedIdFiles.add(f);
-			}
+			processFacadeId(storageService, id);
+			processMachineLearningAdapterId(storageService, id);
+			processCrossValidationId(storageService, id);
 		}
+	}
+
+	private void processFacadeId(StorageService storageService, String id) throws Exception {
+		if (!TcTaskTypeUtil.isFacadeTask(storageService, id)) {
+			return;
+		}
+		
+		Set<String> collectSubtasks = collectSubtasks(id);
+		for(String subid : collectSubtasks){
+			processMachineLearningAdapterId(storageService, subid);
+		}
+	}
+
+	private void processCrossValidationId(StorageService storageService, String id) throws IOException {
+		if (!TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
+			return;
+		}
+		
+			File f = storageService.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
+			id2outcomeFiles.add(f);
+			crossValidationCombinedIdFiles.add(f);
+	}
+
+	private void processMachineLearningAdapterId(StorageService storageService, String id) throws IOException {
+		if (!TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
+			return;
+		}
+			id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
 	}
 
 }
