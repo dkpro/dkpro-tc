@@ -17,20 +17,18 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
-import java.util.Collection;
 import java.util.Random;
 
 import org.apache.uima.UimaContext;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class MaximumNumberOfTokensMetaCollector extends LuceneMetaCollector {
+public class MaximumNumberOfCharsPerCasMetaCollector extends LuceneMetaCollector {
 	
+	public static final String LUCENE_MAX_CHAR_FIELD = "maxNumChars";
 	Random r = new Random();
 
 	@Override
@@ -41,14 +39,15 @@ public class MaximumNumberOfTokensMetaCollector extends LuceneMetaCollector {
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
 
+		int chars = jcas.getDocumentText().length();
+		
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
-		fd.addSample(select.size() + "_" + r.nextLong(), select.size());
+		fd.addSample(chars + "_" + r.nextLong(), chars);
 		return fd;
 	}
 
 	@Override
 	protected String getFieldName() {
-		return featureExtractorName;
+		return LUCENE_MAX_CHAR_FIELD + featureExtractorName;
 	}
 }

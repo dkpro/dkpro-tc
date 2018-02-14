@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaximumNumberOfTokensMetaCollector;
+import org.dkpro.tc.features.ngram.meta.MaximumNumberOfTokensPerCasMetaCollector;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
@@ -88,15 +88,15 @@ public class NumberOfTokensRatio extends LuceneFeatureExtractorBase implements F
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaximumNumberOfTokensMetaCollector.class, parameterSettings)
-						.addStorageMapping(MaximumNumberOfTokensMetaCollector.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaximumNumberOfTokensPerCasMetaCollector.class, parameterSettings)
+						.addStorageMapping(MaximumNumberOfTokensPerCasMetaCollector.PARAM_TARGET_LOCATION,
 								NumberOfTokensRatio.PARAM_SOURCE_LOCATION,
-								MaximumNumberOfTokensMetaCollector.LUCENE_DIR));
+								MaximumNumberOfTokensPerCasMetaCollector.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return featureExtractorName;
+		return MaximumNumberOfTokensPerCasMetaCollector.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
 	}
 
 	@Override
