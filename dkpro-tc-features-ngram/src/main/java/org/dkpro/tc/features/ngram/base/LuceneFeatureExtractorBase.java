@@ -52,14 +52,21 @@ public abstract class LuceneFeatureExtractorBase
     private MinMaxPriorityQueue<TermFreqTuple> topN;
     private long maxNgramSum=0;
     
+    
+    private FrequencyDistribution<String> topNGrams=null;
+    
     @Override
     protected FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException
     {
+    	if(topNGrams != null){
+    		return topNGrams;
+    	}
+    	
     	maxNgramSum = 0;
     	topN = readIndex();
     	
-    	FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
+    	topNGrams = new FrequencyDistribution<String>();
         
         int size = topN.size();
         for (int i=0; i < size; i++) {
