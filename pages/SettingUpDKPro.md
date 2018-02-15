@@ -25,3 +25,6 @@ Open a command line prompt and change to a directory where you want to store DKP
 
 ### Initial Import
 Once the import of DKPro TC into the Eclipse workspace was started, it will take a short while until DKPro TC is ready to be used. Maven will download all necessary dependencies from the Internet on your local computer that are used by DKPro TC.  Depending on the speed of your computer and the bandwidth of your Internet connection, this might take some time. It its reasonable to expect 30 minutes for the initial import. 
+
+### First Steps
+Open the examples project `dkpro-tc-examples` and open the package `org.dkpro.tc.examples` in which you will find an executable, minimal,  working example `MinimalWorkingExample`. In the same project, a large number of different project configuration is found that demonstrate some of the rich variety in which DKPro TC an be used.
