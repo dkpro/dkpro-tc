@@ -185,6 +185,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         possibleOutcome.add("VBG");
         possibleOutcome.add("DOD");
         possibleOutcome.add("IN");
+        possibleOutcome.add("VBD");
         possibleOutcome.add("VB");
         possibleOutcome.add("NNS");
         
