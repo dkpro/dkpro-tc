@@ -187,6 +187,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         possibleOutcome.add("IN");
         possibleOutcome.add("VBD");
         possibleOutcome.add("VB");
+        possibleOutcome.add("RB");
         possibleOutcome.add("NNS");
         
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
