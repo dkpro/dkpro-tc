@@ -65,7 +65,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperCl
 
 		assertEquals(0.85, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.01);
 		assertEquals(0.98, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-		assertEquals(2.62, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
+		assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.2);
 	}
 
 	@Test
