@@ -8,8 +8,7 @@ permalink: "/DKProTcBasics_1_0_0/"
 
 Subsequently, we introduce the key concepts necessary for using DKPro TC by discussing a minimal setup and walk the reader to the building blocks of an experiment.
 
-```java
-
+{% highlight java %}
 // Defining the readers that read the data that we use in an experiment
 CollectionReaderDescription readerTrain = CollectionReaderFactory.create..()
 CollectionReaderDescription readerTest = CollectionReaderFactory.create..();
@@ -64,7 +63,7 @@ exp.setParameterSpace(pSpace);
 
 // Run experiment
 Lab.getInstance().run(exp);
-```
+{% endhighlight java %}
 
 ### Dimensions and the parameter space
 An experiment consists of (i) several dimensions that are combined in a (ii) parameter space and provided to an experiment. 
