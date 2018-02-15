@@ -33,7 +33,6 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllDocumentsMC;
 import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllSentenceMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -72,10 +71,10 @@ public class AvgTokensRatioPerSentence extends MaximumNormalizationExtractorBase
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
 								AvgTokensRatioPerSentence.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
+								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
 	}
 
 	@Override

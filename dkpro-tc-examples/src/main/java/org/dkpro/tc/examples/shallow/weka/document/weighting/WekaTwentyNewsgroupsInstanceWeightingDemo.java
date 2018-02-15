@@ -46,7 +46,6 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
 
@@ -189,8 +188,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws ResourceInitializationException
     {
 
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        LANGUAGE_CODE));
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)
+                );
     }
 }

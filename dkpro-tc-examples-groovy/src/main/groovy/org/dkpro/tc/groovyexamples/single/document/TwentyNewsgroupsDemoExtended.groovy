@@ -99,10 +99,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokensRatioDocument.class)
-    ),
-    new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokensRatioDocument.class)
+        TcFeatureFactory.create(AvgTokensRatioPerDocument.class)
     )
     )
 
@@ -209,10 +206,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     private AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createEngineDescription(
-        createEngineDescription(BreakIteratorSegmenter),
-        createEngineDescription(OpenNlpPosTagger)
-        )
+        return createEngineDescription(BreakIteratorSegmenter)
     }
 
     public static void main(String[] args)

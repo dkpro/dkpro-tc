@@ -21,10 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -35,11 +33,6 @@ public class MaxNrOfTokensOverAllSentenceMC extends LuceneMC {
 	
 	public static final String LUCENE_FIELD = "maxTokenPerSentence";
 	Random r = new Random();
-
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-	}
 
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
