@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
@@ -53,8 +54,22 @@ public class SvmhmmSerializeModelConnector
 		int paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
 
 		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
-		List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(fileTrain, model, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
+		
+		File trainBinary = SvmHmmTestTask.resolveSvmHmmLearnCommand();
+		
+		File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
+		FileUtils.copyFile(fileTrain, newTrainFileLocation);
+		
+		File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
+		
+		List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(trainBinary, newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
 		SvmHmmTestTask.runCommand(buildTrainCommand);
+		
+		FileUtils.copyFile(tmpModelLocation, model);
+		
+		tmpModelLocation.delete();
+		newTrainFileLocation.delete();
+		
 	}
 
 }

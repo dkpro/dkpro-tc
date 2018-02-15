@@ -131,11 +131,11 @@ public class SvmHmmTestTask
     }
 
 
-    public static List<String> buildTrainCommand(File trainingFile, File targetModelLocation,
+    public static List<String> buildTrainCommand(File binaryPath, File trainingFile, File targetModelLocation,
             double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
     {
         List<String> result = new ArrayList<>();
-        result.add(resolveSvmHmmLearnCommand());
+        result.add(binaryPath.getAbsolutePath());
 
         // svm struct params
         result.add("-c");
@@ -179,11 +179,10 @@ public class SvmHmmTestTask
         }
     }
 
-    public static String resolveSvmHmmLearnCommand()
+    public static File resolveSvmHmmLearnCommand()
     {
         try {
-            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_learn")
-                    .getAbsolutePath();
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_learn");
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -192,12 +191,23 @@ public class SvmHmmTestTask
 
 	@Override
 	protected Object trainModel(TaskContext aContext) throws Exception {
-		
+
+		File trainBinary = resolveSvmHmmLearnCommand();
 		File fileTrain = getTrainFile(aContext);
 		
-		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
-		List<String> trainCommand = buildTrainCommand(fileTrain, modelFile, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
+		
+		File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
+		File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
+		FileUtils.copyFile(fileTrain, newTrainFileLocation);
+		
+		List<String> trainCommand = buildTrainCommand(trainBinary, newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
 		runCommand(trainCommand);
+		
+		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
+		FileUtils.copyFile(tmpModelLocation, modelFile);
+		
+		newTrainFileLocation.delete();
+		tmpModelLocation.delete();
 		
 		return modelFile;
 	}
