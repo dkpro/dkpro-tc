@@ -37,9 +37,9 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.NumberOfSentencesRatio;
-import org.dkpro.tc.features.ngram.NumberOfTokensPerSentenceRatio;
-import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NrOfSentencesRatioPerDocument;
+import org.dkpro.tc.features.ngram.NrOfTokensRatioPerSentence;
+import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -111,10 +111,10 @@ public class MultiRegressionWekaLibsvmLiblinear
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
-                        TcFeatureFactory.create(NumberOfSentencesRatio.class),
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
+                        TcFeatureFactory.create(NrOfSentencesRatioPerDocument.class),
                         TcFeatureFactory.create(LengthFeatureNominal.class),
-                        TcFeatureFactory.create(NumberOfTokensPerSentenceRatio.class)));
+                        TcFeatureFactory.create(NrOfTokensRatioPerSentence.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),

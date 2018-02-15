@@ -51,7 +51,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
@@ -101,7 +101,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class), TcFeatureFactory.create(
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class), TcFeatureFactory.create(
                         WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
                         WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
 
@@ -260,7 +260,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "1000"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
+                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
                                   TcFeatureFactory.create(CharacterNGram.class)
                                   )
                 );

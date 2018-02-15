@@ -41,7 +41,7 @@ import org.dkpro.tc.examples.shallow.io.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.NumberOfTokensRatio;
+import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
@@ -135,7 +135,7 @@ public class LibsvmBrownUnitPosDemo
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension
 				.create(Constants.DIM_FEATURE_SET,
-						new TcFeatureSet(TcFeatureFactory.create(NumberOfTokensRatio.class),
+						new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
 								TcFeatureFactory.create(CharacterNGram.class,
 										CharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
 										CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));

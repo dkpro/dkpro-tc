@@ -109,14 +109,14 @@ public class NumberOfCharsRatioTest {
 	private File runFeatureExtractor(File luceneFolder) throws Exception {
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { NumberOfCharsRatio.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				NumberOfCharsRatio.PARAM_NGRAM_USE_TOP_K, "1", NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), NumberOfCharsRatio.PARAM_NGRAM_MIN_N, "1",
-				NumberOfCharsRatio.PARAM_NGRAM_MAX_N, "1", };
+				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(NumberOfCharsRatio.class, parameters);
+				.createExternalResourceDescription(NrOfCharsRatioPerDocument.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -147,11 +147,11 @@ public class NumberOfCharsRatioTest {
 	private void runMetaCollection(File luceneFolder) throws Exception {
 
 
-		Object[] parameters = new Object[] { NumberOfCharsRatio.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				NumberOfCharsRatio.PARAM_NGRAM_USE_TOP_K, "1", NumberOfCharsRatio.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), NumberOfCharsRatio.PARAM_NGRAM_MIN_N, "1",
-				NumberOfCharsRatio.PARAM_NGRAM_MAX_N, "1", };
+				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
 
 		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 

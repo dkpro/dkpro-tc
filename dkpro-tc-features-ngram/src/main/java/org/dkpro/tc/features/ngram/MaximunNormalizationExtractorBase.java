@@ -27,7 +27,7 @@ import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
  * Ratio of the number of tokens in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public abstract class MaxNormalizationExtractorBase extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public abstract class MaximunNormalizationExtractorBase extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
 
 	protected double getRatio(int size, long maxLen) throws TextClassificationException {

@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllSentenceMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensPerCasMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
@@ -39,9 +39,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
  * Ratio of the number of tokens in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NumberOfTokensPerSentenceRatio extends MaxNormalizationExtractorBase {
+public class NrOfTokensRatioDocument extends MaximunNormalizationExtractorBase {
 
-	public static final String FEATURE_NAME = "NumberOfTokensPerSentenceRatio";
+	public static final String FEATURE_NAME = "NumberOfTokensRatio";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
@@ -59,20 +59,20 @@ public class NumberOfTokensPerSentenceRatio extends MaxNormalizationExtractorBas
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
-								NumberOfTokensPerSentenceRatio.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfTokensPerCasMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensPerCasMC.PARAM_TARGET_LOCATION,
+								NrOfTokensRatioDocument.PARAM_SOURCE_LOCATION,
+								MaxNrOfTokensPerCasMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfTokensOverAllSentenceMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
+		return MaxNrOfTokensPerCasMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxTokenPerSentences";
+		return "maxTokenCountDoc";
 	}
 
 }
