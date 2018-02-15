@@ -28,9 +28,9 @@ Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGL
    Number of tokens per document and the 50 most frequent
    word ngrams over all documents */
 Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-				TcFeatureFactory.create(NrOfTokens.class),
-				TcFeatureFactory.create(LuceneNGram.class, 
-							LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50)));
+				TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+				TcFeatureFactory.create(WordNGram.class, 
+							WordNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 /* The classification arguments specify which classifier we want to use, one can specify several 
    classifiers or confirgurations of the same classifier; TC will automatically execute them all */
 Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
