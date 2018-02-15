@@ -34,7 +34,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.WordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -76,10 +76,10 @@ public class WordNGram
                 throws ResourceInitializationException
     {
         return Arrays.asList(
-                new MetaCollectorConfiguration(WordNGramMetaCollector.class, parameterSettings)
-                        .addStorageMapping(WordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                new MetaCollectorConfiguration(WordNGramMC.class, parameterSettings)
+                        .addStorageMapping(WordNGramMC.PARAM_TARGET_LOCATION,
                                 WordNGram.PARAM_SOURCE_LOCATION,
-                                WordNGramMetaCollector.LUCENE_DIR));
+                                WordNGramMC.LUCENE_DIR));
     }
 
     @Override

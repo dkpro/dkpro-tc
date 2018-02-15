@@ -31,8 +31,8 @@ import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class KeywordNGramMetaCollector
-    extends LuceneMetaCollector
+public class KeywordNGramMC
+    extends LuceneMC
 {
     public static final String KEYWORD_NGRAM_FIELD = "keywordngram";
     

@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.CharacterNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -68,14 +68,14 @@ public class CharacterNGram
     @Override
     protected String getFieldName()
     {
-        return CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+        return CharacterNGramMC.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 
-    @Override
-    protected String getFeaturePrefix()
-    {
-        return CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD;
-    }
+
+	@Override
+	protected String getFeaturePrefix() {
+		return getClass().getSimpleName();
+	}
 
     @Override
     protected int getTopN()
@@ -88,11 +88,11 @@ public class CharacterNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(CharacterNGramMetaCollector.class,
+        return Arrays.asList(new MetaCollectorConfiguration(CharacterNGramMC.class,
                 parameterSettings).addStorageMapping(
-                        CharacterNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        CharacterNGramMC.PARAM_TARGET_LOCATION,
                         CharacterNGram.PARAM_SOURCE_LOCATION,
-                        CharacterNGramMetaCollector.LUCENE_DIR));
+                        CharacterNGramMC.LUCENE_DIR));
     }
 
     @Override

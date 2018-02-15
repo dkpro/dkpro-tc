@@ -29,7 +29,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxNrOfTokensOverAllDocumentsMC extends LuceneMetaCollector {
+public class MaxNrOfTokensOverAllDocumentsMC extends LuceneMC {
 	
 	public static final String LUCENE_MAX_TOKEN_FIELD = "maxToken";
 	Random r = new Random();

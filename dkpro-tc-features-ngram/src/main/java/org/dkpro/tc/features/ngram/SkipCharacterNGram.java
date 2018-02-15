@@ -34,7 +34,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.CharSkipNgramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.CharSkipNgramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -77,23 +77,23 @@ public class SkipCharacterNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(CharSkipNgramMetaCollector.class,
+        return Arrays.asList(new MetaCollectorConfiguration(CharSkipNgramMC.class,
                 parameterSettings).addStorageMapping(
-                        CharSkipNgramMetaCollector.PARAM_TARGET_LOCATION,
+                        CharSkipNgramMC.PARAM_TARGET_LOCATION,
                         SkipCharacterNGram.PARAM_SOURCE_LOCATION,
-                        CharSkipNgramMetaCollector.LUCENE_DIR));
+                        CharSkipNgramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return CharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return CharSkipNgramMetaCollector.LUCENE_CHAR_SKIP_NGRAM_FIELD;
+        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD;
     }
 
     @Override

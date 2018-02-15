@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.PhoneticNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -74,23 +74,23 @@ public class PhoneticNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(PhoneticNGramMetaCollector.class,
+        return Arrays.asList(new MetaCollectorConfiguration(PhoneticNGramMC.class,
                 parameterSettings).addStorageMapping(
-                        PhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
+                        PhoneticNGramMC.PARAM_TARGET_LOCATION,
                         PhoneticNGram.PARAM_SOURCE_LOCATION,
-                        PhoneticNGramMetaCollector.LUCENE_DIR));
+                        PhoneticNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return PhoneticNGramMetaCollector.LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
+        return PhoneticNGramMC.LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return PhoneticNGramMetaCollector.LUCENE_PHONETIC_NGRAM_FIELD;
+        return PhoneticNGramMC.LUCENE_PHONETIC_NGRAM_FIELD;
     }
 
     @Override

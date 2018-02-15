@@ -73,9 +73,9 @@ public class WordNGramMetaCollectorTest
                 DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                WordNGramMetaCollector.class,
-                WordNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
-                WordNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME
+                WordNGramMC.class,
+                WordNGramMC.PARAM_TARGET_LOCATION, tmpDir,
+                WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
@@ -131,9 +131,9 @@ public class WordNGramMetaCollectorTest
                 .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                WordNGramMetaCollector.class,
-                WordNGramMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                WordNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir
+                WordNGramMC.class,
+                WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                WordNGramMC.PARAM_TARGET_LOCATION, tmpDir
         );
 
         for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {

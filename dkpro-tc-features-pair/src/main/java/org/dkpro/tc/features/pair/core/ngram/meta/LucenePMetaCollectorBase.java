@@ -27,12 +27,12 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.features.ngram.meta.LuceneMetaCollector;
+import org.dkpro.tc.features.ngram.meta.LuceneMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public abstract class LucenePMetaCollectorBase
-    extends LuceneMetaCollector
+    extends LuceneMC
     implements Constants
 {
     @Override

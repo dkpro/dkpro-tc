@@ -34,7 +34,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.PosNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PosNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -80,16 +80,16 @@ public class PosNGram
                 throws ResourceInitializationException
     {
         return Arrays.asList(
-                new MetaCollectorConfiguration(PosNGramMetaCollector.class, parameterSettings)
-                        .addStorageMapping(PosNGramMetaCollector.PARAM_TARGET_LOCATION,
+                new MetaCollectorConfiguration(PosNGramMC.class, parameterSettings)
+                        .addStorageMapping(PosNGramMC.PARAM_TARGET_LOCATION,
                                 PosNGram.PARAM_SOURCE_LOCATION,
-                                PosNGramMetaCollector.LUCENE_DIR));
+                                PosNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return PosNGramMetaCollector.LUCENE_POS_NGRAM_FIELD + featureExtractorName;
+        return PosNGramMC.LUCENE_POS_NGRAM_FIELD + featureExtractorName;
     }
 
     @Override

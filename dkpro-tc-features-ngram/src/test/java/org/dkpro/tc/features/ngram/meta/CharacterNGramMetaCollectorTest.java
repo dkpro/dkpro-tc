@@ -74,10 +74,10 @@ public class CharacterNGramMetaCollectorTest
                 DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
         
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                CharacterNGramMetaCollector.class,
+                CharacterNGramMC.class,
                 CharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 CharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                CharacterNGramMetaCollector.PARAM_TARGET_LOCATION, tmpDir,
+                CharacterNGramMC.PARAM_TARGET_LOCATION, tmpDir,
                 CharacterNGram.PARAM_SOURCE_LOCATION, tmpDir
         );
 
@@ -93,7 +93,7 @@ public class CharacterNGramMetaCollectorTest
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(CharacterNGramMetaCollector.LUCENE_CHAR_NGRAM_FIELD+"123");
+                Terms terms = fields.terms(CharacterNGramMC.LUCENE_CHAR_NGRAM_FIELD+"123");
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
                     BytesRef text = null;

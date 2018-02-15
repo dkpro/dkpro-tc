@@ -15,24 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.ngram;
+package org.dkpro.tc.features.ngram.base;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 
 /**
  * Ratio of the number of tokens in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public abstract class MaximunNormalizationExtractorBase extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public abstract class MaximumNormalizationExtractorBase extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
 
-	protected double getRatio(int size, long maxLen) throws TextClassificationException {
+	protected double getRatio(double actual, long maximum) throws TextClassificationException {
 
-		double value = (double) size / maxLen;
+		double value = actual / maximum;
 
 		if (value > 1.0) {
 			// a larger value that during training was encountered; cap to 1.0

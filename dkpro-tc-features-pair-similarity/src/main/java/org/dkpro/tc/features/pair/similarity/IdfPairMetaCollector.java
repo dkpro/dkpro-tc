@@ -35,11 +35,11 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.LuceneMetaCollector;
+import org.dkpro.tc.features.ngram.meta.LuceneMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 public class IdfPairMetaCollector<T extends Annotation>
-    extends LuceneMetaCollector
+    extends LuceneMC
     implements Constants
 {
     /**

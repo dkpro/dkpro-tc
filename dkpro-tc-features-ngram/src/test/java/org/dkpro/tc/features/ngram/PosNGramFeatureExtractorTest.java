@@ -43,7 +43,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.PosNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PosNGramMC;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,7 +71,7 @@ public class PosNGramFeatureExtractorTest {
 
 		Object[] parameters = new Object[] { PosNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
 				PosNGram.PARAM_NGRAM_USE_TOP_K, "5", PosNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), PosNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+				luceneFolder.toString(), PosNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
 				.createExternalResourceDescription(PosNGram.class, parameters);
@@ -91,7 +91,7 @@ public class PosNGramFeatureExtractorTest {
 				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(PosNGramMetaCollector.class, parameterList.toArray());
+				.createEngineDescription(PosNGramMC.class, parameterList.toArray());
 
 		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
 				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,

@@ -42,7 +42,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.WordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class NGramFeatureExtractorTest
 
         Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 WordNGram.PARAM_NGRAM_USE_TOP_K, "3", WordNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), WordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
                 luceneFolder.toString() };
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
@@ -92,7 +92,7 @@ public class NGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(WordNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(WordNGramMC.class, parameterList.toArray());
 
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
@@ -140,7 +140,7 @@ public class NGramFeatureExtractorTest
         Object[] parameters = new Object[] { WordNGram.PARAM_NGRAM_USE_TOP_K, "3",
                 WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123", WordNGram.PARAM_SOURCE_LOCATION,
                 luceneFolder.toString(), WordNGram.PARAM_NGRAM_FREQ_THRESHOLD, "0.1f",
-                WordNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+                WordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
@@ -152,7 +152,7 @@ public class NGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(WordNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(WordNGramMC.class, parameterList.toArray());
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(WordNGram.class, parameters);

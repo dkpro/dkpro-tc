@@ -23,8 +23,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.meta.MaxSentLenOverAllDocumentsMC;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -58,11 +58,11 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class NumberOfCharsRatioTest {
+public class AvgSentenceLengthPerDocumentTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
-	private static String EXTRACTOR_NAME = "56465431";
+	private static String EXTRACTOR_NAME = "13233";
 
 	@Test
 	public void testLuceneMetaCollectorOutput() throws Exception {
@@ -83,54 +83,51 @@ public class NumberOfCharsRatioTest {
 			instances.add(gson.fromJson(l, Instance.class));
 		}
 
-		Collections.sort(instances, new Comparator<Instance>() {
+		assertEquals(1, instances.size());
+		Iterator<Instance> iterator = instances.iterator();
+		double val=-1;
+		while (iterator.hasNext()) {
+			Instance next = iterator.next();
+			List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
+			assertEquals(1, arrayList.size());
 
-			@Override
-			public int compare(Instance o1, Instance o2) {
-				String v1 = ((Double) new ArrayList<Feature>(o1.getFeatures()).get(0).getValue()).toString();
-				String v2 = ((Double) new ArrayList<Feature>(o2.getFeatures()).get(0).getValue()).toString();
-				return v1.compareTo(v2);
-			}
-		});
+			Object value = arrayList.get(0).getValue();
+			
+			val = Double.valueOf(value.toString());
+		}
+
+		double expected = (4.0/6 + 6/6)/2;
 		
-		
-		assertEquals(3, instances.size());
-		
-		double r = (Double)(new ArrayList<Feature>(instances.get(0).getFeatures()).get(0).getValue());
-		assertEquals(23.0/33, r, 0.01);
-		
-		r = (Double)(new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
-		assertEquals(29.0/33, r, 0.01);
-		
-		r = (Double)(new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
-		assertEquals(33.0/33, r, 0.01);
+		assertEquals(expected, val, 0.01);
 	}
 
 	private File runFeatureExtractor(File luceneFolder) throws Exception {
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+		Object[] parameters = new Object[] { AvgSentenceLengthRatioPerTarget.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_USE_TOP_K, "1", AvgSentenceLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_MIN_N, "1",
+				AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_MAX_N, "1", };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(NrOfCharsRatioPerDocument.class, parameters);
+				.createExternalResourceDescription(AvgSentenceLengthRatioPerTarget.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
-				TestReaderSingleLabel.PARAM_PATTERNS, "text*",
+				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/sentAvg/text4.txt",
 				TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, false);
+
+		AnalysisEngineDescription segmenter = AnalysisEngineFactory
+				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
 				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
 				Constants.FM_DOCUMENT, false, false, false, false, Collections.emptyList(), fes, new String[] {});
 
-		SimplePipeline.runPipeline(reader, featExtractorConnector);
+		SimplePipeline.runPipeline(reader, segmenter,  featExtractorConnector);
 
 		return outputPath;
 	}
@@ -138,34 +135,30 @@ public class NumberOfCharsRatioTest {
 	private void evaluateMetaCollection(File luceneFolder) throws Exception {
 		List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
 		Collections.sort(entries);
-		assertEquals(3, entries.size());
-		assertEquals("23", entries.get(0).split("_")[0]);
-		assertEquals("29", entries.get(1).split("_")[0]);
-		assertEquals("33", entries.get(2).split("_")[0]);
+
+		assertEquals("4", entries.get(0).split("_")[0]);
+		assertEquals("6", entries.get(1).split("_")[0]);
 	}
 
 	private void runMetaCollection(File luceneFolder) throws Exception {
 
-
-		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+		Object[] parameters = new Object[] { AvgSentenceLengthRatioPerTarget.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_USE_TOP_K, 1, AvgSentenceLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_MIN_N, 1,
+				AvgSentenceLengthRatioPerTarget.PARAM_NGRAM_MAX_N, 1 };
 
 		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
-				TestReaderSingleLabel.PARAM_PATTERNS, "text*"
-				);
+				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/sentAvg/text4.txt");
 
 		AnalysisEngineDescription segmenter = AnalysisEngineFactory
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(MaxNrOfCharsOverAllDocumentsMC.class, parameterList.toArray());
+				.createEngineDescription(MaxSentLenOverAllDocumentsMC.class, parameterList.toArray());
 
 		// run meta collector
 		SimplePipeline.runPipeline(reader, segmenter, metaCollector);

@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.KeywordNGramMC;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -112,23 +112,23 @@ public class KeywordNGram
                 throws ResourceInitializationException
     {
         return Arrays.asList(
-                new MetaCollectorConfiguration(KeywordNGramMetaCollector.class, parameterSettings)
-                        .addStorageMapping(KeywordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                new MetaCollectorConfiguration(KeywordNGramMC.class, parameterSettings)
+                        .addStorageMapping(KeywordNGramMC.PARAM_TARGET_LOCATION,
                                 KeywordNGram.PARAM_SOURCE_LOCATION,
-                                KeywordNGramMetaCollector.LUCENE_DIR));
+                                KeywordNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return KeywordNGramMetaCollector.KEYWORD_NGRAM_FIELD + featureExtractorName;
+        return KeywordNGramMC.KEYWORD_NGRAM_FIELD + featureExtractorName;
     }
 
-    @Override
-    protected String getFeaturePrefix()
-    {
-        return "keyNG";
-    }
+
+	@Override
+	protected String getFeaturePrefix() {
+		return getClass().getSimpleName();
+	}
 
     @Override
     protected int getTopN()

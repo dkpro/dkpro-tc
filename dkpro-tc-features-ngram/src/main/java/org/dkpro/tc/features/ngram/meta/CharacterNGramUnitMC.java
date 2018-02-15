@@ -19,30 +19,34 @@ package org.dkpro.tc.features.ngram.meta;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.SkipCharacterNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class CharSkipNgramMetaCollector
-    extends LuceneMetaCollector
+/**
+ * This meta collector should be used if (i) the JCas contains either one target annotation which
+ * covers only a subset of the document text or several targets exist and (ii) you wish that the
+ * information in the resulting frequency distribution contains only text that is covered by those
+ * frequency distributions. If you have only one target which spans over the entire document text 0
+ * to document-length than you should use {@link org.dkpro.tc.features.ngram.meta.CharacterNGramMC}
+ */
+public class CharacterNGramUnitMC
+    extends LuceneMC
 {
 
-    public static final String LUCENE_CHAR_SKIP_NGRAM_FIELD = "charskipngram";
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-    @ConfigurationParameter(name = SkipCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
-    private int minN;
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
-    @ConfigurationParameter(name = SkipCharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int maxN;
-
-    @ConfigurationParameter(name = SkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
-    private int skipSize;
-
-    @ConfigurationParameter(name = SkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringLowerCase;
     
     boolean lowerCase = true;
@@ -60,15 +64,20 @@ public class CharSkipNgramMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
-        return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
-                skipSize);
+        FrequencyDistribution<String> fd = new FrequencyDistribution<String>();
+        for (Annotation a : JCasUtil.select(jcas, TextClassificationTarget.class)) {
+            FrequencyDistribution<String> ngramDist = NGramUtils.getAnnotationCharacterNgrams(a,
+                    lowerCase, ngramMinN, ngramMaxN, '^', '$');
+            for (String condition : ngramDist.getKeys()) {
+                fd.addSample(condition, ngramDist.getCount(condition));
+            }
+        }
+        return fd;
     }
 
     @Override
     protected String getFieldName()
     {
-        return LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return CharacterNGram.LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 }

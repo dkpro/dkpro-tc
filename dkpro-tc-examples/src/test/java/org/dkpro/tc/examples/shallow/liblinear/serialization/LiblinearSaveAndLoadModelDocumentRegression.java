@@ -47,8 +47,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.NrOfCharsRatioPerToken;
-import org.dkpro.tc.features.ngram.NrOfSentencesRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerTarget;
+import org.dkpro.tc.features.ngram.AvgSentenceRatioPerTarget;
 import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
@@ -153,8 +153,8 @@ public class LiblinearSaveAndLoadModelDocumentRegression extends TestCaseSuperCl
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
 				new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
-						TcFeatureFactory.create(NrOfSentencesRatioPerDocument.class), TcFeatureFactory.create(WordNGram.class),
-						TcFeatureFactory.create(NrOfCharsRatioPerToken.class)));
+						TcFeatureFactory.create(AvgSentenceRatioPerTarget.class), TcFeatureFactory.create(WordNGram.class),
+						TcFeatureFactory.create(AvgTokenLengthRatioPerTarget.class)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),

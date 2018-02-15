@@ -39,7 +39,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.PhoneticNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,7 +66,7 @@ public class PhoneticNGramFeatureExtractorTest {
 
 		Object[] parameters = new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
 				PhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", PhoneticNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), PhoneticNGramMetaCollector.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), PhoneticNGramMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), };
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
@@ -82,7 +82,7 @@ public class PhoneticNGramFeatureExtractorTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(PhoneticNGramMetaCollector.class, parameters);
+				.createEngineDescription(PhoneticNGramMC.class, parameters);
 
 		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
 				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,

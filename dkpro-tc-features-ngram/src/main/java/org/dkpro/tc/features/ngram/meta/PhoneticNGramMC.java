@@ -26,8 +26,8 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class PhoneticNGramMetaCollector
-    extends LuceneMetaCollector
+public class PhoneticNGramMC
+    extends LuceneMC
 {
     public static final String LUCENE_PHONETIC_NGRAM_FIELD = "phoneticngram";
 

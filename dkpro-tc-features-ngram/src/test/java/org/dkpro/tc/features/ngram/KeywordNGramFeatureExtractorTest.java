@@ -40,7 +40,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.KeywordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.KeywordNGramMC;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +74,7 @@ public class KeywordNGramFeatureExtractorTest
         Object[] parameters = new Object[] { KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt",
                 KeywordNGram.PARAM_SOURCE_LOCATION, luceneFolder,
-                KeywordNGramMetaCollector.PARAM_TARGET_LOCATION, luceneFolder,
+                KeywordNGramMC.PARAM_TARGET_LOCATION, luceneFolder,
                 KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, markSentenceLocation,
                 KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
 
@@ -86,7 +86,7 @@ public class KeywordNGramFeatureExtractorTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(KeywordNGramMetaCollector.class, parameters);
+                .createEngineDescription(KeywordNGramMC.class, parameters);
 
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
                 .createExternalResourceDescription(KeywordNGram.class, toString(parameters));

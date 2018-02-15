@@ -43,7 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 
-public abstract class LuceneMetaCollector extends MetaCollector {
+public abstract class LuceneMC extends MetaCollector {
 	public final static String LUCENE_DIR = "lucene";
 
 	public static final String LUCENE_ID_FIELD = "id";

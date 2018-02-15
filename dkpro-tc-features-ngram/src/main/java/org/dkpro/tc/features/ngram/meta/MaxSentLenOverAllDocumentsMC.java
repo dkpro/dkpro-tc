@@ -29,7 +29,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxSentLenOverAllDocumentsMC extends LuceneMetaCollector {
+public class MaxSentLenOverAllDocumentsMC extends LuceneMC {
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {

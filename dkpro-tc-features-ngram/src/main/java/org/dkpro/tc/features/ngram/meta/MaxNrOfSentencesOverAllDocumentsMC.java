@@ -29,7 +29,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMetaCollector {
+public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
 	
 	public static final String LUCENE_MAX_SENTENCE_FIELD = "maximumSentences";
 	Random random = new Random();

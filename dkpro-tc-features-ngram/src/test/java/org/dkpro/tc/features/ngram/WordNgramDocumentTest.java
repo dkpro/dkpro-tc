@@ -51,7 +51,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.WordNGramMetaCollector;
+import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -123,7 +123,7 @@ public class WordNgramDocumentTest
 
         Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_ID,
                 WordNGram.PARAM_NGRAM_USE_TOP_K, "1", WordNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), WordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
                 luceneFolder.toString(), WordNGram.PARAM_NGRAM_MIN_N, "1",
                 WordNGram.PARAM_NGRAM_MAX_N, "1" };
 
@@ -175,7 +175,7 @@ public class WordNgramDocumentTest
     {
         Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_ID,
                 WordNGram.PARAM_NGRAM_USE_TOP_K, 1, WordNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), WordNGramMetaCollector.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
                 luceneFolder.toString(), WordNGram.PARAM_NGRAM_MIN_N, 1,
                 WordNGram.PARAM_NGRAM_MAX_N, 1, };
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
@@ -188,7 +188,7 @@ public class WordNgramDocumentTest
                 .createEngineDescription(BreakIteratorSegmenter.class);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(WordNGramMetaCollector.class, parameterList.toArray());
+                .createEngineDescription(WordNGramMC.class, parameterList.toArray());
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);

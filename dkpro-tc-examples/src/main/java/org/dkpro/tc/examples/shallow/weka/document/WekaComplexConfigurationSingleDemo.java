@@ -36,7 +36,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.NrOfCharsRatioPerToken;
+import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerTarget;
 import org.dkpro.tc.features.ngram.NrOfTokensRatioPerSentence;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
@@ -122,7 +122,7 @@ public class WekaComplexConfigurationSingleDemo
         // only 1
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioPerSentence.class),
-                        TcFeatureFactory.create(NrOfCharsRatioPerToken.class),
+                        TcFeatureFactory.create(AvgTokenLengthRatioPerTarget.class),
                         TcFeatureFactory.create(WordNGram.class,
                                 WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
                                 WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,

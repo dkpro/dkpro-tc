@@ -28,11 +28,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
 import org.dkpro.tc.features.ngram.meta.MaxSentLenOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -42,19 +41,19 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentencesLength extends LuceneFeatureExtractorBase implements FeatureExtractor {
+public class AvgSentenceLengthRatioPerTarget extends MaximumNormalizationExtractorBase {
 
 	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
 			throws TextClassificationException {
 
-		long maxLen = getMaximumLength();
+		long maxLen = getMax();
 
 		double avgLength=0.0;
 		
-		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, classificationUnit);
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
 		for (Sentence s : sentences) {
 			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
 			avgLength += getRatio(tokens.size(), maxLen);
@@ -65,33 +64,6 @@ public class AvgSentencesLength extends LuceneFeatureExtractorBase implements Fe
 		return new Feature(FEATURE_NAME, avgLength , FeatureType.NUMERIC).asSet();
 	}
 
-	private double getRatio(int size, long maxLen) throws TextClassificationException {
-
-		double value = (double) size / maxLen;
-
-		if (value > 1.0) {
-			// a larger value that during training was encountered; cap to 1.0
-			value = 1.0;
-		}
-
-		if (value < 0) {
-			throw new TextClassificationException("Negative sentence length encountered");
-		}
-
-		return value;
-	}
-
-	private long getMaximumLength() throws TextClassificationException {
-
-		String string = "-1";
-		try {
-			string = getTopNgrams().getSampleWithMaxFreq().split("_")[0];
-		} catch (ResourceInitializationException e) {
-			throw new TextClassificationException(e);
-		}
-		return Long.parseLong(string);
-	}
-
 	@Override
 	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
 			throws ResourceInitializationException {
@@ -99,7 +71,7 @@ public class AvgSentencesLength extends LuceneFeatureExtractorBase implements Fe
 		return Arrays.asList(
 				new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class, parameterSettings)
 						.addStorageMapping(MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgSentencesLength.PARAM_SOURCE_LOCATION,
+								AvgSentenceLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
 								MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
 	}
 
@@ -115,6 +87,6 @@ public class AvgSentencesLength extends LuceneFeatureExtractorBase implements Fe
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "sentLen";
+		return getClass().getName();
 	}
 }

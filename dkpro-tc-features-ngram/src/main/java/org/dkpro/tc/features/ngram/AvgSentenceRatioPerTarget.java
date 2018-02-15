@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -30,15 +31,18 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfSentencesOverAllDocumentsMC;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Ratio of the number of sentences in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class NrOfCharsRatioPerDocument extends MaximunNormalizationExtractorBase  {
+public class AvgSentenceRatioPerTarget extends MaximumNormalizationExtractorBase  {
 
-	public static final String FEATURE_NAME = "NumberOfCharsPertokenRatio";
+	public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
@@ -46,31 +50,30 @@ public class NrOfCharsRatioPerDocument extends MaximunNormalizationExtractorBase
 
 		long maxLen = getMax();
 
-		int len = target.getCoveredText().length();
-		
-		double ratio = getRatio(len, maxLen);
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
+		double ratio = getRatio(sentences.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}
+
 
 	@Override
 	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfCharsOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfCharsOverAllDocumentsMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+								AvgSentenceRatioPerTarget.PARAM_SOURCE_LOCATION,
+								MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfCharsOverAllDocumentsMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
-		return "maxTokenCountPerToken";
+		return getClass().getSimpleName();
 	}
-
 }
