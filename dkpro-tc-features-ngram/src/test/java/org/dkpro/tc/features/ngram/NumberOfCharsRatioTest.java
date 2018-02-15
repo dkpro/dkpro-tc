@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsOverAllDocumentsMC;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -111,7 +111,7 @@ public class NumberOfCharsRatioTest {
 
 		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
 				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
 
@@ -149,7 +149,7 @@ public class NumberOfCharsRatioTest {
 
 		Object[] parameters = new Object[] { NrOfCharsRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				NrOfCharsRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), NrOfCharsRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
 				NrOfCharsRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
 
@@ -165,7 +165,7 @@ public class NumberOfCharsRatioTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(MaxNrOfCharsPerCasMC.class, parameterList.toArray());
+				.createEngineDescription(MaxNrOfCharsOverAllDocumentsMC.class, parameterList.toArray());
 
 		// run meta collector
 		SimplePipeline.runPipeline(reader, segmenter, metaCollector);

@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfSentencesPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfSentencesOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
@@ -60,15 +60,15 @@ public class NrOfSentencesRatioPerDocument extends MaximunNormalizationExtractor
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfSentencesPerCasMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfSentencesPerCasMC.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 								NrOfSentencesRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfSentencesPerCasMC.LUCENE_DIR));
+								MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfSentencesPerCasMC.LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
+		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
 	}
 
 	@Override

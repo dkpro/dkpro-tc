@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
@@ -59,15 +59,15 @@ public class NrOfTokensRatioDocument extends MaximunNormalizationExtractorBase {
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensPerCasMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensPerCasMC.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 								NrOfTokensRatioDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensPerCasMC.LUCENE_DIR));
+								MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfTokensPerCasMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
+		return MaxNrOfTokensOverAllDocumentsMC.LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
 	}
 
 	@Override

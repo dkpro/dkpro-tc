@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.MaxSentenceLengthMC;
+import org.dkpro.tc.features.ngram.meta.MaxSentLenOverAllDocumentsMC;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -106,7 +106,7 @@ public class AvgSentenceLengthTest {
 
 		Object[] parameters = new Object[] { AvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				AvgSentencesLength.PARAM_NGRAM_USE_TOP_K, "1", AvgSentencesLength.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxSentenceLengthMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), AvgSentencesLength.PARAM_NGRAM_MIN_N, "1",
 				AvgSentencesLength.PARAM_NGRAM_MAX_N, "1", };
 
@@ -144,7 +144,7 @@ public class AvgSentenceLengthTest {
 
 		Object[] parameters = new Object[] { AvgSentencesLength.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
 				AvgSentencesLength.PARAM_NGRAM_USE_TOP_K, 1, AvgSentencesLength.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxSentenceLengthMC.PARAM_TARGET_LOCATION,
+				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), AvgSentencesLength.PARAM_NGRAM_MIN_N, 1,
 				AvgSentencesLength.PARAM_NGRAM_MAX_N, 1 };
 
@@ -158,7 +158,7 @@ public class AvgSentenceLengthTest {
 				.createEngineDescription(BreakIteratorSegmenter.class);
 
 		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(MaxSentenceLengthMC.class, parameterList.toArray());
+				.createEngineDescription(MaxSentLenOverAllDocumentsMC.class, parameterList.toArray());
 
 		// run meta collector
 		SimplePipeline.runPipeline(reader, segmenter, metaCollector);

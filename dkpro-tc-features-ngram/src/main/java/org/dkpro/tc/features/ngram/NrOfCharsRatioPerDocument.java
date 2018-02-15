@@ -30,7 +30,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsPerCasMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfCharsOverAllDocumentsMC;
 
 /**
  * Ratio of the number of characters in a document with respect to the longest document in the training data
@@ -57,15 +57,15 @@ public class NrOfCharsRatioPerDocument extends MaximunNormalizationExtractorBase
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfCharsPerCasMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfCharsPerCasMC.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxNrOfCharsOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfCharsOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 								NrOfCharsRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfCharsPerCasMC.LUCENE_DIR));
+								MaxNrOfCharsOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfCharsPerCasMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+		return MaxNrOfCharsOverAllDocumentsMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
 	}
 
 	@Override

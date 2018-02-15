@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaxSentenceLengthMC;
+import org.dkpro.tc.features.ngram.meta.MaxSentLenOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -97,10 +97,10 @@ public class AvgSentencesLength extends LuceneFeatureExtractorBase implements Fe
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxSentenceLengthMC.class, parameterSettings)
-						.addStorageMapping(MaxSentenceLengthMC.PARAM_TARGET_LOCATION,
+				new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
 								AvgSentencesLength.PARAM_SOURCE_LOCATION,
-								MaxSentenceLengthMC.LUCENE_DIR));
+								MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
