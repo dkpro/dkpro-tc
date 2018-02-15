@@ -40,7 +40,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
  * Ratio of the number of sentences in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentenceRatioPerTarget extends MaximumNormalizationExtractorBase  {
+public class AvgSentenceRatioPerDocument extends MaximumNormalizationExtractorBase  {
 
 	public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
 
@@ -63,13 +63,13 @@ public class AvgSentenceRatioPerTarget extends MaximumNormalizationExtractorBase
 		return Arrays.asList(
 				new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class, parameterSettings)
 						.addStorageMapping(MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgSentenceRatioPerTarget.PARAM_SOURCE_LOCATION,
+								AvgSentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
 								MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
+		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
 	}
 
 	@Override

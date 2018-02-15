@@ -31,7 +31,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
 	
-	public static final String LUCENE_MAX_SENTENCE_FIELD = "maximumSentences";
+	public static final String LUCENE_FIELD = "maximumSentencesOverAllDocuments";
 	Random random = new Random();
 
 	@Override
@@ -50,7 +50,7 @@ public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
 
 	@Override
 	protected String getFieldName() {
-		return LUCENE_MAX_SENTENCE_FIELD + featureExtractorName;
+		return LUCENE_FIELD + featureExtractorName;
 	}
 	
 }

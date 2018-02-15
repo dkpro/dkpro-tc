@@ -42,7 +42,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.NERDemoReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerTarget;
+import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -136,7 +136,7 @@ public class CRFSuiteNERSequenceDemo
 				asList(new Object[] {new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerTarget.class),
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
                         TcFeatureFactory.create(InitialCharacterUpperCase.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

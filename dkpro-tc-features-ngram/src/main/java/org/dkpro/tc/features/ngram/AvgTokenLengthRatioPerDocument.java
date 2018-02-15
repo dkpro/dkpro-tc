@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * Ratio of the number of characters in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenLengthRatioPerTarget extends MaximumNormalizationExtractorBase  {
+public class AvgTokenLengthRatioPerDocument extends MaximumNormalizationExtractorBase  {
 
 	public static final String FEATURE_NAME = "NumberOfCharsPerTokenRatio";
 
@@ -69,7 +69,7 @@ public class AvgTokenLengthRatioPerTarget extends MaximumNormalizationExtractorB
 		return Arrays.asList(
 				new MetaCollectorConfiguration(MaxNrOfCharsOverAllTokensMC.class, parameterSettings)
 						.addStorageMapping(MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION,
-								AvgTokenLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+								AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
 								MaxNrOfCharsOverAllTokensMC.LUCENE_DIR));
 	}
 

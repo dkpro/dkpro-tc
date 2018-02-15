@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentenceLengthRatioPerTarget extends MaximumNormalizationExtractorBase {
+public class AvgSentenceLengthRatioPerDocument extends MaximumNormalizationExtractorBase {
 
 	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
@@ -71,13 +71,13 @@ public class AvgSentenceLengthRatioPerTarget extends MaximumNormalizationExtract
 		return Arrays.asList(
 				new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class, parameterSettings)
 						.addStorageMapping(MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgSentenceLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+								AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
 								MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return featureExtractorName;
+		return MaxSentLenOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
 	}
 
 	@Override

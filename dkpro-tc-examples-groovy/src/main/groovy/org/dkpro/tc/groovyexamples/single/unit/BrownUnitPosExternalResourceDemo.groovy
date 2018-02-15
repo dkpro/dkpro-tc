@@ -33,7 +33,7 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
-import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument
+import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
@@ -73,7 +73,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, new TcFeatureSet(
-        TcFeatureFactory.create(NrOfTokensRatioDocument.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
+        TcFeatureFactory.create(AvgTokensRatioPerDocument.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [new WekaAdapter(), NaiveBayes.name],

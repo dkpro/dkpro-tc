@@ -33,7 +33,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class MaxNrOfTokensOverAllSentenceMC extends LuceneMC {
 	
-	public static final String LUCENE_MAX_TOKEN_FIELD = "maxTokenPerSentence";
+	public static final String LUCENE_FIELD = "maxTokenPerSentence";
 	Random r = new Random();
 
 	@Override
@@ -56,6 +56,6 @@ public class MaxNrOfTokensOverAllSentenceMC extends LuceneMC {
 
 	@Override
 	protected String getFieldName() {
-		return LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
+		return LUCENE_FIELD + featureExtractorName;
 	}
 }

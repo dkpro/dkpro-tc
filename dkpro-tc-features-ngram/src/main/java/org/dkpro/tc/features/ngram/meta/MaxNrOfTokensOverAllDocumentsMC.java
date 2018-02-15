@@ -31,7 +31,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class MaxNrOfTokensOverAllDocumentsMC extends LuceneMC {
 	
-	public static final String LUCENE_MAX_TOKEN_FIELD = "maxToken";
+	public static final String LUCENE_FIELD = "maxTokenOverAllDocuments";
 	Random r = new Random();
 
 	@Override
@@ -50,6 +50,6 @@ public class MaxNrOfTokensOverAllDocumentsMC extends LuceneMC {
 
 	@Override
 	protected String getFieldName() {
-		return LUCENE_MAX_TOKEN_FIELD + featureExtractorName;
+		return LUCENE_FIELD + featureExtractorName;
 	}
 }

@@ -110,13 +110,13 @@ public class AvgCharRatioOfTokensPerDocumentTest {
 	private File runFeatureExtractor(File luceneFolder) throws Exception {
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { AvgTokenLengthRatioPerTarget.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokenLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString()};
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(AvgTokenLengthRatioPerTarget.class, parameters);
+				.createExternalResourceDescription(AvgTokenLengthRatioPerDocument.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -150,11 +150,11 @@ public class AvgCharRatioOfTokensPerDocumentTest {
 	private void runMetaCollection(File luceneFolder) throws Exception {
 
 
-		Object[] parameters = new Object[] { AvgTokenLengthRatioPerTarget.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokenLengthRatioPerTarget.PARAM_NGRAM_USE_TOP_K, "1", AvgTokenLengthRatioPerTarget.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgTokenLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), AvgTokenLengthRatioPerTarget.PARAM_NGRAM_MIN_N, "1",
-				AvgTokenLengthRatioPerTarget.PARAM_NGRAM_MAX_N, "1", };
+				luceneFolder.toString(), AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+				AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
 
 		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 

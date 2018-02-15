@@ -37,9 +37,8 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.AvgSentenceRatioPerTarget;
-import org.dkpro.tc.features.ngram.NrOfTokensRatioPerSentence;
-import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
+import org.dkpro.tc.features.ngram.AvgSentenceRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -111,10 +110,10 @@ public class MultiRegressionWekaLibsvmLiblinear
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
                 DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
-                        TcFeatureFactory.create(AvgSentenceRatioPerTarget.class),
+                new TcFeatureSet(
+                        TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
                         TcFeatureFactory.create(LengthFeatureNominal.class),
-                        TcFeatureFactory.create(NrOfTokensRatioPerSentence.class)));
+                        TcFeatureFactory.create(AvgTokensRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),

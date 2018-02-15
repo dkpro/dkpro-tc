@@ -19,10 +19,8 @@ package org.dkpro.tc.features.ngram.meta;
 
 import java.util.List;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -31,11 +29,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class MaxSentLenOverAllDocumentsMC extends LuceneMC {
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-	}
-
+	public static final String LUCENE_FIELD = "maximumSentencesLengthOverAllDocuments";
+	
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
 
@@ -63,6 +58,6 @@ public class MaxSentLenOverAllDocumentsMC extends LuceneMC {
 
 	@Override
 	protected String getFieldName() {
-		return featureExtractorName;
+		return LUCENE_FIELD + featureExtractorName;
 	}
 }

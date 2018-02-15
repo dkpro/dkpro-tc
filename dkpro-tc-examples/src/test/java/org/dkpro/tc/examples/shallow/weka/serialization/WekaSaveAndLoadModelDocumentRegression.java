@@ -47,9 +47,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.AvgSentenceRatioPerTarget;
-import org.dkpro.tc.features.ngram.NrOfTokensRatioPerSentence;
-import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
+import org.dkpro.tc.features.ngram.AvgSentenceRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -169,9 +168,8 @@ public class WekaSaveAndLoadModelDocumentRegression extends TestCaseSuperClass i
 				Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
-						TcFeatureFactory.create(AvgSentenceRatioPerTarget.class),
-						TcFeatureFactory.create(NrOfTokensRatioPerSentence.class)));
+				new TcFeatureSet(TcFeatureFactory.create(AvgTokensRatioPerDocument.class),
+						TcFeatureFactory.create(AvgSentenceRatioPerDocument.class)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),

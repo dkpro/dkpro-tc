@@ -41,8 +41,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -134,7 +134,8 @@ public class WekaBrownUnitPosDemo
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class),
+                new TcFeatureSet(
+                		TcFeatureFactory.create(AvgTokensRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

@@ -33,7 +33,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.ngram.NrOfTokensRatioDocument
+import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.apache.uima.fit.factory.CollectionReaderFactory
@@ -64,7 +64,7 @@ implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                         new TcFeatureSet(TcFeatureFactory.create(NrOfTokensRatioDocument.class)))
+                         new TcFeatureSet(TcFeatureFactory.create(AvgTokensRatioPerDocument.class)))
 	
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 		[new CrfSuiteAdapter()])
