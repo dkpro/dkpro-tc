@@ -19,3 +19,12 @@ DKPro TC supports the following processing modes that correspond to typical clas
 **Sequence Mode**: Classification mode for sequentially dependend information where the prediction of the preceding element is relevant for the prediction of the next one, for instance in part-of-speech tagging where the prediction sequence of word-labels carries meaning for the next word (single-label).
 
 Classification using *Multi-Label* are for instance prediction of movie categories where a movie might belong to more than just a single category and the different categories have a certain correlation to (not) occur together. *Regression* is a special form of single-label classification where instead of a fixed label a numerica value is predicted.
+
+The processing configuration is provided by two dimensions in a DKPro TC Experiment
+```java
+  ParameterSpace pSpace = new ParameterSpace(
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), // single, multi, regression
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), // document, unit, sequence
+                .... //other dimensions
+                );
+```
