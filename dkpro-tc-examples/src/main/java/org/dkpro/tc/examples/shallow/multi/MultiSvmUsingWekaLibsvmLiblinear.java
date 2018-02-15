@@ -38,7 +38,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
@@ -89,7 +89,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(AvgTokensRatioPerDocument.class),
+				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
 						TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 500,
 								WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
 

@@ -53,7 +53,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerDocument;
-import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
@@ -242,7 +242,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSu
 				Arrays.asList(new LiblinearAdapter()));
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(AvgTokensRatioPerDocument.class), TcFeatureFactory
+				new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class), TcFeatureFactory
 						.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

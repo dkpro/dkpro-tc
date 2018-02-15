@@ -112,13 +112,13 @@ public class AvgTokenRatioPerSentenceTest {
 	private File runFeatureExtractor(File luceneFolder) throws Exception {
 		File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { AvgTokensRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokensRatioPerSentence.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { AvgTokenRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString()};
 
 		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(AvgTokensRatioPerSentence.class, parameters);
+				.createExternalResourceDescription(AvgTokenRatioPerSentence.class, parameters);
 		List<ExternalResourceDescription> fes = new ArrayList<>();
 		fes.add(featureExtractor);
 
@@ -161,11 +161,11 @@ public class AvgTokenRatioPerSentenceTest {
 	private void runMetaCollection(File luceneFolder) throws Exception {
 
 
-		Object[] parameters = new Object[] { AvgTokensRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokensRatioPerSentence.PARAM_NGRAM_USE_TOP_K, "1", AvgTokensRatioPerSentence.PARAM_SOURCE_LOCATION,
+		Object[] parameters = new Object[] { AvgTokenRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+				AvgTokenRatioPerSentence.PARAM_NGRAM_USE_TOP_K, "1", AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), AvgTokensRatioPerSentence.PARAM_NGRAM_MIN_N, "1",
-				AvgTokensRatioPerSentence.PARAM_NGRAM_MAX_N, "1", };
+				luceneFolder.toString(), AvgTokenRatioPerSentence.PARAM_NGRAM_MIN_N, "1",
+				AvgTokenRatioPerSentence.PARAM_NGRAM_MAX_N, "1", };
 
 		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 

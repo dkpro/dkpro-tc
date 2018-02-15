@@ -38,7 +38,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.AvgSentenceRatioPerDocument;
-import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
 import org.dkpro.tc.io.LinwiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -113,7 +113,7 @@ public class MultiRegressionWekaLibsvmLiblinear
                 new TcFeatureSet(
                         TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
                         TcFeatureFactory.create(LengthFeatureNominal.class),
-                        TcFeatureFactory.create(AvgTokensRatioPerDocument.class)));
+                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),

@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerDocument;
-import org.dkpro.tc.features.ngram.AvgTokensRatioPerDocument;
+import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -121,7 +121,7 @@ public class WekaComplexConfigurationSingleDemo
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokensRatioPerDocument.class),
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
                         TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class,
                                 WordNGram.PARAM_NGRAM_USE_TOP_K, 50,

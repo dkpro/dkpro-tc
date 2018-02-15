@@ -33,15 +33,16 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllSentenceMC;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Ratio of the number of characters in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokensRatioPerDocument extends MaximumNormalizationExtractorBase  {
+public class AvgTokenRatioPerSentence extends MaximumNormalizationExtractorBase  {
 
 	public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
@@ -51,8 +52,17 @@ public class AvgTokensRatioPerDocument extends MaximumNormalizationExtractorBase
 
 		long maxLen = getMax();
 		
-		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, target);
-		double ratio = getRatio(tokens.size(), maxLen);
+		double avg=0.0;
+		
+		Collection<Sentence> sentences = JCasUtil.select(jcas, Sentence.class);
+		for (Sentence s : sentences){
+			Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+			avg += tokens.size();
+		}
+		avg /= sentences.size();
+		
+		double ratio = getRatio(avg, maxLen);
+		
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}
 
@@ -61,15 +71,15 @@ public class AvgTokensRatioPerDocument extends MaximumNormalizationExtractorBase
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgTokensRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
+								AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
+								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfTokensOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+		return MaxNrOfTokensOverAllSentenceMC.LUCENE_FIELD + featureExtractorName;
 	}
 
 	@Override
