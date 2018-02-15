@@ -31,7 +31,7 @@ public class TestCaseSuperClass {
 		 * Sets the logging, configuraiton files are found under src/test/* to
 		 * increase verbosity for debugging
 		 */
-		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+//		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
 		System.setProperty("DKPRO_HOME", HOME);
 	}
 }
