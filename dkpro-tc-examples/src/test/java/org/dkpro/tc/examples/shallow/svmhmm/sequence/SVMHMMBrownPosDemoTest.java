@@ -20,6 +20,8 @@ package org.dkpro.tc.examples.shallow.svmhmm.sequence;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
@@ -53,9 +55,29 @@ public class SVMHMMBrownPosDemoTest extends TestCaseSuperClass {
 		javaExperiment.runTrainTest(pSpace);
 
 		EvaluationData<String> data = Tc2LtlabEvalConverter
-				.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
+				.convertSingleLabelModeId2Outcome(pathVerification(ContextMemoryReport.id2outcomeFiles.get(0)));
 		Accuracy<String> acc = new Accuracy<String>(data);
 
 		assertEquals(0.5, acc.getResult(), 0.05);
+	}
+
+	private File pathVerification(File file) {
+
+		if (file.exists()) {
+			return file;
+		}
+
+		File fileA = new File(file.getAbsolutePath().replaceAll("\\\\", "\\"));
+		if (fileA.exists()) {
+			return fileA;
+		}
+
+		File fileB = new File(file.getAbsolutePath().replaceAll("\\\\", "/"));
+		if (fileB.exists()) {
+			return fileB;
+		}
+
+		throw new IllegalStateException("File not found tried following paths [" + file.getAbsolutePath() + "] ["
+				+ fileA.getAbsolutePath() + "] [" + fileB.getAbsolutePath() + "]");
 	}
 }
