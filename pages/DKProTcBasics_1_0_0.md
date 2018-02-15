@@ -16,18 +16,14 @@ Map<String, Object> dimReaders = new HashMap<String, Object>();
 dimReaders.put(DIM_READER_TRAIN, readerTrain);
 dimReaders.put(DIM_READER_TEST, readerTest);
 Dimension<Map<String, Object>> readersDimension = Dimension.createBundle("readers", dimReaders);
-
 /* Defining the features that we extract for training a classifier model, 
    we use two features, the number of tokens and the 50 most frequent word ngrams */ 
- 
-/* Classification of documents (alternative would be sinlge words, 
+ /* Classification of documents (alternative would be sinlge words, 
 either independelty or as sequence modelling task) */
 Dimension<String> dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT); 
-  
-/* Classification is done by predicting a single label for each document 
+ /* Classification is done by predicting a single label for each document 
  (alternative would be regression, i.e. no label, or multi-label) */
-Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);  
-  
+Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);   
 /* The feature set we use, we use two dummy features here: 
    Number of tokens per document and the 50 most frequent
    word ngrams over all documents */
@@ -35,12 +31,10 @@ Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new Tc
 				TcFeatureFactory.create(NrOfTokens.class),
 				TcFeatureFactory.create(LuceneNGram.class, 
 							LuceneNGram.PARAM_NGRAM_USE_TOP_K, 50)));
-
 /* The classification arguments specify which classifier we want to use, one can specify several 
    classifiers or confirgurations of the same classifier; TC will automatically execute them all */
 Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
 				  Arrays.asList(new LiblinearAdapter()));
-
 // Wire everything in a parameter space
 ParameterSpace pSpace = new ParameterSpace(
 	dimLearningModem,
@@ -49,18 +43,15 @@ ParameterSpace pSpace = new ParameterSpace(
 	dimFeatureSet, 
         dimClassificationArgs
  );
-
 /* Sets the output-folder to which all data is written that is created by DKPro TC, 
    this includes the results of the experiments. 
    This environmental variable has to be set before the experiment runs, temporarily or permantely */
 System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
-
 // Pass this configuration to an experiment
 ExperimentTrainTest exp = new ExperimentTrainTest("ExperimentName");
 exp.setPreprocessing(createEngineDescription(OutcomeAnnotator.class);
 exp.addReport(new BatchTrainTestReport());
 exp.setParameterSpace(pSpace); 
-
 // Run experiment
 Lab.getInstance().run(exp);
 {% endhighlight java %}
