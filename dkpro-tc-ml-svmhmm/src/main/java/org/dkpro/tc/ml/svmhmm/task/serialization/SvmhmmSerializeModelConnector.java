@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
@@ -36,7 +35,7 @@ public class SvmhmmSerializeModelConnector
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, SvmHmmAdapter.class.getName());
+		writeModelAdapterInformation(outputFolder, SvmHmmAdapter.class.getName());
 	}
 
 	@Override

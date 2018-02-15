@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
@@ -39,7 +38,7 @@ public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeMode
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, LibsvmAdapter.class.getName());
+		writeModelAdapterInformation(outputFolder, LibsvmAdapter.class.getName());
 	}
 
 	private String[] buildParameters(File fileTrain, File model) {

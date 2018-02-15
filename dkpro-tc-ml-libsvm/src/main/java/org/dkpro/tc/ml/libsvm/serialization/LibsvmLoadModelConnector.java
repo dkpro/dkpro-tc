@@ -18,8 +18,6 @@
 
 package org.dkpro.tc.ml.libsvm.serialization;
 
-import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;

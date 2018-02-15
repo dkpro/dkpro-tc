@@ -32,7 +32,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
@@ -174,6 +173,6 @@ public class WekaSerliazeModelConnector
     
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());
+		writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());
 	}
 }

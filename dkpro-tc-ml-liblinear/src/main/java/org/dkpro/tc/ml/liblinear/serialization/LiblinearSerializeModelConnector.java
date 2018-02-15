@@ -21,7 +21,6 @@ package org.dkpro.tc.ml.liblinear.serialization;
 import java.io.File;
 
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
@@ -56,6 +55,6 @@ public class LiblinearSerializeModelConnector extends LibsvmDataFormatSerializeM
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, LiblinearAdapter.class.getName());
+		writeModelAdapterInformation(outputFolder, LiblinearAdapter.class.getName());
 	}
 }

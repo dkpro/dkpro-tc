@@ -44,7 +44,6 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerialization_ImplBase {
@@ -73,7 +72,7 @@ public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerializat
 		try {
 			integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
 			featureMapping = loadFeature2IntegerMapping(tcModelLocation);
-			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
+			verifyTcVersion(tcModelLocation, getClass());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

@@ -29,7 +29,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
@@ -89,6 +88,6 @@ public class CrfSuiteSerializeModelConnector extends ModelSerializationTask impl
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		SaveModelUtils.writeModelAdapterInformation(outputFolder, CrfSuiteAdapter.class.getName());
+		writeModelAdapterInformation(outputFolder, CrfSuiteAdapter.class.getName());
 	}
 }

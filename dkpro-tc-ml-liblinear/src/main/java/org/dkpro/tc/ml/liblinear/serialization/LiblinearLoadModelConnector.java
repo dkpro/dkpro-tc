@@ -18,8 +18,6 @@
 
 package org.dkpro.tc.ml.liblinear.serialization;
 
-import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;

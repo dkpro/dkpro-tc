@@ -18,8 +18,6 @@
 
 package org.dkpro.tc.ml.crfsuite.task.serialization;
 
-import static org.dkpro.tc.core.Constants.MODEL_CLASSIFIER;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +45,6 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -71,7 +68,7 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 		try {
 			executablePath = CrfSuiteTestTask.getExecutablePath();
 			model = new File(tcModelLocation, MODEL_CLASSIFIER);
-			SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
+			verifyTcVersion(tcModelLocation, getClass());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

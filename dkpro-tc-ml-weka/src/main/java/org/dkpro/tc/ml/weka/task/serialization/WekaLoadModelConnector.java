@@ -45,7 +45,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
-import org.dkpro.tc.core.util.SaveModelUtils;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
@@ -84,8 +83,7 @@ public class WekaLoadModelConnector
         super.initialize(context);
 
         try {
-            TcShallowLearningAdapter initMachineLearningAdapter = SaveModelUtils
-                    .initMachineLearningAdapter(tcModelLocation);
+            TcShallowLearningAdapter initMachineLearningAdapter = initMachineLearningAdapter(tcModelLocation);
             bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
             useSparse = initMachineLearningAdapter.useSparseFeatures();
 
@@ -95,9 +93,9 @@ public class WekaLoadModelConnector
                 loadClassLabels();
             }
 
-            SaveModelUtils.verifyTcVersion(tcModelLocation, getClass());
-            SaveModelUtils.writeFeatureMode(tcModelLocation, featureMode);
-            SaveModelUtils.writeLearningMode(tcModelLocation, learningMode);
+            verifyTcVersion(tcModelLocation, getClass());
+            writeFeatureMode(tcModelLocation, featureMode);
+            writeLearningMode(tcModelLocation, learningMode);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
