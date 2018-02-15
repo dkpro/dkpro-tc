@@ -119,7 +119,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperCl
 	private double getMeanSquaredError(List<File> id2outcomeFiles, String simpleName) throws Exception {
 
 		for (File f : id2outcomeFiles) {
-			if (f.getAbsolutePath().contains("/" + simpleName + "TestTask-")) {
+			if (f.getAbsolutePath().contains(simpleName + "TestTask-")) {
 
 				EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(f);
 				MeanSquaredError mse = new MeanSquaredError(data);
