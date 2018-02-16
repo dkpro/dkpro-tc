@@ -25,38 +25,40 @@ The code snipped below shows a setup to configure a Python-based DKPro TC deep l
 ```java
 CollectionReaderDescription trainReader = createReaderTrain(...)
 
-		CollectionReaderDescription testReader = createReaderTest(...)		
+CollectionReaderDescription testReader = createReaderTest(...)		
 	
-    Map<String, Object> dimReaders = new HashMap<String, Object>();
-		dimReaders.put(DIM_READER_TRAIN, trainReader);
-		dimReaders.put(DIM_READER_TEST, testReader);
+Map<String, Object> dimReaders = new HashMap<String, Object>();
+dimReaders.put(DIM_READER_TRAIN, trainReader);
+dimReaders.put(DIM_READER_TEST, testReader);
 		
-		ParameterSpace pSpace = new ParameterSpace(
-        //same as for shallow 
-				Dimension.createBundle("readers", dimReaders), 
-				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), 
-        /*
-        Additional deep learning framework specific dimensions
-        */
-        // absolute path to the python installation for which the deep learning framework is installed
-				Dimension.create(DIM_PYTHON_INSTALLATION, python3),
-        // seed value that is passed to the deep learning 
-				Dimension.create(DIM_SEED_VALUE, 12345),
-        // the working memory that shall be used, i.e. requries that the Python-based framework supports memory limits
-				Dimension.create(DIM_RAM_WORKING_MEMORY, 5000), 
-        // file path to the word embeddings file that shall be used in the experiment        
-				Dimension.create(DIM_PRETRAINED_EMBEDDINGS, embedding),
-        // automatically translates all words in the input text into integer values and stores a mapping
-				Dimension.create(DIM_VECTORIZE_TO_INTEGER, true), 
-        // file path to a code snipped which defines the actual Python-framework-specific deep learning code
-				Dimension.create(DIM_USER_CODE, dyNetUserCode));
+ParameterSpace pSpace = new ParameterSpace(
+//same as for shallow 
+Dimension.createBundle("readers", dimReaders), 
+Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL), 
+/*
+Additional deep learning framework specific dimensions
+*/
+// absolute path to the python installation for which the deep learning framework is installed
+Dimension.create(DIM_PYTHON_INSTALLATION, python3),
+// seed value that is passed to the deep learning 
+Dimension.create(DIM_SEED_VALUE, 12345),
+// the working memory that shall be used, 
+// i.e. requries that the Python-based framework supports memory limits
+Dimension.create(DIM_RAM_WORKING_MEMORY, 5000), 
+// file path to the word embeddings file that shall be used in the experiment        
+Dimension.create(DIM_PRETRAINED_EMBEDDINGS, embedding),
+// automatically translates all words in the input text into integer values and stores a mapping
+Dimension.create(DIM_VECTORIZE_TO_INTEGER, true), 
+// file path to a code snipped,
+// which defines the actual Python-framework-specific deep learning code
+Dimension.create(DIM_USER_CODE, dyNetUserCode)
+);
 
-    /* Experiment instantiation, note that deep learning experiments use `DeepLearningExperimentTrainTest` 
-    while shallow learning experiments use `ExperimentTrainTest` */
-		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("Experiment", DynetAdapter.class);
-		experiment.setParameterSpace(pSpace);
-		experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.class));
-
-		Lab.getInstance().run(experiment);
+/* Experiment instantiation, note that deep learning experiments use `DeepLearningExperimentTrainTest` 
+   while shallow learning experiments use `ExperimentTrainTest` */
+DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("Experiment", DynetAdapter.class);
+experiment.setParameterSpace(pSpace);
+experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.class));
+Lab.getInstance().run(experiment);
 ```
