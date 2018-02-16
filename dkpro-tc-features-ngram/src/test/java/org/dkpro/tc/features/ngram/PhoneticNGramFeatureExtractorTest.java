@@ -20,89 +20,36 @@ package org.dkpro.tc.features.ngram;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
-import com.google.gson.Gson;
+public class PhoneticNGramFeatureExtractorTest extends LuceneMetaCollectorTestBase{
 
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-
-public class PhoneticNGramFeatureExtractorTest {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-
+	String FEATURE_NAME = "23423";
+	
+	
+	
 	@Before
-	public void setupLogging() {
-		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
+	public void setup() {
+		super.setup();
+		featureClass = PhoneticNGram.class;
+		metaCollectorClass = PhoneticNGramMC.class;
 	}
-
-	@Test
-	public void lucenePhoneticNGramFeatureExtractorTest() throws Exception {
-
-		File luceneFolder = folder.newFolder();
-		File outputPath = folder.newFolder();
-
-		Object[] parameters = new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+	
+	@Override
+	protected Object[] getMetaCollectorParameters(File luceneFolder) {
+		return new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
 				PhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", PhoneticNGram.PARAM_SOURCE_LOCATION,
 				luceneFolder.toString(), PhoneticNGramMC.PARAM_TARGET_LOCATION,
 				luceneFolder.toString(), };
-
-		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(PhoneticNGram.class, parameters);
-		List<ExternalResourceDescription> fes = new ArrayList<>();
-		fes.add(featureExtractor);
-
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
-
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
-
-		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(PhoneticNGramMC.class, parameters);
-
-		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-				Constants.FM_DOCUMENT, false, false, false, false, Collections.emptyList(), fes, new String[]{});
-
-		// run meta collector
-		SimplePipeline.runPipeline(reader, segmenter, metaCollector);
-
-		// run FE(s)
-		SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
-
-		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME),"utf-8");
-		List<Instance> instances = new ArrayList<>();
-		for (String l : lines) {
-			instances.add(gson.fromJson(l, Instance.class));
-		}
-
-		assertEquals(2, instances.size());
-		assertEquals(1, getUniqueOutcomes(instances));
 	}
 
 	private int getUniqueOutcomes(List<Instance> instances) {
@@ -110,4 +57,35 @@ public class PhoneticNGramFeatureExtractorTest {
 		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
 		return outcomes.size();
 	}
+
+	@Override
+	protected void evaluateExtractedFeatures(File output) throws Exception {
+		List<Instance> instances = readInstances(output);
+
+		assertEquals(2, instances.size());
+		assertEquals(1, getUniqueOutcomes(instances));		
+	}
+
+	@Override
+	protected CollectionReaderDescription getMetaReader() throws Exception {
+		return CollectionReaderFactory.createReaderDescription(
+				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
+	}
+
+	@Override
+	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
+		//FIXME: Missing meta evaluation
+	}
+
+	@Override
+	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
+		return getMetaCollectorParameters(luceneFolder);
+	}
+
+	@Override
+	protected CollectionReaderDescription getFeatureReader() throws Exception {
+		return getMetaReader();
+	}
+
 }
