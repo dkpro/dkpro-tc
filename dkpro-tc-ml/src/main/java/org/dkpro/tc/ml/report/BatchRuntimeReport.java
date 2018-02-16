@@ -100,7 +100,7 @@ public class BatchRuntimeReport extends TcBatchReportBase {
 		int maxLen = keyOrdered.stream().max(Comparator.comparingInt(String::length)).get().length();
 		
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(String.format("#%"+(maxLen-1)+"s\thh:mm:ss:ms)\n", "TaskName"));
+		buffer.append(String.format("#%"+(maxLen-1)+"s\thh:mm:ss:ms\n", "TaskName"));
 		keyOrdered.forEach(k -> buffer.append(formatOutput(maxLen, k, timeMap.get(k)) + "\n"));
 		
 		//summary
