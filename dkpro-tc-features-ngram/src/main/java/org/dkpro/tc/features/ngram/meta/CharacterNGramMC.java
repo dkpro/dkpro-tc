@@ -28,44 +28,40 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
- * Creates a frequency distribution over all characters occurring in the entire document text i.e. index zero to document-length.
- * For considering only a subset of the document text and working with several target annotations {@link org.dkpro.tc.features.ngram.meta.CharacterNGramUnitMC}
+ * Creates a frequency distribution over all characters occurring in the entire
+ * document text i.e. index zero to document-length.  
  */
-public class CharacterNGramMC
-    extends LuceneMC
-{
-    public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
+public class CharacterNGramMC extends LuceneMC {
+	public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
 
-    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int ngramMinN;
+	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+	private int ngramMinN;
 
-    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int ngramMaxN;
-    
-    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-    private String stringLowerCase;
-    
-    boolean lowerCase = true;
-    
-    @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
-    {
-        super.initialize(context);
-        
-        lowerCase = Boolean.valueOf(stringLowerCase);
-        
-    }
-    
-    @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas){
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        return NGramUtils.getDocumentCharacterNgrams(jcas, fullDoc, lowerCase,
-                ngramMinN, ngramMaxN);
-    }
-    
-    @Override
-    protected String getFieldName(){
-        return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
-    }
+	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+	private int ngramMaxN;
+
+	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+	private String stringLowerCase;
+
+	boolean lowerCase = true;
+
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
+
+		lowerCase = Boolean.valueOf(stringLowerCase);
+
+	}
+
+	@Override
+	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
+		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+		FrequencyDistribution<String> fd = NGramUtils.getAnnotationCharacterNgrams(fullDoc, lowerCase, ngramMinN, ngramMaxN, '^', '$');
+		return fd;
+	}
+
+	@Override
+	protected String getFieldName() {
+		return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+	}
 }
