@@ -116,13 +116,13 @@ public class SvmHmmTestTask
 		paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
     }
 
-    public static List<String> buildPredictionCommand(File testFile, File modelLocation,
+    public static List<String> buildPredictionCommand(File binaryPath, File testFile, File modelLocation,
             File outputPredictions)
                 throws IOException
     {
         List<String> result = new ArrayList<>();
 
-        result.add(resolveSvmHmmPredictionCommand());
+        result.add(binaryPath.getAbsolutePath());
         result.add(testFile.getAbsolutePath());
         result.add(modelLocation.getAbsolutePath());
         result.add(outputPredictions.getAbsolutePath());
@@ -168,11 +168,10 @@ public class SvmHmmTestTask
             process.waitFor();
     }
     
-    public static String resolveSvmHmmPredictionCommand()
+    public static File resolveSvmHmmPredictionCommand()
     {
         try {
-            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_classify")
-                    .getAbsolutePath();
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_classify");
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -195,7 +194,9 @@ public class SvmHmmTestTask
 		File trainBinary = resolveSvmHmmLearnCommand();
 		File fileTrain = getTrainFile(aContext);
 		
-		
+		// SvmHmm struggles with paths longer than 255 characters to circumvent this
+		// issue, we copy all files together into a local directory to ensure short path
+		// names that are below this threshold
 		File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
 		File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
 		FileUtils.copyFile(fileTrain, newTrainFileLocation);
@@ -219,8 +220,22 @@ public class SvmHmmTestTask
 		File modelFile = (File) model;
 		
 		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
-		List<String> predictionCommand = buildPredictionCommand(fileTest, modelFile, predictionsFile);
+		File binary = resolveSvmHmmPredictionCommand();
+		
+		
+		// SvmHmm struggles with paths longer than 255 characters to circumvent this
+		// issue, we copy all files together into a local directory to ensure short path
+		// names that are below this threshold
+		File localModel = new File(binary.getParentFile(), "model.tmp");
+		FileUtils.copyFile(modelFile, localModel);
+		File localTestFile = new File(binary.getParentFile(), "testfile.txt");
+		FileUtils.copyFile(fileTest, localTestFile);
+		
+		List<String> predictionCommand = buildPredictionCommand(binary, localTestFile, localModel, predictionsFile);
 		runCommand(predictionCommand);
+		
+		localModel.delete();
+		localTestFile.delete();
 		
 		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);		
 	}
