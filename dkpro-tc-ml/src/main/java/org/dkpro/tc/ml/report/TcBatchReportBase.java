@@ -39,7 +39,7 @@ import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 
-public abstract class TcBatchReportBase extends BatchReportBase {
+public abstract class TcBatchReportBase extends BatchReportBase implements Constants {
 
 	/**
 	 * Retrieves the id2outcome file in a train test setup. The behavior of this

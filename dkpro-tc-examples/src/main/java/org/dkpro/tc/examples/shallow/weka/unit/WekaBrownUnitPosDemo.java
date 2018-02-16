@@ -45,6 +45,7 @@ import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -102,6 +103,7 @@ public class WekaBrownUnitPosDemo
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(ContextMemoryReport.class);
+        batch.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(batch);
@@ -124,8 +126,7 @@ public class WekaBrownUnitPosDemo
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS,
-                new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
+                BrownCorpusReader.PARAM_PATTERNS, new String[] { "*.xml", "*.xml.gz" });
 
         dimReaders.put(DIM_READER_TEST, readerTest);
 

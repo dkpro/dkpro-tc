@@ -17,96 +17,123 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.TaskContextMetadata;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 
 /**
  * Collects the final runtime results in a train/test setting.
  */
-public class BatchRuntimeReport extends TcBatchReportBase implements Constants {
+public class BatchRuntimeReport extends TcBatchReportBase {
 
 	/**
 	 * Name of the output file where the report stores the runtime results
 	 */
-	public static final String RUNTIME_KEY = "RUNTIME.txt";
+	public static final String RUNTIME_KEY = "runtime.txt";
 
+	private Map<String, Long> timeMap = new HashMap<String, Long>();
+	
 	@Override
 	public void execute() throws Exception {
+
+		List<String> keyOrdered = new ArrayList<>();
+
 		StorageService store = getContext().getStorageService();
+		
+		Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
+		
+		taskIds = readInnerTasksIfCrossValidation(taskIds);
 
-		Properties props = new Properties();
+		for (String id: taskIds) {
 
-		long initTime = 0;
-		long metaTime = 0;
-		long featureExtractionTime = 0;
-		long testingTime = 0;
-
-		for (TaskContextMetadata subcontext : getSubtasks()) {
-			Map<String, String> metaMap = store
-					.retrieveBinary(subcontext.getId(), TaskContextMetadata.METADATA_KEY, new PropertiesAdapter())
-					.getMap();
-
-			long begin = 0;
-			long end = 0;
-			if (metaMap.containsKey("begin")) {
-				begin = Long.parseLong(metaMap.get("begin"));
-			}
-			if (metaMap.containsKey("end")) {
-				end = Long.parseLong(metaMap.get("end"));
-			}
-			long difference = end - begin;
-
-			if (TcTaskTypeUtil.isInitTrainTask(store, subcontext.getId())
-					|| TcTaskTypeUtil.isInitTestTask(store, subcontext.getId())) {
-				initTime += difference;
-			} else if (TcTaskTypeUtil.isMetaTask(store, subcontext.getId())) {
-				metaTime += difference;
-			} else if (TcTaskTypeUtil.isFeatureExtractionTrainTask(store, subcontext.getId())
-					|| TcTaskTypeUtil.isFeatureExtractionTestTask(store, subcontext.getId())) {
-				featureExtractionTime += difference;
-			} else if (TcTaskTypeUtil.isFacadeTask(store, subcontext.getId())) {
-				Set<String> collectSubtasks = collectSubtasks(subcontext.getId());
-				for (String id : collectSubtasks) {
-					if (TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
-						testingTime += difference;
-					}
+			if (TcTaskTypeUtil.isFacadeTask(store, id)) {
+				Set<String> subTasks = collectSubtasks(id);
+				subTasks.remove(id);
+				for (String subId : subTasks) {
+					long executionTime = getExecutionTime(subId);
+					registerTime(subId, executionTime);
+					keyOrdered.add(subId);
 				}
+
+				// Facade tasks are not registered they are just a shell and do not much anyway
+				continue;
 			}
+
+			long executionTime = getExecutionTime(id);
+			registerTime(id, executionTime);
+			keyOrdered.add(id);
 		}
-
-		String initTimeString = convertTime(initTime);
-		String metaTimeString = convertTime(metaTime);
-		String featureExtractionTimeString = convertTime(featureExtractionTime);
-		String testingTimeString = convertTime(testingTime);
-
-		System.out.println("--- DETAILED RUNTIME REPORT ---");
-		System.out.println("Initialization: " + initTimeString);
-		System.out.println("Meta Extraction: " + metaTimeString);
-		System.out.println("Feature Extraction: " + featureExtractionTimeString);
-		System.out.println("Testing: " + testingTimeString);
-		System.out.println("-------------------------------");
-
-		props.setProperty("initialization", initTimeString);
-		props.setProperty("meta", metaTimeString);
-		props.setProperty("featureextraction", featureExtractionTimeString);
-		props.setProperty("testing", testingTimeString);
-
-		getContext().storeBinary(RUNTIME_KEY, new PropertiesAdapter(props));
+		
+		String output = buildOutput(keyOrdered);
+		File runtime = getContext().getFile(RUNTIME_KEY, AccessMode.READWRITE);
+		FileUtils.writeStringToFile(runtime, output, "utf-8");
 	}
 
-	private String convertTime(long time) {
+	private Set<String> readInnerTasksIfCrossValidation(Set<String> taskIds) throws Exception {
+		
+		Set<String> ids = new HashSet<>();
+		
+		for(String id : taskIds) {
+			if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(), id)) {
+				ids.addAll(collectSubtasks(id));
+			}
+		}
+		
+		ids.addAll(taskIds);
+		return ids;
+	}
+
+	private String buildOutput(List<String> keyOrdered) {
+		
+		int maxLen = keyOrdered.stream().max(Comparator.comparingInt(String::length)).get().length();
+		
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(String.format("#%"+(maxLen-1)+"s\thh:mm:ss:ms)\n", "TaskName"));
+		keyOrdered.forEach(k -> buffer.append(formatOutput(maxLen, k, timeMap.get(k)) + "\n"));
+		
+		//summary
+		long sum = timeMap.values().stream().mapToLong(l -> l.longValue()).sum();
+		buffer.append("\n" + formatOutput(maxLen, "Total-time", sum));
+		
+		return buffer.toString();
+	}
+
+
+	private void registerTime(String id, long executionTime) {
+		timeMap.put(id, executionTime);
+	}
+
+	private long getExecutionTime(String taskId) {
+		long begin = getTime(taskId, "begin");
+		long end = getTime(taskId, "end");
+		return end - begin;
+	}
+
+	private long getTime(String taskId, String key) {
+		Map<String, String> metaMap = getContext().getStorageService()
+				.retrieveBinary(taskId, TaskContextMetadata.METADATA_KEY, new PropertiesAdapter()).getMap();
+
+		return Long.parseLong(metaMap.get(key));
+	}
+
+	private String formatOutput(int maxLen, String key, long time) {
 		long millis = time % 1000;
 		long second = (time / 1000) % 60;
 		long minute = (time / (1000 * 60)) % 60;
 		long hour = (time / (1000 * 60 * 60)) % 24;
 
-		return String.format("%02d:%02d:%02d:%d", hour, minute, second, millis);
+		return String.format("%"+maxLen+"s\t%02d:%02d:%02d:%d", key, hour, minute, second, millis);
 	}
 }

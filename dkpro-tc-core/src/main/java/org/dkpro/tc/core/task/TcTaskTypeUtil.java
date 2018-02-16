@@ -98,4 +98,11 @@ public class TcTaskTypeUtil
                 .getMap();
     }
 
+	public static TcTaskType getType(StorageService store, String id) throws IOException {
+		
+		Map<String, String> loadAttributes = loadAttributes(store, id);
+        TcTaskType taskType = TcTaskTypeUtil.getTaskType(loadAttributes);
+		return taskType;
+	}
+
 }

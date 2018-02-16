@@ -38,5 +38,6 @@ public enum TcTaskType
     PREPARATION,
     VECTORIZATION_TRAIN,
     VECTORIZATION_TEST,
-    EMBEDDING, 
+    EMBEDDING,;
+
 }
