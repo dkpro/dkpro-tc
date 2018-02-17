@@ -51,7 +51,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class KeywordNGramFeatureExtractorTest {
+public class KeywordNGramTest {
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();

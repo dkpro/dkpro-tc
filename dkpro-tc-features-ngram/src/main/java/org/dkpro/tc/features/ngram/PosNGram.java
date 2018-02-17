@@ -92,11 +92,10 @@ public class PosNGram
         return PosNGramMC.LUCENE_POS_NGRAM_FIELD + featureExtractorName;
     }
 
-    @Override
-    protected String getFeaturePrefix()
-    {
-        return "posngram";
-    }
+	@Override
+	protected String getFeaturePrefix() {
+		return getClass().getSimpleName();
+	}
     
     @Override
     protected int getTopN()

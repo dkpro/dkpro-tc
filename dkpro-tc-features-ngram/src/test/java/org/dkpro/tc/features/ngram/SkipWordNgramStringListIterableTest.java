@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.dkpro.tc.features.ngram.util.SkipNgramStringListIterable;
 
-public class SkipNgramStringListIterableTest
+public class SkipWordNgramStringListIterableTest
 {
 
     @SuppressWarnings("unused")

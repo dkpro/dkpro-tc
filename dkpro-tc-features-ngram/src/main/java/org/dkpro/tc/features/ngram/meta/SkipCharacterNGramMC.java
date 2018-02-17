@@ -27,11 +27,11 @@ import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class CharSkipNgramMC
+public class SkipCharacterNGramMC
     extends LuceneMC
 {
 
-    public static final String LUCENE_CHAR_SKIP_NGRAM_FIELD = "charskipngram";
+    public static final String LUCENE_FIELD = "charskipngram";
 
     @ConfigurationParameter(name = SkipCharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
@@ -62,6 +62,7 @@ public class CharSkipNgramMC
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
+        
         return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
                 skipSize);
     }
@@ -69,6 +70,6 @@ public class CharSkipNgramMC
     @Override
     protected String getFieldName()
     {
-        return LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_FIELD + featureExtractorName;
     }
 }

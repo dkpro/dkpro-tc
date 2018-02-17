@@ -34,7 +34,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.CharSkipNgramMC;
+import org.dkpro.tc.features.ngram.meta.SkipCharacterNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -49,7 +49,7 @@ public class SkipCharacterNGram
 {
 
     public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
-    @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true)
     protected int charSkipSize;
 
     @Override
@@ -77,24 +77,23 @@ public class SkipCharacterNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(CharSkipNgramMC.class,
+        return Arrays.asList(new MetaCollectorConfiguration(SkipCharacterNGramMC.class,
                 parameterSettings).addStorageMapping(
-                        CharSkipNgramMC.PARAM_TARGET_LOCATION,
+                        SkipCharacterNGramMC.PARAM_TARGET_LOCATION,
                         SkipCharacterNGram.PARAM_SOURCE_LOCATION,
-                        CharSkipNgramMC.LUCENE_DIR));
+                        SkipCharacterNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return SkipCharacterNGramMC.LUCENE_FIELD + featureExtractorName;
     }
 
     @Override
-    protected String getFeaturePrefix()
-    {
-        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD;
-    }
+	protected String getFeaturePrefix() {
+		return getClass().getSimpleName();
+	}
 
     @Override
     protected int getTopN()

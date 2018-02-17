@@ -31,7 +31,7 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.junit.Before;
 
-public class PhoneticNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase{
+public class PhoneticNGramTest extends LuceneMetaCollectionBasedFeatureTestBase{
 
 	String FEATURE_NAME = "23423";
 	

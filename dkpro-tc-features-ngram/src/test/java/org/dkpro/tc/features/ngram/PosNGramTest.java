@@ -40,7 +40,7 @@ import org.junit.Before;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class PosNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase {
+public class PosNGramTest extends LuceneMetaCollectionBasedFeatureTestBase {
 
     @Before
     public void setupLogging()
@@ -82,9 +82,9 @@ public class PosNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatu
 
 		Set<String> featureNames = new HashSet<String>(getUniqueFeatureNames(instances));
 		assertEquals(5, featureNames.size());
-		assertTrue(featureNames.contains("posngram_POS_NUM"));
-		assertTrue(featureNames.contains("posngram_POS_NOUN"));
-		assertTrue(featureNames.contains("posngram_POS_NUM_POS_NUM"));
+		assertTrue(featureNames.contains("PosNGram_POS_NUM"));
+		assertTrue(featureNames.contains("PosNGram_POS_NOUN"));
+		assertTrue(featureNames.contains("PosNGram_POS_NUM_POS_NUM"));
 	}
 	
 	@Override

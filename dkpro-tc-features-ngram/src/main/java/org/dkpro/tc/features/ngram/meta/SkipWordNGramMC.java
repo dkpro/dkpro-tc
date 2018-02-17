@@ -26,17 +26,17 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.SkipNGram;
+import org.dkpro.tc.features.ngram.SkipWordNGram;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class SkipNgramMC
+public class SkipWordNGramMC
     extends LuceneMC
 {
-    public static final String LUCENE_SKIP_NGRAM_FIELD = "skipngram";
+    public static final String LUCENE_FIELD = "wordSkipNgram";
     
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
@@ -44,7 +44,7 @@ public class SkipNgramMC
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
     private int maxN;
 
-    @ConfigurationParameter(name = SkipNGram.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
+    @ConfigurationParameter(name = SkipWordNGram.PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
     private int skipSize;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
@@ -86,6 +86,6 @@ public class SkipNgramMC
     @Override
     protected String getFieldName()
     {
-        return LUCENE_SKIP_NGRAM_FIELD + featureExtractorName;
+        return LUCENE_FIELD + featureExtractorName;
     }
 }

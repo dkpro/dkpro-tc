@@ -47,7 +47,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class WordNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase
+public class WordNGramTest extends LuceneMetaCollectionBasedFeatureTestBase
 {
     @Before
     public void setup()

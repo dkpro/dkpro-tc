@@ -34,8 +34,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.meta.CharSkipNgramMC;
-import org.dkpro.tc.features.ngram.meta.SkipNgramMC;
+import org.dkpro.tc.features.ngram.meta.SkipWordNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -45,7 +44,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class SkipNGram
+public class SkipWordNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
@@ -80,23 +79,23 @@ public class SkipNGram
             Map<String, Object> parameterSettings)
                 throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(SkipNgramMC.class,
+        return Arrays.asList(new MetaCollectorConfiguration(SkipWordNGramMC.class,
                 parameterSettings).addStorageMapping(
-                        SkipNgramMC.PARAM_TARGET_LOCATION,
-                        SkipNGram.PARAM_SOURCE_LOCATION,
-                        SkipNgramMC.LUCENE_DIR));
+                        SkipWordNGramMC.PARAM_TARGET_LOCATION,
+                        SkipWordNGram.PARAM_SOURCE_LOCATION,
+                        SkipWordNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD + featureExtractorName;
+        return SkipWordNGramMC.LUCENE_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return CharSkipNgramMC.LUCENE_CHAR_SKIP_NGRAM_FIELD;
+        return getClass().getSimpleName();
     }
 
     @Override
