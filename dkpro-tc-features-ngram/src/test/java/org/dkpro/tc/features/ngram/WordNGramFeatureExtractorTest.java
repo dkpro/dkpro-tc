@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
@@ -44,75 +43,29 @@ import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
-import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class WordNGramFeatureExtractorTest
+public class WordNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase
 {
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
     @Before
     public void setupLogging()
     {
-        System.setProperty("org.apache.uima.logger.class",
-                "org.apache.uima.util.impl.Log4jLogger_impl");
+    	super.setup();
+    	featureClass = WordNGram.class;
+    	metaCollectorClass = WordNGramMC.class;
     }
+    
+    @Override
+	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
+    	Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
+    	assertEquals(86, entriesFromIndex.size());
+	}
 
-    @Test
-    public void luceneNGramFeatureExtractorTest()
-        throws Exception
-    {
-
-        File luceneFolder = folder.newFolder();
-        File outputPath = folder.newFolder();
-
-        Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                WordNGram.PARAM_NGRAM_USE_TOP_K, "3", WordNGram.PARAM_SOURCE_LOCATION,
-                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
-                luceneFolder.toString() };
-
-        ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(WordNGram.class, parameters);
-        List<ExternalResourceDescription> fes = new ArrayList<>();
-        fes.add(featureExtractor);
-
-        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
-
-        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/ngrams/*.txt");
-
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory
-                .createEngineDescription(BreakIteratorSegmenter.class);
-
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-                .createEngineDescription(WordNGramMC.class, parameterList.toArray());
-
-        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
-                Collections.emptyList(), fes, new String[]{});
-
-        // run meta collector
-        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
-
-        // run FE(s)
-        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
-
-        Gson gson = new Gson();
-        List<String> lines = FileUtils
-                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
-        List<Instance> instances = new ArrayList<>();
-        for (String l : lines) {
-            instances.add(gson.fromJson(l, Instance.class));
-        }
-        
+	@Override
+	protected void evaluateExtractedFeatures(File output) throws Exception {
+		List<Instance> instances = readInstances(output);
         assertEquals(4, instances.size());
         assertEquals(1, getUniqueOutcomes(instances));
 
@@ -125,9 +78,33 @@ public class WordNGramFeatureExtractorTest
         assertEquals(3, featureNames.size());
         assertTrue(featureNames.contains("ngram_4"));
         assertTrue(featureNames.contains("ngram_5"));
-        assertTrue(featureNames.contains("ngram_5_5"));
+        assertTrue(featureNames.contains("ngram_5_5"));		
+	}
 
-    }
+	@Override
+	protected CollectionReaderDescription getMetaReader() throws Exception {
+		return CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/ngrams/*.txt");
+	}
+
+	@Override
+	protected CollectionReaderDescription getFeatureReader() throws Exception {
+		return getMetaReader();
+	}
+
+	@Override
+	protected Object[] getMetaCollectorParameters(File luceneFolder) {
+		return new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                WordNGram.PARAM_NGRAM_USE_TOP_K, "3", WordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString()};
+	}
+
+	@Override
+	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
+		return getMetaCollectorParameters(luceneFolder);
+	}
 
     @Test
     public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest()
@@ -144,9 +121,7 @@ public class WordNGramFeatureExtractorTest
 
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
-        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/ngrams/*.txt");
+        CollectionReaderDescription reader = getMetaReader();
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
@@ -170,13 +145,7 @@ public class WordNGramFeatureExtractorTest
         // run FE(s)
         SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
-        Gson gson = new Gson();
-        List<String> lines = FileUtils
-                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME),"utf-8");
-        List<Instance> instances = new ArrayList<>();
-        for (String l : lines) {
-            instances.add(gson.fromJson(l, Instance.class));
-        }
+        List<Instance> instances = readInstances(outputPath);
 
         assertEquals(4, instances.size());
         assertEquals(1, getUniqueOutcomes(instances));
@@ -191,4 +160,6 @@ public class WordNGramFeatureExtractorTest
         instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
         return outcomes.size();
     }
+
+	
 }
