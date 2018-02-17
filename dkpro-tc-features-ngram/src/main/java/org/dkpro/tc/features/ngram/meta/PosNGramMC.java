@@ -17,42 +17,97 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
+import static org.dkpro.tc.core.Constants.NGRAM_GLUE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.PosNGram;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 
-public class PosNGramMC
-    extends LuceneMC
-{
-    public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
-    
-    @ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-    private int ngramMinN;
+public class PosNGramMC extends LuceneMC {
+	public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
 
-    @ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-    private int ngramMaxN;
+	@ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+	private int ngramMinN;
 
-    @ConfigurationParameter(name = PosNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
-    private boolean useCanonical;
+	@ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+	private int ngramMaxN;
 
-    @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
-    {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
+	@ConfigurationParameter(name = PosNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
+	private boolean useCanonical;
 
-        return NGramUtils.getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN,
-                useCanonical);
-    }
+	@Override
+	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
+		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
 
-    @Override
-    protected String getFieldName()
-    {
-        return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
-    }
+		return getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN, useCanonical);
+	}
+
+	@Override
+	protected String getFieldName() {
+		return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
+	}
+
+	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focusAnnotation, int minN,
+			int maxN, boolean useCanonical) {
+		if (JCasUtil.selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
+			return sentenceBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
+		}
+		return documentBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
+	}
+
+	private static FrequencyDistribution<String> documentBasedDistribution(JCas jcas, Annotation focusAnnotation,
+			boolean useCanonical, int minN, int maxN) {
+
+		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
+
+		List<String> postagstrings = new ArrayList<String>();
+		for (POS p : selectCovered(POS.class, focusAnnotation)) {
+			if (useCanonical) {
+				postagstrings.add(p.getClass().getSimpleName());
+			} else {
+				postagstrings.add(p.getPosValue());
+			}
+		}
+		String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+		for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+			posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+		}
+		return posNgrams;
+	}
+
+	private static FrequencyDistribution<String> sentenceBasedDistribution(JCas jcas,
+			Annotation focusAnnotation, boolean useCanonical, int minN, int maxN) {
+
+		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
+
+		for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
+			List<String> postagstrings = new ArrayList<String>();
+			for (POS p : JCasUtil.selectCovered(jcas, POS.class, s)) {
+				if (useCanonical) {
+					postagstrings.add(p.getClass().getSimpleName());
+				} else {
+					postagstrings.add(p.getPosValue());
+				}
+			}
+			String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+			for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+				posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+			}
+		}
+		return posNgrams;
+	}
 
 }

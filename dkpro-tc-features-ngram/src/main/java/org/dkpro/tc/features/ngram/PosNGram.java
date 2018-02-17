@@ -35,7 +35,6 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.PosNGramMC;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -60,7 +59,7 @@ public class PosNGram
 
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentPOSNgrams = null;
-        documentPOSNgrams = NGramUtils.getDocumentPosNgrams(view, classificationUnit, ngramMinN,
+        documentPOSNgrams = PosNGramMC.getDocumentPosNgrams(view, classificationUnit, ngramMinN,
                 ngramMaxN, useCanonicalTags);
 
         for (String topNgram : topKSet.getKeys()) {
