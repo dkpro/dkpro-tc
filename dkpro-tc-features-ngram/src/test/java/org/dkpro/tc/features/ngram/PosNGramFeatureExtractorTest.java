@@ -21,105 +21,34 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.io.JsonDataWriter;
-import org.dkpro.tc.core.util.TaskUtils;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.PosNGramMC;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
-import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class PosNGramFeatureExtractorTest {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+public class PosNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase {
 
-	@Before
-	public void setupLogging() {
-		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-	}
-
-	@Test
-	public void luceneNGramFeatureExtractorTest() throws Exception {
-
-		File luceneFolder = folder.newFolder();
-		File outputPath = folder.newFolder();
-
-		Object[] parameters = new Object[] { PosNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-				PosNGram.PARAM_NGRAM_USE_TOP_K, "5", PosNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), PosNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
-
-		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(PosNGram.class, parameters);
-		List<ExternalResourceDescription> fes = new ArrayList<>();
-		fes.add(featureExtractor);
-
-		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
-
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-				"src/test/resources/ngrams/*.txt");
-
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
-
-		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class,
-				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
-
-		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(PosNGramMC.class, parameterList.toArray());
-
-		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-				Constants.FM_DOCUMENT, false, false, false, false, Collections.emptyList(), fes, new String[]{});
-
-		// run meta collector
-		SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);
-
-		// run FE(s)
-		SimplePipeline.runPipeline(reader, segmenter, posTagger, featExtractorConnector);
-
-		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
-		List<Instance> instances = new ArrayList<>();
-		for (String l : lines) {
-			instances.add(gson.fromJson(l, Instance.class));
-		}
-
-		assertEquals(4, instances.size());
-		assertEquals(1, getUniqueOutcomes(instances));
-
-		Set<String> featureNames = new HashSet<String>(getUniqueFeatureNames(instances));
-		assertEquals(5, featureNames.size());
-		assertTrue(featureNames.contains("posngram_POS_NUM"));
-		assertTrue(featureNames.contains("posngram_POS_NOUN"));
-		assertTrue(featureNames.contains("posngram_POS_NUM_POS_NUM"));
-
-	}
+    @Before
+    public void setupLogging()
+    {
+    	super.setup();
+    	featureClass = PosNGram.class;
+    	metaCollectorClass = PosNGramMC.class;
+    }
 
 	private Collection<? extends String> getUniqueFeatureNames(List<Instance> instances) {
 		Set<String> s = new HashSet<>();
@@ -137,5 +66,75 @@ public class PosNGramFeatureExtractorTest {
 		Set<String> outcomes = new HashSet<String>();
 		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
 		return outcomes.size();
+	}
+
+	@Override
+	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
+		Set<String> entries = getEntriesFromIndex(luceneFolder);
+		assertEquals(40, entries.size());
+	}
+
+	@Override
+	protected void evaluateExtractedFeatures(File output) throws Exception {
+		List<Instance> instances = readInstances(output);
+		assertEquals(4, instances.size());
+		assertEquals(1, getUniqueOutcomes(instances));
+
+		Set<String> featureNames = new HashSet<String>(getUniqueFeatureNames(instances));
+		assertEquals(5, featureNames.size());
+		assertTrue(featureNames.contains("posngram_POS_NUM"));
+		assertTrue(featureNames.contains("posngram_POS_NOUN"));
+		assertTrue(featureNames.contains("posngram_POS_NUM_POS_NUM"));
+	}
+	
+	@Override
+	protected void runMetaCollection(File luceneFolder, AnalysisEngineDescription metaCollector) throws Exception {
+
+		CollectionReaderDescription reader = getMetaReader();
+
+		AnalysisEngineDescription segmenter = AnalysisEngineFactory
+				.createEngineDescription(BreakIteratorSegmenter.class);
+		
+		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class,
+				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
+
+		SimplePipeline.runPipeline(reader, segmenter, posTagger, metaCollector);
+	}
+
+	@Override
+	protected CollectionReaderDescription getMetaReader() throws Exception {
+		return CollectionReaderFactory.createReaderDescription(
+				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+				"src/test/resources/ngrams/*.txt");
+	}
+
+	@Override
+	protected CollectionReaderDescription getFeatureReader() throws Exception {
+		return getMetaReader();
+	}
+
+	@Override
+	protected Object[] getMetaCollectorParameters(File luceneFolder) {
+		return new Object[] { PosNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+				PosNGram.PARAM_NGRAM_USE_TOP_K, "5", PosNGram.PARAM_SOURCE_LOCATION,
+				luceneFolder.toString(), PosNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+	}
+
+	@Override
+	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
+		return getMetaCollectorParameters(luceneFolder);
+	}
+	
+	protected void runFeatureExtractor(File luceneFolder, AnalysisEngineDescription featureExtractor) throws Exception {
+		
+		CollectionReaderDescription reader = getFeatureReader(); 
+
+		AnalysisEngineDescription segmenter = AnalysisEngineFactory
+				.createEngineDescription(BreakIteratorSegmenter.class);
+		
+		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class,
+				OpenNlpPosTagger.PARAM_LANGUAGE, "en");
+		
+		SimplePipeline.runPipeline(reader, segmenter, posTagger, featureExtractor);
 	}
 }

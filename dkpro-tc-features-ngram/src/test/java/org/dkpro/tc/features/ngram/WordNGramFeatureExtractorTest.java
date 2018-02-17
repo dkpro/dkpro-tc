@@ -50,7 +50,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 public class WordNGramFeatureExtractorTest extends LuceneMetaCollectionBasedFeatureTestBase
 {
     @Before
-    public void setupLogging()
+    public void setup()
     {
     	super.setup();
     	featureClass = WordNGram.class;
