@@ -55,7 +55,7 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public abstract class LuceneMetaCollectorTestBase {
+public abstract class LuceneMetaCollectionBasedFeatureTestBase {
 	
     @Before
     public void setup()

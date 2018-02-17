@@ -35,7 +35,7 @@ import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
-public class AvgCharRatioOfTokensPerDocumentTest extends LuceneMetaCollectorTestBase {
+public class AvgCharRatioOfTokensPerDocumentTest extends LuceneMetaCollectionBasedFeatureTestBase {
 	private static String EXTRACTOR_NAME = "56465431";
 
 	

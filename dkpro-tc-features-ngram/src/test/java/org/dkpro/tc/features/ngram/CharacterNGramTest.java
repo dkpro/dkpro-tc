@@ -32,7 +32,7 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
 import org.junit.Before;
 
-public class CharacterNGramTest extends LuceneMetaCollectorTestBase{
+public class CharacterNGramTest extends LuceneMetaCollectionBasedFeatureTestBase{
 	
 	static String FEATURE_NAME = "23423432434";
 	

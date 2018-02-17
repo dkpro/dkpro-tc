@@ -33,7 +33,7 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.MaxSentLenOverAllDocumentsMC;
 import org.junit.Before;
 
-public class AvgSentenceLengthPerDocumentTest extends LuceneMetaCollectorTestBase {
+public class AvgSentenceLengthPerDocumentTest extends LuceneMetaCollectionBasedFeatureTestBase {
 
 	private static String EXTRACTOR_NAME = "13233";
 
