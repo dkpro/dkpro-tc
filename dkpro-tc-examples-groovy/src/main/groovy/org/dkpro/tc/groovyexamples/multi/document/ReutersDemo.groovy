@@ -34,7 +34,8 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
-import org.dkpro.tc.features.ngram.*
+import org.dkpro.tc.features.ngram.
+import org.dkpro.tc.features.ngram.maxnormalization.AvgTokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.report.BatchCrossValidationReport

@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.ngram;
+package org.dkpro.tc.features.maxnormalization;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,48 +32,48 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfSentencesOverAllDocumentsMC;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Ratio of the number of sentences in a document with respect to the longest document in the training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenRatioPerDocument extends MaximumNormalizationExtractorBase  {
+public class AvgSentenceRatioPerDocument extends MaximumNormalizationExtractorBase  {
 
-	public static final String FEATURE_NAME = "TokenRatioPerTarget";
+	public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
-		
-		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, target);
-		double ratio = getRatio(tokens.size(), maxLen);
+
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
+		double ratio = getRatio(sentences.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}
+
 
 	@Override
 	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgTokenRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+								AvgSentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
+								MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfTokensOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
 		return getClass().getSimpleName();
 	}
-
 }

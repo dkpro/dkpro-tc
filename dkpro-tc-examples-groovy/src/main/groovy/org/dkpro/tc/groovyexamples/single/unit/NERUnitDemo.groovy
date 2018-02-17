@@ -31,7 +31,7 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.NERDemoReader
-import org.dkpro.tc.features.ngram.AvgTokenLengthRatioPerDocument;
+import org.dkpro.tc.features.ngram.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport

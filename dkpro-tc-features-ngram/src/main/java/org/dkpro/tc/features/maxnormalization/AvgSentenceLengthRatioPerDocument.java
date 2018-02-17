@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.ngram;
+package org.dkpro.tc.features.maxnormalization;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,37 +32,36 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.MaxNrOfTokensOverAllSentenceMC;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxSentLenOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenRatioPerSentence extends MaximumNormalizationExtractorBase  {
+public class AvgSentenceLengthRatioPerDocument extends MaximumNormalizationExtractorBase {
 
-	public static final String FEATURE_NAME = "TokenRatioPerTarget";
+	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
 	@Override
 	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
+
+		double avgLength=0.0;
 		
-		double avg=0.0;
-		
-		Collection<Sentence> sentences = JCasUtil.select(jcas, Sentence.class);
-		for (Sentence s : sentences){
-			Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-			avg += tokens.size();
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
+		for (Sentence s : sentences) {
+			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+			avgLength += getRatio(tokens.size(), maxLen);
 		}
-		avg /= sentences.size();
-		
-		double ratio = getRatio(avg, maxLen);
-		
-		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+
+		avgLength /= sentences.size();
+
+		return new Feature(FEATURE_NAME, avgLength , FeatureType.NUMERIC).asSet();
 	}
 
 	@Override
@@ -71,20 +69,24 @@ public class AvgTokenRatioPerSentence extends MaximumNormalizationExtractorBase 
 			throws ResourceInitializationException {
 
 		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
-								AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
+				new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class, parameterSettings)
+						.addStorageMapping(MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+								AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
+								MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
 	}
 
 	@Override
 	protected String getFieldName() {
-		return MaxNrOfTokensOverAllSentenceMC.LUCENE_FIELD + featureExtractorName;
+		return MaxSentLenOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+	}
+
+	@Override
+	protected int getTopN() {
+		return 1;
 	}
 
 	@Override
 	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
+		return getClass().getName();
 	}
-
 }

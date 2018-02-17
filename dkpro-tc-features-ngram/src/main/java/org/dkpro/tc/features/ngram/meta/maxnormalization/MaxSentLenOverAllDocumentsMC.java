@@ -15,36 +15,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.ngram.meta;
+package org.dkpro.tc.features.ngram.meta.maxnormalization;
 
-import java.util.Collection;
-import java.util.Random;
+import java.util.List;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.features.ngram.meta.LuceneMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
+public class MaxSentLenOverAllDocumentsMC extends LuceneMC {
+
+	public static final String LUCENE_FIELD = "maximumSentencesLengthOverAllDocuments";
 	
-	public static final String LUCENE_FIELD = "maximumSentencesOverAllDocuments";
-	Random random = new Random();
-
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-	}
-
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
 
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
-		fd.addSample(select.size() + "_" + random.nextLong(), select.size());
+
+		for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
+			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+
+			StringBuilder sb = new StringBuilder();
+			for (Token t : tokens) {
+				sb.append(t.getCoveredText() + "_");
+			}
+
+			String key = tokens.size() + "_" + sb.toString().hashCode();
+			if (fd.contains(key)) {
+				// do not add ''same'' sentences multiple times 
+				continue;
+			}
+
+			fd.addSample(key, tokens.size());
+		}
+
 		return fd;
 	}
 
@@ -52,5 +61,4 @@ public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
 	protected String getFieldName() {
 		return LUCENE_FIELD + featureExtractorName;
 	}
-	
 }

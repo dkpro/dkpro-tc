@@ -33,11 +33,12 @@ import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
-import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.examples.util.DemoUtils
+import org.dkpro.tc.features.ngram.maxnormalization.AvgTokenRatioPerDocument;
+
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
 import org.apache.uima.fit.factory.CollectionReaderFactory;

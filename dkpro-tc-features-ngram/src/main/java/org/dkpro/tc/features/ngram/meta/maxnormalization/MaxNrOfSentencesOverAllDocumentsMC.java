@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.features.ngram.meta;
+package org.dkpro.tc.features.ngram.meta.maxnormalization;
 
 import java.util.Collection;
 import java.util.Random;
@@ -25,14 +25,15 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.features.ngram.meta.LuceneMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
-public class MaxNrOfCharsOverAllTokensMC extends LuceneMC {
+public class MaxNrOfSentencesOverAllDocumentsMC extends LuceneMC {
 	
-	public static final String LUCENE_MAX_CHAR_FIELD = "maxNumCharsPerToken";
-	Random r = new Random();
+	public static final String LUCENE_FIELD = "maximumSentencesOverAllDocuments";
+	Random random = new Random();
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -43,18 +44,14 @@ public class MaxNrOfCharsOverAllTokensMC extends LuceneMC {
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
 
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		
-		Collection<Token> select = JCasUtil.select(jcas, Token.class);
-		for(Token t : select){
-			int len = t.getCoveredText().length();
-			fd.addSample(len + "_" + r.nextLong(), len);
-		}
-		
+		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
+		fd.addSample(select.size() + "_" + random.nextLong(), select.size());
 		return fd;
 	}
 
 	@Override
 	protected String getFieldName() {
-		return LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+		return LUCENE_FIELD + featureExtractorName;
 	}
+	
 }

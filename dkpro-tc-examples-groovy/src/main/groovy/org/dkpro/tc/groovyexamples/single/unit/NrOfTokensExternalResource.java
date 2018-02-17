@@ -21,7 +21,7 @@ package org.dkpro.tc.groovyexamples.single.unit;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
 
 /**
  * Extracts the number of tokens in the classification unit

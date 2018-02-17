@@ -33,7 +33,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.ngram.AvgTokenRatioPerDocument
+import org.dkpro.tc.features.ngram.maxnormalization.AvgTokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.apache.uima.fit.factory.CollectionReaderFactory
