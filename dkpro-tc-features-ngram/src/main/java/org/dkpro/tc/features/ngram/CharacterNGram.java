@@ -34,7 +34,6 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -51,7 +50,7 @@ public class CharacterNGram
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentCharNgrams = NGramUtils.getAnnotationCharacterNgrams(
+        FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC.getAnnotationCharacterNgrams(
                 target, ngramLowerCase, ngramMinN, ngramMaxN, '^', '$');
 
         for (String topNgram : topKSet.getKeys()) {

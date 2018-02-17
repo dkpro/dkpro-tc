@@ -35,7 +35,6 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.SkipCharacterNGramMC;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -43,61 +42,49 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
  * Extracts characters skip-ngrams.
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
-public class SkipCharacterNGram
-    extends LuceneFeatureExtractorBase
-    implements FeatureExtractor
-{
+public class SkipCharacterNGram extends LuceneFeatureExtractorBase implements FeatureExtractor {
 
-    public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
-    @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true)
-    protected int charSkipSize;
+	public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
+	@ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true)
+	protected int charSkipSize;
 
-    @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
-        throws TextClassificationException
-    {
-        Set<Feature> features = new HashSet<Feature>();
+	@Override
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget target) throws TextClassificationException {
+		Set<Feature> features = new HashSet<Feature>();
 
-        FrequencyDistribution<String> charNgrams = NGramUtils.getCharacterSkipNgrams(jcas, target,
-                ngramLowerCase, ngramMinN, ngramMaxN, charSkipSize);
+		FrequencyDistribution<String> charNgrams = SkipCharacterNGramMC.getCharacterSkipNgrams(jcas, target,
+				ngramLowerCase, ngramMinN, ngramMaxN, charSkipSize);
 
-        for (String topNgram : topKSet.getKeys()) {
-            if (charNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
-            }
-            else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
-            }
-        }
-        return features;
-    }
+		for (String topNgram : topKSet.getKeys()) {
+			if (charNgrams.getKeys().contains(topNgram)) {
+				features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+			} else {
+				features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+			}
+		}
+		return features;
+	}
 
-    @Override
-    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
-            Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
-    {
-        return Arrays.asList(new MetaCollectorConfiguration(SkipCharacterNGramMC.class,
-                parameterSettings).addStorageMapping(
-                        SkipCharacterNGramMC.PARAM_TARGET_LOCATION,
-                        SkipCharacterNGram.PARAM_SOURCE_LOCATION,
-                        SkipCharacterNGramMC.LUCENE_DIR));
-    }
+	@Override
+	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
+			throws ResourceInitializationException {
+		return Arrays.asList(new MetaCollectorConfiguration(SkipCharacterNGramMC.class, parameterSettings)
+				.addStorageMapping(SkipCharacterNGramMC.PARAM_TARGET_LOCATION, SkipCharacterNGram.PARAM_SOURCE_LOCATION,
+						SkipCharacterNGramMC.LUCENE_DIR));
+	}
 
-    @Override
-    protected String getFieldName()
-    {
-        return SkipCharacterNGramMC.LUCENE_FIELD + featureExtractorName;
-    }
+	@Override
+	protected String getFieldName() {
+		return SkipCharacterNGramMC.LUCENE_FIELD + featureExtractorName;
+	}
 
-    @Override
+	@Override
 	protected String getFeaturePrefix() {
 		return getClass().getSimpleName();
 	}
 
-    @Override
-    protected int getTopN()
-    {
-        return ngramUseTopK;
-    }
+	@Override
+	protected int getTopN() {
+		return ngramUseTopK;
+	}
 }

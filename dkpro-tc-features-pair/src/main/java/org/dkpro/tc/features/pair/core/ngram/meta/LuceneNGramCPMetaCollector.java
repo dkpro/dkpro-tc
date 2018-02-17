@@ -34,6 +34,7 @@ import org.dkpro.tc.features.pair.core.ngram.LuceneNGramCPFE;
 import org.dkpro.tc.features.pair.core.ngram.LuceneNGramPFE;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class LuceneNGramCPMetaCollector
     extends LuceneCPMetaCollectorBase
@@ -127,7 +128,7 @@ public class LuceneNGramCPMetaCollector
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, target,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN,
-                stopwords);
+                stopwords, Token.class);
         return fd;
     }
 
@@ -138,7 +139,7 @@ public class LuceneNGramCPMetaCollector
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, target,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN,
-                stopwords);
+                stopwords, Token.class);
         return fd;
     }
 

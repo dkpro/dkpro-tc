@@ -20,12 +20,13 @@ package org.dkpro.tc.features.ngram.meta;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.ngrams.util.CharacterNGramStringIterable;
 
 /**
  * Creates a frequency distribution over all characters occurring in the entire
@@ -56,7 +57,7 @@ public class CharacterNGramMC extends LuceneMC {
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
 		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-		FrequencyDistribution<String> fd = NGramUtils.getAnnotationCharacterNgrams(fullDoc, lowerCase, ngramMinN, ngramMaxN, '^', '$');
+		FrequencyDistribution<String> fd = getAnnotationCharacterNgrams(fullDoc, lowerCase, ngramMinN, ngramMaxN, '^', '$');
 		return fd;
 	}
 
@@ -64,4 +65,41 @@ public class CharacterNGramMC extends LuceneMC {
 	protected String getFieldName() {
 		return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
 	}
+	
+	 /**
+     * Creates a frequency distribution of character ngrams over the span of an annotation. The
+     * boundary* parameter allows it to provide a string that is added additionally at the beginning
+     * and end of the respective annotation span. If for instance the 'begin of sequence' or 'end of
+     * sequence' of a span shall be marked the boundary parameter can be used. Provide an empty
+     * character in case this parameters are not needed
+     * 
+     * @param focusAnnotation
+     *            target span
+     * @param lowerCaseNgrams
+     *            use lower case
+     * @param minN
+     *            minimal n
+     * @param maxN
+     *            maximal n
+     * @param boundaryBegin
+     *            begin of boundary
+     * @param boundaryEnd
+     *            end of boundary
+     * @return a frequency distribution
+     */
+    public static FrequencyDistribution<String> getAnnotationCharacterNgrams(
+            Annotation focusAnnotation, boolean lowerCaseNgrams, int minN, int maxN,
+            char boundaryBegin, char boundaryEnd)
+    {
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (String charNgram : new CharacterNGramStringIterable(
+                boundaryBegin + focusAnnotation.getCoveredText() + boundaryEnd, minN, maxN)) {
+            if (lowerCaseNgrams) {
+                charNgram = charNgram.toLowerCase();
+            }
+            charNgrams.inc(charNgram);
+        }
+
+        return charNgrams;
+    }
 }

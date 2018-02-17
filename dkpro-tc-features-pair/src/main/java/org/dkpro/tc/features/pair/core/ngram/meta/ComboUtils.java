@@ -27,6 +27,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
@@ -90,7 +92,7 @@ public class ComboUtils
             TextClassificationTarget target = JCasUtil.selectSingle(view, TextClassificationTarget.class);
             if (classificationUnit == null) {
                 oneViewsNgrams = NGramUtils.getDocumentNgrams(view,target,
-                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
+                        ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords, Token.class);
             }
             else {
                 oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, classificationUnit,

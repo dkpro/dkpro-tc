@@ -17,14 +17,29 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
+import static org.dkpro.tc.core.Constants.NGRAM_GLUE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+import org.apache.commons.codec.language.ColognePhonetic;
+import org.apache.commons.codec.language.Soundex;
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.PhoneticNGram;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 
 public class PhoneticNGramMC
     extends LuceneMC
@@ -44,7 +59,7 @@ public class PhoneticNGramMC
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        return NGramUtils.getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN,
+        return getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN,
                 ngramMaxN);
     }
 
@@ -52,5 +67,44 @@ public class PhoneticNGramMC
     protected String getFieldName()
     {
         return LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
+    }
+    
+    public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas,
+            Annotation target, int minN, int maxN)
+                throws TextClassificationException
+    {
+        StringEncoder encoder;
+        String languageCode = jcas.getDocumentLanguage();
+
+        if (languageCode.equals("en")) {
+            encoder = new Soundex();
+        }
+        else if (languageCode.equals("de")) {
+            encoder = new ColognePhonetic();
+        }
+        else {
+            throw new TextClassificationException(
+                    "Language code '" + languageCode + "' not supported by phonetic ngrams FE.");
+        }
+
+        FrequencyDistribution<String> phoneticNgrams = new FrequencyDistribution<String>();
+        for (Sentence s : selectCovered(jcas, Sentence.class, target)) {
+            List<String> phoneticStrings = new ArrayList<String>();
+            for (Token t : JCasUtil.selectCovered(jcas, Token.class, s)) {
+                try {
+                    phoneticStrings.add(encoder.encode(t.getCoveredText()));
+                }
+                catch (EncoderException e) {
+                    throw new TextClassificationException(e);
+                }
+            }
+            String[] array = phoneticStrings.toArray(new String[phoneticStrings.size()]);
+
+            for (List<String> ngram : new NGramStringListIterable(array, minN, maxN)) {
+                phoneticNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+
+            }
+        }
+        return phoneticNgrams;
     }
 }

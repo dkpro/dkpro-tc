@@ -17,15 +17,24 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.meta;
 
+import static org.apache.uima.fit.util.JCasUtil.selectCovered;
+import static org.dkpro.tc.core.Constants.NGRAM_GLUE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.SkipCharacterNGram;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
+import org.dkpro.tc.features.ngram.util.SkipNgramStringListIterable;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class SkipCharacterNGramMC
     extends LuceneMC
@@ -63,7 +72,7 @@ public class SkipCharacterNGramMC
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
         
-        return NGramUtils.getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
+        return getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
                 skipSize);
     }
 
@@ -71,5 +80,40 @@ public class SkipCharacterNGramMC
     protected String getFieldName()
     {
         return LUCENE_FIELD + featureExtractorName;
+    }
+    public static FrequencyDistribution<String> getCharacterSkipNgrams(JCas jcas, Annotation target,
+            boolean lowerCaseNGrams, int minN, int maxN, int skipN)
+    {
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (Token t : selectCovered(jcas, Token.class, target)) {
+            String tokenText = t.getCoveredText();
+            String[] charsTemp = tokenText.split("");
+            String[] chars = new String[charsTemp.length + 1];
+            for (int i = 0; i < charsTemp.length; i++) {
+                chars[i] = charsTemp[i];
+            }
+
+            chars[0] = "^";
+            chars[charsTemp.length] = "$";
+
+            for (List<String> ngram : new SkipNgramStringListIterable(chars, minN, maxN, skipN)) {
+                if (lowerCaseNGrams) {
+                    ngram = lower(ngram);
+                }
+
+                String ngramString = StringUtils.join(ngram, NGRAM_GLUE);
+                charNgrams.inc(ngramString);
+            }
+        }
+        return charNgrams;
+    }
+    
+    public static List<String> lower(List<String> ngram)
+    {
+        List<String> newNgram = new ArrayList<String>();
+        for (String token : ngram) {
+            newNgram.add(token.toLowerCase());
+        }
+        return newNgram;
     }
 }

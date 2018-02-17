@@ -54,6 +54,7 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LuceneNGramPMetaCollector;
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * Pair ngram feature extractor for document pair classification. Can be used to extract ngrams from
@@ -192,9 +193,9 @@ public class LuceneNGramPFE
           TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
     	
         view1Ngrams = NGramUtils.getDocumentNgrams(view1, target1, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN1, ngramMaxN1, stopwords);
+                ngramMinN1, ngramMaxN1, stopwords, Token.class);
         view2Ngrams = NGramUtils.getDocumentNgrams(view2, target2, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN2, ngramMaxN2, stopwords);
+                ngramMinN2, ngramMaxN2, stopwords, Token.class);
         allNgrams = getViewNgrams(view1, view2);
     	
 

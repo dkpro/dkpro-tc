@@ -34,7 +34,6 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -55,7 +54,7 @@ public class PhoneticNGram
     {
 
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentPhoneticNgrams(jcas,
+        FrequencyDistribution<String> documentNgrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas,
                 target, ngramMinN, ngramMaxN);
 
         for (String topNgram : topKSet.getKeys()) {

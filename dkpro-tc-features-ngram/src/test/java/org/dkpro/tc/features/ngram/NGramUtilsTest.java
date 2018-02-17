@@ -30,6 +30,8 @@ import org.apache.uima.fit.factory.JCasBuilder;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
+import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 import org.junit.Test;
 
@@ -98,7 +100,7 @@ public class NGramUtilsTest
         }
         cb.add(0, Sentence.class);
 
-        FrequencyDistribution<String> ngrams = NGramUtils.getDocumentPhoneticNgrams(jcas, target, 1, 3);
+        FrequencyDistribution<String> ngrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas, target, 1, 3);
 
         assertEquals(12, ngrams.getN());
         assertTrue(ngrams.contains("I000"));
@@ -120,7 +122,7 @@ public class NGramUtilsTest
         TextClassificationTarget tu = new TextClassificationTarget(jcas, 2, 7);
         tu.addToIndexes();
 
-        FrequencyDistribution<String> ngrams = NGramUtils.getAnnotationCharacterNgrams(tu, false,
+        FrequencyDistribution<String> ngrams = CharacterNGramMC.getAnnotationCharacterNgrams(tu, false,
                 2, 3,'^', '$');
         for (String s : ngrams.getKeys()) {
             System.out.println(s);

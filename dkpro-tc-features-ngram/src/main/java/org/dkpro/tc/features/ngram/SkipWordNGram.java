@@ -35,7 +35,6 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.SkipWordNGramMC;
-import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
@@ -59,7 +58,7 @@ public class SkipWordNGram
     {
         Set<Feature> features = new HashSet<Feature>();
 
-        FrequencyDistribution<String> documentNgrams = NGramUtils.getDocumentSkipNgrams(jcas,
+        FrequencyDistribution<String> documentNgrams = SkipWordNGramMC.getDocumentSkipNgrams(jcas,
                 target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
                 skipSize, stopwords);
 
