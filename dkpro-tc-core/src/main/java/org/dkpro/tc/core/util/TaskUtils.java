@@ -21,16 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
-import org.apache.uima.fit.internal.ReflectionUtil;
-import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
@@ -45,20 +40,6 @@ import net.sf.json.JSONSerializer;
  * serialization of classifiers etc).
  */
 public class TaskUtils {
-	/**
-	 * Loads the JSON file as a system resource, parses it and returnd the
-	 * JSONObject.
-	 *
-	 * @param path
-	 *            path to the config file
-	 * @return the JSONObject containing all config parameters
-	 * @throws IOException
-	 *             in case of an error
-	 */
-	public static JSONObject getConfigFromJSON(String path) throws IOException {
-		String jsonPath = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(path).getFile()), "utf-8");
-		return (JSONObject) JSONSerializer.toJSON(jsonPath);
-	}
 
 	public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter,
 			String learningMode, String featureMode, boolean useSparseFeatures, boolean addInstanceId,
