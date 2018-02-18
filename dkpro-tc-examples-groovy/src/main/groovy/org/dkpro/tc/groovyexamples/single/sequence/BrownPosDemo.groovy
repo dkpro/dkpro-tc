@@ -70,8 +70,8 @@ implements Constants {
 							 TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
             TcFeatureFactory.create(CharacterNGram.class, 
 									CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50, 
-									CharacterNGram.PARAM_NGRAM_MIN_N, 2,
-									CharacterNGram.PARAM_NGRAM_MAX_N, 2 )
+									CharacterNGram.PARAM_NGRAM_MIN_N, 1,
+									CharacterNGram.PARAM_NGRAM_MAX_N, 3 )
 							 ))
 	
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
