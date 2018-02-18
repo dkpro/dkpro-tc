@@ -18,14 +18,6 @@
 package org.dkpro.tc.core.task;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_SET;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_RECORD_CONTEXT;
-import static org.dkpro.tc.core.Constants.FM_DOCUMENT;
-import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
-import static org.dkpro.tc.core.Constants.FM_UNIT;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +52,7 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.SequenceContextMetaCollector;
 import org.dkpro.tc.core.feature.UnitContextMetaCollector;
 
@@ -71,7 +64,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * 
  */
 public class MetaInfoTask
-    extends UimaTaskBase
+    extends UimaTaskBase implements Constants
 {
 
     /**

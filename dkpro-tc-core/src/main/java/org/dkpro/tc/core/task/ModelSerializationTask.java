@@ -171,9 +171,9 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		StringBuilder sb = new StringBuilder();
 		for (TcFeature f : featureSet) {
 			copyLuceneMetaResourcesAndGetOverrides(aContext, f, aOutputFolder);
-			persistsFeatureClassObject(aContext, f, aOutputFolder);
+			persistsFeatureClassObject(f, aOutputFolder);
 
-			sb = copyParameters(aContext, f, sb, aOutputFolder);
+			sb = copyParameters(f, sb, aOutputFolder);
 		}
 		writeFeatureParameters(sb, aOutputFolder);
 
@@ -184,7 +184,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
 	}
 
-	private StringBuilder copyParameters(TaskContext aContext, TcFeature f, StringBuilder sb, File aOutputFolder)
+	private StringBuilder copyParameters(TcFeature f, StringBuilder sb, File aOutputFolder)
 			throws IOException {
 		sb.append(f.getFeatureName() + "\t");
 
@@ -234,7 +234,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		return sb;
 	}
 
-	private void persistsFeatureClassObject(TaskContext aContext, TcFeature f, File aOutputFolder) throws Exception {
+	private void persistsFeatureClassObject(TcFeature f, File aOutputFolder) throws Exception {
 		ExternalResourceDescription feDesc = f.getActualValue();
 
 		String implName;
