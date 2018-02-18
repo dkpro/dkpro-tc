@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-
 import de.unidue.ltl.evaluation.core.EvaluationData;
 
 public class Tc2LtlabEvalConverter {
