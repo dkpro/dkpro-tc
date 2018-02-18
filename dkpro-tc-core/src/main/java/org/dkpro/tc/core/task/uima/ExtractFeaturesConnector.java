@@ -20,12 +20,14 @@ package org.dkpro.tc.core.task.uima;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
@@ -46,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
  * the feature extractors on each CAS.
  */
-public class ExtractFeaturesConnector extends ConnectorBase {
+public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements ConnectorConstants {
 
 	/**
 	 * Directory in which the extracted features will be stored
@@ -87,6 +89,9 @@ public class ExtractFeaturesConnector extends ConnectorBase {
 
 	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
 	private boolean isTesting;
+	
+	@ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
+	private Set<String> requiredTypes;
 
 	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
 	protected FeatureExtractorResource_ImplBase[] featureExtractors;

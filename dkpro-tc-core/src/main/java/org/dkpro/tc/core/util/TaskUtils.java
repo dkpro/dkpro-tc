@@ -61,7 +61,7 @@ public class TaskUtils {
 	}
 
 	public static Set<String> getRequiredTypesFromFeatureExtractors(List<ExternalResourceDescription> featureSet)
-			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+			throws Exception {
 		Set<String> requiredTypes = new HashSet<String>();
 
 		for (ExternalResourceDescription element : featureSet) {

@@ -17,64 +17,66 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.uima;
 
-import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
-
 /**
  * Defines names of parameters.
  * Names that are defined in more than one task should be defined here
  */
-public abstract class ConnectorBase
-    extends JCasAnnotator_ImplBase
+public interface ConnectorConstants
 {
     /**
      * Array of feature extractors to be used
      */
-    public static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
+    static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
 
     /**
      * Array of outcomes
      */
-    public static final String PARAM_OUTCOMES = "occurringOutcomes";
+    static final String PARAM_OUTCOMES = "occurringOutcomes";
     
     /**
      * Array of feature filters to be used
      */
-    public static final String PARAM_FEATURE_FILTERS = "featureFilters";
+    static final String PARAM_FEATURE_FILTERS = "featureFilters";
     
     /**
      * The data writer class to be used for writing features
      */
-    public static final String PARAM_DATA_WRITER_CLASS = "dataWriterClass";
+    static final String PARAM_DATA_WRITER_CLASS = "dataWriterClass";
 
     /**
      * The learning mode, e.g. single-label, multi-label or regression
      */
-    public static final String PARAM_LEARNING_MODE = "learningMode";
+    static final String PARAM_LEARNING_MODE = "learningMode";
 
     /**
      * The feature mode, e.g. document, pair, unit, or sequence
      */
-    public static final String PARAM_FEATURE_MODE = "featureMode";
+    static final String PARAM_FEATURE_MODE = "featureMode";
     
     /**
      * In case of multi-labeling, the threshold used to create bipartitions from rankings
      */
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
+    static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
 
     /**
      * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
      */
-    public static final String PARAM_IS_TESTING = "isTesting";
+    static final String PARAM_IS_TESTING = "isTesting";
     /**
      * Whether to turn on instance weighting.  If true, user should override addweight 
      * in the reader.
      */
-    public static final String PARAM_APPLY_WEIGHTING = "applyWeights";
+    static final String PARAM_APPLY_WEIGHTING = "applyWeights";
     
     /**
      * If a sparse feature representation shall be used
      */
-    public static final String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
+    static final String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
+    
+    /**
+     * If a sparse feature representation shall be used
+     */
+    static final String PARAM_REQUIRED_TYPES = "requiredTypes";
 
 
 }

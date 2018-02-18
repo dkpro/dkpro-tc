@@ -46,6 +46,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.core.task.uima.ConnectorConstants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 import org.dkpro.tc.core.util.TaskUtils;
 
@@ -55,7 +56,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
  * Executes all feature extractors and stores the feature representation
  * (usually an Weka ARFF file) on disk.
  */
-public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
+public class ExtractFeaturesTask extends UimaTaskBase implements Constants, ConnectorConstants {
 
 	/**
 	 * Public name of the folder where the extracted features are stored within
@@ -102,7 +103,6 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 	// to be inserted in
 	// each FE)
 	// could be used to automatically configure preprocessing
-	@SuppressWarnings("unused")
 	private Set<String> requiredTypes;
 
 	public void setTesting(boolean isTesting) {
@@ -111,7 +111,8 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 
 	@Override
 	public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
-			throws ResourceInitializationException, IOException {
+			throws ResourceInitializationException {
+		
 		File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
 
 		// Resolve the feature extractor closures to actual descritors
@@ -141,48 +142,41 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 							(String) feClosure.getId(), conf.extractorOverrides, AccessMode.READONLY);
 				}
 			}
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
 
-		// automatically determine the required metaCollector classes from the
-		// provided feature
-		// extractors
-		try {
 			requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
-			int a=0;
-			a++;
+
+			// as feature filters are optional, check for null
+			if (featureFilters == null) {
+				featureFilters = Collections.<String> emptyList();
+			}
+
+			// ensure that outcomes file is copied into this folder
+			File folder = aContext.getFolder(COLLECTION_INPUT_KEY, AccessMode.READONLY);
+			File file = new File(folder, Constants.FILENAME_OUTCOMES);
+			String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
+
+			TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
+
+			List<Object> parameters = new ArrayList<>();
+			parameters.addAll(
+					Arrays.asList(
+					ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+					ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
+					PARAM_APPLY_WEIGHTING, applyWeighting,
+					PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
+					PARAM_FEATURE_FILTERS, featureFilters,
+					PARAM_FEATURE_MODE, featureMode,
+					PARAM_LEARNING_MODE, learningMode,
+					PARAM_IS_TESTING, isTesting,
+					PARAM_USE_SPARSE_FEATURES, adapter.useSparseFeatures(),
+					PARAM_OUTCOMES, outcomes,
+					PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions,
+					PARAM_REQUIRED_TYPES, requiredTypes));
+
+			return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
-
-		// as feature filters are optional, check for null
-		if (featureFilters == null) {
-			featureFilters = Collections.<String> emptyList();
-		}
-		
-		//ensure that outcomes file is copied into this folder
-		File folder = aContext.getFolder(COLLECTION_INPUT_KEY, AccessMode.READONLY);
-		File file = new File(folder, Constants.FILENAME_OUTCOMES);
-		String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
-
-		TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
-		
-		List<Object> parameters = new ArrayList<>();
-		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
-				ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
-				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
-				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, featureFilters,
-				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
-				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
-				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
-				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, adapter.useSparseFeatures(),
-				ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes,
-		ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions));
-
-		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
-				parameters.toArray());
 	}
 
 	@Override

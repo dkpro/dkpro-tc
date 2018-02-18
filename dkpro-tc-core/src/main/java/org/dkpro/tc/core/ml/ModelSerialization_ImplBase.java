@@ -30,12 +30,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.core.task.uima.ConnectorBase;
+import org.dkpro.tc.core.task.uima.ConnectorConstants;
 
-public abstract class ModelSerialization_ImplBase extends ConnectorBase implements Constants {
+public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase implements ConnectorConstants, Constants {
 
 	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
