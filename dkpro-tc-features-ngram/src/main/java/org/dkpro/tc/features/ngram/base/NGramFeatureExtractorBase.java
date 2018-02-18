@@ -106,7 +106,7 @@ public abstract class NGramFeatureExtractorBase
 		}
 	}
 
-	/**
+	/*
 	 * This method should take care of some kind of caching the determined top-N values to avoid reading an index multiple times 
 	 */
 	protected abstract FrequencyDistribution<String> getTopNgrams()

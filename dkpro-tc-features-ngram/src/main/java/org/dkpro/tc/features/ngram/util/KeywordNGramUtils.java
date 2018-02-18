@@ -51,6 +51,8 @@ public class KeywordNGramUtils
      * 
      * @param jcas
      *            a jcas
+     * @param anno
+     * 			the annotation
      * @param minN
      *            minimum ngram length
      * @param maxN

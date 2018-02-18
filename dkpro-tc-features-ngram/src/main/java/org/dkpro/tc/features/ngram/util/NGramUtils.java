@@ -110,13 +110,13 @@ public class NGramUtils
      * @throws TextClassificationException
      *             when an exception occurs
      */
-    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation target,
+    public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation aTarget,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords, Class<? extends Annotation> annotationClass)
                 throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
-        for (Sentence s : selectCovered(jcas, Sentence.class, target)) {
+        for (Sentence s : selectCovered(jcas, Sentence.class, aTarget)) {
             List<String> strings = valuesToText(jcas, s, annotationClass.getName());
             for (List<String> ngram : new NGramStringListIterable(strings, minN, maxN)) {
                 if (lowerCaseNGrams) {
