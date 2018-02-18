@@ -22,6 +22,7 @@ import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -48,6 +49,11 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
  * <p>
  * Extracts also values for each pos class, as they are calculated anyway
  */
+
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
+})
 public class ContextualityMeasureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

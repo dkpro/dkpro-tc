@@ -20,6 +20,7 @@ package org.dkpro.tc.features.syntax;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -36,6 +37,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
  * 
  * English only.
  */
+
+@TypeCapability(inputs = {  
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
+})
 public class PronounRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

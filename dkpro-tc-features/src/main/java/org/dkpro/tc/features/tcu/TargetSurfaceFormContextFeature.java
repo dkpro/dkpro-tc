@@ -20,6 +20,7 @@ package org.dkpro.tc.features.tcu;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -31,6 +32,9 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
  * A feature that allows to provide the context surface text as feature value. This feature does
  * only work with machine classifier that can deal with <b>string</b> feature values
  */
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"
+})
 public class TargetSurfaceFormContextFeature
     extends TcuLookUpTable
 {

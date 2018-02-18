@@ -22,6 +22,7 @@ import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
@@ -47,6 +48,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
 /**
  * Extracts the ratio of each universal POS tags to the total number of tags
  */
+@TypeCapability(inputs = {
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
+})
 public class POSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

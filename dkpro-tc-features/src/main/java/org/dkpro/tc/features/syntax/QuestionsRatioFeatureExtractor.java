@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -35,6 +36,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 /**
  * Extracts the ratio of questions (indicated by a single question mark at the end) to total sentences.
  */
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence"
+})
 public class QuestionsRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -48,7 +51,7 @@ public class QuestionsRatioFeatureExtractor
     {
 
         int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
-        String text = jcas.getDocumentText().substring(target.getBegin(), target.getEnd());
+        String text = target.getCoveredText();
 
         Pattern p = Pattern.compile("\\?[^\\?]"); // don't count multiple question marks as multiple
                                                   // questions
