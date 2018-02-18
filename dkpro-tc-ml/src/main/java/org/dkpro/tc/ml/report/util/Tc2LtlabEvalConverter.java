@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
 import de.unidue.ltl.evaluation.core.EvaluationData;
 
 public class Tc2LtlabEvalConverter {
@@ -45,6 +47,8 @@ public class Tc2LtlabEvalConverter {
 	 */
 	public static EvaluationData<String> convertSingleLabelModeId2Outcome(File id2OutcomeFile) throws Exception {
 
+		System.out.println(FileUtils.readLines(id2OutcomeFile, "utf-8"));
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
 		reader.readLine(); // pop first line
@@ -222,7 +226,6 @@ public class Tc2LtlabEvalConverter {
 	private static Map<String, String> buildMappingFromHeader(String header) throws UnsupportedEncodingException {
 
 		header = header.replaceAll("#labels", "").trim();
-		System.out.println(header);
 		Map<String, String> map = new HashMap<>();
 
 		String[] split = header.split(" ");
