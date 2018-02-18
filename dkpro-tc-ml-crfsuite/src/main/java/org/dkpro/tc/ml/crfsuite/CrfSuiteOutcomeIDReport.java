@@ -75,7 +75,7 @@ public class CrfSuiteOutcomeIDReport
 
         File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 
-        String header = "#" + "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
+        String header = "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
                 + "THRESHOLD" + "\n" + "#" + sb.toString();
 
         OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");

@@ -49,14 +49,13 @@ public class BasicResultReport
                 Constants.ID_OUTCOME_KEY);
         
         String learningMode = getDiscriminator(getContext().getStorageService(), getContext().getId(), DIM_LEARNING_MODE);
-        
-        Properties pa = new SortedKeyProperties();
+
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile, learningMode);
         
+        Properties pa = new SortedKeyProperties();
         for(Entry<String, String> e : resultMap.entrySet()){
         	pa.setProperty(e.getKey(), e.getValue());
         }
-
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
         FileOutputStream fileOutputStream = new FileOutputStream(key);
         pa.store(fileOutputStream, "Results");

@@ -17,13 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.core.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -31,9 +28,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 /**
  * Utility methods needed in classification tasks (loading instances,

@@ -228,9 +228,11 @@ public class Tc2LtlabEvalConverter {
 		String[] split = header.split(" ");
 		for (String entry : split) {
 			int indexOf = entry.indexOf("=");
+			checkIndexRange(entry, indexOf);
 			String key = entry.substring(0, indexOf).trim();
-			String val = URLDecoder.decode(entry.substring(indexOf + 1).trim(), "utf-8");
-			map.put(key, val);
+			String value = entry.substring(indexOf + 1).trim();
+			String decodedValue = URLDecoder.decode(value, "utf-8");
+			map.put(key, decodedValue);
 		}
 
 		return map;
