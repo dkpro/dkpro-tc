@@ -224,6 +224,8 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		case Constants.FM_UNIT:
 			processUnit(jcas);
 			break;
+		default:
+			throw new IllegalStateException("Feature mode ["+featureMode+"] is unknown");
 		}
 	}
 

@@ -75,7 +75,7 @@ public class MekaDataWriter implements DataWriter, Constants {
 		this.outputFolder = outputFolder;
 		this.useSparse = useSparse;
 		this.applyWeighting = applyWeighting;
-		this.outcomes = outcomes;
+		this.outcomes = Arrays.copyOf(outcomes, outcomes.length);
 
 		arffTarget = new File(outputFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 

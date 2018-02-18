@@ -75,7 +75,7 @@ public class WekaDataWriter implements DataWriter, Constants {
 		this.outputFolder = outputFolder;
 		this.useSparse = useSparse;
 		this.applyWeighting = applyWeighting;
-		this.outcomes = outcomes;
+		this.outcomes = Arrays.copyOf(outcomes, outcomes.length);
 
 		arffTarget = new File(outputFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
@@ -92,11 +92,15 @@ public class WekaDataWriter implements DataWriter, Constants {
 
 		isRegression = learningMode.equals(LM_REGRESSION);
 
-		if (!arffTarget.exists()) {
-			arffTarget.mkdirs();
-			arffTarget.createNewFile();
-		}
+		createFolder(arffTarget);
+	}
 
+	private void createFolder(File arffTarget) throws IOException {
+		if (!arffTarget.exists()) {
+			if(!arffTarget.mkdirs()){
+				throw new IllegalStateException("Could not create folder(s) ["+arffTarget.getParentFile().getAbsolutePath()+"]");
+			}
+		}		
 	}
 
 	@Override
@@ -290,7 +294,6 @@ public class WekaDataWriter implements DataWriter, Constants {
 
 		masterInstance = new Instances(WekaUtils.RELATION_NAME, attributeStore.getAttributes(), instances.size());
 		masterInstance.setClass(outcomeAttribute);
-		// FIXME: darf man vermutlich auch nur einmal machen
 		saver.setInstances(masterInstance);
 
 		return masterInstance;

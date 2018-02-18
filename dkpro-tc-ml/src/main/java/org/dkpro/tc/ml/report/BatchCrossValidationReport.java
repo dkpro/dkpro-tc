@@ -36,8 +36,6 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
  * 
  */
 public class BatchCrossValidationReport extends TcBatchReportBase implements Constants {
-	boolean softEvaluation = true;
-	boolean individualLabelMeasures = false;
 
 	public BatchCrossValidationReport() {
 		// required by groovy

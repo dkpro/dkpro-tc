@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -272,11 +273,11 @@ public abstract class TcBatchReportBase extends BatchReportBase implements Const
 	 *            the storage
 	 * @param contextId
 	 *            id of the context in which to look
-	 * @param key
+	 * @param constant
 	 *            the key that is to be found
 	 * @return value of the key if found otherwise null
 	 */
-	public String getDiscriminator(StorageService store, String contextId, String key) {
+	public String getDiscriminator(StorageService store, String contextId, String constant) {
 
 		Map<String, String> map = store
 				.retrieveBinary(contextId, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
@@ -284,17 +285,19 @@ public abstract class TcBatchReportBase extends BatchReportBase implements Const
 		if (map == null) {
 			return null;
 		}
-
-		for (String k : map.keySet()) {
-			if (k.endsWith("|" + key)) {
-				String result = map.get(k);
-				if (result == null || result.equals("null")){
+		
+		for(Entry<String, String> e : map.entrySet()){
+			String k = e.getKey();
+			String v = e.getValue();
+			
+			if (k.endsWith("|" + constant)){
+				if (v == null || v.equals("null")){
 					return null;
 				}
-				return result;
+				return v;
 			}
 		}
-
+		
 		return null;
 	}
 

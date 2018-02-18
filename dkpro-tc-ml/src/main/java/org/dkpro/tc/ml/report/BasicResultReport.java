@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.report;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.dkpro.lab.storage.StorageService;
@@ -51,8 +52,9 @@ public class BasicResultReport
         
         Properties pa = new SortedKeyProperties();
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile, learningMode);
-        for(String k : resultMap.keySet()){
-        	pa.setProperty(k, resultMap.get(k));
+        
+        for(Entry<String, String> e : resultMap.entrySet()){
+        	pa.setProperty(e.getKey(), e.getValue());
         }
 
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);

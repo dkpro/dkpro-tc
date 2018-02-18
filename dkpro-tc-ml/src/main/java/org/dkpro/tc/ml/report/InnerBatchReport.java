@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -50,7 +51,6 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 	public void execute() throws Exception {
 		StorageService store = getContext().getStorageService();
 		Properties prop = new Properties();
-		Set<Object> discriminatorsToExclude = new HashSet<Object>();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
 		Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
@@ -79,11 +79,12 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 				File id2outcomeFile = store.locateKey(subId, Constants.ID_OUTCOME_KEY);
 				id2outcomeFiles.add(id2outcomeFile);
 
-				for (Object key : discriminatorsMap.keySet()) {
-					if (prop.containsKey(key) && !((String) prop.get(key)).equals(discriminatorsMap.get(key))) {
-						discriminatorsToExclude.add(key);
-					}
-					prop.setProperty((String) key, discriminatorsMap.get((String) key));
+				
+				for(Entry<String, String> e : discriminatorsMap.entrySet()){
+					String key = e.getKey();
+					String value = e.getValue();
+					
+					prop.setProperty(key, value);
 				}
 			}
 		}

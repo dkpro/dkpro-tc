@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -68,7 +68,17 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 	public void setOutputFolder(File outputFolder) {
 		this.outputFolder = outputFolder;
-		this.outputFolder.mkdirs();
+		
+		createFolder(outputFolder);
+	}
+
+	private static void createFolder(File outputFolder) {
+		if(!outputFolder.exists()){
+			boolean mkdirs = outputFolder.mkdirs();
+			if(!mkdirs){
+				throw new IllegalStateException("Could not create folder ["+ outputFolder.getParentFile().getAbsolutePath() + "]");
+			}
+		}		
 	}
 
 	protected void writeModelConfiguration(TaskContext aContext) throws Exception {
@@ -251,8 +261,10 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		String featureClassName = featureString.substring(featureString.lastIndexOf(".") + 1) + ".class";
 
 		String folderPath = modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_CLASS_FOLDER + "/" + packagePath + "/";
-		new File(folderPath).mkdirs();
-		return new FileOutputStream(new File(folderPath + featureClassName));
+		
+		File f = new File(folderPath);
+		createFolder(f);
+		return new FileOutputStream(new File(f, featureClassName));
 	}
 
 	private void copyLuceneMetaResourcesAndGetOverrides(TaskContext aContext, TcFeature f, File aOutputFolder)
@@ -301,9 +313,11 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 	private static void writeOverrides(File aOutputFolder, Map<String, Object> override, String target)
 			throws IOException {
+		
 		StringBuilder sb = new StringBuilder();
-		for (String k : override.keySet()) {
-			sb.append(k + "=" + override.get(k));
+		
+		for(Entry<String, Object> e : override.entrySet()){
+			sb.append(e.getKey() + "=" + e.getValue());
 		}
 
 		FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
@@ -312,8 +326,12 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	private void copyToTargetLocation(File source, File destination) throws IOException {
 
 		if (source.isDirectory()) {
-			if (!destination.exists()) {
-				destination.mkdir();
+			createFolder(destination);
+			
+			String[] filelist = source.list();
+			
+			if(filelist == null){
+				throw new NullPointerException("Retrieved file list of folder [" + source.getAbsolutePath() +"] is null");
 			}
 
 			for (String file : source.list()) {

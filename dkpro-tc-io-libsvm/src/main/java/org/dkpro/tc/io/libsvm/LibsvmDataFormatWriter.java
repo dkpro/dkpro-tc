@@ -55,11 +55,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 
 	private File outputDirectory;
 
-	boolean useSparse;
-
 	private String learningMode;
-
-	boolean applyWeighting;
 
 	private File classifierFormatOutputFile;
 
@@ -251,9 +247,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
 			String[] outcomes) throws Exception {
 		this.outputDirectory = outputDirectory;
-		this.useSparse = useSparse;
 		this.learningMode = learningMode;
-		this.applyWeighting = applyWeighting;
 		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
 		index2instanceId = new HashMap<>();

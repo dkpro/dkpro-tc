@@ -35,8 +35,6 @@ public abstract class LibsvmDataFormatSerializeModelConnector extends ModelSeria
 	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
 	protected List<Object> classificationArguments;
 
-	boolean trainModel = true;
-
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
 		trainAndStoreModel(aContext);

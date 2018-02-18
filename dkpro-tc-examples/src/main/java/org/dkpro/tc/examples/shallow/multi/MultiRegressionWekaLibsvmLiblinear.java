@@ -69,8 +69,8 @@ public class MultiRegressionWekaLibsvmLiblinear implements Constants {
 		ParameterSpace pSpace = getParameterSpace();
 
 		MultiRegressionWekaLibsvmLiblinear experiment = new MultiRegressionWekaLibsvmLiblinear();
-		experiment.runTrainTest(pSpace);
-//		 experiment.runCrossValidation(pSpace);
+//		experiment.runTrainTest(pSpace);
+		 experiment.runCrossValidation(pSpace);
 	}
 
 	@SuppressWarnings("unchecked")
