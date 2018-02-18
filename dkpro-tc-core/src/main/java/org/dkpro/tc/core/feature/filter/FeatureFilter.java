@@ -32,18 +32,18 @@ public interface FeatureFilter
      * @throws Exception
      * 			in case of error
      */
-    public void applyFilter(File tmpFeatureFile) throws Exception;
+    void applyFilter(File tmpFeatureFile) throws Exception;
 
     /**
      * Whether the filter is applicable on training instances
      * @return boolean value
      */
-    public boolean isApplicableForTraining();
+    boolean isApplicableForTraining();
 
     /**
      * Whether the filter is applicable on testing instances
      * @return boolean value
      */
-    public boolean isApplicableForTesting();
+    boolean isApplicableForTesting();
 
 }
