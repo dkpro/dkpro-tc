@@ -19,8 +19,13 @@ package org.dkpro.tc.features.window;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+
+import org.apache.uima.fit.descriptor.TypeCapability;
+
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"})
 public class WordShapeExtractor extends WindowFeatureExtractor<Token>{
 
 	@Override

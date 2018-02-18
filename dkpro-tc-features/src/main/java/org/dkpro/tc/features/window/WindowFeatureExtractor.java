@@ -58,11 +58,6 @@ public abstract class WindowFeatureExtractor<T extends Annotation> extends Featu
 
 	protected abstract String getFeatureValue(T a);
 
-	// protected String getTokenText(Annotation a){
-	// String f = a.getType().getFeatureByBaseName("stem").toString();
-	// return f;
-	// }
-
 	@Override
 	public Set<Feature> extract(JCas jCas, TextClassificationTarget textClassificationUnit)
 			throws TextClassificationException {

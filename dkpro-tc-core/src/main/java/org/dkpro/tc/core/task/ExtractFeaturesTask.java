@@ -150,6 +150,8 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants {
 		// extractors
 		try {
 			requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
+			int a=0;
+			a++;
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}

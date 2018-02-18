@@ -17,8 +17,12 @@
  ******************************************************************************/
 package org.dkpro.tc.features.window;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
+
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"})
 public class POSExtractor extends WindowFeatureExtractor<POS>{
 
 	@Override

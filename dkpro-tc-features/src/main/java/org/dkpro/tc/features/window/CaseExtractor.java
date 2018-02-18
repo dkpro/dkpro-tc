@@ -18,8 +18,12 @@
 package org.dkpro.tc.features.window;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.uima.fit.descriptor.TypeCapability;
+
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"})
 public class CaseExtractor extends WindowFeatureExtractor<Token>{
 
 	@Override

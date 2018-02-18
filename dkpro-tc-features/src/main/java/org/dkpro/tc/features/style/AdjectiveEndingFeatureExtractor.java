@@ -20,6 +20,7 @@ package org.dkpro.tc.features.style;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
@@ -43,6 +44,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
  * 
  * Output is multiplied by 100 to avoid too small numbers.
  */
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
+})
 public class AdjectiveEndingFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

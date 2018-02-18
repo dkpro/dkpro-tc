@@ -19,6 +19,7 @@ package org.dkpro.tc.features.twitter;
 
 import java.util.Set;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -43,6 +44,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * </pre>
  * 
  */
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"})
 public class EmoticonRatio
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

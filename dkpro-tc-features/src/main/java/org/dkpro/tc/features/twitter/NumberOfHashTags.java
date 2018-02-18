@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
@@ -32,6 +33,8 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 /**
  * A feature extracting the number of hashtags in a tweet.
  */
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"})
 public class NumberOfHashTags
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

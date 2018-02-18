@@ -20,6 +20,7 @@ package org.dkpro.tc.features.entityrecognition;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -37,6 +38,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 /**
  * Extracts the ratio of named entities per sentence
  */
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NamedEntityPerSentenceRatio
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

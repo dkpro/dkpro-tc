@@ -17,9 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.features.window;
 
+import org.apache.uima.fit.descriptor.TypeCapability;
+
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
+@TypeCapability(inputs = { 
+"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma"})
 public class LemmaTextExtractor extends WindowFeatureExtractor<Token>{
 
 	@Override
