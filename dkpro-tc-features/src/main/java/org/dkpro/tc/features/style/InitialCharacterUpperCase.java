@@ -38,20 +38,15 @@ public class InitialCharacterUpperCase
     /**
      * Public name of the feature "Initial character upper case"
      */
-    public static final String INITIAL_CH_UPPER_CASE = "InitialCharacterUpperCaseUFE";
+    public static final String FEATURE_NAME = "InitialCharacterUpperCaseUFE";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
         throws TextClassificationException
     {
-        String token = classificationUnit.getCoveredText();
+        String token = target.getCoveredText();
 
-        boolean bool = false;
-        if (Character.isUpperCase(token.charAt(0))) {
-            return new Feature(INITIAL_CH_UPPER_CASE, !bool, FeatureType.BOOLEAN).asSet();
-        }
-        else {
-            return new Feature(INITIAL_CH_UPPER_CASE, bool, FeatureType.BOOLEAN).asSet();
-        }
+        boolean bool = Character.isUpperCase(token.charAt(0));
+		return new Feature(FEATURE_NAME, bool ? 1.0 : 0.0, bool == false, FeatureType.BOOLEAN).asSet();
     }
 }
