@@ -25,20 +25,20 @@ import org.dkpro.lab.task.impl.TaskBase;
  */
 public interface TcDeepLearningAdapter
 {
-    static final String PREPARATION_FOLDER = "preparationFolder";
+    String PREPARATION_FOLDER = "preparationFolder";
 
     /*
      * Usually the init-test task to retrieve that document/instance N was document/instance
      * ABC.txt/walking
      */
-    static final String TARGET_ID_MAPPING_TRAIN = "targetIdFolderTrain";
-    static final String TARGET_ID_MAPPING_TEST = "targetIdFolderTest";
+    String TARGET_ID_MAPPING_TRAIN = "targetIdFolderTrain";
+    String TARGET_ID_MAPPING_TEST = "targetIdFolderTest";
 
-    static final String EMBEDDING_FOLDER = "embeddingFolder";
+    String EMBEDDING_FOLDER = "embeddingFolder";
 
-    static final String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
+    String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
     
-	static final String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
+	String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
 
 
     /**

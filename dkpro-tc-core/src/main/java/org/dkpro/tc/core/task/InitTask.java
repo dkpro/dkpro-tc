@@ -27,7 +27,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
@@ -136,8 +135,7 @@ public class InitTask
         // special connector that just checks whether there are no instances and outputs a
         // meaningful error message then
         // should be added before preprocessing
-        AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory
-                .createEngineDescription(PreprocessConnector.class);
+        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(PreprocessConnector.class);
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
@@ -163,13 +161,14 @@ public class InitTask
                 createEngineDescription(AssignIdConnector.class),
 
         // tc pre validity check
-                getPreValidityCheckEngine(aContext), emptyProblemChecker,
+                getPreValidityCheckEngine(), 
+                emptyProblemChecker,
 
         // user preprocessing
                 preprocessing,
 
         // tc post validity check
-                getPostValidityCheckEngine(aContext),
+                getPostValidityCheckEngine(),
                 
 		// collects the outcomes
 				createEngineDescription(OutcomeCollector.class, OutcomeCollector.PARAM_TARGET_FOLDER,
@@ -179,7 +178,7 @@ public class InitTask
                 xmiWriter);
     }
 
-    private AnalysisEngineDescription getPreValidityCheckEngine(TaskContext aContext)
+    private AnalysisEngineDescription getPreValidityCheckEngine()
         throws ResourceInitializationException
     {
         // check mandatory dimensions
@@ -208,7 +207,7 @@ public class InitTask
     }
 
     private Object getFeatureExtractorNames(
-            List<TcFeature> featureExtractors2)
+            List<TcFeature> featureExtractors)
     {
         String[] featureExtractorNames = new String[featureExtractors.size()];
 
@@ -223,12 +222,12 @@ public class InitTask
             else {
                 implName = featureExtractors.get(i).getActualValue().getImplementationName();
             }
-            featureExtractorNames[i] = (implName);
+            featureExtractorNames[i] = implName;
         }
         return featureExtractorNames;
     }
 
-    private AnalysisEngineDescription getPostValidityCheckEngine(TaskContext aContext)
+    private AnalysisEngineDescription getPostValidityCheckEngine()
         throws ResourceInitializationException
     {
         List<Object> parameters = new ArrayList<Object>();

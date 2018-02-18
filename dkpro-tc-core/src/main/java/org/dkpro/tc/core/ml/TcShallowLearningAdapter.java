@@ -35,17 +35,17 @@ public interface TcShallowLearningAdapter
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
      */
-    public ExecutableTaskBase getTestTask();
+    ExecutableTaskBase getTestTask();
 
     /**
      * @return The data writer class that needs to be used with the corresponding ML framework
      */
-    public Class<? extends DataWriter> getDataWriterClass();
+    Class<? extends DataWriter> getDataWriterClass();
 
     /**
      * @return The class of the load model connector to be used with this ML framework
      */
-    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass();
+    Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass();
 
     /**
      * This report is always added to {@code testTask} reports by default in
@@ -53,7 +53,7 @@ public interface TcShallowLearningAdapter
      *
      * @return The report that collects the outcomeId to prediction values.
      */
-    public Class<? extends ReportBase> getOutcomeIdReportClass();
+    Class<? extends ReportBase> getOutcomeIdReportClass();
 
     /**
      * @param  files
@@ -64,19 +64,19 @@ public interface TcShallowLearningAdapter
      * 			data type
      * @return The fold dimension bundle for CV
      */
-    public <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,
+    <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,
             int folds);
 
     /**
      * @return
      * 		Returns a task that deals with serializing a model
      */
-	public Class<? extends ModelSerializationTask> getSaveModelTask();
+	Class<? extends ModelSerializationTask> getSaveModelTask();
 
 	/**
 	 * 
 	 * @return
 	 * 		boolean value wheter sparse features shall be used or not
 	 */
-	public boolean useSparseFeatures();
+	boolean useSparseFeatures();
 }
