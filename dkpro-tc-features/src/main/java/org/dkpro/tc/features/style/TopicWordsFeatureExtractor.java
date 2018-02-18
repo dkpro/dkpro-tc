@@ -104,7 +104,7 @@ public class TopicWordsFeatureExtractor
         double numTokens = tokens.size();
         // name the feature same as wordlist
         return Arrays.asList(new Feature(prefix + wordListName,
-                numTokens > 0 ? (wordcount / numTokens) : 0, FeatureType.NUMERIC));
+                numTokens > 0 ? wordcount / numTokens : 0, FeatureType.NUMERIC));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
@@ -66,7 +65,7 @@ public class ContextualityMeasureFeatureExtractor
     {
         Set<Feature> featSet = new HashSet<Feature>();
 
-        double total = JCasUtil.selectCovered(jcas, POS.class, aTarget).size();
+        double total = selectCovered(jcas, POS.class, aTarget).size();
         double noun = selectCovered(jcas, POS_NOUN.class, aTarget).size() / total;
         double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
         double prep = selectCovered(jcas, POS_ADP.class, aTarget).size() / total;
