@@ -224,7 +224,7 @@ public class ValidityCheckConnector
             FeatureExtractorResource_ImplBase featExtC)
                 throws AnalysisEngineProcessException
     {
-        if (featExtC instanceof FeatureExtractor && (featExtC instanceof PairFeatureExtractor)) {
+        if (featExtC instanceof FeatureExtractor && featExtC instanceof PairFeatureExtractor) {
             throw new AnalysisEngineProcessException(new TextClassificationException(
                     featExt + ": Feature Extractors need to define a unique type."));
         }
