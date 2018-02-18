@@ -98,32 +98,32 @@ public class InstanceExtractor implements Constants {
 
 			List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(jcas, TextClassificationTarget.class,
 					seq);
-			for (TextClassificationTarget target : seqTargets) {
+			for (TextClassificationTarget aTarget : seqTargets) {
 
-				target.setId(unitId++);
+				aTarget.setId(unitId++);
 
 				Instance instance = new Instance();
 
 				if (addInstanceId) {
-					instance.addFeature(InstanceIdFeature.retrieve(jcas, target, sequenceId));
+					instance.addFeature(InstanceIdFeature.retrieve(jcas, aTarget, sequenceId));
 				}
 
 				// execute feature extractors and add features to instance
 
 				for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
 					if (useSparse) {
-						instance.addFeatures(getSparse(jcas, target, featExt));
+						instance.addFeatures(getSparse(jcas, aTarget, featExt));
 					} else {
-						instance.addFeatures(getDense(jcas, target, featExt));
+						instance.addFeatures(getDense(jcas, aTarget, featExt));
 					}
 				}
 
 				// set and write outcome label(s)
-				instance.setOutcomes(getOutcomes(jcas, target));
-				instance.setWeight(getWeight(jcas, target));
+				instance.setOutcomes(getOutcomes(jcas, aTarget));
+				instance.setWeight(getWeight(jcas, aTarget));
 				instance.setJcasId(jcasId);
 				instance.setSequenceId(sequenceId);
-				instance.setSequencePosition(target.getId());
+				instance.setSequencePosition(aTarget.getId());
 
 				instances.add(instance);
 			}
@@ -139,12 +139,12 @@ public class InstanceExtractor implements Constants {
 		int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
 
 		Collection<TextClassificationTarget> targets = JCasUtil.select(jcas, TextClassificationTarget.class);
-		for (TextClassificationTarget target : targets) {
+		for (TextClassificationTarget aTarget : targets) {
 
 			Instance instance = new Instance();
 
 			if (addInstanceId) {
-				Feature feat = InstanceIdFeature.retrieve(jcas, target);
+				Feature feat = InstanceIdFeature.retrieve(jcas, aTarget);
 				instance.addFeature(feat);
 			}
 
@@ -156,18 +156,18 @@ public class InstanceExtractor implements Constants {
 							+ FeatureExtractor.class.getName() + "]: " + featExt.getResourceName());
 				}
 				if (supportSparseFeatures) {
-					instance.addFeatures(getSparse(jcas, target, featExt));
+					instance.addFeatures(getSparse(jcas, aTarget, featExt));
 				} else {
-					instance.addFeatures(getDense(jcas, target, featExt));
+					instance.addFeatures(getDense(jcas, aTarget, featExt));
 				}
 			}
 
 			// set and write outcome label(s)
-			instance.setOutcomes(getOutcomes(jcas, target));
-			instance.setWeight(getWeight(jcas, target));
+			instance.setOutcomes(getOutcomes(jcas, aTarget));
+			instance.setWeight(getWeight(jcas, aTarget));
 			instance.setJcasId(jcasId);
 			// instance.setSequenceId(sequenceId);
-			instance.setSequencePosition(target.getId());
+			instance.setSequencePosition(aTarget.getId());
 
 			instances.add(instance);
 		}

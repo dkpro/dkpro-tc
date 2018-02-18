@@ -64,7 +64,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
     {
 
         double able = 0;
@@ -78,7 +78,7 @@ public class AdjectiveEndingFeatureExtractor
         double ly = 0;
 
         int n = 0;
-        for (POS_ADJ adj : JCasUtil.selectCovered(jcas, POS_ADJ.class, target)) {
+        for (POS_ADJ adj : JCasUtil.selectCovered(jcas, POS_ADJ.class, aTarget)) {
             n++;
 
             String text = adj.getCoveredText().toLowerCase();

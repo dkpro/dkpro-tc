@@ -43,6 +43,6 @@ public interface FeatureExtractor
      * @throws TextClassificationException
      *         if feature extraction failed
      */
-    Set<Feature> extract(JCas view, TextClassificationTarget target)
+    Set<Feature> extract(JCas view, TextClassificationTarget aTarget)
         throws TextClassificationException;
 }

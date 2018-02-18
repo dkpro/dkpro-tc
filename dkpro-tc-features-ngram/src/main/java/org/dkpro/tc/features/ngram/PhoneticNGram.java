@@ -49,13 +49,13 @@ public class PhoneticNGram
 {
     
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentNgrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas,
-                target, ngramMinN, ngramMaxN);
+        		aTarget, ngramMinN, ngramMaxN);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {

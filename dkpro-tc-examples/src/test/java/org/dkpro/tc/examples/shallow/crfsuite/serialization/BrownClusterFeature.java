@@ -68,10 +68,10 @@ public class BrownClusterFeature
         return true;
     }
 
-    public Set<Feature> extract(JCas aJcas, TextClassificationTarget aClassificationUnit)
+    public Set<Feature> extract(JCas aJcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        String unit = aClassificationUnit.getCoveredText().toLowerCase();
+        String unit = aTarget.getCoveredText().toLowerCase();
         Set<Feature> features = createFeatures(unit);
 
         return features;

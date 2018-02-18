@@ -44,9 +44,9 @@ public class DocumentModeAnnotator
     {
         if (featureMode.equals(Constants.FM_DOCUMENT)) {
             if (!JCasUtil.exists(aJCas, TextClassificationTarget.class)) {
-                TextClassificationTarget target = new TextClassificationTarget(aJCas, 0,
+                TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0,
                         aJCas.getDocumentText().length());
-                target.addToIndexes();
+                aTarget.addToIndexes();
             }
         }
     }

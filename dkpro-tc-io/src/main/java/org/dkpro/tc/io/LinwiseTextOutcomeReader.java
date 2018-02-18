@@ -94,8 +94,8 @@ public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplB
 	}
 
 	protected void setTextClassificationTarget(JCas aJCas, int begin, int end) {
-		TextClassificationTarget target = new TextClassificationTarget(aJCas, begin, end);
-		target.addToIndexes();
+		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
+		aTarget.addToIndexes();
 	}
 
 	protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end) throws IOException {

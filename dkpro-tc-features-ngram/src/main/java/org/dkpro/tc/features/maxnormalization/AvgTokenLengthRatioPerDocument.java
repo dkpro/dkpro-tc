@@ -46,13 +46,13 @@ public class AvgTokenLengthRatioPerDocument extends MaximumNormalizationExtracto
 	public static final String FEATURE_NAME = "NumberOfCharsPerTokenRatio";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
 		
 		double avgTokenLen=0.0;
-		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, target);
+		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
 		for(Token t : tokens){
 			avgTokenLen += t.getCoveredText().length();
 		}

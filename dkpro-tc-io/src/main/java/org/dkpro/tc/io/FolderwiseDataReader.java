@@ -64,8 +64,8 @@ public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase 
 	}
 
 	protected void setTextClassificationTarget(JCas aJCas, Resource currentFile, int begin, int end) {
-		TextClassificationTarget target = new TextClassificationTarget(aJCas, begin, end);
-		target.addToIndexes();
+		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
+		aTarget.addToIndexes();
 	}
 
 	protected void setTextClassificationOutcome(JCas aJCas, Resource currentFile, int begin, int end)

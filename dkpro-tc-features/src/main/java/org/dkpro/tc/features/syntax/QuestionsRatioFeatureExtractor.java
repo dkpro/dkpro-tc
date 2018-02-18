@@ -46,12 +46,12 @@ public class QuestionsRatioFeatureExtractor
     public static final String FN_QUESTION_RATIO = "QuestionRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
-        int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, target).size();
-        String text = target.getCoveredText();
+        int nrOfSentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget).size();
+        String text = aTarget.getCoveredText();
 
         Pattern p = Pattern.compile("\\?[^\\?]"); // don't count multiple question marks as multiple
                                                   // questions

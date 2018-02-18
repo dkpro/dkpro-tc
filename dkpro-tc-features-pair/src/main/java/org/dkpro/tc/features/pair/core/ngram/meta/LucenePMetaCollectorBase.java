@@ -57,10 +57,10 @@ public abstract class LucenePMetaCollectorBase
         FrequencyDistribution<String> view2NGrams;
         FrequencyDistribution<String> documentNGrams;
         try {
-            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-            view1NGrams = getNgramsFDView1(view1,target1);
-            view2NGrams = getNgramsFDView2(view2,target2);
+            TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+            view1NGrams = getNgramsFDView1(view1,aTarget1);
+            view2NGrams = getNgramsFDView2(view2,aTarget2);
             documentNGrams = getNgramsFD(jcases);
         }
         catch (TextClassificationException e) {
@@ -93,10 +93,10 @@ public abstract class LucenePMetaCollectorBase
 	protected abstract FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException;
 
-    protected abstract FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)
+    protected abstract FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget aTarget)
         throws TextClassificationException;
 
-    protected abstract FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget target)
+    protected abstract FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget aTarget)
         throws TextClassificationException;
 
     protected abstract String getFieldNameView1();

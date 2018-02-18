@@ -61,19 +61,19 @@ public class ContextualityMeasureFeatureExtractor
     public static final String CONTEXTUALITY_MEASURE_FN = "ContextualityMeasure";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> featSet = new HashSet<Feature>();
 
-        double total = JCasUtil.selectCovered(jcas, POS.class, target).size();
-        double noun = selectCovered(jcas, POS_NOUN.class, target).size() / total;
-        double adj = selectCovered(jcas, POS_ADJ.class, target).size() / total;
-        double prep = selectCovered(jcas, POS_ADP.class, target).size() / total;
-        double art = selectCovered(jcas, POS_DET.class, target).size() / total;// !includes determiners
-        double pro = selectCovered(jcas, POS_PRON.class, target).size() / total;
-        double verb = selectCovered(jcas, POS_VERB.class, target).size() / total;
-        double adv = selectCovered(jcas, POS_ADV.class, target).size() / total;
+        double total = JCasUtil.selectCovered(jcas, POS.class, aTarget).size();
+        double noun = selectCovered(jcas, POS_NOUN.class, aTarget).size() / total;
+        double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
+        double prep = selectCovered(jcas, POS_ADP.class, aTarget).size() / total;
+        double art = selectCovered(jcas, POS_DET.class, aTarget).size() / total;// !includes determiners
+        double pro = selectCovered(jcas, POS_PRON.class, aTarget).size() / total;
+        double verb = selectCovered(jcas, POS_VERB.class, aTarget).size() / total;
+        double adv = selectCovered(jcas, POS_ADV.class, aTarget).size() / total;
 
         // noun freq + adj.freq. + prepositions freq. + article freq. - pronoun freq. - verb f. -
         // adverb - interjection + 100

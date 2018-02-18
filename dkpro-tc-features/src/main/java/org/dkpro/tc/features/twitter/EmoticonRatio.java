@@ -52,11 +52,11 @@ public class EmoticonRatio
     implements FeatureExtractor
 {
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, target).size();
-        int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, target).size();
+        int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, aTarget).size();
+        int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, aTarget).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
         return new Feature(EmoticonRatio.class.getSimpleName(), ratio, FeatureType.NUMERIC).asSet();
     }

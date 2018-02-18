@@ -33,7 +33,7 @@ public class NoopFeatureExtractor
 {
 
 	@Override
-	public Set<Feature> extract(JCas view, TextClassificationTarget target) throws TextClassificationException {
+	public Set<Feature> extract(JCas view, TextClassificationTarget aTarget) throws TextClassificationException {
 		return Collections.<Feature>emptySet();
 	}
 

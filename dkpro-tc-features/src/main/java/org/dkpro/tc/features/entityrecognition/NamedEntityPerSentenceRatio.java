@@ -46,16 +46,16 @@ public class NamedEntityPerSentenceRatio
 {
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationTarget target)
+    public Set<Feature> extract(JCas view, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
         Set<Feature> featList = new TreeSet<Feature>();
 
-        int numOrgaNE = JCasUtil.selectCovered(view, Organization.class, target).size();
-        int numPersonNE = JCasUtil.selectCovered(view, Person.class, target).size();
-        int numLocNE = JCasUtil.selectCovered(view, Location.class, target).size();
-        int numSentences = JCasUtil.selectCovered(view, Sentence.class, target).size();
+        int numOrgaNE = JCasUtil.selectCovered(view, Organization.class, aTarget).size();
+        int numPersonNE = JCasUtil.selectCovered(view, Person.class, aTarget).size();
+        int numLocNE = JCasUtil.selectCovered(view, Location.class, aTarget).size();
+        int numSentences = JCasUtil.selectCovered(view, Sentence.class, aTarget).size();
 
         if (numSentences > 0) {
             featList.add(new Feature("NrOfOrganizationEntities", numOrgaNE, FeatureType.NUMERIC));

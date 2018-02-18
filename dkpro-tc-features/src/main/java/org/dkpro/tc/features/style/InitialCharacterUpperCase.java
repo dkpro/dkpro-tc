@@ -41,10 +41,10 @@ public class InitialCharacterUpperCase
     public static final String FEATURE_NAME = "InitialCharacterUpperCaseUFE";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        String token = target.getCoveredText();
+        String token = aTarget.getCoveredText();
 
         boolean bool = Character.isUpperCase(token.charAt(0));
 		return new Feature(FEATURE_NAME, bool ? 1.0 : 0.0, bool == false, FeatureType.BOOLEAN).asSet();

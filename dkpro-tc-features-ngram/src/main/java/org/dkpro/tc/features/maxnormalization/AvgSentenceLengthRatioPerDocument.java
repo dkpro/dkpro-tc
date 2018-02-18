@@ -46,14 +46,14 @@ public class AvgSentenceLengthRatioPerDocument extends MaximumNormalizationExtra
 	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
 
 		double avgLength=0.0;
 		
-		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
 		for (Sentence s : sentences) {
 			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
 			avgLength += getRatio(tokens.size(), maxLen);

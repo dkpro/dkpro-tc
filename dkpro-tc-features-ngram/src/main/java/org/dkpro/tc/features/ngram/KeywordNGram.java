@@ -69,13 +69,13 @@ public class KeywordNGram
     protected Set<String> keywords;
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = KeywordNGramUtils.getDocumentKeywordNgrams(
-                jcas, target, ngramMaxN, ngramMaxN, markSentenceBoundary, markSentenceLocation,
+                jcas, aTarget, ngramMaxN, ngramMaxN, markSentenceBoundary, markSentenceLocation,
                 includeCommas, keywords);
 
         for (String topNgram : topKSet.getKeys()) {

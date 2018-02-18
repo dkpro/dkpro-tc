@@ -91,8 +91,8 @@ public class NGramUtilsTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, text.length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, text.length());
+        aTarget.addToIndexes();
         
         JCasBuilder cb = new JCasBuilder(jcas);
         for (String token : text.split(" ")) {
@@ -100,7 +100,7 @@ public class NGramUtilsTest
         }
         cb.add(0, Sentence.class);
 
-        FrequencyDistribution<String> ngrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas, target, 1, 3);
+        FrequencyDistribution<String> ngrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas, aTarget, 1, 3);
 
         assertEquals(12, ngrams.getN());
         assertTrue(ngrams.contains("I000"));

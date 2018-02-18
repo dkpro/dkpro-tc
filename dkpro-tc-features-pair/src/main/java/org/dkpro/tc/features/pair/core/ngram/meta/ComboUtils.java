@@ -89,9 +89,9 @@ public class ComboUtils
         
         for(JCas view: jcases){
             FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            TextClassificationTarget target = JCasUtil.selectSingle(view, TextClassificationTarget.class);
+            TextClassificationTarget aTarget = JCasUtil.selectSingle(view, TextClassificationTarget.class);
             if (classificationUnit == null) {
-                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,target,
+                oneViewsNgrams = NGramUtils.getDocumentNgrams(view,aTarget,
                         ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords, Token.class);
             }
             else {

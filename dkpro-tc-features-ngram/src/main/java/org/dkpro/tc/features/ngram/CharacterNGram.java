@@ -48,12 +48,12 @@ public class CharacterNGram
 {
 
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC.getAnnotationCharacterNgrams(
-                target, ngramLowerCase, ngramMinN, ngramMaxN, '^', '$');
+        		aTarget, ngramLowerCase, ngramMinN, ngramMaxN, '^', '$');
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentCharNgrams.getKeys().contains(topNgram)) {

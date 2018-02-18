@@ -63,11 +63,11 @@ public class EmoticonRatioTest
 
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        aTarget.addToIndexes();
 
         EmoticonRatio extractor = new EmoticonRatio();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(1, features.size());
 

@@ -46,12 +46,12 @@ public class AvgTokenRatioPerDocument extends MaximumNormalizationExtractorBase 
 	public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
 		
-		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, target);
+		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
 		double ratio = getRatio(tokens.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}

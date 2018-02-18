@@ -57,11 +57,11 @@ public class POSRatioTest
         jcas.setDocumentText("As the emeritus pope leaves the Vatican for the papal residence of Castel Gandolfo – and becomes the first pontiff to resign in 600 years – the operation to choose his successor begins. With the throne of St Peter declared empty and the interregnum formally begun, as many of the 208 cardinals who can make the journey will be expected to travel to the Vatican to help run the church in the absence of a pope.");
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        aTarget.addToIndexes();
 
         POSRatioFeatureExtractor extractor = new POSRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(11, features.size());
 

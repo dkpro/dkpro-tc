@@ -189,12 +189,12 @@ public class LuceneNGramPFE
     	FrequencyDistribution<String> view2Ngrams = null;
     	FrequencyDistribution<String> allNgrams = null;
     	
-    	  TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-          TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+    	  TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+          TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
     	
-        view1Ngrams = NGramUtils.getDocumentNgrams(view1, target1, ngramLowerCase, filterPartialStopwordMatches,
+        view1Ngrams = NGramUtils.getDocumentNgrams(view1, aTarget1, ngramLowerCase, filterPartialStopwordMatches,
                 ngramMinN1, ngramMaxN1, stopwords, Token.class);
-        view2Ngrams = NGramUtils.getDocumentNgrams(view2, target2, ngramLowerCase, filterPartialStopwordMatches,
+        view2Ngrams = NGramUtils.getDocumentNgrams(view2, aTarget2, ngramLowerCase, filterPartialStopwordMatches,
                 ngramMinN2, ngramMaxN2, stopwords, Token.class);
         allNgrams = getViewNgrams(view1, view2);
     	

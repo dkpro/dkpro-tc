@@ -47,14 +47,14 @@ public class WordShapeExtractorTest {
 		jcas.setDocumentText("This is a long story");
 		engine.process(jcas);
 
-		TextClassificationTarget target = new TextClassificationTarget(jcas, 8, 9);
-		target.addToIndexes();
+		TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 8, 9);
+		aTarget.addToIndexes();
 
 		TcFeature feature = TcFeatureFactory.create(WordShapeExtractor.class,
 				WordShapeExtractor.PARAM_NUM_PRECEEDING, 1, WordShapeExtractor.PARAM_NUM_FOLLOWING, 1);
 
 		WordShapeExtractor r = FeatureUtil.createResource(feature);
-		List<Feature> extract = new ArrayList<Feature>(r.extract(jcas, target));
+		List<Feature> extract = new ArrayList<Feature>(r.extract(jcas, aTarget));
 
 		assertEquals(3, extract.size());
 		assertEquals("WordShapeu910u93", extract.get(0).getName());

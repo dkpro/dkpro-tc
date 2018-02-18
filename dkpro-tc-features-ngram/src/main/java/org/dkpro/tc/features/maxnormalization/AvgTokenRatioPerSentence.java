@@ -47,7 +47,7 @@ public class AvgTokenRatioPerSentence extends MaximumNormalizationExtractorBase 
 	public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
 			throws TextClassificationException {
 
 		long maxLen = getMax();

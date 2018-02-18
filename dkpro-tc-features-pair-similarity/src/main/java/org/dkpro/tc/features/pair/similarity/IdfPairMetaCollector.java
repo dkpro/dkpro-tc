@@ -113,10 +113,10 @@ public class IdfPairMetaCollector<T extends Annotation>
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
         throws TextClassificationException
     {
-        TextClassificationTarget target = JCasUtil.selectSingle(jcas,
+        TextClassificationTarget aTarget = JCasUtil.selectSingle(jcas,
                 TextClassificationTarget.class);
         
-        FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, target, true,
+        FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, aTarget, true,
                 false, 1, 1, stopwords, ngramAnnotationType);
         return toReturn;
     }

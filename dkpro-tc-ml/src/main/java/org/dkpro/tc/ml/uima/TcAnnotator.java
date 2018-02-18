@@ -305,8 +305,8 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 
 	private void processDocument(JCas jcas) throws AnalysisEngineProcessException {
 		if (!JCasUtil.exists(jcas, TextClassificationTarget.class)) {
-			TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-			target.addToIndexes();
+			TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+			aTarget.addToIndexes();
 		}
 
 		// we need an outcome annotation to be present

@@ -163,27 +163,27 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 		List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(jcas, TextClassificationTarget.class,
 				sequence);
 		
-		for (TextClassificationTarget target : seqTargets) {
+		for (TextClassificationTarget aTarget : seqTargets) {
 
 			Instance instance = new Instance();
 			if (addInstanceId) {
-				instance.addFeature(InstanceIdFeature.retrieve(jcas, target, sequenceId));
+				instance.addFeature(InstanceIdFeature.retrieve(jcas, aTarget, sequenceId));
 			}
 
 			// execute feature extractors and add features to instance
 			try {
 				for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-					instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, target));
+					instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, aTarget));
 				}
 			} catch (TextClassificationException e) {
 				throw new AnalysisEngineProcessException(e);
 			}
 
 			// set and write outcome label(s)
-			instance.setOutcomes(getOutcomes(jcas, target));
+			instance.setOutcomes(getOutcomes(jcas, aTarget));
 			instance.setJcasId(jcasId);
 			instance.setSequenceId(sequenceId);
-			instance.setSequencePosition(target.getId());
+			instance.setSequencePosition(aTarget.getId());
 
 			instances.add(instance);
 		}

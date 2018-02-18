@@ -53,13 +53,13 @@ public class SkipWordNGram
     protected int skipSize;
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = SkipWordNGramMC.getDocumentSkipNgrams(jcas,
-                target, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
+        		aTarget, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
                 skipSize, stopwords);
 
         for (String topNgram : topKSet.getKeys()) {

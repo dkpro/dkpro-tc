@@ -45,12 +45,12 @@ public class AvgSentenceRatioPerDocument extends MaximumNormalizationExtractorBa
 	public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
 			throws TextClassificationException {
 
 		long maxLen = getMax();
 
-		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, target);
+		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
 		double ratio = getRatio(sentences.size(), maxLen);
 		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
 	}

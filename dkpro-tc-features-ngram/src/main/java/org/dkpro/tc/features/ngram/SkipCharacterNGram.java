@@ -49,10 +49,10 @@ public class SkipCharacterNGram extends LuceneFeatureExtractorBase implements Fe
 	protected int charSkipSize;
 
 	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget target) throws TextClassificationException {
+	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException {
 		Set<Feature> features = new HashSet<Feature>();
 
-		FrequencyDistribution<String> charNgrams = SkipCharacterNGramMC.getCharacterSkipNgrams(jcas, target,
+		FrequencyDistribution<String> charNgrams = SkipCharacterNGramMC.getCharacterSkipNgrams(jcas, aTarget,
 				ngramLowerCase, ngramMinN, ngramMaxN, charSkipSize);
 
 		for (String topNgram : topKSet.getKeys()) {

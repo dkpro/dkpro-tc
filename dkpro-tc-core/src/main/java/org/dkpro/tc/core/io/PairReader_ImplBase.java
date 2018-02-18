@@ -75,8 +75,8 @@ public abstract class PairReader_ImplBase
         view.setDocumentText(text);
         view.setDocumentLanguage(language);
         
-        TextClassificationTarget target = new TextClassificationTarget(view, 0, text.length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(view, 0, text.length());
+        aTarget.addToIndexes();
 
         DocumentMetaData baseMetaData = DocumentMetaData.get(jCas);
         createMetaData(

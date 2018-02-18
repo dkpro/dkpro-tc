@@ -60,7 +60,7 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         if (topicFilePath == null || topicFilePath.isEmpty()) {
@@ -68,7 +68,7 @@ public class TopicWordsFeatureExtractor
         }
         List<String> topics = null;
         Set<Feature> features = new HashSet<Feature>();
-        List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, target));
+        List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, aTarget));
         try {
             topics = FileUtils.readLines(new File(topicFilePath), "utf-8");
             for (String t : topics) {

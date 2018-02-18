@@ -46,8 +46,8 @@ public class NETest
         JCas jcas = engine.newJCas();
         engine.process(jcas);
 
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, 22);
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, 22);
+        aTarget.addToIndexes();
 
         Location l1 = new Location(jcas, 0, 5);
         Person p1 = new Person(jcas, 0, 5);
@@ -62,7 +62,7 @@ public class NETest
 
         NamedEntityPerSentenceRatio extractor = new NamedEntityPerSentenceRatio();
 
-        Set<Feature> features1 = extractor.extract(jcas, target);
+        Set<Feature> features1 = extractor.extract(jcas, aTarget);
         assertEquals(6, features1.size());
 
         testFeatures(features1, 1, 1, 1, 0.5f, 0.5f, 0.5f);

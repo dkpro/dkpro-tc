@@ -104,19 +104,19 @@ public class LuceneKeywordPMetaCollector
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget target)
+    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view1, target, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+                view1, aTarget, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
     
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget target)
+    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view2, target, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+                view2, aTarget, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
     
     @Override

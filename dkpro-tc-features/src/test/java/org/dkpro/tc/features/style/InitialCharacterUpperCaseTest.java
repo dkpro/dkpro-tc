@@ -47,11 +47,11 @@ public class InitialCharacterUpperCaseTest
         jcas.setDocumentText("he Loves it");
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 3, 8);
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 3, 8);
+        aTarget.addToIndexes();
         
         InitialCharacterUpperCase extractor = new InitialCharacterUpperCase();
-        Set<Feature> features = extractor.extract(jcas, target);
+        Set<Feature> features = extractor.extract(jcas, aTarget);
 
         List<Feature> fetList = new ArrayList<>(features);
         Assert.assertEquals(1, features.size());

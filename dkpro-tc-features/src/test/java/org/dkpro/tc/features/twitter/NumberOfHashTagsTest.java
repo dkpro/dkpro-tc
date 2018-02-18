@@ -49,11 +49,11 @@ public class NumberOfHashTagsTest
         jcas.setDocumentText("This is a very #emotional tweet ;-) #icouldcry #ILoveHashTags");
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        aTarget.addToIndexes();
 
         NumberOfHashTags extractor = new NumberOfHashTags();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(1, features.size());
 

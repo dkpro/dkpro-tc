@@ -52,11 +52,11 @@ public class AdjectiveEndingTest
         jcas.setDocumentText("Lovable phenomenal beautiful incredible fantastic gorgeous positive nice good mainly harmless.");
         engine.process(jcas);
         
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        aTarget.addToIndexes();
 
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();
-        Set<Feature> features = extractor.extract(jcas, target);
+        Set<Feature> features = extractor.extract(jcas, aTarget);
 
         Assert.assertEquals(9, features.size());
 

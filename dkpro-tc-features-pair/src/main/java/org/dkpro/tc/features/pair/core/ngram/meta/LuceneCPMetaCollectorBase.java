@@ -54,10 +54,10 @@ public abstract class LuceneCPMetaCollectorBase
         FrequencyDistribution<String> view2NGrams;
         FrequencyDistribution<String> documentNGrams;
         try{
-            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-            view1NGrams = getNgramsFDView1(view1,target1);
-            view2NGrams = getNgramsFDView2(view2, target2);
+            TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+            view1NGrams = getNgramsFDView1(view1,aTarget1);
+            view2NGrams = getNgramsFDView2(view2, aTarget2);
             documentNGrams = getNgramsFD(jcases);
         }catch (TextClassificationException e){
             throw new AnalysisEngineProcessException(e);

@@ -124,15 +124,15 @@ public class CosineFeatureExtractor<T extends Annotation>
     {
         try {
             
-            TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-            TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+            TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+            TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
             
         	//Note: getSimilarity(String, String) is *not* a convenience 
         	// method for getSimilarity(Collection<String>, Collection<String>).
             Set<String> text1 = NGramUtils.getDocumentNgrams(
-                    view1, target1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+                    view1, aTarget1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
             Set<String> text2 = NGramUtils.getDocumentNgrams(
-                    view2, target2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
+                    view2, aTarget2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
             
             double similarity = measure.getSimilarity(text1,
                   text2);

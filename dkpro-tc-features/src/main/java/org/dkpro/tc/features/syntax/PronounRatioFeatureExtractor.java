@@ -54,7 +54,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_YOU_RATIO = "PronounRatioYou";
     
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
@@ -67,7 +67,7 @@ public class PronounRatioFeatureExtractor
         int youCount = 0;
 
         int n = 0;
-        for (POS_PRON pronoun : JCasUtil.selectCovered(jcas, POS_PRON.class, target)) {
+        for (POS_PRON pronoun : JCasUtil.selectCovered(jcas, POS_PRON.class, aTarget)) {
             n++;
 
             String text = pronoun.getCoveredText().toLowerCase();

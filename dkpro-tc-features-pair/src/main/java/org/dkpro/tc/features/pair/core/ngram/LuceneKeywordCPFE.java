@@ -123,11 +123,11 @@ public class LuceneKeywordCPFE
     public Set<Feature> extract(JCas view1, JCas view2)
         throws TextClassificationException
     {
-        TextClassificationTarget target1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-        TextClassificationTarget target2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-    	FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, target1, ngramMinN1, ngramMaxN1,
+        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
+        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
+    	FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, aTarget1, ngramMinN1, ngramMaxN1,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, target2, ngramMinN2, ngramMaxN2,
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, aTarget2, ngramMinN2, ngramMaxN2,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
 
         FrequencyDistribution<String> documentComboNgrams = ComboUtils

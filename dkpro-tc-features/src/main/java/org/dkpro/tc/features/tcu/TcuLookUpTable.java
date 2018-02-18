@@ -53,7 +53,7 @@ public class TcuLookUpTable
 	protected   List<TextClassificationTarget> units = new ArrayList<TextClassificationTarget>();
 
 	public Set<Feature> extract(JCas aView,
-			TextClassificationTarget aClassificationUnit)
+			TextClassificationTarget aTarget)
 			throws TextClassificationException {
 		if (isTheSameDocument(aView)) {
 			return null;

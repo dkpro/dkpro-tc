@@ -104,10 +104,10 @@ public class LuceneNGramPMetaCollector
 
     @Override
     protected FrequencyDistribution<String> getNgramsFDView1(JCas view1,
-            TextClassificationTarget target)
+            TextClassificationTarget aTarget)
                 throws TextClassificationException
     {
-        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, target,
+        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, aTarget,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN,
                 stopwords, Token.class);
         return fd;
@@ -115,10 +115,10 @@ public class LuceneNGramPMetaCollector
 
     @Override
     protected FrequencyDistribution<String> getNgramsFDView2(JCas view2,
-            TextClassificationTarget target)
+            TextClassificationTarget aTarget)
                 throws TextClassificationException
     {
-        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, target,
+        FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, aTarget,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN,
                 stopwords, Token.class);
         return fd;

@@ -44,23 +44,23 @@ public class UnitOutcomeAnnotator
         List<Token> tokens = new ArrayList<Token>(JCasUtil.select(aJCas, Token.class));
 
         for (Token token : tokens) {
-            TextClassificationTarget target = new TextClassificationTarget(aJCas, token.getBegin(),
+            TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, token.getBegin(),
                     token.getEnd());
-            target.setId(tcId++);
-            target.setSuffix(token.getCoveredText());
-            target.addToIndexes();
+            aTarget.setId(tcId++);
+            aTarget.setSuffix(token.getCoveredText());
+            aTarget.addToIndexes();
 
             TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
                     token.getBegin(), token.getEnd());
-            outcome.setOutcome(getTextClassificationOutcome(aJCas, target));
+            outcome.setOutcome(getTextClassificationOutcome(aJCas, aTarget));
             outcome.addToIndexes();
 
         }
     }
 
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget target)
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget aTarget)
     {
-        List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, target);
+        List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, aTarget);
         return posList.get(0).getPosValue();
     }
 

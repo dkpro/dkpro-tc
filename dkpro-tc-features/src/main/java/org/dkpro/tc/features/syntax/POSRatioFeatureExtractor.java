@@ -68,23 +68,23 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
-        double total = selectCovered(jcas, POS.class, target).size();
-        double adj = selectCovered(jcas, POS_ADJ.class, target).size() / total;
-        double adv = selectCovered(jcas, POS_ADV.class, target).size() / total;
-        double art = selectCovered(jcas, POS_DET.class, target).size() / total;
-        double card = selectCovered(jcas, POS_NUM.class, target).size() / total;
-        double conj = selectCovered(jcas, POS_CONJ.class, target).size() / total;
-        double noun = selectCovered(jcas, POS_NOUN.class, target).size() / total;
-        double propNoun = selectCovered(jcas, POS_PROPN.class, target).size() / total;
-        double other = selectCovered(jcas, POS_X.class, target).size() / total;
-        double prep = selectCovered(jcas, POS_ADP.class, target).size() / total;
-        double pron = selectCovered(jcas, POS_PRON.class, target).size() / total;
-        double punc = selectCovered(jcas, POS_PUNCT.class, target).size() / total;
-        double verb = selectCovered(jcas, POS_VERB.class, target).size() / total;
+        double total = selectCovered(jcas, POS.class, aTarget).size();
+        double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
+        double adv = selectCovered(jcas, POS_ADV.class, aTarget).size() / total;
+        double art = selectCovered(jcas, POS_DET.class, aTarget).size() / total;
+        double card = selectCovered(jcas, POS_NUM.class, aTarget).size() / total;
+        double conj = selectCovered(jcas, POS_CONJ.class, aTarget).size() / total;
+        double noun = selectCovered(jcas, POS_NOUN.class, aTarget).size() / total;
+        double propNoun = selectCovered(jcas, POS_PROPN.class, aTarget).size() / total;
+        double other = selectCovered(jcas, POS_X.class, aTarget).size() / total;
+        double prep = selectCovered(jcas, POS_ADP.class, aTarget).size() / total;
+        double pron = selectCovered(jcas, POS_PRON.class, aTarget).size() / total;
+        double punc = selectCovered(jcas, POS_PUNCT.class, aTarget).size() / total;
+        double verb = selectCovered(jcas, POS_VERB.class, aTarget).size() / total;
 
         features.add(new Feature(FN_ADJ_RATIO, adj, FeatureType.NUMERIC));
         features.add(new Feature(FN_ADV_RATIO, adv, FeatureType.NUMERIC));

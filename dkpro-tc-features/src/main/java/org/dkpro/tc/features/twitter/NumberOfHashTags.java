@@ -46,11 +46,11 @@ public class NumberOfHashTags
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Matcher hashTagMatcher = HASHTAG_PATTERN
-                .matcher(jCas.getDocumentText().substring(target.getBegin(), target.getEnd()));
+                .matcher(jCas.getDocumentText().substring(aTarget.getBegin(), aTarget.getEnd()));
         int numberOfHashTags = 0;
         while (hashTagMatcher.find()) {
             numberOfHashTags++;

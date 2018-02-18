@@ -50,13 +50,13 @@ public class WordNGram
 {
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget target)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentNgrams = null;
 
-        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, target, ngramLowerCase,
+        documentNgrams = NGramUtils.getAnnotationNgrams(jcas, aTarget, ngramLowerCase,
                 filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords);
 
         for (String topNgram : topKSet.getKeys()) {

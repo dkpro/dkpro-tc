@@ -57,11 +57,11 @@ public class PronounRatioTest
         jcas.setDocumentText("He is no tester. I am a tester.");
         engine.process(jcas);
 
-        TextClassificationTarget target = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        target.addToIndexes();
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        aTarget.addToIndexes();
         
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, target));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(7, features.size());
 
