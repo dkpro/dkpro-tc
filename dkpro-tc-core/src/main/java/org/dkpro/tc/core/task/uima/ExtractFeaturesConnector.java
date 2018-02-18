@@ -32,6 +32,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.features.Feature;
@@ -144,6 +145,10 @@ public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements 
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		
+		checkRequiredTypes(aJCas);
+		
+		
 		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
 				+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
@@ -165,6 +170,31 @@ public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements 
 			dsw.writeGenericFormat(instances);
 		} else {
 			dsw.writeClassifierFormat(instances);
+		}
+	}
+
+	private void checkRequiredTypes(JCas aJCas) throws AnalysisEngineProcessException {
+
+		if (requiredTypes == null || requiredTypes.isEmpty()) {
+			return;
+		}
+
+		try {
+
+			for (String type : requiredTypes) {
+				@SuppressWarnings("unchecked")
+				Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class.forName(type);
+				boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
+				if(exists){
+					continue;
+				}
+				throw new IllegalStateException("The feature extractor in use require the annotation of the type ["
+						+ type
+						+ "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
+			}
+
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
