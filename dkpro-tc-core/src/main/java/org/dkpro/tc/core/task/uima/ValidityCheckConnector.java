@@ -178,7 +178,7 @@ public class ValidityCheckConnector
         }        
     }
 
-    private void verifyPairMode(String[] featureExtractors2)
+    private void verifyPairMode(String[] featureExtractors)
         throws Exception
     {
         for (String featExt : featureExtractors) {
