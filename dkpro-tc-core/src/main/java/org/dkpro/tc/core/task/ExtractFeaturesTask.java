@@ -209,6 +209,10 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants, Conn
 
 			TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(implName), TypeCapability.class);
 
+			if (annotation == null){
+				continue;
+			}
+			
 			String[] inputs = annotation.inputs();
 			StringBuilder sb = new StringBuilder();
 			sb.append(implName + "|");
