@@ -222,7 +222,7 @@ public class Tc2LtlabEvalConverter {
 	private static Map<String, String> buildMappingFromHeader(String header) throws UnsupportedEncodingException {
 
 		header = header.replaceAll("#labels", "").trim();
-
+		System.out.println(header);
 		Map<String, String> map = new HashMap<>();
 
 		String[] split = header.split(" ");
