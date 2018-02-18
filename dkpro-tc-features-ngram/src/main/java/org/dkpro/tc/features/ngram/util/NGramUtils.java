@@ -91,7 +91,7 @@ public class NGramUtils
      * 
      * @param jcas
      *            a jcas
-     * @param target            
+     * @param aTarget            
      *            target annotation span
      * @param lowerCaseNGrams
      *            lower caseing
