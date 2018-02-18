@@ -26,57 +26,57 @@ public interface ConnectorConstants
     /**
      * Array of feature extractors to be used
      */
-    static final String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
+    String PARAM_FEATURE_EXTRACTORS = "featureExtractors";
 
     /**
      * Array of outcomes
      */
-    static final String PARAM_OUTCOMES = "occurringOutcomes";
+    String PARAM_OUTCOMES = "occurringOutcomes";
     
     /**
      * Array of feature filters to be used
      */
-    static final String PARAM_FEATURE_FILTERS = "featureFilters";
+    String PARAM_FEATURE_FILTERS = "featureFilters";
     
     /**
      * The data writer class to be used for writing features
      */
-    static final String PARAM_DATA_WRITER_CLASS = "dataWriterClass";
+    String PARAM_DATA_WRITER_CLASS = "dataWriterClass";
 
     /**
      * The learning mode, e.g. single-label, multi-label or regression
      */
-    static final String PARAM_LEARNING_MODE = "learningMode";
+    String PARAM_LEARNING_MODE = "learningMode";
 
     /**
      * The feature mode, e.g. document, pair, unit, or sequence
      */
-    static final String PARAM_FEATURE_MODE = "featureMode";
+    String PARAM_FEATURE_MODE = "featureMode";
     
     /**
      * In case of multi-labeling, the threshold used to create bipartitions from rankings
      */
-    static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
+    String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
 
     /**
      * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
      */
-    static final String PARAM_IS_TESTING = "isTesting";
+    String PARAM_IS_TESTING = "isTesting";
     /**
      * Whether to turn on instance weighting.  If true, user should override addweight 
      * in the reader.
      */
-    static final String PARAM_APPLY_WEIGHTING = "applyWeights";
+    String PARAM_APPLY_WEIGHTING = "applyWeights";
     
     /**
      * If a sparse feature representation shall be used
      */
-    static final String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
+    String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
     
     /**
      * If a sparse feature representation shall be used
      */
-    static final String PARAM_REQUIRED_TYPES = "requiredTypes";
+    String PARAM_REQUIRED_TYPES = "requiredTypes";
 
 
 }
