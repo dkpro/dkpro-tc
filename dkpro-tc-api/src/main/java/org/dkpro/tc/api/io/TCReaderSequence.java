@@ -32,7 +32,7 @@ public interface TCReaderSequence
      * 
      * @param jcas
      * 		The JCas containing the outcomes
-     * @param target
+     * @param aTarget
      * 		The target span in which the outcome is located
      * @return
      * 		Set of outcomes as string values
