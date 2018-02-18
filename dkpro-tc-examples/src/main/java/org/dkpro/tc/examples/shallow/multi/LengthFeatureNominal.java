@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 /**
  * Extracts the number of sentences in this classification unit
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class LengthFeatureNominal
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
