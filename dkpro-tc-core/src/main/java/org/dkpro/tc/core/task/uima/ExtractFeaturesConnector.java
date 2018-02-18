@@ -178,19 +178,27 @@ public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements 
 		if (requiredTypes == null || requiredTypes.isEmpty()) {
 			return;
 		}
-
+		
 		try {
 
-			for (String type : requiredTypes) {
-				@SuppressWarnings("unchecked")
-				Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class.forName(type);
-				boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
-				if(exists){
-					continue;
+			for (String entry : requiredTypes) {
+
+				String[] split = entry.split("\\|");
+				
+				String feature=split[0];
+				for (int i = 1; i < split.length; i++) {
+					String type = split[i];
+
+					@SuppressWarnings("unchecked")
+					Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class.forName(type);
+					boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
+					if (exists) {
+						continue;
+					}
+					throw new IllegalStateException("The feature extractor ["+ feature +"] requires the annotation of the type ["
+							+ type
+							+ "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
 				}
-				throw new IllegalStateException("The feature extractor in use require the annotation of the type ["
-						+ type
-						+ "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
 			}
 
 		} catch (Exception e) {

@@ -60,29 +60,6 @@ public class TaskUtils {
 		return (JSONObject) JSONSerializer.toJSON(jsonPath);
 	}
 
-	public static Set<String> getRequiredTypesFromFeatureExtractors(List<ExternalResourceDescription> featureSet)
-			throws Exception {
-		Set<String> requiredTypes = new HashSet<String>();
-
-		for (ExternalResourceDescription element : featureSet) {
-
-			String implName;
-			if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-				implName = ((CustomResourceSpecifier) element.getResourceSpecifier()).getResourceClassName();
-			} else {
-				implName = element.getImplementationName();
-			}
-
-			TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(implName), TypeCapability.class);
-
-			if (annotation != null) {
-				requiredTypes.addAll(Arrays.asList(annotation.inputs()));
-			}
-		}
-
-		return requiredTypes;
-	}
-
 	public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter,
 			String learningMode, String featureMode, boolean useSparseFeatures, boolean addInstanceId,
 			 boolean isTesting, boolean applyWeighting, List<String> filters,

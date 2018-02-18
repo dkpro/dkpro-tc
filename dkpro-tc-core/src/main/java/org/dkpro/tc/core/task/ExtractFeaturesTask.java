@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,8 +33,11 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
+import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
@@ -98,12 +102,6 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants, Conn
 	private TcFeatureSet featureExtractors;
 
 	private boolean isTesting = false;
-	// TODO Issue 121: this is already prepared, but not used
-	// collects annotation types required by FEs (source code annotations need
-	// to be inserted in
-	// each FE)
-	// could be used to automatically configure preprocessing
-	private Set<String> requiredTypes;
 
 	public void setTesting(boolean isTesting) {
 		this.isTesting = isTesting;
@@ -143,7 +141,7 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants, Conn
 				}
 			}
 
-			requiredTypes = TaskUtils.getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
+			Set<String> requiredTypes = getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
 
 			// as feature filters are optional, check for null
 			if (featureFilters == null) {
@@ -194,5 +192,35 @@ public class ExtractFeaturesTask extends UimaTaskBase implements Constants, Conn
 			Collection<String> files = isTesting ? files_validation : files_training;
 			return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS, files);
 		}
+	}
+	
+	private Set<String> getRequiredTypesFromFeatureExtractors(List<ExternalResourceDescription> featureSet)
+			throws Exception {
+
+		Set<String> requirements = new HashSet<>();
+		for (ExternalResourceDescription element : featureSet) {
+
+			String implName;
+			if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+				implName = ((CustomResourceSpecifier) element.getResourceSpecifier()).getResourceClassName();
+			} else {
+				implName = element.getImplementationName();
+			}
+
+			TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(implName), TypeCapability.class);
+
+			String[] inputs = annotation.inputs();
+			StringBuilder sb = new StringBuilder();
+			sb.append(implName + "|");
+			for (int i=0; i < inputs.length; i++){
+				sb.append(inputs[i]);
+				if(i + 1 < inputs.length){
+					sb.append("|");
+				}
+			}
+			requirements.add(sb.toString());
+		}
+
+		return requirements;
 	}
 }
