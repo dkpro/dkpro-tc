@@ -34,10 +34,11 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 public class Tc2LtlabEvalConverter {
 
 	/**
-	 * Loads a single-label DKPro TC id2outcome file into the evaluation data format
+	 * Loads a single-label DKPro TC id2outcome file into the evaluation data
+	 * format
 	 * 
 	 * @param id2OutcomeFile
-	 * 			the id2outcome file
+	 *            the id2outcome file
 	 * @return an evaluation data object
 	 * @throws Exception
 	 *             in case of error
@@ -54,14 +55,15 @@ public class Tc2LtlabEvalConverter {
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			if (line.isEmpty() || line.startsWith("#")) {
+			if (skipLine(line)) {
 				continue;
 			}
 
 			int lastIdx = line.lastIndexOf("=");
-			
+			checkIndexRange(line, lastIdx);
+
 			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx+1);
+			String values = line.substring(lastIdx + 1);
 
 			String[] valSplit = values.split(";");
 			String prediction = map.get(valSplit[0]);
@@ -76,11 +78,16 @@ public class Tc2LtlabEvalConverter {
 		return data;
 	}
 
+	private static boolean skipLine(String line) {
+		return line.trim().isEmpty() || line.startsWith("#");
+	}
+
 	/**
-	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data format
+	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data
+	 * format
 	 * 
 	 * @param id2OutcomeFile
-	 * 			the id2outcome file
+	 *            the id2outcome file
 	 * @return an evaluation data object
 	 * @throws Exception
 	 *             in case of error
@@ -97,13 +104,14 @@ public class Tc2LtlabEvalConverter {
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			if (line.isEmpty() || line.startsWith("#")) {
+			if (skipLine(line)) {
 				continue;
 			}
 
 			int lastIdx = line.lastIndexOf("=");
+			checkIndexRange(line, lastIdx);
 			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx+1);
+			String values = line.substring(lastIdx + 1);
 
 			String[] valSplit = values.split(";");
 
@@ -124,13 +132,13 @@ public class Tc2LtlabEvalConverter {
 	}
 
 	/**
-	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data format.
-	 * The values are not mapped to their label names, the integer representation is
-	 * used instead. This is necessary for some evaluation metrics which work on the
-	 * integer values
+	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data
+	 * format. The values are not mapped to their label names, the integer
+	 * representation is used instead. This is necessary for some evaluation
+	 * metrics which work on the integer values
 	 * 
 	 * @param id2OutcomeFile
-	 * 			the id2outcome file
+	 *            the id2outcome file
 	 * @return an evaluation data object
 	 * @throws Exception
 	 *             in case of error
@@ -147,13 +155,16 @@ public class Tc2LtlabEvalConverter {
 
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			if (line.isEmpty() || line.startsWith("#")) {
+			if (skipLine(line)) {
 				continue;
 			}
 
 			int lastIdx = line.lastIndexOf("=");
+
+			checkIndexRange(line, lastIdx);
+
 			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx+1);
+			String values = line.substring(lastIdx + 1);
 
 			String[] valSplit = values.split(";");
 
@@ -171,6 +182,13 @@ public class Tc2LtlabEvalConverter {
 		reader.close();
 
 		return data;
+	}
+
+	private static void checkIndexRange(String line, int lastIdx) {
+		if (lastIdx >= 0) {
+			return;
+		}
+		throw new IllegalArgumentException("Index became negative when looking for an occurence of [=] in the string: [" + line + "]");
 	}
 
 	private static List<Integer> convertMultiLabelToIntegerArray(String[] vals, Double threshold)
@@ -219,10 +237,11 @@ public class Tc2LtlabEvalConverter {
 	}
 
 	/**
-	 * Loads a regression DKPro TC id2outcome file into the evaluation data format
+	 * Loads a regression DKPro TC id2outcome file into the evaluation data
+	 * format
 	 * 
 	 * @param id2OutcomeFile
-	 * 		the id2outcome file
+	 *            the id2outcome file
 	 * @return an evaluation data object
 	 * @throws Exception
 	 *             in case of error
