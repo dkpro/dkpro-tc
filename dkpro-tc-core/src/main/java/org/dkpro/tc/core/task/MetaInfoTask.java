@@ -286,11 +286,8 @@ public class MetaInfoTask
                         "Only primitive meta collectors currently supported.");
             }
         }
-        else if (aDesc instanceof CustomResourceSpecifier_impl) {
-            // Feature extractors are ok
-        }
-        else {
-            throw new IllegalArgumentException(
+        else if (!(aDesc instanceof CustomResourceSpecifier_impl)) {
+              throw new IllegalArgumentException(
                     "Descriptors of type " + aDesc.getClass() + " not supported.");
         }
 
