@@ -47,8 +47,6 @@ public class Tc2LtlabEvalConverter {
 	 */
 	public static EvaluationData<String> convertSingleLabelModeId2Outcome(File id2OutcomeFile) throws Exception {
 
-		System.out.println(FileUtils.readLines(id2OutcomeFile, "utf-8"));
-		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
 		reader.readLine(); // pop first line
