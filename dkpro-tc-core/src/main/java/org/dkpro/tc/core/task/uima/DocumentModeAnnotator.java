@@ -26,29 +26,27 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 
 /**
- * Document or Pair are a special kind of unit processing in which only one target which spans over
- * the entire text span from 0 to documentTextLength(). If the feature mode is either document or
- * pair we set such an annotation automatically
+ * Document or Pair are a special kind of unit processing in which only one
+ * target which spans over the entire text span from 0 to documentTextLength().
+ * If the feature mode is either document or pair we set such an annotation
+ * automatically
  */
-public class DocumentModeAnnotator
-    extends JCasAnnotator_ImplBase
-    implements Constants
-{
-    public static final String PARAM_FEATURE_MODE = "PARAM_FEATURE_MODE";
-    @ConfigurationParameter(name = "PARAM_FEATURE_MODE", mandatory = true)
-    private String featureMode;
+public class DocumentModeAnnotator extends JCasAnnotator_ImplBase implements Constants {
+	public static final String PARAM_FEATURE_MODE = "PARAM_FEATURE_MODE";
+	@ConfigurationParameter(name = "PARAM_FEATURE_MODE", mandatory = true)
+	private String featureMode;
 
-    @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
-    {
-        if (featureMode.equals(Constants.FM_DOCUMENT)) {
-            if (!JCasUtil.exists(aJCas, TextClassificationTarget.class)) {
-                TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0,
-                        aJCas.getDocumentText().length());
-                aTarget.addToIndexes();
-            }
-        }
-    }
+	@Override
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		if (!featureMode.equals(Constants.FM_DOCUMENT)) {
+			return;
+		}
+		if (JCasUtil.exists(aJCas, TextClassificationTarget.class)) {
+			return;
+		}
+
+		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length());
+		aTarget.addToIndexes();
+	}
 
 }
