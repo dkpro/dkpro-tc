@@ -38,7 +38,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 /**
@@ -55,9 +54,6 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	 * the task
 	 */
 	public static final String INPUT_MAPPING = "mappingInput";
-
-	@Discriminator(name = Constants.DIM_LEARNING_MODE)
-	private String learningMode;
 
 	@Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
 	private String embedding;
@@ -88,7 +84,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private void wordPreparation(TaskContext aContext) throws Exception {
 		Set<String> vocabulary = loadVocabulary(aContext);
 
-		BufferedReader reader = getEmbeddingReader(aContext);
+		BufferedReader reader = getEmbeddingReader();
 		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
 
 		String line = null;
@@ -140,7 +136,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private void integerPreparation(TaskContext aContext) throws Exception {
 		Map<String, String> tokenIdMap = loadWord2IntegerMap(aContext);
 
-		BufferedReader reader = getEmbeddingReader(aContext);
+		BufferedReader reader = getEmbeddingReader();
 		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
 
 		String line = null;
@@ -170,7 +166,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 		reader.close();
 	}
 
-	private BufferedReader getEmbeddingReader(TaskContext aContext) throws Exception {
+	private BufferedReader getEmbeddingReader() throws Exception {
 		return new BufferedReader(new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
 
 	}

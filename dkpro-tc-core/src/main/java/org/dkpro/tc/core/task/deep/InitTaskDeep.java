@@ -18,12 +18,6 @@
 package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_READER_TEST;
-import static org.dkpro.tc.core.Constants.DIM_READER_TRAIN;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,12 +27,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.FilterVocabularyByEmbeddingAnnotator;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
@@ -46,7 +41,7 @@ import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class InitTaskDeep
-    extends UimaTaskBase
+    extends UimaTaskBase implements Constants, DeepLearningConstants
 {
 
     @Discriminator(name = DIM_READER_TRAIN)
@@ -54,12 +49,6 @@ public class InitTaskDeep
     
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    
-    @Discriminator(name = DIM_FEATURE_MODE)
-    private String mode;
-    
-    @Discriminator(name = DIM_MAXIMUM_LENGTH)
-    private Integer maximumLength;
     
     @Discriminator(name = DIM_PRETRAINED_EMBEDDINGS)
     private String embedding;
@@ -125,8 +114,7 @@ public class InitTaskDeep
         // special connector that just checks whether there are no instances and outputs a
         // meaningful error message then
         // should be added before preprocessing
-        AnalysisEngineDescription emptyProblemChecker = AnalysisEngineFactory
-                .createEngineDescription(PreprocessConnector.class);
+        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(PreprocessConnector.class);
 
         if (operativeViews != null) {
             AggregateBuilder builder = new AggregateBuilder();

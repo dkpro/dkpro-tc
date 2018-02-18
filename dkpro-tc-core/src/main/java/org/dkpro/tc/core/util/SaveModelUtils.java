@@ -64,10 +64,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
-/**
- * Demo to show case how to train and save a model in document mode and multi-label classification
- * using Meka/Weka.
- */
 public class SaveModelUtils
     implements Constants
 {
@@ -80,9 +76,9 @@ public class SaveModelUtils
         StringBuilder sb = new StringBuilder();
         for (TcFeature f : featureSet) {
             copyLuceneMetaResourcesAndGetOverrides(aContext, f, aOutputFolder);
-            persistsFeatureClassObject(aContext, f, aOutputFolder);
+            persistsFeatureClassObject(f, aOutputFolder);
 
-            sb = copyParameters(aContext, f, sb, aOutputFolder);
+            sb = copyParameters(f, sb, aOutputFolder);
         }
         writeFeatureParameters(sb, aOutputFolder);
 
@@ -95,7 +91,7 @@ public class SaveModelUtils
         FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
     }
 
-    private static StringBuilder copyParameters(TaskContext aContext, TcFeature f, StringBuilder sb,
+    private static StringBuilder copyParameters(TcFeature f, StringBuilder sb,
             File aOutputFolder)
                 throws IOException
     {
@@ -146,7 +142,7 @@ public class SaveModelUtils
         return sb;
     }
 
-    private static void persistsFeatureClassObject(TaskContext aContext, TcFeature f,
+    private static void persistsFeatureClassObject(TcFeature f,
             File aOutputFolder)
                 throws Exception
     {

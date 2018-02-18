@@ -19,12 +19,6 @@ package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
-import static org.dkpro.tc.core.DeepLearningConstants.FILENAME_MAXIMUM_LENGTH;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,13 +32,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AggregateBuilder;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.deep.anno.MappingAnnotator;
 import org.dkpro.tc.core.task.deep.anno.MaxLenDoc2Label;
@@ -57,7 +51,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 /**
  * Collects information about the entire document
  */
-public class PreparationTask extends UimaTaskBase {
+public class PreparationTask extends UimaTaskBase implements Constants, DeepLearningConstants{
 
 	/**
 	 * Public name of the task key
@@ -78,9 +72,6 @@ public class PreparationTask extends UimaTaskBase {
 
 	@Discriminator(name = DIM_FILES_ROOT)
 	private File filesRoot;
-
-	@Discriminator(name = DIM_FILES_TRAINING)
-	private Collection<String> files_training;
 
 	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
 	private boolean integerVectorization;
@@ -131,12 +122,10 @@ public class PreparationTask extends UimaTaskBase {
 							LookupResourceAnnotator.PARAM_TARGET_DIRECTORY, folder));
 				}
 				
-//				builder.add(createEngineDescription(DictionaryMappingAnnotator.class, DictionaryMappingAnnotator.PARAM_DICTIONARY_PATHS, dictionaryLists,
-//						DictionaryMappingAnnotator.PARAM_TARGET_DIRECTORY, folder));
 			}
 			
 		}else{
-			builder.add(AnalysisEngineFactory.createEngineDescription(VocabularyOutcomeCollector.class,
+			builder.add(createEngineDescription(VocabularyOutcomeCollector.class,
 					VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));
 		}
 

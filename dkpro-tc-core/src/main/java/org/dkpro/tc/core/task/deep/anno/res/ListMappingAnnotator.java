@@ -26,10 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 public class ListMappingAnnotator extends LookupResourceAnnotator {
@@ -38,11 +36,6 @@ public class ListMappingAnnotator extends LookupResourceAnnotator {
 	Map<String, Integer> map = new HashMap<>();
 
 	int nextId = 0;
-
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-	}
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {

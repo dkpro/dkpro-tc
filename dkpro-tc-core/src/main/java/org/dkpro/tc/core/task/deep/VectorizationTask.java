@@ -19,11 +19,6 @@ package org.dkpro.tc.core.task.deep;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.DIM_FILES_TRAINING;
-import static org.dkpro.tc.core.Constants.DIM_FILES_VALIDATION;
-import static org.dkpro.tc.core.Constants.DIM_LEARNING_MODE;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AggregateBuilder;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -42,15 +36,15 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
-import org.dkpro.tc.core.task.deep.anno.VectorizationDocDoc2MultiLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2Regression;
 import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2SingleLabel;
+import org.dkpro.tc.core.task.deep.anno.VectorizationDocDoc2MultiLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationSeq2SeqOfLabel;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
 public class VectorizationTask
-    extends UimaTaskBase
+    extends UimaTaskBase implements Constants, DeepLearningConstants
 {
 
     public static final String OUTPUT_KEY = "output";
@@ -134,7 +128,7 @@ public class VectorizationTask
 				builder.add(engine);
 				break;
 			case Constants.LM_MULTI_LABEL:
-				engine = AnalysisEngineFactory.createEngineDescription(VectorizationDocDoc2MultiLabel.class,
+				engine = createEngineDescription(VectorizationDocDoc2MultiLabel.class,
 						VectorizationDocDoc2MultiLabel.PARAM_TARGET_DIRECTORY, outputDir,
 						VectorizationDocDoc2MultiLabel.PARAM_PREPARATION_DIRECTORY, mappingDir,
 						VectorizationDocDoc2MultiLabel.PARAM_TO_INTEGER, integerVectorization);

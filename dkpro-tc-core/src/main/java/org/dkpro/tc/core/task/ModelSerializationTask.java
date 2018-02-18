@@ -50,7 +50,6 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.util.SaveModelUtils;
 
 public abstract class ModelSerializationTask extends ExecutableTaskBase implements Constants {
 	@Discriminator(name = DIM_FEATURE_SET)
@@ -130,7 +129,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	}
 
 	private String getCurrentTcVersionFromJar() {
-		Class<?> contextClass = SaveModelUtils.class;
+		Class<?> contextClass = getClass();
 
 		InputStream resourceAsStream = contextClass
 				.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
@@ -147,7 +146,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	}
 
 	private String getCurrentTcVersionFromWorkspace() throws Exception {
-		Class<?> contextClass = SaveModelUtils.class;
+		Class<?> contextClass = getClass();
 
 		// Try to determine the location of the POM file belonging to the
 		// context object
