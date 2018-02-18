@@ -33,6 +33,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
+import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation
@@ -66,7 +67,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
     def dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                          new TcFeatureSet(
-							 TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+							 TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
             TcFeatureFactory.create(CharacterNGram.class, 
 									CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50, 
 									CharacterNGram.PARAM_NGRAM_MIN_N, 2,
@@ -74,7 +75,7 @@ implements Constants {
 							 ))
 	
 	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-		[new CrfSuiteAdapter()])
+		[new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR])
 	
 
     // ##### CV #####
