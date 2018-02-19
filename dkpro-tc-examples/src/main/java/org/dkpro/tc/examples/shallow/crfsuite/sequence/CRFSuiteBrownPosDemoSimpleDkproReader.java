@@ -41,7 +41,6 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
@@ -85,24 +84,32 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 
 		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "*.xml");
+				TeiReader.PARAM_PATTERNS, "a01.xml");
 		dimReaders.put(DIM_READER_TRAIN, train);
 
 		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "*.xml");
+				TeiReader.PARAM_PATTERNS, "a02.xml");
 		dimReaders.put(DIM_READER_TEST, test);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
 				new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
-						TcFeatureFactory.create(WordNGram.class),
 						TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
 								CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
 								50)));
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+		
+		ParameterSpace pSpace = null;
+		if (dimFilters != null) {
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
+					dimFeatureSets, dimClassificationArgs, dimFilters);
+		} else {
+
+			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
 					dimFeatureSets, dimClassificationArgs);
-
+		}
+		
 		return pSpace;
 	}
 
