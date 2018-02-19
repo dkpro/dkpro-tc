@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
@@ -79,24 +80,31 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 
 		MavenXpp3Reader reader = new MavenXpp3Reader();
 		Model model;
-		model = reader.read(new FileInputStream(pomFile));
+
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream(pomFile);
+			model = reader.read(fis);
+		}
+		finally {
+			IOUtils.closeQuietly(fis);
+		}
 		String version = model.getParent().getVersion();
 
 		return version;
 	}
 
-	protected String getCurrentTcVersionFromJar() {
+	protected String getCurrentTcVersionFromJar() throws Exception {
 		Class<?> contextClass = getClass();
 
-		InputStream resourceAsStream = contextClass
-				.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
-
-		MavenXpp3Reader reader = new MavenXpp3Reader();
+		InputStream is = null;
 		Model model;
 		try {
-			model = reader.read(resourceAsStream);
-		} catch (Exception e) {
-			return null;
+			is = contextClass.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
+			MavenXpp3Reader reader = new MavenXpp3Reader();
+			model = reader.read(is);
+		} finally {
+			IOUtils.closeQuietly(is);
 		}
 		String version = model.getParent().getVersion();
 		return version;
@@ -106,9 +114,13 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 		File file = new File(modelFolder, MODEL_TC_VERSION);
 		Properties prop = new Properties();
 
-		FileInputStream fos = new FileInputStream(file);
-		prop.load(fos);
-		fos.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			prop.load(fis);
+		} finally {
+			IOUtils.closeQuietly(fis);
+		}
 
 		return prop.getProperty(ModelSerializationTask.TCVERSION);
 	}
@@ -118,9 +130,14 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 		properties.setProperty(DIM_FEATURE_MODE, featureMode);
 
 		File file = new File(outputFolder + "/" + MODEL_FEATURE_MODE);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, "Feature mode used to train this model");
-		fileOut.close();
+		FileOutputStream fileOut = null;
+		
+		try {
+			fileOut = new FileOutputStream(file);
+			properties.store(fileOut, "Feature mode used to train this model");
+		} finally {
+			IOUtils.closeQuietly(fileOut);
+		}
 
 	}
 
@@ -129,8 +146,13 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 		properties.setProperty(DIM_LEARNING_MODE, learningMode);
 
 		File file = new File(outputFolder + "/" + MODEL_LEARNING_MODE);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, "Learning mode used to train this model");
-		fileOut.close();
+		FileOutputStream fos = null;
+
+		try {
+			fos = new FileOutputStream(file);
+			properties.store(fos, "Learning mode used to train this model");
+		} finally {
+			IOUtils.closeQuietly(fos);
+		}
 	}
 }
