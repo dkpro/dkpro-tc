@@ -21,7 +21,8 @@ import java.io.File;
 
 public interface TcDeepLearning4jUser {
 
-	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, int seed, File prediction)
+	void run(File trainVec, File trainOutcome, File testVec, File testOutcome, int maximumLength, File embedding, double threshold, int seed,
+			File prediction)
 			throws Exception;
 
 }

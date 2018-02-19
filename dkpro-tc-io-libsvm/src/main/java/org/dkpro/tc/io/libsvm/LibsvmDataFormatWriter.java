@@ -225,13 +225,13 @@ public class LibsvmDataFormatWriter implements DataWriter {
 		}
 	}
 
-	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+	private void writeFeatureName2idMapping(File outputDirectory, String featurename2instanceid,
 			Map<String, Integer> stringToInt) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		for (String k : stringToInt.keySet()) {
 			sb.append(k + "\t" + stringToInt.get(k) + "\n");
 		}
-		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid), sb.toString(), "utf-8");
 	}
 
 	private void initClassifierFormat() throws Exception {

@@ -62,7 +62,7 @@ public class PosNGramMC extends LuceneMC {
 
 	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focusAnnotation, int minN,
 			int maxN, boolean useCanonical) {
-		if (JCasUtil.selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
+		if (selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
 			return sentenceBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
 		}
 		return documentBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
@@ -74,7 +74,7 @@ public class PosNGramMC extends LuceneMC {
 		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
 
 		List<String> postagstrings = new ArrayList<String>();
-		for (POS p : selectCovered(POS.class, focusAnnotation)) {
+		for (POS p : selectCovered(jcas, POS.class, focusAnnotation)) {
 			if (useCanonical) {
 				postagstrings.add(p.getClass().getSimpleName());
 			} else {

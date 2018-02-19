@@ -20,10 +20,8 @@ package org.dkpro.tc.features.ngram.meta.maxnormalization;
 import java.util.Collection;
 import java.util.Random;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.features.ngram.meta.LuceneMC;
 
@@ -34,11 +32,6 @@ public class MaxNrOfCharsOverAllTokensMC extends LuceneMC {
 	
 	public static final String LUCENE_MAX_CHAR_FIELD = "maxNumCharsPerToken";
 	Random r = new Random();
-
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-	}
 
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {

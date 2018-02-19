@@ -114,8 +114,8 @@ public class Deeplearning4jOutcomeIdReport extends ReportBase {
 				continue;
 			}
 
-			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)) ? nameOfTargets.get(i - shift)
-					: ("" + (counter++));
+			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > i - shift) ? nameOfTargets.get(i - shift)
+					: "" + (counter++);
 
 			String[] split = p.split("\t");
 

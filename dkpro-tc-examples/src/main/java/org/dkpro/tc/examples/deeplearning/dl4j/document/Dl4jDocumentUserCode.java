@@ -48,11 +48,8 @@ public class Dl4jDocumentUserCode
 {
 
     @Override
-    public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
-            File embedding, int seed, File prediction)
-                throws Exception
-    {
-
+    public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, int maximumLength,
+			File embedding, double threshold, int seed, File prediction) throws Exception {
         int batchSize = 50; // Number of examples in each minibatch
         int nEpochs = 1; // Number of epochs (full passes of training data) to train on
 
@@ -143,4 +140,5 @@ public class Dl4jDocumentUserCode
             sb.append(actual + "\t" + predicted + System.lineSeparator());
         }
     }
+
 }
