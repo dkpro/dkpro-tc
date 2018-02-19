@@ -333,7 +333,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 				throw new NullPointerException("Retrieved file list of folder [" + source.getAbsolutePath() +"] is null");
 			}
 
-			for (String file : source.list()) {
+			for (String file : filelist) {
 				File src = new File(source, file);
 				File dest = new File(destination, file);
 				copyToTargetLocation(src, dest);

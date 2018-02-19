@@ -314,11 +314,10 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId) {
 		Collection<Feature> features = instance.getFeatures();
 		for (Feature f : features) {
-			if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
-				continue;
+			if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
+				index2instanceId.put(i + "", f.getValue() + "");
+				break;
 			}
-			index2instanceId.put(i + "", f.getValue() + "");
-			return;
 		}
 	}
 
@@ -328,7 +327,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 
 	@Override
 	public void close() throws Exception {
-
+		//nothing to do here
 	}
 
 }

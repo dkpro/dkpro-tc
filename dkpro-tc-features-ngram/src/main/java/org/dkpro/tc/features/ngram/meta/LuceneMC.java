@@ -28,7 +28,6 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
@@ -134,9 +133,6 @@ public abstract class LuceneMC extends MetaCollector {
 				indexWriter.close();
 				indexWriter = null;
 			}
-		} catch (AlreadyClosedException e) {
-			// ignore, as multiple meta collectors write in the same index
-			// and will all try to close the index
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}

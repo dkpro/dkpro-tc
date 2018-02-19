@@ -127,12 +127,6 @@ public class MetaInfoTask
                     "No feature extractors have been added to the experiment."));
         }
 
-        // Resolve the feature extractor closures to actual descritors
-        List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
-        for (TcFeature fc : featureExtractors) {
-            featureExtractorDescriptions.add(fc.getActualValue());
-        }
-
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
 
         if (recordContext) {
@@ -224,7 +218,7 @@ public class MetaInfoTask
 				MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class, empty);
 
 				int rnd = r.nextInt();
-				String val = new String("" + (rnd > 0 ? rnd : rnd * -1));
+				String val = "" + (rnd > 0 ? rnd : rnd * -1);
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
 				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
 				configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,

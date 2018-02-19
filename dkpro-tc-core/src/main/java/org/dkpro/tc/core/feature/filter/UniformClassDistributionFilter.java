@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Instance;
@@ -77,19 +78,20 @@ public class UniformClassDistributionFilter
         // find the smallest class
         int minClassSize = Integer.MAX_VALUE;
         String minOutcome = null;
-        for (String k : outcomeLineMap.keySet()) {
-            int size = outcomeLineMap.get(k).size();
-            if (size < minClassSize) {
-                minClassSize = size;
-                minOutcome = k;
-            }
+        
+        for(Entry<String, List<Integer>> e : outcomeLineMap.entrySet()) {
+        		int size = e.getValue().size();
+        		if (size < minClassSize) {
+                    minClassSize = size;
+                    minOutcome = e.getKey();
+                }
         }
 
         // shuffle the line-ids und shrink lists to minimal size
-        for (String k : outcomeLineMap.keySet()) {
-            List<Integer> list = outcomeLineMap.get(k);
+        for(Entry<String, List<Integer>> e : outcomeLineMap.entrySet()) {
+            List<Integer> list = e.getValue();
             Collections.shuffle(list);
-            outcomeLineMap.put(k, list.subList(0, minClassSize));
+            outcomeLineMap.put(e.getKey(), list.subList(0, minClassSize));
         }
 
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));

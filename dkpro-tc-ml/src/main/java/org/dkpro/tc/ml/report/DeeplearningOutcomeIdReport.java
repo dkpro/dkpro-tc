@@ -103,8 +103,8 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 				continue;
 			}
 
-			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > i - shift) ? nameOfTargets.get(i - shift)
-					: "" + (counter++);
+			String id = !nameOfTargets.isEmpty() && nameOfTargets.size() > i - shift ? nameOfTargets.get(i - shift)
+					: "" + counter++;
 
 			String[] split = p.split("\t");
 
