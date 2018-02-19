@@ -59,6 +59,8 @@ public abstract class LuceneMC extends MetaCollector {
 	protected Document currentDocument;
 
 	protected FieldType fieldType;
+	
+	private int addedFieldCounter=1;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -66,9 +68,7 @@ public abstract class LuceneMC extends MetaCollector {
 
 		initIndexWriter();
 
-		currentDocument = new Document();
-		currentDocument
-				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
+		initDocument();
 
 		fieldType = new FieldType();
 		fieldType.setIndexed(true);
@@ -82,6 +82,12 @@ public abstract class LuceneMC extends MetaCollector {
 			activeMetaWriter = new AtomicInteger(0);
 		}
 		activeMetaWriter.incrementAndGet();
+	}
+
+	private void initDocument() {
+		currentDocument = new Document();
+		currentDocument
+				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));		
 	}
 
 	private synchronized void initIndexWriter() throws ResourceInitializationException {
@@ -110,7 +116,16 @@ public abstract class LuceneMC extends MetaCollector {
 				Field field = new Field(getFieldName(), ngram, fieldType);
 				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
 					currentDocument.add(field);
+					addedFieldCounter++;
 				}
+			}
+			
+			if(addedFieldCounter > 1000) {
+				writeToIndex();
+				indexWriter.commit();
+				
+				addedFieldCounter = 0;
+				initDocument();
 			}
 
 		} catch (Exception e) {
