@@ -60,7 +60,7 @@ public abstract class LuceneMC extends MetaCollector {
 
 	protected FieldType fieldType;
 	
-	private int addedFieldCounter=1;
+	private int addedFieldCounter=0;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
