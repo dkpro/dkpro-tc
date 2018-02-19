@@ -19,6 +19,7 @@
 package org.dkpro.tc.ml.weka.util;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 
@@ -35,8 +36,8 @@ public class MultilabelResult implements Serializable {
 	 * @throws TextClassificationException an exception
 	 */
 	public MultilabelResult(int[][] goldstandard, double[][] predictions, String bipartitionThreshold) throws TextClassificationException{
-		this.actuals = goldstandard;
-		this.predictions = predictions;
+		this.actuals = Arrays.copyOf(goldstandard, goldstandard.length);
+		this.predictions = Arrays.copyOf(predictions, predictions.length);
 		try {
 			this.bipartitionThreshold = Double.parseDouble(bipartitionThreshold);
 		} catch (NumberFormatException e) {

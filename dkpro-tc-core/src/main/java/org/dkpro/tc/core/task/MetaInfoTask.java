@@ -127,12 +127,6 @@ public class MetaInfoTask
                     "No feature extractors have been added to the experiment."));
         }
 
-        // Resolve the feature extractor closures to actual descritors
-        List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
-        for (TcFeature fc : featureExtractors) {
-            featureExtractorDescriptions.add(fc.getActualValue());
-        }
-
         List<AnalysisEngineDescription> metaCollectors = new ArrayList<>();
 
         if (recordContext) {

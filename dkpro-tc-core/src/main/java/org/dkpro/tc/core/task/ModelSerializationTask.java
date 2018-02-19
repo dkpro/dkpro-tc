@@ -272,7 +272,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 				throw new NullPointerException("Retrieved file list of folder [" + source.getAbsolutePath() +"] is null");
 			}
 
-			for (String file : source.list()) {
+			for (String file : filelist) {
 				File src = new File(source, file);
 				File dest = new File(destination, file);
 				copyToTargetLocation(src, dest);
@@ -284,11 +284,11 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	}
 
 	private void copySingleFile(File source, File destination) throws IOException {
-		InputStream inputstream = new FileInputStream(source);
-		OutputStream outputstream = new FileOutputStream(destination);
-		IOUtils.copy(inputstream, outputstream);
-		inputstream.close();
-		outputstream.close();
+		InputStream is = new FileInputStream(source);
+		OutputStream os = new FileOutputStream(destination);
+		IOUtils.copy(is, os);
+		IOUtils.closeQuietly(is);
+		IOUtils.closeQuietly(os);
 	}
 
 	protected void writeModelAdapterInformation(File aOutputFolder, String aModelMeta) throws Exception {
