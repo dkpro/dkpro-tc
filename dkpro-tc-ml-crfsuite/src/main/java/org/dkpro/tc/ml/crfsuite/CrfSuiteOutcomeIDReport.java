@@ -128,6 +128,9 @@ public class CrfSuiteOutcomeIDReport
         File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
+        
+        System.err.println(testFile.getAbsolutePath());
+        System.out.println(readLines);
 
         return readLines;
     }
