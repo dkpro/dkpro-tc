@@ -143,7 +143,6 @@ public class CrfSuiteOutcomeIDReport
     {
         File predictionFile = getContext().getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
-        System.out.println(readLines);
         return readLines;
     }
 
