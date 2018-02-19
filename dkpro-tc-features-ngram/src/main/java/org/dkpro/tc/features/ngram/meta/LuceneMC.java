@@ -53,8 +53,8 @@ public abstract class LuceneMC extends MetaCollector {
 
 	// this is a static singleton as different Lucene-based meta collectors will
 	// use the same writer
-	protected static IndexWriter indexWriter = null;
-	static AtomicInteger activeMetaWriter=null; //used to known when we can close the index
+	static IndexWriter indexWriter = null;
+	static volatile AtomicInteger activeMetaWriter=null; //used to known when we can close the index
 
 	protected Document currentDocument;
 
@@ -64,16 +64,7 @@ public abstract class LuceneMC extends MetaCollector {
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 
-		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-
-		if (indexWriter == null) {
-			try {
-				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-			} catch (IOException e) {
-				throw new ResourceInitializationException(e);
-			}
-		}
+		initIndexWriter();
 
 		currentDocument = new Document();
 		currentDocument
@@ -91,6 +82,20 @@ public abstract class LuceneMC extends MetaCollector {
 			activeMetaWriter = new AtomicInteger(0);
 		}
 		activeMetaWriter.incrementAndGet();
+	}
+
+	private synchronized void initIndexWriter() throws ResourceInitializationException {
+		
+		if (indexWriter == null) {
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+			config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+
+			try {
+				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+			} catch (IOException e) {
+				throw new ResourceInitializationException(e);
+			}
+		}	
 	}
 
 	@Override

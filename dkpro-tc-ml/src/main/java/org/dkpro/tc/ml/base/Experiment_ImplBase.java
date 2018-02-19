@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.base;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,15 +90,16 @@ public abstract class Experiment_ImplBase
         if(!d.hasNext()){
             return;
         }
-        @SuppressWarnings("rawtypes")
-        Map readers = (Map) d.next();
-        for (Object k : readers.keySet()) {
-            CollectionReaderDescription crd = (CollectionReaderDescription) readers.get(k);
-            String description = DiscriminableNameConverter
-                    .getCollectionReaderDescription(crd);
-            aContext.getConversionService().registerDiscriminable(crd, description);
-        }
         
+        @SuppressWarnings("unchecked")
+		Map<String,CollectionReaderDescription> readers = (Map<String,CollectionReaderDescription>) d.next();
+        
+        readers.entrySet();
+        for(Entry<String, CollectionReaderDescription> e : readers.entrySet()) {
+        		String description = DiscriminableNameConverter
+                    .getCollectionReaderDescription(e.getValue());
+        		aContext.getConversionService().registerDiscriminable(e.getValue(), description);
+        }
     }
 
     protected abstract void init()

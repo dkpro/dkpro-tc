@@ -66,9 +66,15 @@ public class SvmhmmSerializeModelConnector
 		
 		FileUtils.copyFile(tmpModelLocation, model);
 		
-		tmpModelLocation.delete();
-		newTrainFileLocation.delete();
-		
+		delete(tmpModelLocation);
+		delete(newTrainFileLocation);
+	}
+	
+	private void delete(File f) {
+		boolean delete = f.delete();
+		if(!delete) {
+			throw new IllegalStateException("Failed to delete file ["+f.getAbsolutePath()+"]");
+		}
 	}
 
 }

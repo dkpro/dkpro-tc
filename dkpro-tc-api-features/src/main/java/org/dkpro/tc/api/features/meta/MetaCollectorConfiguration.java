@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.uima.analysis_component.AnalysisComponent;
@@ -45,10 +46,10 @@ public class MetaCollectorConfiguration
                 throws ResourceInitializationException
     {
         List<Object> param = new ArrayList<>();
-        for (String k : parameterSettings.keySet()) {
-            param.add(k);
-
-            Object object = parameterSettings.get(k);
+        
+        for(Entry<String, Object> e : parameterSettings.entrySet()) {
+            param.add(e.getKey());
+            Object object = e.getValue();
 
             if (NumberUtils.isNumber(object.toString())) {
                 if (object.toString().matches("[0-9]+\\.[0-9]+")) {
@@ -59,7 +60,7 @@ public class MetaCollectorConfiguration
                 }
             }
             else {
-                param.add(parameterSettings.get(k));
+                param.add(e.getValue());
             }
         }
 

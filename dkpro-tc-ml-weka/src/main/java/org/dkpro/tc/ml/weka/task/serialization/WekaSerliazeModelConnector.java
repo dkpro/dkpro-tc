@@ -157,7 +157,7 @@ public class WekaSerliazeModelConnector
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
         cl.buildClassifier(trainData);
         File model = new File(outputFolder, MODEL_CLASSIFIER);
-        model.getParentFile().mkdir();
+        ensureExistenceOfFolders(model);
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
 
         // write class labels file
@@ -171,6 +171,16 @@ public class WekaSerliazeModelConnector
 
     }
     
+	private void ensureExistenceOfFolders(File model) {
+		if (!model.getParentFile().exists()) {
+			boolean mkdir = model.getParentFile().mkdirs();
+			if (!mkdir) {
+				throw new IllegalStateException(
+						"Failed to create folder [" + model.getParentFile().getAbsolutePath() + "]");
+			}
+		}		
+	}
+
 	@Override
 	protected void writeAdapter() throws Exception {
 		writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());

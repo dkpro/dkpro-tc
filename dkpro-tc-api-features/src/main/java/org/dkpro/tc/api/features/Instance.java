@@ -49,8 +49,7 @@ public class Instance
         this.features = new ArrayList<Feature>(features);
         this.features.sort(getComparator());
         this.outcomes = new ArrayList<String>();
-        this.outcomes.add(outcome);
-        outcome.intern();
+        this.outcomes.add(outcome.intern());
     }
 
     public Instance(Collection<Feature> features, String... outcomes) 

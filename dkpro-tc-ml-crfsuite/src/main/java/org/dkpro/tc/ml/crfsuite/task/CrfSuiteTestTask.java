@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -248,7 +249,14 @@ public class CrfSuiteTestTask
     private String writeModel(TaskContext aContext, String aTmpModelLocation)
         throws Exception
     {
-        aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(new File(aTmpModelLocation)));
+    		FileInputStream fis = new FileInputStream(new File(aTmpModelLocation));
+    		
+    		try {
+    			aContext.storeBinary(MODEL_CLASSIFIER, fis);
+    		} finally {
+    			IOUtils.closeQuietly(fis);
+    		}
+        
         File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
         return modelLocation.getAbsolutePath();
     }

@@ -220,7 +220,13 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 			 */
 			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
 				int numCas = 0;
-				for (File f : outputFolder.listFiles()) {
+				File[] listFiles = outputFolder.listFiles();
+
+				if (listFiles == null) {
+					throw new NullPointerException("Failed to list files in directory");
+				}
+
+				for (File f : listFiles) {
 					if (f.getName().contains(".bin")) {
 						numCas++;
 					}

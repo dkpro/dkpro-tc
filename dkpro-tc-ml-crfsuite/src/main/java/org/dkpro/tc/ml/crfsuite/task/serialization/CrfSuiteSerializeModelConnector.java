@@ -62,7 +62,12 @@ public class CrfSuiteSerializeModelConnector extends ModelSerializationTask impl
 
 		FileInputStream fis = new FileInputStream(file);
 		FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-		IOUtils.copy(fis, fos);
+		try {
+			IOUtils.copy(fis, fos);
+		} finally {
+			IOUtils.closeQuietly(fis);
+			IOUtils.closeQuietly(fos);
+		}
 	}
 
 	private void trainAndStoreModel(TaskContext aContext) throws Exception {

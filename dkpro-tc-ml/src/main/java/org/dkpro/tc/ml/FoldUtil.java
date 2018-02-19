@@ -103,7 +103,7 @@ public class FoldUtil
                 return name.endsWith(".bin");
             }
         });
-        if (listFiles.length < numFolds) {
+        if (listFiles == null || listFiles.length < numFolds) {
             throw new IllegalStateException("Failed to create at least [" + numFolds + "] CAS");
         }
     }

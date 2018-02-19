@@ -184,7 +184,7 @@ public class WekaUtils
             Add filter = new Add();
             for (int i = 0; i < numTrainLabels; i++) {
                 // numTestLabels +i (because index starts from 0)
-                filter.setAttributeIndex(new Integer(numTestLabels + i + 1).toString());
+                filter.setAttributeIndex(Integer.toString(numTestLabels + i + 1));
                 filter.setNominalLabels("0,1");
                 filter.setAttributeName(trainData.attribute(i).name() + COMPATIBLE_OUTCOME_CLASS);
                 filter.setInputFormat(testData);
@@ -805,7 +805,7 @@ public class WekaUtils
         // add attributes to store predictions in test data
         Add filter = new Add();
         for (int i = 0; i < numLabels; i++) {
-            filter.setAttributeIndex(new Integer(numLabels + i + 1).toString());
+            filter.setAttributeIndex(Integer.toString(numLabels + i + 1));
             filter.setNominalLabels("0,1");
             filter.setAttributeName(testData.attribute(i).name() + "_"
                     + WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
