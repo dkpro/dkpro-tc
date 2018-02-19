@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -103,10 +104,14 @@ public class WekaSerliazeModelConnector
         properties.setProperty(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
 
         File file = new File(outputFolder + "/" + MODEL_BIPARTITION_THRESHOLD);
-        FileOutputStream fileOut = new FileOutputStream(file);
-        properties.store(fileOut,
+        FileOutputStream fos = new FileOutputStream(file);
+        
+        try {
+        		properties.store(fos,
                 "Bipartition threshold used to train this model (only multi-label classification)");
-        fileOut.close();
+        } finally {
+        		IOUtils.closeQuietly(fos);
+        }
     }
 
     private void writeWekaSpecificInformation(TaskContext aContext)

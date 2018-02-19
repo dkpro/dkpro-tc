@@ -93,8 +93,6 @@ public abstract class Experiment_ImplBase
         
         @SuppressWarnings("unchecked")
 		Map<String,CollectionReaderDescription> readers = (Map<String,CollectionReaderDescription>) d.next();
-        
-        readers.entrySet();
         for(Entry<String, CollectionReaderDescription> e : readers.entrySet()) {
         		String description = DiscriminableNameConverter
                     .getCollectionReaderDescription(e.getValue());

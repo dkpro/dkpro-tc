@@ -131,11 +131,6 @@ public class WekaOutcomeIDReport
                 throws ClassNotFoundException, IOException
     {
         Properties props = new SortedKeyProperties();
-        String[] classValues = new String[predictions.numClasses()];
-
-        for (int i = 0; i < predictions.numClasses(); i++) {
-            classValues[i] = predictions.classAttribute().value(i);
-        }
 
         int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
 
