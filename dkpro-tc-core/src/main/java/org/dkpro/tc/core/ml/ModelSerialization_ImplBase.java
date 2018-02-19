@@ -26,7 +26,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
@@ -87,7 +86,7 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 			model = reader.read(fis);
 		}
 		finally {
-			IOUtils.closeQuietly(fis);
+//			IOUtils.closeQuietly(fis);
 		}
 		String version = model.getParent().getVersion();
 
@@ -104,7 +103,7 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 			MavenXpp3Reader reader = new MavenXpp3Reader();
 			model = reader.read(is);
 		} finally {
-			IOUtils.closeQuietly(is);
+//			IOUtils.closeQuietly(is);
 		}
 		String version = model.getParent().getVersion();
 		return version;
@@ -119,7 +118,7 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 			fis = new FileInputStream(file);
 			prop.load(fis);
 		} finally {
-			IOUtils.closeQuietly(fis);
+//			IOUtils.closeQuietly(fis);
 		}
 
 		return prop.getProperty(ModelSerializationTask.TCVERSION);
@@ -136,7 +135,7 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 			fileOut = new FileOutputStream(file);
 			properties.store(fileOut, "Feature mode used to train this model");
 		} finally {
-			IOUtils.closeQuietly(fileOut);
+//			IOUtils.closeQuietly(fileOut);
 		}
 
 	}
@@ -152,7 +151,7 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 			fos = new FileOutputStream(file);
 			properties.store(fos, "Learning mode used to train this model");
 		} finally {
-			IOUtils.closeQuietly(fos);
+//			IOUtils.closeQuietly(fos);
 		}
 	}
 }

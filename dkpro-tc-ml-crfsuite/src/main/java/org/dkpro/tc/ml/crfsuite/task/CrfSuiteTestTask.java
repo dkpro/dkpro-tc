@@ -164,8 +164,8 @@ public class CrfSuiteTestTask
         evalCommand.add("tag");
         evalCommand.add("-qt");
         evalCommand.add("-m");
-        evalCommand.add("\"" + modelLocation+ "\"");
-        evalCommand.add("\"" + testFile.getAbsolutePath() + "\"");
+        evalCommand.add(modelLocation);
+        evalCommand.add(testFile.getAbsolutePath());
         
         System.out.println(evalCommand);
 

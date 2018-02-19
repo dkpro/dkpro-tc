@@ -150,7 +150,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		} catch (Exception e) {
 			return null;
 		} finally {
-			IOUtils.closeQuietly(stream);
+//			IOUtils.closeQuietly(stream);
 		}
 		String version = model.getParent().getVersion();
 		return version;
@@ -175,7 +175,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 			fileInputStream = new FileInputStream(pomFile);
 			model = reader.read(fileInputStream);
 		} finally {
-			IOUtils.closeQuietly(fileInputStream);
+//			IOUtils.closeQuietly(fileInputStream);
 		}
 	
 		
