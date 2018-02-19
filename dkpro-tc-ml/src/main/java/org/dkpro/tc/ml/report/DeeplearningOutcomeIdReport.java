@@ -53,14 +53,14 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 	@Override
 	public void execute() throws Exception {
 
-		boolean isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL); 
-		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+		boolean isMultiLabel = catchNull(getDiscriminator(getContext(), DIM_LEARNING_MODE)).equals(LM_MULTI_LABEL); 
+		boolean isRegression = catchNull(getDiscriminator(getContext(), DIM_LEARNING_MODE)).equals(LM_REGRESSION);
 
 		if (isMultiLabel) {
-			THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
+			THRESHOLD = catchNull(getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD));
 		}
 
-		boolean isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
+		boolean isIntegerMode = Boolean.valueOf(catchBooleanNull(getDiscriminator(getContext(), DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)));
 
 		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
@@ -135,6 +135,24 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
+	}
+
+	private String catchBooleanNull(String discriminator) {
+		
+		if(discriminator != null) {
+			return discriminator;
+		}
+		
+		return "false";
+	}
+
+	private String catchNull(String discriminator) {
+		
+		if(discriminator != null) {
+			return discriminator;
+		}
+		
+		return "";
 	}
 
 	private Map<String, String> inverseMap(Map<String, String> map) {
