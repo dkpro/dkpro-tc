@@ -21,7 +21,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jMetaReport;
-import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jOutcomeIdReport;
+import org.dkpro.tc.ml.report.DeeplearningOutcomeIdReport;
 
 public class Deeplearning4jAdapter
     implements TcDeepLearningAdapter
@@ -36,7 +36,7 @@ public class Deeplearning4jAdapter
     @Override
     public ReportBase getOutcomeIdReportClass()
     {
-        return new Deeplearning4jOutcomeIdReport();
+        return new DeeplearningOutcomeIdReport();
     }
 
     @Override
