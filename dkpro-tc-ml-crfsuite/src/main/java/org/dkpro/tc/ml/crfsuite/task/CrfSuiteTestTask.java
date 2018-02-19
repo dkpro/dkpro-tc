@@ -287,7 +287,7 @@ public class CrfSuiteTestTask
         commandTrainModel.add(getExecutablePath());
         commandTrainModel.add("learn");
         commandTrainModel.add("-m");
-        commandTrainModel.add("\"" + modelOutputLocation + "\"");
+        commandTrainModel.add(modelOutputLocation);
 
         commandTrainModel.add("-a");
         commandTrainModel.add(algorithm);
@@ -296,7 +296,7 @@ public class CrfSuiteTestTask
             commandTrainModel.add(p.replaceAll(" ", ""));
         }
 
-        commandTrainModel.add("\"" + trainingFile + "\"");
+        commandTrainModel.add(trainingFile);
         return commandTrainModel;
     }
 
