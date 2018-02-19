@@ -23,18 +23,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class JsonInstanceIterator
     implements Iterator<String>
 {
-    File file;
-    BufferedReader reader;
-    String line = null;
+    private BufferedReader reader;
+    private String line = null;
 
     public JsonInstanceIterator(File file)
         throws Exception
     {
-        this.file = file;
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
     }
 
@@ -58,6 +57,10 @@ public class JsonInstanceIterator
     @Override
     public String next()
     {
+    		if(line == null) {
+    			throw new NoSuchElementException();
+    		}
+    	
         return line;
     }
 

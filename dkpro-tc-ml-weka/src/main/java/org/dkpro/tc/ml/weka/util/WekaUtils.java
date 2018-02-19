@@ -53,7 +53,6 @@ import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.writer.WekaFeatureEncoder;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.core.MLUtils;
 import meka.core.Result;
 import meka.core.ThresholdUtils;
 import meka.filters.unsupervised.attribute.MekaClassAttributes;
@@ -184,7 +183,7 @@ public class WekaUtils
             Add filter = new Add();
             for (int i = 0; i < numTrainLabels; i++) {
                 // numTestLabels +i (because index starts from 0)
-                filter.setAttributeIndex(new Integer(numTestLabels + i + 1).toString());
+                filter.setAttributeIndex(Integer.toString(numTestLabels + i + 1));
                 filter.setNominalLabels("0,1");
                 filter.setAttributeName(trainData.attribute(i).name() + COMPATIBLE_OUTCOME_CLASS);
                 filter.setInputFormat(testData);
@@ -331,10 +330,7 @@ public class WekaUtils
                 instanceList.size());
         wekaInstances.setClass(outcomeAttribute);
 
-        if (!outputFile.exists()) {
-            outputFile.mkdirs();
-            outputFile.createNewFile();
-        }
+        ensureExistenceOf(outputFile);
 
         ArffSaver saver = new ArffSaver();
         // preprocessingFilter.setInputFormat(wekaInstances);
@@ -381,7 +377,28 @@ public class WekaUtils
         saver.writeIncremental(null);
     }
 
-    /**
+	private static void ensureExistenceOf(File outputFile) throws IOException {
+
+		if (outputFile.exists()) {
+			return;
+		}
+
+		if (!outputFile.getParentFile().exists()) {
+			boolean mkdirs = outputFile.mkdirs();
+			if (!mkdirs) {
+				throw new IllegalStateException(
+						"Could not create folders [" + outputFile.getParentFile().getAbsolutePath() + "]");
+			}
+		}
+
+		boolean createNewFile = outputFile.createNewFile();
+		if (!createNewFile) {
+			throw new IllegalStateException("Could not create file [" + outputFile.getAbsolutePath() + "]");
+		}
+
+	}
+
+	/**
      * converts a multi label instance list to weka's format 
      * @param outputFile
      * 			the output file
@@ -440,10 +457,7 @@ public class WekaUtils
                 + " ", attributeStore.getAttributes(), instances.size());
         wekaInstances.setClassIndex(outcomeAttributes.size());
 
-        if (!outputFile.exists()) {
-            outputFile.mkdirs();
-            outputFile.createNewFile();
-        }
+        ensureExistenceOf(outputFile);
 
         ArffSaver saver = new ArffSaver();
         // preprocessingFilter.setInputFormat(wekaInstances);
@@ -805,7 +819,7 @@ public class WekaUtils
         // add attributes to store predictions in test data
         Add filter = new Add();
         for (int i = 0; i < numLabels; i++) {
-            filter.setAttributeIndex(new Integer(numLabels + i + 1).toString());
+            filter.setAttributeIndex(Integer.toString(numLabels + i + 1));
             filter.setNominalLabels("0,1");
             filter.setAttributeName(testData.attribute(i).name() + "_"
                     + WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
@@ -1040,7 +1054,7 @@ public class WekaUtils
         }
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
-            t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
+//            t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
             throw new Exception("Not yet implemented.");
         }
         else {

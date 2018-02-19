@@ -26,6 +26,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.feature.filter.FeatureFilter;
+import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
 
 import com.google.gson.Gson;
 
@@ -53,7 +54,7 @@ public class FilterLuceneCharacterNgramStartingWithLetter implements FeatureFilt
 				List<Feature> features = new ArrayList<>(inst.getFeatures());
 				List<Feature> deletionTargets = new ArrayList<>();
 				for (Feature f : features) {
-					if (f.getName().startsWith("charngram")) {
+					if (f.getName().startsWith(CharacterNGramMC.LUCENE_CHAR_NGRAM_FIELD)) {
 						deletionTargets.add(f);
 					}
 				}

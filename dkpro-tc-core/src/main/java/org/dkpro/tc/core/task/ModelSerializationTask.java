@@ -96,8 +96,11 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 		File file = new File(outputFolder + "/" + MODEL_FEATURE_MODE);
 		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, "Feature mode used to train this model");
-		fileOut.close();
+		try {
+			properties.store(fileOut, "Feature mode used to train this model");
+		} finally {
+			IOUtils.closeQuietly(fileOut);
+		}
 
 	}
 
@@ -107,8 +110,11 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 		File file = new File(outputFolder + "/" + MODEL_LEARNING_MODE);
 		FileOutputStream fileOut = new FileOutputStream(file);
+		try {
 		properties.store(fileOut, "Learning mode used to train this model");
-		fileOut.close();
+		} finally {
+			IOUtils.closeQuietly(fileOut);
+		}
 	}
 
 	private void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception {
@@ -122,8 +128,11 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 			File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
 			FileOutputStream fileOut = new FileOutputStream(file);
+			try {
 			properties.store(fileOut, "Version of DKPro TC used to train this model");
-			fileOut.close();
+			} finally {
+				IOUtils.closeQuietly(fileOut);
+			}
 		}
 
 	}
@@ -131,15 +140,17 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	private String getCurrentTcVersionFromJar() {
 		Class<?> contextClass = getClass();
 
-		InputStream resourceAsStream = contextClass
+		InputStream stream = contextClass
 				.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
 
 		MavenXpp3Reader reader = new MavenXpp3Reader();
 		Model model;
 		try {
-			model = reader.read(resourceAsStream);
+			model = reader.read(stream);
 		} catch (Exception e) {
 			return null;
+		} finally {
+//			IOUtils.closeQuietly(stream);
 		}
 		String version = model.getParent().getVersion();
 		return version;
@@ -158,8 +169,16 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		File pomFile = new File(new File(URI.create(base)), "pom.xml");
 
 		MavenXpp3Reader reader = new MavenXpp3Reader();
+		FileInputStream fileInputStream=null;
 		Model model;
-		model = reader.read(new FileInputStream(pomFile));
+		try {
+			fileInputStream = new FileInputStream(pomFile);
+			model = reader.read(fileInputStream);
+		} finally {
+//			IOUtils.closeQuietly(fileInputStream);
+		}
+	
+		
 		String version = model.getParent().getVersion();
 
 		return version;
@@ -333,7 +352,7 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 				throw new NullPointerException("Retrieved file list of folder [" + source.getAbsolutePath() +"] is null");
 			}
 
-			for (String file : source.list()) {
+			for (String file : filelist) {
 				File src = new File(source, file);
 				File dest = new File(destination, file);
 				copyToTargetLocation(src, dest);
@@ -347,9 +366,12 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	private void copySingleFile(File source, File destination) throws IOException {
 		InputStream inputstream = new FileInputStream(source);
 		OutputStream outputstream = new FileOutputStream(destination);
-		IOUtils.copy(inputstream, outputstream);
-		inputstream.close();
-		outputstream.close();
+		try {
+			IOUtils.copy(inputstream, outputstream);
+		} finally {
+			IOUtils.closeQuietly(inputstream);
+			IOUtils.closeQuietly(outputstream);
+		}
 	}
 
 	protected void writeModelAdapterInformation(File aOutputFolder, String aModelMeta) throws Exception {

@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.tc.core.Constants;
 
 public class DocumentMetaLogger implements Constants {
@@ -38,8 +39,8 @@ public class DocumentMetaLogger implements Constants {
 		logger.write(s + System.lineSeparator());
 	}
 
-	public void close() throws IOException {
-		logger.close();
+	public void close() {
+		IOUtils.closeQuietly(logger);
 	}
 
 }

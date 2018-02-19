@@ -82,8 +82,7 @@ extends JCasAnnotator_ImplBase implements ConnectorConstants
 
             checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(jcas, outcomes);
 
-            checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(jcas,
-                    classificationUnits, outcomes);
+            checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(classificationUnits, outcomes);
         }
     }
 
@@ -92,8 +91,7 @@ extends JCasAnnotator_ImplBase implements ConnectorConstants
         return skipSanityChecks == false;
     }
 
-    private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(JCas jcas,
-            List<TextClassificationTarget> targets, List<TextClassificationOutcome> outcomes)
+    private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(List<TextClassificationTarget> targets, List<TextClassificationOutcome> outcomes)
                 throws AnalysisEngineProcessException
     {
         // iff unit/sequence classification is active, there must be classificationUnit

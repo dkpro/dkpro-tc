@@ -63,9 +63,10 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 
 	Vectorize vectorize = new Vectorize();
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, int seed, File prediction)
-			throws Exception {
+	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, int maximumLength, File embedding, double threshold, int seed,
+			File prediction) throws Exception {
 
 		vectorize = new Vectorize(getOutcomes(trainOutcome, testOutcome));
 

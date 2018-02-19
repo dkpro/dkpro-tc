@@ -17,13 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
-import static org.dkpro.tc.core.Constants.DIM_CROSS_VALIDATION_MANUAL_FOLDS;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
-import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +34,7 @@ import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskType;
@@ -56,7 +50,7 @@ import org.dkpro.tc.ml.report.InnerBatchReport;
  * Crossvalidation setup
  * 
  */
-public class DeepLearningExperimentCrossValidation extends DeepLearningExperiment_ImplBase {
+public class DeepLearningExperimentCrossValidation extends DeepLearningExperiment_ImplBase implements Constants, DeepLearningConstants{
 
 	protected Comparator<String> comparator;
 	protected int numFolds = 10;
@@ -224,9 +218,26 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 			 * @param outputFolder
 			 * 			where the new cas are written to
 			 */
+			/**
+			 * 
+			 * @param outputFolder
+			 *            where the new cas are written to
+			 */
 			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
+
+				if (outputFolder == null) {
+					throw new NullPointerException("Output folder is null");
+				}
+
 				int numCas = 0;
-				for (File f : outputFolder.listFiles()) {
+
+				File[] listFiles = outputFolder.listFiles();
+
+				if (listFiles == null) {
+					throw new NullPointerException("Failed to list files in directory");
+				}
+
+				for (File f : listFiles) {
 					if (f.getName().contains(".bin")) {
 						numCas++;
 					}

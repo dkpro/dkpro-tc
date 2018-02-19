@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.dkpro.tc.core.Constants;
@@ -300,8 +301,9 @@ public class ID2OutcomeCombiner<T> {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("#labels ");
-		for(String key : map.keySet()){
-			sb.append(map.get(key) + "=" + key + " ");
+		
+		for(Entry<String, Integer> e : map.entrySet()) {
+			sb.append(e.getValue() + "=" + e.getKey() + " ");
 		}
 		
 		return sb.toString().trim();

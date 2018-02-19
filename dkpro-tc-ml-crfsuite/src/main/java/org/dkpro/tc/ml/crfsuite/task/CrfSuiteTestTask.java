@@ -21,11 +21,13 @@ package org.dkpro.tc.ml.crfsuite.task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,10 +166,14 @@ public class CrfSuiteTestTask
         evalCommand.add("-m");
         evalCommand.add(modelLocation);
         evalCommand.add(testFile.getAbsolutePath());
+        
+        System.out.println(evalCommand);
 
         Process process = new ProcessBuilder().command(evalCommand).start();
         String output = captureProcessOutput(process).toString();
 
+        System.out.println(output);
+        
         return output;
     }
 
@@ -186,7 +192,7 @@ public class CrfSuiteTestTask
     public static StringBuilder runTest(List<String> aTestModelCommand)
         throws Exception
     {
-        Process process = new ProcessBuilder().command(aTestModelCommand).start();
+    		Process process = new ProcessBuilder().command(aTestModelCommand).redirectError(Redirect.INHERIT).start();
         StringBuilder output = captureProcessOutput(process);
         return output;
 
@@ -248,7 +254,14 @@ public class CrfSuiteTestTask
     private String writeModel(TaskContext aContext, String aTmpModelLocation)
         throws Exception
     {
-        aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(new File(aTmpModelLocation)));
+    		FileInputStream fis = new FileInputStream(new File(aTmpModelLocation));
+    		
+    		try {
+    			aContext.storeBinary(MODEL_CLASSIFIER, fis);
+    		} finally {
+    			IOUtils.closeQuietly(fis);
+    		}
+        
         File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
         return modelLocation.getAbsolutePath();
     }
