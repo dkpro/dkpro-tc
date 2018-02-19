@@ -218,8 +218,19 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 			 * @param outputFolder
 			 * 			where the new cas are written to
 			 */
+			/**
+			 * 
+			 * @param outputFolder
+			 *            where the new cas are written to
+			 */
 			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
+
+				if (outputFolder == null) {
+					throw new NullPointerException("Output folder is null");
+				}
+
 				int numCas = 0;
+
 				File[] listFiles = outputFolder.listFiles();
 
 				if (listFiles == null) {

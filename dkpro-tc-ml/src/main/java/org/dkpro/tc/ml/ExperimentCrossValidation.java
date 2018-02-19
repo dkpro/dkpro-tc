@@ -211,34 +211,37 @@ public class ExperimentCrossValidation
                 }
             }
 
-        	/**
+			/**
 			 * 
 			 * @param outputFolder
-			 * 			where the new cas are written to
-			 */            
-            private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
-            {
-                int numCas = 0;
-                
-                File[] listFiles = outputFolder.listFiles();
-                
+			 *            where the new cas are written to
+			 */
+			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
+
+				if (outputFolder == null) {
+					throw new NullPointerException("Output folder is null");
+				}
+
+				int numCas = 0;
+
+				File[] listFiles = outputFolder.listFiles();
+
 				if (listFiles == null) {
 					throw new NullPointerException("Failed to list files in directory");
 				}
-                
-                for (File f : listFiles) {
-                    if (f.getName().contains(".bin")) {
-                        numCas++;
-                    }
-                }
 
-                if (numCas < numFolds) {
-                    throw new IllegalStateException(
-                            "Not enough TextClassificationUnits found to create at least ["
-                                    + numFolds + "] folds");
-                }
-            }
-        };
+				for (File f : listFiles) {
+					if (f.getName().contains(".bin")) {
+						numCas++;
+					}
+				}
+
+				if (numCas < numFolds) {
+					throw new IllegalStateException(
+							"Not enough TextClassificationUnits found to create at least [" + numFolds + "] folds");
+				}
+			}
+		};
 
         // ================== SUBTASKS OF THE INNER BATCH TASK =======================
 

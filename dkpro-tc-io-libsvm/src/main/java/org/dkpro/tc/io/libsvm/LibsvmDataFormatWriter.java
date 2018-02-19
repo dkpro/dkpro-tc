@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -189,8 +190,8 @@ public class LibsvmDataFormatWriter implements DataWriter {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		for (String k : map.keySet()) {
-			sb.append(k + "\t" + map.get(k) + "\n");
+		for (Entry<String, Integer> e : map.entrySet()) {
+			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
 		}
 
 		FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), "utf-8");
@@ -226,10 +227,12 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	}
 
 	private void writeFeatureName2idMapping(File outputDirectory, String featurename2instanceid,
-			Map<String, Integer> stringToInt) throws IOException {
+			Map<String, Integer> map) throws IOException {
+		
 		StringBuilder sb = new StringBuilder();
-		for (String k : stringToInt.keySet()) {
-			sb.append(k + "\t" + stringToInt.get(k) + "\n");
+		
+		for (Entry<String, Integer> e: map.entrySet()) {
+			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
 		}
 		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid), sb.toString(), "utf-8");
 	}
@@ -304,9 +307,11 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		sb.append("#Index\tDkProInstanceId\n");
-		for (String k : index2instanceId.keySet()) {
-			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
+		
+		for(Entry<String, String> e : index2instanceId.entrySet()) {
+			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
 		}
+
 		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
 	}
 
