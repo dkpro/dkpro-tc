@@ -25,8 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +34,6 @@ import java.util.Properties;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -50,8 +46,9 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.ModelVersionIO;
 
-public abstract class ModelSerializationTask extends ExecutableTaskBase implements Constants {
+public abstract class ModelSerializationTask extends ExecutableTaskBase implements Constants, ModelVersionIO {
 	@Discriminator(name = DIM_FEATURE_SET)
 	protected TcFeatureSet featureSet;
 	@Discriminator(name = DIM_FEATURE_MODE)
@@ -90,27 +87,6 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		writeAdapter();
 	}
 
-	private void writeFeatureMode(File outputFolder, String featureMode) throws IOException {
-		Properties properties = new Properties();
-		properties.setProperty(DIM_FEATURE_MODE, featureMode);
-
-		File file = new File(outputFolder + "/" + MODEL_FEATURE_MODE);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, "Feature mode used to train this model");
-		fileOut.close();
-
-	}
-
-	private static void writeLearningMode(File outputFolder, String learningMode) throws IOException {
-		Properties properties = new Properties();
-		properties.setProperty(DIM_LEARNING_MODE, learningMode);
-
-		File file = new File(outputFolder + "/" + MODEL_LEARNING_MODE);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, "Learning mode used to train this model");
-		fileOut.close();
-	}
-
 	private void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception {
 		String version = getCurrentTcVersionFromJar();
 		if (version == null) {
@@ -126,43 +102,6 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 			fileOut.close();
 		}
 
-	}
-
-	private String getCurrentTcVersionFromJar() {
-		Class<?> contextClass = getClass();
-
-		InputStream resourceAsStream = contextClass
-				.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
-
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model;
-		try {
-			model = reader.read(resourceAsStream);
-		} catch (Exception e) {
-			return null;
-		}
-		String version = model.getParent().getVersion();
-		return version;
-	}
-
-	private String getCurrentTcVersionFromWorkspace() throws Exception {
-		Class<?> contextClass = getClass();
-
-		// Try to determine the location of the POM file belonging to the
-		// context object
-		URL url = contextClass.getResource(contextClass.getSimpleName() + ".class");
-		String classPart = contextClass.getName().replace(".", "/") + ".class";
-		String base = url.toString();
-		base = base.substring(0, base.length() - classPart.length());
-		base = base.substring(0, base.length() - "target/classes/".length());
-		File pomFile = new File(new File(URI.create(base)), "pom.xml");
-
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model;
-		model = reader.read(new FileInputStream(pomFile));
-		String version = model.getParent().getVersion();
-
-		return version;
 	}
 
 	private void writeModelParameters(TaskContext aContext, File aOutputFolder, List<TcFeature> featureSet)
