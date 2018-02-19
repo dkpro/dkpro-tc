@@ -75,16 +75,13 @@ public class ReplaceMissingValuesWithZeroFilter
             int[] indices = new int[instance.numValues()];
             int num = 0;
             for (int j = 0; j < instance.numValues(); j++) {
-                if (instance.isMissingSparse(j)
-                        && (getInputFormat().classIndex() != instance.index(j))
-                        && (instance.attributeSparse(j).isNominal() || instance.attributeSparse(j)
-                                .isNumeric())) {
+				if (instance.isMissingSparse(j) && getInputFormat().classIndex() != instance.index(j)
+						&& instance.attributeSparse(j).isNominal() || instance.attributeSparse(j).isNumeric()) {
+                	continue;
                 }
-                else {
                     vals[num] = instance.valueSparse(j);
                     indices[num] = instance.index(j);
                     num++;
-                }
             }
             if (num == instance.numValues()) {
                 inst = new SparseInstance(instance.weight(), vals, indices,
