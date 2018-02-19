@@ -120,6 +120,9 @@ public abstract class LuceneMC extends MetaCollector {
 				}
 			}
 			
+			// We write stuff to disc as rule-of-thumb measure to avoid many small
+			// documents that require more HDD space but also avoid few extremely big documents 
+			// that demand a lot of RAM when they grow in-memory
 			if(addedFieldCounter > 1000) {
 				writeToIndex();
 				indexWriter.commit();
