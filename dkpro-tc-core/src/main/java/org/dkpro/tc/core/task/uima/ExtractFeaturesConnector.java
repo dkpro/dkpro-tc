@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.task.uima;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -210,13 +211,19 @@ public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements 
 		return featureFilters.length > 0 || !dsw.canStream();
 	}
 
-	private void recordDocumentMetaLog(JCas aJCas) {
-		DocumentMetaData dmd = null;
+	private void recordDocumentMetaLog(JCas aJCas) throws AnalysisEngineProcessException {
+
 		try {
+			if (!JCasUtil.exists(aJCas, DocumentMetaData.class)) {
+				documentMetaLogger.write("MissingDocumentMetaData" + "\t" + "MissingDocumentMetaData");
+				return;
+			}
+			DocumentMetaData dmd = null;
 			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+
 			documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
-		} catch (Exception e) {
-			// annotation missing
+		} catch (IOException e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
