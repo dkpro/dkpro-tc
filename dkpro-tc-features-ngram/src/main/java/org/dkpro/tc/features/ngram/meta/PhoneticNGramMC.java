@@ -29,6 +29,7 @@ import org.apache.commons.codec.language.ColognePhonetic;
 import org.apache.commons.codec.language.Soundex;
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -89,7 +90,7 @@ public class PhoneticNGramMC
         FrequencyDistribution<String> phoneticNgrams = new FrequencyDistribution<String>();
         for (Sentence s : selectCovered(jcas, Sentence.class, target)) {
             List<String> phoneticStrings = new ArrayList<String>();
-            for (Token t : selectCovered(jcas, Token.class, s)) {
+            for (Token t : JCasUtil.selectCovered(jcas, Token.class, s)) {
                 try {
                     phoneticStrings.add(encoder.encode(t.getCoveredText()));
                 }

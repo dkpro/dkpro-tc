@@ -21,7 +21,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.keras.reports.KerasMetaReport;
-import org.dkpro.tc.ml.report.DeeplearningOutcomeIdReport;
+import org.dkpro.tc.ml.keras.reports.KerasOutcomeIdReport;
 
 public class KerasAdapter
     implements TcDeepLearningAdapter
@@ -36,7 +36,7 @@ public class KerasAdapter
     @Override
     public ReportBase getOutcomeIdReportClass()
     {
-        return new DeeplearningOutcomeIdReport();
+        return new KerasOutcomeIdReport();
     }
 
     @Override

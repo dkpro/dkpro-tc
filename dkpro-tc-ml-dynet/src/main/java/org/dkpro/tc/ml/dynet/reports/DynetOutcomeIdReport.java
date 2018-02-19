@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.report;
+package org.dkpro.tc.ml.dynet.reports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,13 +33,17 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.core.task.deep.PreparationTask;
+import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Constants {
+public class DynetOutcomeIdReport extends ReportBase {
 
 	/**
 	 * Character that is used for separating fields in the output file
@@ -53,14 +57,21 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 	@Override
 	public void execute() throws Exception {
 
-		boolean isMultiLabel = catchNull(getDiscriminator(getContext(), DIM_LEARNING_MODE)).equals(LM_MULTI_LABEL); 
-		boolean isRegression = catchNull(getDiscriminator(getContext(), DIM_LEARNING_MODE)).equals(LM_REGRESSION);
+		boolean isMultiLabel = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_MULTI_LABEL);
+
+		boolean isRegression = getDiscriminators()
+				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
+				.equals(Constants.LM_REGRESSION);
 
 		if (isMultiLabel) {
-			THRESHOLD = catchNull(getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD));
+			THRESHOLD = getDiscriminators()
+					.get(DynetTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
 		}
 
-		boolean isIntegerMode = Boolean.valueOf(catchBooleanNull(getDiscriminator(getContext(), DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)));
+		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
+				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
 
 		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
@@ -103,8 +114,8 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 				continue;
 			}
 
-			String id = !nameOfTargets.isEmpty() && nameOfTargets.size() > i - shift ? nameOfTargets.get(i - shift)
-					: "" + counter++;
+			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)) ? nameOfTargets.get(i - shift)
+					: ("" + (counter++));
 
 			String[] split = p.split("\t");
 
@@ -135,24 +146,6 @@ public class DeeplearningOutcomeIdReport extends TcBatchReportBase implements Co
 		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
 		prop.store(fos, header.toString());
 		fos.close();
-	}
-
-	private String catchBooleanNull(String discriminator) {
-		
-		if(discriminator != null) {
-			return discriminator;
-		}
-		
-		return "false";
-	}
-
-	private String catchNull(String discriminator) {
-		
-		if(discriminator != null) {
-			return discriminator;
-		}
-		
-		return "";
 	}
 
 	private Map<String, String> inverseMap(Map<String, String> map) {

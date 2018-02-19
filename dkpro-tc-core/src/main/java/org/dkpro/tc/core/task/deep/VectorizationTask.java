@@ -134,9 +134,6 @@ public class VectorizationTask
 						VectorizationDocDoc2MultiLabel.PARAM_TO_INTEGER, integerVectorization);
 				builder.add(engine);
 				break;
-			default:
-				throw new ResourceInitializationException(new IllegalStateException("Combination of feature mode ["
-						+ featureMode + "] with learning mode [" + learningMode + "] not defined"));
 			}
 			break;
 		case Constants.FM_SEQUENCE:

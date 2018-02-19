@@ -24,6 +24,6 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public interface SequenceOutcomeAnnotator
 {
-    String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
         throws AnalysisEngineProcessException;
 }

@@ -17,6 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.dynet;
 
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,7 +42,7 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.PythonConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
-public class DynetTestTask extends ExecutableTaskBase implements Constants, DeepLearningConstants {
+public class DynetTestTask extends ExecutableTaskBase implements Constants {
 
 	private static final String DEFAULT_SEED = "123456789";
 
@@ -67,6 +75,10 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants, Deep
 
 	@Discriminator(name = DyNetConstants.DIM_DYNET_GPUS)
 	private Integer numGpus;
+	
+	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+	private double threshold;
+	
 	
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
@@ -200,28 +212,28 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants, Deep
 		return dicts;
 	}
 	
-	/**
-	 * Returns the maximum length which is either user defined and might be shorter
-	 * than the actual longest sequence, or is the longest sequence in the data if
-	 * no value is provided
-	 * 
-	 * @param aContext
-	 *            Task Context
-	 * @return String value of maximum length
-	 * @throws IOException
-	 *             in case a read error occurs
-	 */
-	private String getMaximumLength(TaskContext aContext) throws IOException {
-		if (maximumLength != null) {
-			return maximumLength.toString();
-		}
-
-		File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-		String maxLenFromFile = FileUtils
-				.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
-
-		return maxLenFromFile;
-	}
+	 /**
+		 * Returns the maximum length which is either user defined and might be
+		 * shorter than the actual longest sequence, or is the longest sequence in
+		 * the data if no value is provided
+		 * 
+		 * @param aContext
+		 *            Task Context
+		 * @return String value of maximum length
+		 * @throws IOException
+		 *             in case a read error occurs
+		 */
+	    private String getMaximumLength(TaskContext aContext) throws IOException
+	    {
+	        if(maximumLength!=null){
+	            return maximumLength.toString();
+	        }
+	        
+	        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
+	        String maxLenFromFile = FileUtils.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+	        
+	        return maxLenFromFile;
+	    }
 
 	private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException {
 		File folder = aContext.getFolder(key, AccessMode.READONLY);

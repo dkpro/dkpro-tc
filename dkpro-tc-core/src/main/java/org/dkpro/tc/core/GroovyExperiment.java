@@ -26,5 +26,5 @@ public interface GroovyExperiment
     /**
      * Start the Groovy experiment.
      */
-    void run();
+    public void run();
 }

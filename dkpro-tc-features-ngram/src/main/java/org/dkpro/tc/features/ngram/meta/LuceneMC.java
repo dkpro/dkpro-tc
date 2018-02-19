@@ -28,6 +28,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
@@ -53,22 +54,31 @@ public abstract class LuceneMC extends MetaCollector {
 
 	// this is a static singleton as different Lucene-based meta collectors will
 	// use the same writer
-	static IndexWriter indexWriter = null;
-	static volatile AtomicInteger activeMetaWriter=null; //used to known when we can close the index
+	protected static IndexWriter indexWriter = null;
+	static AtomicInteger activeMetaWriter=null; //used to known when we can close the index
 
 	protected Document currentDocument;
 
 	protected FieldType fieldType;
-	
-	private int addedFieldCounter=0;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 
-		initIndexWriter();
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 
-		initDocument();
+		if (indexWriter == null) {
+			try {
+				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+			} catch (IOException e) {
+				throw new ResourceInitializationException(e);
+			}
+		}
+
+		currentDocument = new Document();
+		currentDocument
+				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
 
 		fieldType = new FieldType();
 		fieldType.setIndexed(true);
@@ -84,26 +94,6 @@ public abstract class LuceneMC extends MetaCollector {
 		activeMetaWriter.incrementAndGet();
 	}
 
-	private void initDocument() {
-		currentDocument = new Document();
-		currentDocument
-				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));		
-	}
-
-	private synchronized void initIndexWriter() throws ResourceInitializationException {
-		
-		if (indexWriter == null) {
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-			config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-
-			try {
-				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-			} catch (IOException e) {
-				throw new ResourceInitializationException(e);
-			}
-		}	
-	}
-
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		try {
@@ -116,19 +106,7 @@ public abstract class LuceneMC extends MetaCollector {
 				Field field = new Field(getFieldName(), ngram, fieldType);
 				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
 					currentDocument.add(field);
-					addedFieldCounter++;
 				}
-			}
-			
-			// We write stuff to disc as rule-of-thumb measure to avoid many small
-			// documents that require more HDD space but also avoid few extremely big documents 
-			// that demand a lot of RAM when they grow in-memory
-			if(addedFieldCounter > 1000) {
-				writeToIndex();
-				indexWriter.commit();
-				
-				addedFieldCounter = 0;
-				initDocument();
 			}
 
 		} catch (Exception e) {
@@ -156,6 +134,9 @@ public abstract class LuceneMC extends MetaCollector {
 				indexWriter.close();
 				indexWriter = null;
 			}
+		} catch (AlreadyClosedException e) {
+			// ignore, as multiple meta collectors write in the same index
+			// and will all try to close the index
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}

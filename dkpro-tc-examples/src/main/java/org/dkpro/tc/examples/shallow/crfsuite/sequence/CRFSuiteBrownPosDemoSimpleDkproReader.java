@@ -18,9 +18,11 @@
  */
 package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
+import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
+import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,6 @@ import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -70,10 +71,10 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 
 		@SuppressWarnings("unchecked")
 		ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
-				Dimension.create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new Object[] {new CrfSuiteAdapter()})), null);
+				Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()), null);
 
 		CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
-		experiment.runTrainTest(pSpace);
+		experiment.runCrossValidation(pSpace);
 	}
 
 	public static ParameterSpace getParameterSpace(String featureMode, String learningMode,
@@ -84,12 +85,12 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 
 		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "a01.xml");
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
 		dimReaders.put(DIM_READER_TRAIN, train);
 
 		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
 				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "a02.xml");
+				TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a02.xml"));
 		dimReaders.put(DIM_READER_TEST, test);
 
 		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
@@ -97,19 +98,17 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 						TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
 								CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
 								50)));
-		
-		ParameterSpace pSpace = null;
+		ParameterSpace pSpace;
 		if (dimFilters != null) {
 			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
-					dimFeatureSets, dimClassificationArgs, dimFilters);
+					dimFilters, dimFeatureSets, dimClassificationArgs);
 		} else {
-
 			pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 					Dimension.create(DIM_LEARNING_MODE, learningMode), Dimension.create(DIM_FEATURE_MODE, featureMode),
 					dimFeatureSets, dimClassificationArgs);
 		}
-		
+
 		return pSpace;
 	}
 

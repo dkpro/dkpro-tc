@@ -31,6 +31,6 @@ public interface SingleLabelOutcomeAnnotator
      * @throws org.apache.uima.analysis_engine.AnalysisEngineProcessException
      * 		exception
      */
-     String getTextClassificationOutcome(JCas jcas)
+    public String getTextClassificationOutcome(JCas jcas)
         throws AnalysisEngineProcessException;
 }

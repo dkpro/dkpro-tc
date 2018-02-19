@@ -40,182 +40,189 @@ import org.dkpro.tc.ml.svmhmm.util.SvmHmmUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
-public class SvmHmmTestTask extends LibsvmDataFormatTestTask implements Constants {
-	private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/ml/svmhmm/";
+public class SvmHmmTestTask
+	extends LibsvmDataFormatTestTask
+	implements Constants
+{
+    private static final String BINARIES_BASE_LOCATION = "classpath:/org/dkpro/tc/ml/svmhmm/";
 
-	private double paramC = 5;
+    private double paramC = 5;
 
-	private double paramEpsilon = 0.5;
+    private double paramEpsilon = 0.5;
 
-	private int paramOrderT = 1;
+    private int paramOrderT = 1;
 
-	private int paramOrderE = 0;
+    private int paramOrderE = 0;
 
-	private int paramB = 0;
+    private int paramB = 0;
 
-	// where the trained model is stored
-	private static final String MODEL_NAME = "svm_struct.model";
+    // where the trained model is stored
+    private static final String MODEL_NAME = "svm_struct.model";
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		processParameters(classificationArguments);
+    @Override
+    public void execute(TaskContext aContext)
+        throws Exception
+    {
+        processParameters(classificationArguments);
 
-		super.execute(aContext);
+        super.execute(aContext);
+    }
+    
+    private void combinePredictionAndExpectedGoldLabels(File fileTest, File predictionsFile) throws Exception {
+    	
+    	BufferedReader readerPrediction = new BufferedReader(new InputStreamReader(new FileInputStream(predictionsFile), "utf-8"));
+    	BufferedReader readerGold = new BufferedReader(new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+		
+    	File createTempFile = File.createTempFile("svmhmm", ".txt");
+    	BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
+    	
+    	String prediction=null;
+    	String gold=null;
+    	
+    	writer.write("#PREDICTION;GOLD" + "\n");
+    	do {
+    		
+    		prediction = readerPrediction.readLine();
+    		gold = readerGold.readLine();
+    		
+    		if(prediction == null || gold == null){
+    			break;
+    		}
+    		
+    		gold = gold.split("\t")[0];
+    		writer.write(prediction + ";" + gold+"\n");
+    		
+    	}while(true);
+    	
+    	writer.close();
+    	readerGold.close();
+    	readerPrediction.close();
+    	
+    	predictionsFile.delete();
+    	FileUtils.moveFile(createTempFile, predictionsFile);
 	}
 
-	private void combinePredictionAndExpectedGoldLabels(File fileTest, File predictionsFile) throws Exception {
-
-		BufferedReader readerPrediction = new BufferedReader(
-				new InputStreamReader(new FileInputStream(predictionsFile), "utf-8"));
-		BufferedReader readerGold = new BufferedReader(new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-
-		File createTempFile = File.createTempFile("svmhmm", ".txt");
-		BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
-
-		String prediction = null;
-		String gold = null;
-
-		writer.write("#PREDICTION;GOLD" + "\n");
-		do {
-
-			prediction = readerPrediction.readLine();
-			gold = readerGold.readLine();
-
-			if (prediction == null || gold == null) {
-				break;
-			}
-
-			gold = gold.split("\t")[0];
-			writer.write(prediction + ";" + gold + "\n");
-
-		} while (true);
-
-		writer.close();
-		readerGold.close();
-		readerPrediction.close();
-
-		deleteFile(predictionsFile);
-		FileUtils.moveFile(createTempFile, predictionsFile);
-	}
-
-	private void processParameters(List<Object> classificationArguments) {
-		List<String> stringArgs = new ArrayList<>();
-		for (int i = 1; i < classificationArguments.size(); i++) {
-			stringArgs.add((String) classificationArguments.get(i));
-		}
+	private void processParameters(List<Object> classificationArguments)
+    {
+    	List<String> stringArgs = new ArrayList<>();
+    	for(int i=1; i < classificationArguments.size(); i++){
+    		stringArgs.add((String)classificationArguments.get(i));
+    	}
 
 		paramC = SvmHmmUtils.getParameterC(stringArgs);
 		paramEpsilon = SvmHmmUtils.getParameterEpsilon(stringArgs);
 		paramOrderE = SvmHmmUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
 		paramOrderT = SvmHmmUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
 		paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
-	}
+    }
 
-	private void deleteFile(File f) {
-		boolean delete = f.delete();
-		if(!delete) {
-			throw new IllegalStateException("Could not delete file [" + f.getAbsolutePath() +"]");
-		}
-	}
+    public static List<String> buildPredictionCommand(File binaryPath, File testFile, File modelLocation,
+            File outputPredictions)
+                throws IOException
+    {
+        List<String> result = new ArrayList<>();
 
-	public static List<String> buildPredictionCommand(File binaryPath, File testFile, File modelLocation,
-			File outputPredictions) throws IOException {
-		List<String> result = new ArrayList<>();
+        result.add(binaryPath.getAbsolutePath());
+        result.add(testFile.getAbsolutePath());
+        result.add(modelLocation.getAbsolutePath());
+        result.add(outputPredictions.getAbsolutePath());
 
-		result.add(binaryPath.getAbsolutePath());
-		result.add(testFile.getAbsolutePath());
-		result.add(modelLocation.getAbsolutePath());
-		result.add(outputPredictions.getAbsolutePath());
+        return result;
+    }
 
-		return result;
-	}
 
-	public static List<String> buildTrainCommand(File binaryPath, File trainingFile, File targetModelLocation,
-			double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB) {
-		List<String> result = new ArrayList<>();
-		result.add(binaryPath.getAbsolutePath());
+    public static List<String> buildTrainCommand(File binaryPath, File trainingFile, File targetModelLocation,
+            double paramC, int paramOrderE, int paramOrderT, double paramEpsilon, int paramB)
+    {
+        List<String> result = new ArrayList<>();
+        result.add(binaryPath.getAbsolutePath());
 
-		// svm struct params
-		result.add("-c");
-		result.add(String.format(Locale.ENGLISH, "%f", paramC));
-		result.add("--e");
-		result.add(Integer.toString(paramOrderE));
-		result.add("--t");
-		result.add(Integer.toString(paramOrderT));
-		result.add("-e");
-		result.add(String.format(Locale.ENGLISH, "%f", paramEpsilon));
-		result.add("--b");
-		result.add(Integer.toString(paramB));
+        // svm struct params
+        result.add("-c");
+        result.add(String.format(Locale.ENGLISH, "%f", paramC));
+        result.add("--e");
+        result.add(Integer.toString(paramOrderE));
+        result.add("--t");
+        result.add(Integer.toString(paramOrderT));
+        result.add("-e");
+        result.add(String.format(Locale.ENGLISH, "%f", paramEpsilon));
+        result.add("--b");
+        result.add(Integer.toString(paramB));
 
-		// training file
-		result.add(trainingFile.getAbsolutePath());
+        // training file
+        result.add(trainingFile.getAbsolutePath());
 
-		// output model
-		result.add(targetModelLocation.getAbsolutePath());
+        // output model
+        result.add(targetModelLocation.getAbsolutePath());
 
-		return result;
-	}
+        return result;
+    }
 
-	public static void runCommand(List<String> command) throws Exception {
-		ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
+    public static void runCommand(List<String> command)
+        throws Exception
+    {
+            ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
 
-		// run the process
-		Process process = processBuilder.start();
-		process.waitFor();
-	}
+            // run the process
+            Process process = processBuilder.start();
+            process.waitFor();
+    }
+    
+    public static File resolveSvmHmmPredictionCommand()
+    {
+        try {
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_classify");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public static File resolveSvmHmmPredictionCommand() {
-		try {
-			return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_classify");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static File resolveSvmHmmLearnCommand() {
-		try {
-			return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_learn");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static File resolveSvmHmmLearnCommand()
+    {
+        try {
+            return new RuntimeProvider(BINARIES_BASE_LOCATION).getFile("svm_hmm_learn");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	@Override
 	protected Object trainModel(TaskContext aContext) throws Exception {
 
 		File trainBinary = resolveSvmHmmLearnCommand();
 		File fileTrain = getTrainFile(aContext);
-
+		
 		// SvmHmm struggles with paths longer than 255 characters to circumvent this
 		// issue, we copy all files together into a local directory to ensure short path
 		// names that are below this threshold
 		File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
 		File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
 		FileUtils.copyFile(fileTrain, newTrainFileLocation);
-
-		List<String> trainCommand = buildTrainCommand(trainBinary, newTrainFileLocation, tmpModelLocation, paramC,
-				paramOrderE, paramOrderT, paramEpsilon, paramB);
+		
+		List<String> trainCommand = buildTrainCommand(trainBinary, newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
 		runCommand(trainCommand);
-
+		
 		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
 		FileUtils.copyFile(tmpModelLocation, modelFile);
-
-		deleteFile(newTrainFileLocation);
-		deleteFile(tmpModelLocation);
-
+		
+		newTrainFileLocation.delete();
+		tmpModelLocation.delete();
+		
 		return modelFile;
 	}
 
 	@Override
 	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
-
+		
 		File fileTest = getTestFile(aContext);
 		File modelFile = (File) model;
-
+		
 		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
 		File binary = resolveSvmHmmPredictionCommand();
-
+		
+		
 		// SvmHmm struggles with paths longer than 255 characters to circumvent this
 		// issue, we copy all files together into a local directory to ensure short path
 		// names that are below this threshold
@@ -223,14 +230,14 @@ public class SvmHmmTestTask extends LibsvmDataFormatTestTask implements Constant
 		FileUtils.copyFile(modelFile, localModel);
 		File localTestFile = new File(binary.getParentFile(), "testfile.txt");
 		FileUtils.copyFile(fileTest, localTestFile);
-
+		
 		List<String> predictionCommand = buildPredictionCommand(binary, localTestFile, localModel, predictionsFile);
 		runCommand(predictionCommand);
-
-		deleteFile(localModel);
-		deleteFile(localTestFile);
-
-		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);
+		
+		localModel.delete();
+		localTestFile.delete();
+		
+		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);		
 	}
-
+	
 }

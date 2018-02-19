@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.crfsuite.sequence.filter;
+package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +27,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.crfsuite.sequence.CRFSuiteBrownPosDemoSimpleDkproReader;
+import org.dkpro.tc.examples.shallow.crfsuite.sequence.filter.FilterLuceneCharacterNgramStartingWithLetter;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;

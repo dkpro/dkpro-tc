@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.keras;
 
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
+import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +43,7 @@ import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
 public class KerasTestTask
     extends ExecutableTaskBase
-    implements Constants, DeepLearningConstants
+    implements Constants
 {
     @Discriminator(name = DIM_PYTHON_INSTALLATION)
     private String python;
@@ -56,6 +63,9 @@ public class KerasTestTask
 	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
 	private boolean intVectorization;
 	
+	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+	private double threshold;
+
     @Override
     public void execute(TaskContext aContext)
         throws Exception

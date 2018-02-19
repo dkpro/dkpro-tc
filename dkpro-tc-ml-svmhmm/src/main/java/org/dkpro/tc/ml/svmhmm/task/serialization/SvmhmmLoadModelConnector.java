@@ -60,17 +60,10 @@ public class SvmhmmLoadModelConnector extends LibsvmDataFormatLoadModelConnector
 		List<String> command = SvmHmmTestTask.buildPredictionCommand(binary, localTestFile, localModel, prediction);
 		SvmHmmTestTask.runCommand(command);
 
-		delete(localModel);
-		delete(localTestFile);
+		localModel.delete();
+		localTestFile.delete();
 		
 		return prediction;
-	}
-
-	private void delete(File f) {
-		boolean delete = f.delete();
-		if(!delete) {
-			throw new IllegalStateException("Failed to delete file ["+f.getAbsolutePath()+"]");
-		}
 	}
 
 	int currSeqId = 0;

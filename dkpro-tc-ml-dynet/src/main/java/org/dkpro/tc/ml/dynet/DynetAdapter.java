@@ -21,7 +21,7 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.dynet.reports.DynetMetaReport;
-import org.dkpro.tc.ml.report.DeeplearningOutcomeIdReport;
+import org.dkpro.tc.ml.dynet.reports.DynetOutcomeIdReport;
 
 public class DynetAdapter
     implements TcDeepLearningAdapter
@@ -36,7 +36,7 @@ public class DynetAdapter
     @Override
     public ReportBase getOutcomeIdReportClass()
     {
-        return new DeeplearningOutcomeIdReport();
+        return new DynetOutcomeIdReport();
     }
 
     @Override

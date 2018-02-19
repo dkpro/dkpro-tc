@@ -19,7 +19,6 @@
 package org.dkpro.tc.ml.weka.util;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import org.dkpro.tc.api.exception.TextClassificationException;
 
@@ -36,11 +35,12 @@ public class MultilabelResult implements Serializable {
 	 * @throws TextClassificationException an exception
 	 */
 	public MultilabelResult(int[][] goldstandard, double[][] predictions, String bipartitionThreshold) throws TextClassificationException{
-		this.actuals = Arrays.copyOf(goldstandard, goldstandard.length);
-		this.predictions = Arrays.copyOf(predictions, predictions.length);
+		this.actuals = goldstandard;
+		this.predictions = predictions;
 		try {
 			this.bipartitionThreshold = Double.parseDouble(bipartitionThreshold);
 		} catch (NumberFormatException e) {
+			// TODO
 			throw new TextClassificationException("Currenty, only one global bipartition threshold value is supported. Please set a double as threshold.");
 		}
 	}
@@ -50,8 +50,7 @@ public class MultilabelResult implements Serializable {
 	 * @return predictions as LxN matrix
 	 */
 	public double[][] getPredictions() {
-		double [][] copy = Arrays.copyOf(predictions, predictions.length);
-		return copy;
+		return predictions;
 	}
 
 	/**
@@ -59,8 +58,7 @@ public class MultilabelResult implements Serializable {
 	 * @return gold standard as LxN matrix
 	 */
 	public int[][] getGoldstandard() {
-		int[][] copy = Arrays.copyOf(actuals, actuals.length);
-		return copy;
+		return actuals;
 	}
 
 	/**
@@ -83,6 +81,13 @@ public class MultilabelResult implements Serializable {
 	 * bipartition threshold
 	 */
 	double bipartitionThreshold;
+	/**
+	 * instanceIds
+	 */
+	String[] instanceIds;
+	public String[] getInstanceIds() {
+		return instanceIds;
+	}
 
 	/**
 	 * Calculates a bipartition from the predictions (which are usually rankings)

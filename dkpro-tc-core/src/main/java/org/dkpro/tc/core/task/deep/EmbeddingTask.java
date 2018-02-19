@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -62,6 +61,8 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
 	private boolean integerVectorization;
 	
+	String unknownVector = null;
+
 	int lenVec = -1;
 
 	@Override
@@ -157,8 +158,8 @@ public class EmbeddingTask extends ExecutableTaskBase {
 			}
 		}
 
-		for(Entry<String, String> e : tokenIdMap.entrySet()) {
-			writer.write(e.getValue() + " " + randomVector(lenVec) + System.lineSeparator());
+		for (String k : tokenIdMap.keySet()) {
+			writer.write(tokenIdMap.get(k) + " " + randomVector(lenVec) + System.lineSeparator());
 		}
 
 		writer.close();

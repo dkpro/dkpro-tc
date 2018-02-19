@@ -17,8 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.api.features;
 
+import java.util.Map;
+
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
+import org.apache.uima.fit.descriptor.TypeCapability;
+import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 
 /**
  * Abstract base class for all feature extractors.
@@ -31,4 +37,26 @@ public abstract class FeatureExtractorResource_ImplBase
     public static final String PARAM_UNIQUE_EXTRACTOR_NAME = "uniqueFeatureExtractorName";
     @ConfigurationParameter(name = PARAM_UNIQUE_EXTRACTOR_NAME, mandatory = true)
     protected String featureExtractorName;
+    
+    protected String[] requiredTypes;
+
+    @Override
+    public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
+        throws ResourceInitializationException
+    {
+        if (!super.initialize(aSpecifier, aAdditionalParams)) {
+            return false;
+        }
+                
+        TypeCapability annotation = ReflectionUtil.getAnnotation(this.getClass(), TypeCapability.class);
+
+        if (annotation != null) {
+            requiredTypes = annotation.inputs();
+        }
+        else {
+            requiredTypes = new String[0];
+        }
+
+        return true;
+    }
 }

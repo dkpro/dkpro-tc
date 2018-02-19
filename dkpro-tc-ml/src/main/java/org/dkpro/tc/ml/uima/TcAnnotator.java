@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -136,11 +135,8 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		Properties prop = new Properties();
 
 		FileInputStream fis = new FileInputStream(file);
-		try {
-			prop.load(fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+		prop.load(fis);
+		fis.close();
 
 		return prop.getProperty(DIM_FEATURE_MODE);
 	}
@@ -150,11 +146,8 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		Properties prop = new Properties();
 
 		FileInputStream fis = new FileInputStream(file);
-		try {
-			prop.load(fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+		prop.load(fis);
+		fis.close();
 
 		return prop.getProperty(DIM_LEARNING_MODE);
 	}

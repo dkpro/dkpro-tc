@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
@@ -58,14 +57,10 @@ public class BasicResultReport
         	pa.setProperty(e.getKey(), e.getValue());
         }
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
+        FileOutputStream fileOutputStream = new FileOutputStream(key);
+        pa.store(fileOutputStream, "Results");
+        fileOutputStream.close();
         
-		FileOutputStream fileOutputStream = null;
-		try {
-			fileOutputStream = new FileOutputStream(key);
-			pa.store(fileOutputStream, "Results");
-		} finally {
-			IOUtils.closeQuietly(fileOutputStream);
-		}
     }
  
 }

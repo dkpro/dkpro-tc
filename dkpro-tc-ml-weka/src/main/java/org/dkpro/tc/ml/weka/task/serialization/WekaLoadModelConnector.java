@@ -30,7 +30,6 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.util.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -103,19 +102,18 @@ public class WekaLoadModelConnector
         }
     }
     
-	private String initBipartitionThreshold(File tcModelLocation) throws FileNotFoundException, IOException {
-		File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
-		Properties prop = new Properties();
+    private String initBipartitionThreshold(File tcModelLocation)
+            throws FileNotFoundException, IOException
+        {
+            File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+            Properties prop = new Properties();
 
-		FileInputStream fis = new FileInputStream(file);
-		try {
-			prop.load(fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+            FileInputStream fis = new FileInputStream(file);
+            prop.load(fis);
+            fis.close();
 
-		return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
-	}
+            return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+        }
 
     private void loadClassLabels()
         throws IOException
@@ -132,11 +130,8 @@ public class WekaLoadModelConnector
     {
         ObjectInputStream inT = new ObjectInputStream(
                 new FileInputStream(new File(tcModelLocation, "training_data")));
-        try {
-        		trainingData = (Instances) inT.readObject();
-        } finally {
-        		IOUtils.closeQuietly(inT);
-        }
+        trainingData = (Instances) inT.readObject();
+        inT.close();
     }
 
     private void loadClassifier()

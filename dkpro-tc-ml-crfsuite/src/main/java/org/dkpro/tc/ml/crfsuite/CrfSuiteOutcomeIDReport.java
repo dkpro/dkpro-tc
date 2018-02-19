@@ -25,10 +25,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -71,9 +69,8 @@ public class CrfSuiteOutcomeIDReport
         // add "#labels' line with all labels
         StringBuilder sb = new StringBuilder();
         sb.append("labels");
-        
-        for (Entry<String, Integer> e: mapping.entrySet()) {
-            sb.append(" " + e.getValue() + "=" + URLEncoder.encode(e.getKey(), "UTF-8"));
+        for (String label : mapping.keySet()) {
+            sb.append(" " + mapping.get(label) + "=" + URLEncoder.encode(label, "UTF-8"));
         }
 
         File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
@@ -82,11 +79,8 @@ public class CrfSuiteOutcomeIDReport
                 + "THRESHOLD" + "\n" + "#" + sb.toString();
 
         OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-        try {
-        		prop.store(fos, header);
-        } finally {
-        		IOUtils.closeQuietly(fos);
-        }
+        prop.store(fos, header);
+        fos.close();
     }
 
     private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
@@ -134,7 +128,7 @@ public class CrfSuiteOutcomeIDReport
         File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
-        
+
         return readLines;
     }
 
@@ -143,6 +137,7 @@ public class CrfSuiteOutcomeIDReport
     {
         File predictionFile = getContext().getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
+
         return readLines;
     }
 

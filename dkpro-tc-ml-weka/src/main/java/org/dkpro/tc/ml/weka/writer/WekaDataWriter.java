@@ -96,9 +96,11 @@ public class WekaDataWriter implements DataWriter, Constants {
 	}
 
 	private void createFolder(File arffTarget) throws IOException {
-		if (!arffTarget.exists() && !arffTarget.mkdirs()){
+		if (!arffTarget.exists()) {
+			if(!arffTarget.mkdirs()){
 				throw new IllegalStateException("Could not create folder(s) ["+arffTarget.getParentFile().getAbsolutePath()+"]");
 			}
+		}		
 	}
 
 	@Override
