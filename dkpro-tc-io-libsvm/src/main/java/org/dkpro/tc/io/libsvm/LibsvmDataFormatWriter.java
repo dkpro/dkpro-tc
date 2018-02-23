@@ -171,6 +171,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			throw new AnalysisEngineProcessException(e);
 		} finally {
 			IOUtils.closeQuietly(bw);
+			bw = null; //important, we reopen the stream only if the pointer is null!
 		}
 	}
 

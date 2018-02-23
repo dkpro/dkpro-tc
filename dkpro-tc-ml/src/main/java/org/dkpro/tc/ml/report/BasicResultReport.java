@@ -54,8 +54,9 @@ public class BasicResultReport
         
         Properties pa = new SortedKeyProperties();
         for(Entry<String, String> e : resultMap.entrySet()){
-        	pa.setProperty(e.getKey(), e.getValue());
+        		pa.setProperty(e.getKey(), e.getValue());
         }
+        
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
         FileOutputStream fileOutputStream = new FileOutputStream(key);
         pa.store(fileOutputStream, "Results");

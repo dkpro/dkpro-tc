@@ -66,6 +66,10 @@ public interface ModelVersionIO extends Constants {
 
 		InputStream stream = contextClass
 				.getResourceAsStream("/META-INF/maven/org.dkpro.tc/dkpro-tc-core/pom.xml");
+		
+		if(stream == null) {
+			return null;
+		}
 
 		MavenXpp3Reader reader = new MavenXpp3Reader();
 		Model model;

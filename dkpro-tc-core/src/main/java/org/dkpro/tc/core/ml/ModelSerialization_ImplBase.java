@@ -63,13 +63,13 @@ public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase
 		File file = new File(modelFolder, MODEL_TC_VERSION);
 		Properties prop = new Properties();
 
-		FileInputStream fos = null;
+		FileInputStream fis = null;
 		
 		try {
-			fos = new FileInputStream(file);
-			prop.load(fos);
+			fis = new FileInputStream(file);
+			prop.load(fis);
 		} finally {
-			IOUtils.closeQuietly(fos);
+			IOUtils.closeQuietly(fis);
 		}
 
 		return prop.getProperty(ModelSerializationTask.TCVERSION);
