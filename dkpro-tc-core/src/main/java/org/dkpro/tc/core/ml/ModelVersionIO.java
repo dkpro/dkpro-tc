@@ -32,7 +32,7 @@ import org.dkpro.tc.core.Constants;
 
 public interface ModelVersionIO extends Constants {
 	
-	final static String TCVERSION = "TcVersion";
+	final String TCVERSION = "TcVersion";
 	
 	default String getCurrentTcVersionFromWorkspace() throws Exception {
 		Class<?> contextClass = getClass();
