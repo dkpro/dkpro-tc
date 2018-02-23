@@ -66,4 +66,12 @@ experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.cla
 experiment.setParameterSpace(pSpace);
 {% endhighlight %}
 
-`Preprocessing` is not limited to a single component, assuming we would read plain text
+`Preprocessing` is not limited to a single component, assuming we would read plain text with the reader, we would need Tokenization and a Part-Of-Speech Tagger in order to train a sequence classifier (in practice, you probably do not want to train a model on tags that are automatically annotated but for the sake of the example, lets assume you do). In this case, the preprocessing could look like this:
+
+{% highlight java %} 
+experiment.setPreprocessing(createEngineDescription(
+                                createEngineDescription(BreakIteratorSegmenter.class),
+                                createEngineDescription(OpenNlpPosTagger.class),
+                                createEngineDescription(SequenceOutcomeAnnotator.class)
+                            );
+{% endhighlight %}
