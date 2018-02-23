@@ -54,10 +54,11 @@ public abstract class LuceneMC extends MetaCollector {
 
 	// this is a static singleton as different Lucene-based meta collectors will
 	// use the same writer
-	protected static IndexWriter indexWriter = null;
-	static AtomicInteger activeMetaWriter=null; //used to known when we can close the index
+	static IndexWriter indexWriter = null;
+	static AtomicInteger activeMetaWriter = null; //used to known when we can close the index
 
 	protected Document currentDocument;
+	long entryCounter=0;
 
 	protected FieldType fieldType;
 
@@ -76,9 +77,7 @@ public abstract class LuceneMC extends MetaCollector {
 			}
 		}
 
-		currentDocument = new Document();
-		currentDocument
-				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
+		initDocument();
 
 		fieldType = new FieldType();
 		fieldType.setIndexed(true);
@@ -93,6 +92,12 @@ public abstract class LuceneMC extends MetaCollector {
 		}
 		activeMetaWriter.incrementAndGet();
 	}
+	
+	private void initDocument() {
+		currentDocument = new Document();
+		currentDocument
+				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
+	}
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
@@ -106,12 +111,31 @@ public abstract class LuceneMC extends MetaCollector {
 				Field field = new Field(getFieldName(), ngram, fieldType);
 				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
 					currentDocument.add(field);
+					documentSizeControll();
 				}
 			}
 
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
+	}
+
+	// We write documents to disk after a thousand entries. This threshold is
+	// arbitrarily set, this decouples the index size from the number of CAS
+	// objects that are being processed. If, for instance, many postings are
+	// processed where each posting is
+	// an own CAS, we write extremely many documents. Likewise, if everything is in
+	// one CAS, we write one fat document which might require unreasonable much
+	// memory. This attempts to keep the index in a constant range of 'costs' that
+	// is independent of the number of actually processed CAS objects.  
+	private void documentSizeControll() throws IOException {
+		entryCounter++;
+		if(entryCounter > 1000) {
+			writeToIndex();
+			indexWriter.commit();
+			entryCounter=0;
+			initDocument();
+		}		
 	}
 
 	protected void writeToIndex() throws IOException {

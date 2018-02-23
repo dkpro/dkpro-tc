@@ -59,7 +59,7 @@ public class TaskUtils {
 
 	public static TcShallowLearningAdapter getAdapter(List<Object> classificationArguments) throws ResourceInitializationException{
 		
-		if(classificationArguments == null || classificationArguments.size() < 0 ){
+		if(classificationArguments == null || classificationArguments.isEmpty()){
 			throw new ResourceInitializationException(new IllegalArgumentException(
 					"The classifcation arguments are empty or missing; The first element in the dimension ["
 							+ Constants.DIM_CLASSIFICATION_ARGS
