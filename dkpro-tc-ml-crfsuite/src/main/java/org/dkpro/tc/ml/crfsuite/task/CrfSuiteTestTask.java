@@ -103,6 +103,9 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 		File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
 		File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		
+		System.out.println(srcFile.getAbsolutePath().length() + " " + srcFile.getAbsolutePath());
+		System.out.println(detector.getPlatformId() + " " + detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS));
 
 		if (srcFile.getAbsolutePath().length() < 254 || !detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
 			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
