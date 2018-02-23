@@ -19,7 +19,6 @@ package org.dkpro.tc.ml.base;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
 /**
@@ -33,13 +32,6 @@ public abstract class DeepLearningExperiment_ImplBase
 
     Log log = LogFactory.getLog(DeepLearningExperiment_ImplBase.class);
 
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-       
-    }
- 
     public void setMachineLearningAdapter(Class<? extends TcDeepLearningAdapter> mlAdapter)
         throws IllegalArgumentException
     {

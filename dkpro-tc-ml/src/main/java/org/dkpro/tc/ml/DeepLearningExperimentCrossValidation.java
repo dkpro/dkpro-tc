@@ -17,13 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml;
 
-import static org.dkpro.tc.core.Constants.DIM_CROSS_VALIDATION_MANUAL_FOLDS;
-import static org.dkpro.tc.core.Constants.DIM_FEATURE_MODE;
-import static org.dkpro.tc.core.Constants.DIM_FILES_ROOT;
-import static org.dkpro.tc.core.Constants.FM_SEQUENCE;
-import static org.dkpro.tc.core.Constants.LEAVE_ONE_OUT;
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +49,7 @@ import org.dkpro.tc.ml.report.InnerBatchReport;
  * Crossvalidation setup
  * 
  */
-public class DeepLearningExperimentCrossValidation extends DeepLearningExperiment_ImplBase {
+public class DeepLearningExperimentCrossValidation extends DeepLearningExperiment_ImplBase implements Constants {
 
 	protected Comparator<String> comparator;
 	protected int numFolds = 10;

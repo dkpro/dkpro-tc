@@ -19,17 +19,10 @@ package org.dkpro.tc.ml.base;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dkpro.lab.engine.TaskContext;
 
 public abstract class ShallowLearningExperiment_ImplBase
     extends Experiment_ImplBase
 {
     Log log = LogFactory.getLog(ShallowLearningExperiment_ImplBase.class);
 
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-       
-    }
 }
