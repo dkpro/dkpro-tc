@@ -105,9 +105,9 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
 		System.out.println(srcFile.getAbsolutePath().length() + " " + srcFile.getAbsolutePath());
-		System.out.println(detector.getPlatformId() + " " + detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS));
+		System.out.println(detector.getPlatformId() + " " + isWindows());
 
-		if (srcFile.getAbsolutePath().length() < 254 || !detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
+		if (srcFile.getAbsolutePath().length() < 254 || !isWindows()) {
 			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
 		}
 
@@ -128,6 +128,10 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
 	}
 	
+	private static boolean isWindows() {
+		return detector.getPlatformId().startsWith(PlatformDetector.OS_WINDOWS);
+	}
+
 	private File trainModel(TaskContext aContext) throws Exception {
 		File executable = getExecutable();
 		File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
@@ -211,7 +215,7 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		File folder = aContext.getFolder(key, AccessMode.READWRITE);
 		File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
-		if(f.getAbsolutePath().length() >= 254 && detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
+		if(f.getAbsolutePath().length() >= 254 && isWindows()) {
 			deleteFile(input);
 		}
 	}
