@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.crfsuite.task.serialization;
+package org.dkpro.tc.ml.crfsuite.task;
 
 import java.io.File;
 

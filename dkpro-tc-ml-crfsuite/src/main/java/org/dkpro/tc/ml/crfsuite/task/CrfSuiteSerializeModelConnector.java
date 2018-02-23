@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.crfsuite.task.serialization;
+package org.dkpro.tc.ml.crfsuite.task;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,8 +30,6 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
 
 public class CrfSuiteSerializeModelConnector extends ModelSerializationTask implements Constants {
 
@@ -66,11 +64,12 @@ public class CrfSuiteSerializeModelConnector extends ModelSerializationTask impl
 	}
 
 	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-
-		String classifierPath = outputFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER;
-		String trainingDataPath = trainFolder.getPath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT;
-		List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(classifierPath, trainingDataPath, algoName,
+		File model = new File(outputFolder, MODEL_CLASSIFIER);
+		
+		File executable = CrfSuiteTestTask.getExecutable();
+		File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
+		
+		List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(executable, model, train, algoName,
 				algoParameters);
 
 		Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();

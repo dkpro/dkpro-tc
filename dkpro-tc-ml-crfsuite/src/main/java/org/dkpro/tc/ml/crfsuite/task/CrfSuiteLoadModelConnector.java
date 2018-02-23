@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.crfsuite.task.serialization;
+package org.dkpro.tc.ml.crfsuite.task;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,7 +45,6 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
@@ -59,14 +58,14 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 
 	private File model = null;
 
-	private String executablePath;
+	private File executablePath;
 
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
 
 		try {
-			executablePath = CrfSuiteTestTask.getExecutablePath();
+			executablePath = CrfSuiteTestTask.getExecutable();
 			model = new File(tcModelLocation, MODEL_CLASSIFIER);
 			verifyTcVersion(tcModelLocation, getClass());
 		} catch (Exception e) {
@@ -129,7 +128,7 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 
 	private List<String> buildCommand() throws Exception {
 		List<String> command = new ArrayList<String>();
-		command.add(executablePath);
+		command.add(executablePath.getAbsolutePath());
 		command.add("tag");
 		command.add("-m");
 		command.add(model.getAbsolutePath());

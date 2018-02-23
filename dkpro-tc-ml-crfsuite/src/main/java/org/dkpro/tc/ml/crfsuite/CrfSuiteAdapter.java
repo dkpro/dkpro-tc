@@ -28,9 +28,9 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteLoadModelConnector;
+import org.dkpro.tc.ml.crfsuite.task.CrfSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CrfSuiteLoadModelConnector;
-import org.dkpro.tc.ml.crfsuite.task.serialization.CrfSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
 
 /**

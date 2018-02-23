@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -41,257 +41,208 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
-public class CrfSuiteTestTask
-    extends ExecutableTaskBase
-    implements Constants
-{
-    @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
-    
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArguments;
+public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
+	@Discriminator(name = DIM_LEARNING_MODE)
+	private String learningMode;
 
-    public static final String FILE_PER_CLASS_PRECISION_RECALL_F1 = "precisionRecallF1PerWordClass.txt";
-    Log logger = null;
+	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
+	private List<Object> classificationArguments;
 
-    private String executablePath = null;
-    private String modelLocation = null;
-    private File trainFile = null;
-    private File testFile = null;
-    private String algoName;
-    private List<String> algoParameters;
+	private File model = null;
+	private String algoName;
+	private List<String> algoParameters;
 
-    private static RuntimeProvider runtimeProvider = null;
+	private static RuntimeProvider runtimeProvider = null;
+	private static PlatformDetector detector = new PlatformDetector();
 
-    @Override
-    public void execute(TaskContext aContext)
-        throws Exception
-    {
-        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+	@Override
+	public void execute(TaskContext aContext) throws Exception {
+		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
-        if (multiLabel) {
-            throw new TextClassificationException(
-                    "Multi-label requested, but CRFSuite only supports single label setups.");
-        }
+		if (multiLabel) {
+			throw new TextClassificationException(
+					"Multi-label requested, but CRFSuite only supports single label setups.");
+		}
 
-        processParameters(classificationArguments);
+		processParameters(classificationArguments);
 
-        executablePath = getExecutablePath();
-        modelLocation = trainModel(aContext);
-        String rawTextOutput = testModel(aContext);
+		model = trainModel(aContext);
+		String rawTextOutput = testModel(aContext);
+		
+		writePredictions2File(aContext, rawTextOutput);
 
-        writePredictions2File(aContext, rawTextOutput);
+	}
 
-    }
+	private void writePredictions2File(TaskContext aContext, String aRawTextOutput) throws Exception {
+		List<String> predictionValues = new ArrayList<String>(Arrays.asList(aRawTextOutput.split("\n")));
+		writeFileWithPredictedLabels(aContext, predictionValues);
+	}
 
-    private void processParameters(List<Object> classificationArguments)
-        throws Exception
-    {
-        algoName = CrfUtil.getAlgorithm(classificationArguments);
-        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
-    }
+	private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues) throws Exception {
+		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
 
-    public static String getExecutablePath()
-        throws Exception
-    {
+		StringBuilder sb = new StringBuilder();
+		sb.append("#Prediction\tGold\n");
+		for (String p : predictionValues) {
+			sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
+			// NOTE: CRFSuite has a bug when the label is ':' (as in
+			// PennTreeBank Part-of-speech tagset for instance)
+			// We perform a substitutions to something crfsuite can handle
+			// correctly, see class
+			// LabelSubstitutor for more details
+		}
+		FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
 
-        if (runtimeProvider == null) {
-            PlatformDetector pd = new PlatformDetector();
-            String platform = pd.getPlatformId();
-            LogFactory.getLog(CrfSuiteTestTask.class.getName())
-                    .info("Load binary for platform: [" + platform + "]");
+	}
 
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/crfsuite/");
-        }
+	static File loadAndPrepareFeatureDataFile(TaskContext aContext, File tmpLocation, String sourceFolder) throws Exception {
 
-        String executablePath = runtimeProvider.getFile("crfsuite").getAbsolutePath();
+		// Depending on a users' setup, we might exceed the path-length limit of 255
+		// character, which is a problem on Windows, we provide all needed files in the
+		// folder where the binary is located to enforce short paths
 
-        LogFactory.getLog(CrfSuiteTestTask.class.getName())
-                .info("Will use binary: [" + executablePath + "]");
+		File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
+		File srcFile = new File(folder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        return executablePath;
-    }
+		if (srcFile.getAbsolutePath().length() < 254 || !detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
+			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
+		}
 
-    private void writePredictions2File(TaskContext aContext, String aRawTextOutput)
-        throws Exception
-    {
+		LogFactory.getLog(CrfSuiteTestTask.class.getName()).info(
+				"Detected Windows as platform with file path being longer than 254 characters; training and testing data will be copied to binary folder to avoid failure due to too long file paths");
 
-        writeCRFSuiteGeneratedReports2File(aContext);
+		// This is essentially a Windows-hack-around to compensate
 
-        List<String> predictionValues = new ArrayList<String>(
-                Arrays.asList(aRawTextOutput.split("\n")));
+		File trainDestFile = new File(tmpLocation, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        writeFileWithPredictedLabels(aContext, predictionValues);
-    }
+		InputStream is = null;
+		try {
+			is = new FileInputStream(srcFile);
+			FileUtils.copyInputStreamToFile(is, trainDestFile);
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
 
-    private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
-        throws Exception
-    {
-        File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
+		return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
+	}
+	
+	private File trainModel(TaskContext aContext) throws Exception {
+		File executable = getExecutable();
+		File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("#Prediction\tGold\n");
-        for (String p : predictionValues) {
-            sb.append(LabelSubstitutor.undoLabelReplacement(p) + "\n");
-            // NOTE: CRFSuite has a bug when the label is ':' (as in
-            // PennTreeBank Part-of-speech tagset for instance)
-            // We perform a substitutions to something crfsuite can handle
-            // correctly, see class
-            // LabelSubstitutor for more details
-        }
-        FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
+		File tmpModelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
+		List<String> command = getTrainCommand(executable, tmpModelLocation, train, algoName, algoParameters);
+		runTrain(command);
+		
+		deleteTmpFeatureFileIfCreated(aContext, train,TEST_TASK_INPUT_KEY_TRAINING_DATA);
+		
+		return writeModel(aContext, tmpModelLocation);
+	}
+	
+	private String testModel(TaskContext aContext) throws Exception {
+		
+		File executable = getExecutable();
+		File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TEST_DATA);
 
-    }
+		List<String> command = getTestCommand(executable, testFile, model);
+		String output = runTest(command).toString();
+		
+		deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
 
-    private void writeCRFSuiteGeneratedReports2File(TaskContext aContext)
-        throws Exception
-    {
-        String precRecF1perClass = getPrecisionRecallF1PerClass();
-        log(precRecF1perClass);
-        File precRecF1File = aContext.getFile(FILE_PER_CLASS_PRECISION_RECALL_F1,
-                AccessMode.READWRITE);
-        FileUtils.write(precRecF1File, "\n" + precRecF1perClass, "utf-8");
-    }
+		return output;
+	}
 
-    private String getPrecisionRecallF1PerClass()
-        throws Exception
-    {
-        String executablePath = getExecutablePath();
-        List<String> evalCommand = new ArrayList<String>();
-        evalCommand.add(executablePath);
-        evalCommand.add("tag");
-        evalCommand.add("-qt");
-        evalCommand.add("-m");
-        evalCommand.add(modelLocation);
-        evalCommand.add(testFile.getAbsolutePath());
+	public static List<String> getTestCommand(File anExecutable, File aTestFile, File aModel) {
+		List<String> commandTestModel = new ArrayList<String>();
+		commandTestModel.add(anExecutable.getAbsolutePath());
+		commandTestModel.add("tag");
+		commandTestModel.add("-r");
+		commandTestModel.add("-m");
+		commandTestModel.add(aModel.getAbsolutePath());
+		commandTestModel.add(aTestFile.getAbsolutePath());
+		return commandTestModel;
+	}
+	
+	public static List<String> getTrainCommand(File executable, File model, File train, String algorithm,
+			List<String> algoParameter) throws Exception {
+		List<String> commandTrainModel = new ArrayList<String>();
+		commandTrainModel.add(executable.getAbsolutePath());
+		commandTrainModel.add("learn");
+		commandTrainModel.add("-m");
+		commandTrainModel.add(model.getAbsolutePath());
 
-        Process process = new ProcessBuilder().command(evalCommand).start();
-        String output = captureProcessOutput(process).toString();
+		commandTrainModel.add("-a");
+		commandTrainModel.add(algorithm);
 
-        return output;
-    }
+		for (String p : algoParameter) {
+			commandTrainModel.add(p.replaceAll(" ", ""));
+		}
 
-    private String testModel(TaskContext aContext)
-        throws Exception
-    {
+		commandTrainModel.add(train.getAbsolutePath());
+		return commandTrainModel;
+	}
 
-        List<String> testModelCommand = buildTestCommand(aContext);
-        log("Testing model");
-        String output = runTest(testModelCommand).toString();
-        log("Testing model finished");
+	public static StringBuilder runTest(List<String> aTestModelCommand) throws Exception {
+		Process process = new ProcessBuilder().command(aTestModelCommand).start();
+		StringBuilder output = captureProcessOutput(process);
+		return output;
+	}
 
-        return output;
-    }
+	public static StringBuilder captureProcessOutput(Process aProcess) {
+		InputStream src = aProcess.getInputStream();
+		Scanner sc = new Scanner(src, "utf-8");
+		StringBuilder dest = new StringBuilder();
+		while (sc.hasNextLine()) {
+			String l = sc.nextLine();
+			dest.append(l + "\n");
+		}
+		sc.close();
+		return dest;
+	}
 
-    public static StringBuilder runTest(List<String> aTestModelCommand)
-        throws Exception
-    {
-        Process process = new ProcessBuilder().command(aTestModelCommand).start();
-        StringBuilder output = captureProcessOutput(process);
-        return output;
 
-    }
+	private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key) {
+		File folder = aContext.getFolder(key, AccessMode.READWRITE);
+		File f = new File(folder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		
+		if(f.getAbsolutePath().length() >= 254) {
+			deleteFile(input);
+		}
+	}
 
-    public static StringBuilder captureProcessOutput(Process aProcess)
-    {
-        InputStream src = aProcess.getInputStream();
-        Scanner sc = new Scanner(src, "utf-8");
-        StringBuilder dest = new StringBuilder();
-        while (sc.hasNextLine()) {
-            String l = sc.nextLine();
-            dest.append(l + "\n");
-        }
-        sc.close();
-        return dest;
-    }
+	private void runTrain(List<String> aModelTrainCommand) throws Exception {
+		Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
+		process.waitFor();
+	}
 
-    private List<String> buildTestCommand(TaskContext aContext)
-        throws Exception
-    {
-        File tmpFileFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-        File tmpTest = new File(tmpFileFolder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        testFile = ResourceUtils.getUrlAsFile(tmpTest.toURI().toURL(), true);
+	private File writeModel(TaskContext aContext, File model) throws Exception {
+		aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(model));
+		File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
+		deleteFile(model);
+		return modelLocation;
+	}
 
-        return wrapTestCommandAsList(testFile, executablePath, modelLocation);
-    }
+	private void deleteFile(File f) {
+		boolean delete = f.delete();
+		if (!delete) {
+			throw new IllegalStateException("Could not delte file [" + f.getAbsolutePath() + "]");
+		}
+	}
 
-    public static List<String> wrapTestCommandAsList(File aTestFile, String aExecutablePath,
-            String aModelLocation)
-    {
-        List<String> commandTestModel = new ArrayList<String>();
-        commandTestModel.add(aExecutablePath);
-        commandTestModel.add("tag");
-        commandTestModel.add("-r");
-        commandTestModel.add("-m");
-        commandTestModel.add(aModelLocation);
-        commandTestModel.add(aTestFile.getAbsolutePath());
-        return commandTestModel;
-    }
+	private void processParameters(List<Object> classificationArguments) throws Exception {
+		algoName = CrfUtil.getAlgorithm(classificationArguments);
+		algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+	}
 
-    private String trainModel(TaskContext aContext)
-        throws Exception
-    {
-        String tmpModelLocation = System.getProperty("java.io.tmpdir") + File.separator
-                + MODEL_CLASSIFIER;
-        List<String> modelTrainCommand = buildTrainCommand(aContext, tmpModelLocation);
-        runTrain(modelTrainCommand);
-        return writeModel(aContext, tmpModelLocation);
-    }
+	public static File getExecutable() throws Exception {
 
-    private void runTrain(List<String> aModelTrainCommand)
-        throws Exception
-    {
-        Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
-        process.waitFor();
-    }
+		if (runtimeProvider == null) {
+			String platform = detector.getPlatformId();
+			LogFactory.getLog(CrfSuiteTestTask.class.getName()).info("Load binary for platform: [" + platform + "]");
 
-    private String writeModel(TaskContext aContext, String aTmpModelLocation)
-        throws Exception
-    {
-        aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(new File(aTmpModelLocation)));
-        File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-        return modelLocation.getAbsolutePath();
-    }
+			runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/crfsuite/");
+		}
 
-    private List<String> buildTrainCommand(TaskContext aContext, String aTmpModelLocation)
-        throws Exception
-    {
-        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File tmpTrain = new File(trainFolder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-
-        trainFile = ResourceUtils.getUrlAsFile(tmpTrain.toURI().toURL(), true);
-
-        return getTrainCommand(aTmpModelLocation, trainFile.getAbsolutePath(), algoName,
-                algoParameters);
-    }
-
-    public static List<String> getTrainCommand(String modelOutputLocation, String trainingFile,
-            String algorithm, List<String> algoParameter)
-                throws Exception
-    {
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(getExecutablePath());
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(modelOutputLocation);
-
-        commandTrainModel.add("-a");
-        commandTrainModel.add(algorithm);
-        
-        for(String p : algoParameter){
-            commandTrainModel.add(p.replaceAll(" ", ""));
-        }
-
-        commandTrainModel.add(trainingFile);
-        return commandTrainModel;
-    }
-
-    private void log(String text)
-    {
-        if (logger == null) {
-            logger = LogFactory.getLog(getClass());
-        }
-        logger.info(text);
-    }
+		return runtimeProvider.getFile("crfsuite");
+	}
 }
