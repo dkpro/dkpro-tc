@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.task.uima;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.core.Constants;
@@ -29,7 +30,7 @@ public class InstanceFilter implements Constants {
 	private String[] featureFilters;
 
 	public InstanceFilter(String[] featureFilters, boolean isTesting) {
-		this.featureFilters = featureFilters;
+		this.featureFilters = Arrays.copyOf(featureFilters, featureFilters.length);
 		this.isTesting = isTesting;
 	}
 

@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.task.uima;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,7 @@ public class InstanceExtractor implements Constants {
 	public InstanceExtractor(String featureMode, FeatureExtractorResource_ImplBase[] featureExtractors,
 			boolean addInstanceId) {
 		this.featureMode = featureMode;
-		this.featureExtractors = featureExtractors;
+		this.featureExtractors = Arrays.copyOf(featureExtractors, featureExtractors.length);
 		this.addInstanceId = addInstanceId;
 	}
 
