@@ -102,14 +102,13 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		// folder where the binary is located to enforce short paths
 
 		File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
-		File srcFile = new File(folder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
 		if (srcFile.getAbsolutePath().length() < 254 || !detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
 			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
 		}
 
-		LogFactory.getLog(CrfSuiteTestTask.class.getName()).info(
-				"Detected Windows as platform with file path being longer than 254 characters; training and testing data will be copied to binary folder to avoid failure due to too long file paths");
+		System.out.println("Detected Windows as platform with file path being longer than 254 characters; training and testing data will be copied to binary folder to avoid failure due to too long file paths");
 
 		// This is essentially a Windows-hack-around to compensate
 
@@ -130,13 +129,14 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		File executable = getExecutable();
 		File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-		File tmpModelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
-		List<String> command = getTrainCommand(executable, tmpModelLocation, train, algoName, algoParameters);
+		File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
+		
+		List<String> command = getTrainCommand(executable, modelLocation, train, algoName, algoParameters);
 		runTrain(command);
 		
 		deleteTmpFeatureFileIfCreated(aContext, train,TEST_TASK_INPUT_KEY_TRAINING_DATA);
 		
-		return writeModel(aContext, tmpModelLocation);
+		return writeModel(aContext, modelLocation);
 	}
 	
 	private String testModel(TaskContext aContext) throws Exception {
@@ -179,6 +179,9 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		}
 
 		commandTrainModel.add(train.getAbsolutePath());
+		
+		System.out.println("Train call: " + commandTrainModel);
+		
 		return commandTrainModel;
 	}
 
@@ -203,9 +206,9 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 	private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key) {
 		File folder = aContext.getFolder(key, AccessMode.READWRITE);
-		File f = new File(folder.getPath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
-		if(f.getAbsolutePath().length() >= 254) {
+		if(f.getAbsolutePath().length() >= 254 && detector.getPlatformId().equals(PlatformDetector.OS_WINDOWS)) {
 			deleteFile(input);
 		}
 	}
@@ -216,7 +219,14 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 	}
 
 	private File writeModel(TaskContext aContext, File model) throws Exception {
-		aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(model));
+		
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(model);
+			aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(model));
+		} finally {
+			IOUtils.closeQuietly(fis);
+		}
 		File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
 		deleteFile(model);
 		return modelLocation;
@@ -225,7 +235,7 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 	private void deleteFile(File f) {
 		boolean delete = f.delete();
 		if (!delete) {
-			throw new IllegalStateException("Could not delte file [" + f.getAbsolutePath() + "]");
+			throw new IllegalStateException("Could not delete file [" + f.getAbsolutePath() + "]");
 		}
 	}
 
