@@ -19,15 +19,15 @@ public class SequenceOutcomeAnnotator
     public void process(JCas aJCas)
         throws AnalysisEngineProcessException
     {
-        // Iterate all sentences
+        /* Iterate all sentences */
         for (Sentence sent : JCasUtil.select(aJCas, Sentence.class)) {
         
-            // Each sentence is a classification sequence
+            /* Each sentence is a classification sequence */
             TextClassificationSequence sequence = new TextClassificationSequence(aJCas,
                     sent.getBegin(), sent.getEnd());
             sequence.addToIndexes();
 
-            // Iterate all tokens in the span of the sentence
+            /* Iterate all tokens in the span of the sentence */
             List<Token> tokens = JCasUtil.selectCovered(aJCas, Token.class, sent);
             for (Token token : tokens) {
                 // Each token is a classification target, i.e. we want to predict a label for each word in the sentence/sequence
@@ -37,8 +37,8 @@ public class SequenceOutcomeAnnotator
                 unit.setSuffix(token.getCoveredText());
                 unit.addToIndexes();
 
-                // The outcome annotation defines the `true` value that shall be predicted
-                // The outcome shares the same span as the token above to keep annotations aligned.
+                /* The outcome annotation defines the `true` value that shall be predicted
+                The outcome shares the same span as the token above to keep annotations aligned. */
                 TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
                         token.getBegin(), token.getEnd());
                 outcome.setOutcome(getTextClassificationOutcome(aJCas, target));
