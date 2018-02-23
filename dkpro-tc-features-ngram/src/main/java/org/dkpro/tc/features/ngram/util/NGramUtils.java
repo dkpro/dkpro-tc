@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -51,7 +50,7 @@ public class NGramUtils
 
         // If the focusAnnotation contains sentence annotations, extract the ngrams sentence-wise
         // if not, extract them from all tokens in the focusAnnotation
-        if (JCasUtil.selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
+        if (selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
             for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
                 for (List<String> ngram : new NGramStringListIterable(
                         toText(selectCovered(Token.class, s)), minN, maxN)) {

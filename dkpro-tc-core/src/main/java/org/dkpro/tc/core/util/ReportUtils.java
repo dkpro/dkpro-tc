@@ -18,11 +18,14 @@
 package org.dkpro.tc.core.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService;
 
@@ -43,7 +46,7 @@ public class ReportUtils
         return false;
     }
 
-    public static void writeExcelAndCSV(TaskContext context, String contextLabel, TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
+    public static void writeExcelAndCSV(TaskContext context, String contextLabel, TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv) throws IOException
     {
         StorageService store = context.getStorageService();
         // Excel cannot cope with more than 255 columns
@@ -65,17 +68,18 @@ public class ReportUtils
         // TODO can we also do this without creating and deleting the dummy folder?
         context.getLoggingService().message(contextLabel,
                 "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
-        dummyFolder.delete();        
+        FileUtils.deleteDirectory(dummyFolder);
     }
 
     public static Map<String, String> clearDiscriminatorsByExcludePattern(
             Map<String, String> discriminatorsMap, List<String> discriminatorsToExclude)
     {
         Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
-
-        for (String disc : discriminatorsMap.keySet()) {
-            if (!ReportUtils.containsExcludePattern(disc, discriminatorsToExclude)) {
-                cleanedDiscriminatorsMap.put(disc, discriminatorsMap.get(disc));
+        
+        
+        for (Entry<String, String> e : discriminatorsMap.entrySet()) {
+            if (!ReportUtils.containsExcludePattern(e.getKey(), discriminatorsToExclude)) {
+                cleanedDiscriminatorsMap.put(e.getKey(), e.getValue());
             }
         }
         return cleanedDiscriminatorsMap;

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -51,7 +50,6 @@ public class PosNGramMC extends LuceneMC {
 	@Override
 	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
 		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-
 		return getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN, useCanonical);
 	}
 
@@ -60,21 +58,21 @@ public class PosNGramMC extends LuceneMC {
 		return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
 	}
 
-	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focusAnnotation, int minN,
+	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focus, int minN,
 			int maxN, boolean useCanonical) {
-		if (JCasUtil.selectCovered(jcas, Sentence.class, focusAnnotation).size() > 0) {
-			return sentenceBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
+		if (selectCovered(jcas, Sentence.class, focus).size() > 0) {
+			return sentenceBasedDistribution(jcas, focus, useCanonical, minN, maxN);
 		}
-		return documentBasedDistribution(jcas, focusAnnotation, useCanonical, minN, maxN);
+		return documentBasedDistribution(jcas, focus, useCanonical, minN, maxN);
 	}
 
-	private static FrequencyDistribution<String> documentBasedDistribution(JCas jcas, Annotation focusAnnotation,
+	private static FrequencyDistribution<String> documentBasedDistribution(JCas jcas, Annotation focus,
 			boolean useCanonical, int minN, int maxN) {
 
 		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
 
 		List<String> postagstrings = new ArrayList<String>();
-		for (POS p : selectCovered(POS.class, focusAnnotation)) {
+		for (POS p : selectCovered(jcas, POS.class, focus)) {
 			if (useCanonical) {
 				postagstrings.add(p.getClass().getSimpleName());
 			} else {
@@ -88,14 +86,14 @@ public class PosNGramMC extends LuceneMC {
 		return posNgrams;
 	}
 
-	private static FrequencyDistribution<String> sentenceBasedDistribution(JCas jcas,
-			Annotation focusAnnotation, boolean useCanonical, int minN, int maxN) {
+	private static FrequencyDistribution<String> sentenceBasedDistribution(JCas jcas, Annotation focus,
+			boolean useCanonical, int minN, int maxN) {
 
 		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
 
-		for (Sentence s : selectCovered(jcas, Sentence.class, focusAnnotation)) {
+		for (Sentence s : selectCovered(jcas, Sentence.class, focus)) {
 			List<String> postagstrings = new ArrayList<String>();
-			for (POS p : JCasUtil.selectCovered(jcas, POS.class, s)) {
+			for (POS p : selectCovered(jcas, POS.class, s)) {
 				if (useCanonical) {
 					postagstrings.add(p.getClass().getSimpleName());
 				} else {
