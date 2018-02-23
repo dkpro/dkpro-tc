@@ -36,8 +36,8 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentTrainTest
-import org.dkpro.tc.ml.report.BatchTrainTestReport
+import org.dkpro.tc.ml.ExperimentCrossValidation
+import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.dkpro.tc.api.features.TcFeatureFactory
 import org.dkpro.tc.api.features.TcFeatureSet
@@ -55,18 +55,13 @@ implements Constants {
     def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
     BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-    BrownCorpusReader.PARAM_PATTERNS, [ "a01.xml"]
+    BrownCorpusReader.PARAM_PATTERNS, [
+        INCLUDE_PREFIX + "*.xml",
+        INCLUDE_PREFIX + "*.xml.gz"]
     );
-
-	def testreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
-	BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-	BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-	BrownCorpusReader.PARAM_PATTERNS, [ "a02.xml"]
-	);
 
     def dimReaders = Dimension.createBundle("readers", [
         readerTrain: trainreader,
-		readerTest: testreader
     ])
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE)
@@ -84,13 +79,14 @@ implements Constants {
 	
 
     // ##### CV #####
-    protected void run()
+    protected void runCrossValidation()
     throws Exception
     {
-        ExperimentTrainTest batchTask = [
-            experimentName: experimentName + "-TrainTest-Groovy",
+        ExperimentCrossValidation batchTask = [
+            experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
-            type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
+            type: "Evaluation-"+ experimentName +"-CV-Groovy",
+            preprocessing:  getPreprocessing(),
             parameterSpace : [
                 dimReaders,
                 dimFeatureMode,
@@ -98,18 +94,25 @@ implements Constants {
                 dimFeatureSets,
 				dimClassificationArgs
             ],
+            executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport.newInstance()
-            ]
-		]
+                BatchCrossValidationReport.newInstance()
+            ],
+            numFolds: NUM_FOLDS]
 
         // Run
         Lab.getInstance().run(batchTask)
     }
 
+    protected AnalysisEngineDescription getPreprocessing()
+    throws ResourceInitializationException
+    {
+        return createEngineDescription(NoOpAnnotator)
+    }
+
     public static void main(String[] args)
     {
         DemoUtils.setDkproHome(BrownPosDemo.getSimpleName());
-        new BrownPosDemo().run()
+        new BrownPosDemo().runCrossValidation()
     }
 }

@@ -43,7 +43,7 @@ public class BrownPosDemoTest extends GroovyDemosTest_Base
     public void testGroovyCrossValidation()
         throws Exception
     {
-        groovyExperiment.run();
+        groovyExperiment.runCrossValidation();
     }
 }
 
