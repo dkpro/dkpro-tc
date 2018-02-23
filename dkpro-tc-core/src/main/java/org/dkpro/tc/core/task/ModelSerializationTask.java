@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -60,8 +59,6 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 	protected File outputFolder;
 
-	public final static String TCVERSION = "TcVersion";
-
 	public void setOutputFolder(File outputFolder) {
 		this.outputFolder = outputFolder;
 		
@@ -85,23 +82,6 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 		writeCurrentVersionOfDKProTC(outputFolder);
 
 		writeAdapter();
-	}
-
-	private void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception {
-		String version = getCurrentTcVersionFromJar();
-		if (version == null) {
-			version = getCurrentTcVersionFromWorkspace();
-		}
-		if (version != null) {
-			Properties properties = new Properties();
-			properties.setProperty(TCVERSION, version);
-
-			File file = new File(outputFolder + "/" + MODEL_TC_VERSION);
-			FileOutputStream fileOut = new FileOutputStream(file);
-			properties.store(fileOut, "Version of DKPro TC used to train this model");
-			fileOut.close();
-		}
-
 	}
 
 	private void writeModelParameters(TaskContext aContext, File aOutputFolder, List<TcFeature> featureSet)

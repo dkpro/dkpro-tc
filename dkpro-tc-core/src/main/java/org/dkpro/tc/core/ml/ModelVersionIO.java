@@ -20,7 +20,6 @@ package org.dkpro.tc.core.ml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -32,6 +31,8 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.dkpro.tc.core.Constants;
 
 public interface ModelVersionIO extends Constants {
+	
+	final static String TCVERSION = "TcVersion";
 	
 	default String getCurrentTcVersionFromWorkspace() throws Exception {
 		Class<?> contextClass = getClass();
@@ -78,31 +79,41 @@ public interface ModelVersionIO extends Constants {
 		return version;
 	}
 	
-	default void writeFeatureMode(File outputFolder, String featureMode) throws IOException {
+	default void writeFeatureMode(File outputFolder, String featureMode) throws Exception {
 		Properties properties = new Properties();
 		properties.setProperty(DIM_FEATURE_MODE, featureMode);
-
-		File file = new File(outputFolder + "/" + MODEL_FEATURE_MODE);
-		FileOutputStream fos = null;
+		File file = new File(outputFolder, MODEL_FEATURE_MODE);
 		
-		try {
-			fos = new FileOutputStream(file);
-			properties.store(fos, "Feature mode used to train this model");
-		} finally {
-			IOUtils.closeQuietly(fos);
-		}
-
+		writeModelParameter(file, properties, "Feature mode used to train this model");
 	}
 
-	default void writeLearningMode(File outputFolder, String learningMode) throws IOException {
+	default void writeLearningMode(File outputFolder, String learningMode) throws Exception {
 		Properties properties = new Properties();
 		properties.setProperty(DIM_LEARNING_MODE, learningMode);
-
-		File file = new File(outputFolder + "/" + MODEL_LEARNING_MODE);
+		File file = new File(outputFolder, MODEL_LEARNING_MODE);
+		
+		writeModelParameter(file, properties, "Learning mode used to train this model");
+	}
+	
+	default void writeCurrentVersionOfDKProTC(File outputFolder) throws Exception {
+		String version = getCurrentTcVersionFromJar();
+		if (version == null) {
+			version = getCurrentTcVersionFromWorkspace();
+		}
+		if (version != null) {
+			Properties properties = new Properties();
+			properties.setProperty(TCVERSION, version);
+			File file = new File(outputFolder, MODEL_TC_VERSION);
+			
+			writeModelParameter(file, properties, "Version of DKPro TC used to train this model");
+		}
+	}
+	
+	default void writeModelParameter(File file, Properties properties, String text) throws Exception {
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(file);
-			properties.store(fos, "Learning mode used to train this model");
+			properties.store(fos, text);
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
