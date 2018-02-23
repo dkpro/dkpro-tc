@@ -22,7 +22,7 @@ Deeplearning 4j is written in Java and requires no additional installation effor
 Python-based frameworks are not as straight-forward to integrate as Java-based frameworks. We discuss subsequently how using Python-based frameworks in DKPro TC and how the interfacing between Java/Python works.
 The code snipped below shows a setup to configure a Python-based DKPro TC deep learning experiment. The biggest difference to a `shallow learning` experiment is the wiring of the `ParameterSpace`, which uses a few more additional `dimensions`.
 
-```java
+{% highlight groovy %} 
 CollectionReaderDescription trainReader = createReaderTrain(...)
 
 CollectionReaderDescription testReader = createReaderTest(...)		
@@ -61,7 +61,7 @@ DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest
 experiment.setParameterSpace(pSpace);
 experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.class));
 Lab.getInstance().run(experiment);
-```
+{% endhighlight %}
 
 When the experiment is executed, the `vectorization` into integer is automatically performed on the training and testing data, the word embeddings are pruned to contain only occuring vocabulary, and are all passed to the code-snipped provided as file path in the dimension `DIM_USER_CODE`.
 
