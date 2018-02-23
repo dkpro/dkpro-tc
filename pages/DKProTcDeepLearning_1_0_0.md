@@ -80,5 +80,5 @@ The results are written to the folder provided as `DKPRO_HOME` directory. The su
 * \<MachineLearningAdapter>-ExperimentName-*
 * Evaluation-ExperimentName-*
 
-The `InitTaskDeep` folders contain the provided training and testing data converted into an internal data format. `EmbeddingTask` takes care of pruning the provied embedding (if one was provided) or initializes missing words with a random vector. This step does nothing if no embedding is provided. `VectorizationTask` transforms the training and testing data into a flat file format, which is provied in `<MachineLearningAdapter>` to the deep learning code. The `Evaluation` module 
+The `InitTaskDeep` folders contain the provided training and testing data converted into an internal data format. `EmbeddingTask` takes care of pruning the provied embedding (if one was provided) or initializes missing words with a random vector. This step does nothing if no embedding is provided. `VectorizationTask` transforms the training and testing data into a flat file format, which is provied in `<MachineLearningAdapter>` to the deep learning code. The results per instance and some more low-level information can be found in the `<MachineLearningAdapter>` folder.
 
