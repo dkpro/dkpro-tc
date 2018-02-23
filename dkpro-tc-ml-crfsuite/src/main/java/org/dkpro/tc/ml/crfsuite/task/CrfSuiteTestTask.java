@@ -104,16 +104,9 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
 		File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
-		System.out.println(srcFile.getAbsolutePath().length() + " " + srcFile.getAbsolutePath());
-		System.out.println(detector.getPlatformId() + " " + isWindows());
-
 		if (srcFile.getAbsolutePath().length() < 254 || !isWindows()) {
 			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
 		}
-
-		System.out.println("Detected Windows as platform with file path being longer than 254 characters; training and testing data will be copied to binary folder to avoid failure due to too long file paths");
-
-		// This is essentially a Windows-hack-around to compensate
 
 		File trainDestFile = new File(tmpLocation, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
@@ -186,8 +179,6 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		}
 
 		commandTrainModel.add(train.getAbsolutePath());
-		
-		System.out.println("Train call: " + commandTrainModel);
 		
 		return commandTrainModel;
 	}
