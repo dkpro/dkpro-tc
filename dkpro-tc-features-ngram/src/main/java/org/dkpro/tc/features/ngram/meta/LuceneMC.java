@@ -65,17 +65,8 @@ public abstract class LuceneMC extends MetaCollector {
 	@Override
 	public void initialize(UimaContext context) throws ResourceInitializationException {
 		super.initialize(context);
-
-		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-
-		if (indexWriter == null) {
-			try {
-				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-			} catch (IOException e) {
-				throw new ResourceInitializationException(e);
-			}
-		}
+		
+		initializeWriter();
 
 		initDocument();
 
@@ -87,12 +78,26 @@ public abstract class LuceneMC extends MetaCollector {
 		fieldType.setTokenized(false);
 		fieldType.freeze();
 
-		if (activeMetaWriter == null) {
-			activeMetaWriter = new AtomicInteger(0);
-		}
 		activeMetaWriter.incrementAndGet();
 	}
 	
+	private synchronized void initializeWriter() throws ResourceInitializationException {
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+
+		if (indexWriter == null) {
+			try {
+				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+			} catch (IOException e) {
+				throw new ResourceInitializationException(e);
+			}
+		}
+		
+		if (activeMetaWriter == null) {
+			activeMetaWriter = new AtomicInteger(0);
+		}
+	}
+
 	private void initDocument() {
 		currentDocument = new Document();
 		currentDocument
