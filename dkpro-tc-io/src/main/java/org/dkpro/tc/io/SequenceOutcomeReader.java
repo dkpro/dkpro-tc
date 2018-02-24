@@ -43,7 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * 		The    TAB DET
  * 		car    TAB NOUN
  * 		drives TAB VERB
- * 		<NEWLINE>
+ * 		 
  * 		The		TAB DET
  * 		sun		TAB NOUN
  * 		shines	TAB VERB
