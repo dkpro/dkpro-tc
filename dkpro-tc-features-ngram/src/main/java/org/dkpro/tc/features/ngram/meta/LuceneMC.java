@@ -28,7 +28,6 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
@@ -55,7 +54,7 @@ public abstract class LuceneMC extends MetaCollector {
 	// this is a static singleton as different Lucene-based meta collectors will
 	// use the same writer
 	static IndexWriter indexWriter = null;
-	static AtomicInteger activeMetaWriter = null; //used to known when we can close the index
+	static AtomicInteger activeWriter = null; //used to known when we can close the index
 
 	protected Document currentDocument;
 	long entryCounter=0;
@@ -78,7 +77,7 @@ public abstract class LuceneMC extends MetaCollector {
 		fieldType.setTokenized(false);
 		fieldType.freeze();
 
-		activeMetaWriter.incrementAndGet();
+		activeWriter.incrementAndGet();
 	}
 	
 	private synchronized void initializeWriter() throws ResourceInitializationException {
@@ -93,8 +92,8 @@ public abstract class LuceneMC extends MetaCollector {
 			}
 		}
 		
-		if (activeMetaWriter == null) {
-			activeMetaWriter = new AtomicInteger(0);
+		if (activeWriter == null) {
+			activeWriter = new AtomicInteger(0);
 		}
 	}
 
@@ -157,18 +156,18 @@ public abstract class LuceneMC extends MetaCollector {
 		try {
 			writeToIndex();
 			indexWriter.commit();
-
-			int accessingMetaWriters = activeMetaWriter.decrementAndGet();
-			if (accessingMetaWriters == 0) {
-				indexWriter.close();
-				indexWriter = null;
-			}
-		} catch (AlreadyClosedException e) {
-			// ignore, as multiple meta collectors write in the same index
-			// and will all try to close the index
+			closeWriter();
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
+	}
+
+	private synchronized void closeWriter() throws IOException {
+		int accessingMetaWriters = activeWriter.decrementAndGet();
+		if (accessingMetaWriters == 0) {
+			indexWriter.close();
+			indexWriter = null;
+		}		
 	}
 
 	protected String getDocumentId(JCas jcas) {
