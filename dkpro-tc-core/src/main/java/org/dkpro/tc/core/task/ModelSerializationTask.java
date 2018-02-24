@@ -164,13 +164,17 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 
 		Class<?> feature = Class.forName(implName);
 
-		InputStream inStream = feature.getResource("/" + implName.replace(".", "/") + ".class").openStream();
-
-		OutputStream outStream = buildOutputStream(aOutputFolder, implName);
-
-		IOUtils.copy(inStream, outStream);
-		outStream.close();
-		inStream.close();
+		InputStream is = null;
+		OutputStream os = null;
+		
+		try {
+			is = feature.getResource("/" + implName.replace(".", "/") + ".class").openStream();
+			os = buildOutputStream(aOutputFolder, implName);
+			IOUtils.copy(is, os);
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(os);
+		}
 	}
 
 	private static OutputStream buildOutputStream(File modelFolder, String featureString) throws Exception {
