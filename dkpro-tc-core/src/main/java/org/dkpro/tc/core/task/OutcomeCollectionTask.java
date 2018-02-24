@@ -27,7 +27,6 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 
 /**
@@ -41,9 +40,6 @@ public class OutcomeCollectionTask
     
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    
-    @Discriminator(name = DIM_FEATURE_SET)
-	private TcFeatureSet featureExtractors;
 
     /**
      * Public name of the task key
