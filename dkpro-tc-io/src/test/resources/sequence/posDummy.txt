@@ -6,7 +6,7 @@ test	NOUN
 This2	DET2
 is2	VERB2
 a2	DET2
-test2	NOUN2
+#test2	NOUN2
 !	PUNCT2
 
 This3	DET3

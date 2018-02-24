@@ -89,7 +89,7 @@ public class SequenceOutcomeReaderTest {
 		assertEquals("This2", readSequences.get(1).get(0));
 		assertEquals("is2", readSequences.get(1).get(1));
 		assertEquals("a2", readSequences.get(1).get(2));
-		assertEquals("test2", readSequences.get(1).get(3));
+		assertEquals("#test2", readSequences.get(1).get(3));
 		assertEquals("!", readSequences.get(1).get(4));
 		//2 - outcomes		
 		assertEquals("DET2", readOutcomes.get(1).get(0));
@@ -113,6 +113,48 @@ public class SequenceOutcomeReaderTest {
 		assertEquals("NOUN3", readOutcomes.get(2).get(3));
 		assertEquals("PUNCT3", readOutcomes.get(2).get(4));
 		assertEquals("PUNCT3", readOutcomes.get(2).get(5));
+	}
+	
+	@Test
+	public void testSkipLineReader() throws Exception {
+
+		CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+				SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+				SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
+				SequenceOutcomeReader.PARAM_PATTERNS, "*.txt");
+
+		List<List<String>> readSequences = new ArrayList<>();
+		List<List<String>> readOutcomes = new ArrayList<>();
+
+		int seqTargets=0;
+		
+		while (reader.hasNext()) {
+			JCas theJCas = JCasFactory.createJCas();
+			reader.getNext(theJCas.getCas());
+
+			Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas, TextClassificationTarget.class);
+			List<String> tokens = new ArrayList<>();
+			for(TextClassificationTarget target : targets){
+				tokens.add(target.getCoveredText());
+			}
+			readSequences.add(tokens);
+			
+			Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas, TextClassificationOutcome.class);
+			List<String> outcomes = new ArrayList<>();
+			for(TextClassificationOutcome o : outcomeAnnotations){
+				outcomes.add(o.getOutcome());
+			}
+			readOutcomes.add(outcomes);
+			
+			seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
+		}
+		
+		assertEquals(4, readSequences.get(1).size());
+		//2 - tokens
+		assertEquals("This2", readSequences.get(1).get(0));
+		assertEquals("is2", readSequences.get(1).get(1));
+		assertEquals("a2", readSequences.get(1).get(2));
+		assertEquals("!", readSequences.get(1).get(3));
 	}
 
 }

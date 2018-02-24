@@ -171,6 +171,13 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 		String line = null;
 		try {
 			while (((line = reader.readLine()) != null && !line.isEmpty())) {
+				
+				if(skipLinePrefix != null && !skipLinePrefix.isEmpty()){
+					if(line.startsWith(skipLinePrefix)){
+						continue;
+					}
+				}
+				
 				buffer.add(line);
 			}
 		} catch (IOException e) {
