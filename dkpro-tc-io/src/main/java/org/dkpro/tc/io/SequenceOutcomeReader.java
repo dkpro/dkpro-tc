@@ -69,6 +69,14 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 	public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
 	@ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
 	private String skipLinePrefix;
+	
+	public static final String PARAM_TOKEN_INDEX = "PARAM_TOKEN_INDEX";
+	@ConfigurationParameter(name = PARAM_TOKEN_INDEX, mandatory = true, defaultValue = "0")
+	private Integer tokenIdx;
+
+	public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
+	@ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
+	private Integer outcomeIdx;
 
 	private BufferedReader reader;
 
@@ -88,8 +96,8 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 			String e = nextSequence.get(i);
 			String[] entry = e.split(separatingChar);
 			
-			String token = entry[0];
-			String outcome = entry[1];
+			String token = entry[tokenIdx];
+			String outcome = entry[outcomeIdx];
 			
 			int tokStart = documentText.length();
 			int tokEnd = tokStart + token.length();

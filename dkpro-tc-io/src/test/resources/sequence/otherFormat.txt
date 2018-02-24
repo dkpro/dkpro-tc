@@ -1,0 +1,10 @@
+1	DET	This
+2	VERB	is
+3	DET	a
+4	NOUN	test
+
+5	DET2	This2
+6	VERB2	is2
+7	DET2	a2
+8	NOUN2	test2
+9	PUNCT2	!2
