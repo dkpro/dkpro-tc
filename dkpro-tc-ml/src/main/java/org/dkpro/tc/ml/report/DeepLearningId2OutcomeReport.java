@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.dynet.reports;
+package org.dkpro.tc.ml.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,19 +31,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.core.task.deep.PreparationTask;
-import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.ml.dynet.DynetTestTask;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetOutcomeIdReport extends ReportBase {
+public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements Constants, DeepLearningConstants {
 
 	/**
 	 * Character that is used for separating fields in the output file
@@ -57,23 +54,16 @@ public class DynetOutcomeIdReport extends ReportBase {
 	@Override
 	public void execute() throws Exception {
 
-		boolean isMultiLabel = getDiscriminators()
-				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-				.equals(Constants.LM_MULTI_LABEL);
-
-		boolean isRegression = getDiscriminators()
-				.get(VectorizationTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-				.equals(Constants.LM_REGRESSION);
+		boolean isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
+		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
 
 		if (isMultiLabel) {
-			THRESHOLD = getDiscriminators()
-					.get(DynetTestTask.class.getName() + "|" + Constants.DIM_BIPARTITION_THRESHOLD);
+			THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
 		}
 
-		boolean isIntegerMode = Boolean.valueOf(getDiscriminators()
-				.get(PreparationTask.class.getName() + "|" + DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
+		boolean isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DIM_VECTORIZE_TO_INTEGER));
 
-		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
+		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
 
 		Map<String, String> map = loadMap(isIntegerMode);
@@ -88,7 +78,7 @@ public class DynetOutcomeIdReport extends ReportBase {
 				if (isIntegerMode) {
 					header.append(i + "=" + inverseMap.get(i+""));
 				} else {
-					header.append(i + "=" + map.get(i+""));
+					header.append( i + "=" + map.get(i+""));
 				}
 				if (i + 1 < k.size()) {
 					header.append(" ");
@@ -114,7 +104,7 @@ public class DynetOutcomeIdReport extends ReportBase {
 				continue;
 			}
 
-			String id = (!nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)) ? nameOfTargets.get(i - shift)
+			String id = !nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift) ? nameOfTargets.get(i - shift)
 					: ("" + (counter++));
 
 			String[] split = p.split("\t");
@@ -143,9 +133,13 @@ public class DynetOutcomeIdReport extends ReportBase {
 		}
 
 		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
-		OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-		prop.store(fos, header.toString());
-		fos.close();
+		OutputStreamWriter fos = null;
+		try {
+			fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+			prop.store(fos, header.toString());
+		} finally {
+			IOUtils.closeQuietly(fos);
+		}
 	}
 
 	private Map<String, String> inverseMap(Map<String, String> map) {
