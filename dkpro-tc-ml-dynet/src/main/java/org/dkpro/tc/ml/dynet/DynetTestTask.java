@@ -123,7 +123,7 @@ public class DynetTestTask extends ExecutableTaskBase implements Constants {
 
 		List<String> command = new ArrayList<>();
 		command.add(python);
-		command.add(userCode);
+		command.add(new File(userCode).getAbsolutePath());
 		
 		command.add(DyNetConstants.DYNET_SEED);
 		command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));

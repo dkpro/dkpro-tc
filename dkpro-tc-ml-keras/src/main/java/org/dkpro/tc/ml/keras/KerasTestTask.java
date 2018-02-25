@@ -116,7 +116,7 @@ public class KerasTestTask
 
         List<String> command = new ArrayList<>();
         command.add(python);
-        command.add(userCode);
+        command.add(new File(userCode).getAbsolutePath());
         command.add(PythonConstants.TRAIN_DATA);
         command.add(trainDataVector.getAbsolutePath());
         command.add(PythonConstants.TRAIN_OUTCOME);
