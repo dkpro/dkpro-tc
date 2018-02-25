@@ -65,8 +65,7 @@ Lab.getInstance().run(experiment);
 
 When the experiment is executed, the `vectorization` into integer is automatically performed on the training and testing data, the word embeddings are pruned to contain only occuring vocabulary, and are all passed to the code-snipped provided as file path in the dimension `DIM_USER_CODE`.
 
-The receiving Python code has then eventually to take care of loading the provided data files into the data format the framework expects. For `Keras` and `DyNet`, this is the NumPy data type. This casting leads to some additional overhead that has to be performed in the user-code.
-
+The receiving Python code has then eventually to take care of loading the provided data files into the data format the framework expects. 
 
 ### Results of an experiment
 The results are written to the folder provided as `DKPRO_HOME` directory. The subfolder contain all output written by an experiment, and not just the final results. The folder with the results is the `Evaluation-*` folder. The other folders are probably not of importance for using DKPRo TC, but we explain their content yet briefly. For a train-test experiment, the following folders are created:
