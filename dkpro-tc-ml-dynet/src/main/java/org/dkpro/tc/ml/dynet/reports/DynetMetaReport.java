@@ -22,36 +22,38 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.dkpro.lab.reporting.ReportBase;
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.ml.dynet.DynetTestTask;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetMetaReport extends ReportBase {
+public class DynetMetaReport extends TcBatchReportBase implements DeepLearningConstants{
 
 	@Override
 	public void execute() throws Exception {
-		String python = getDiscriminators()
-				.get(DynetTestTask.class.getName() + "|" + DeepLearningConstants.DIM_PYTHON_INSTALLATION);
+		String python = getDiscriminator(getContext(), DIM_PYTHON_INSTALLATION);
 
 		String dynetVersion = getDyNetVersion(python);
 		String numpyVersion = getNumpyVersion(python);
 
 		Properties p = new SortedKeyProperties();
 		p.setProperty("NumpyVersion", numpyVersion);
-		p.setProperty("DynetVersion", dynetVersion);
+		p.setProperty("DyNetVersion", dynetVersion);
 
 		File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
-		FileOutputStream fos = new FileOutputStream(file);
-		p.store(fos, "Version information");
-		fos.close();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(file);
+			p.store(fos, "Version information");
+		} finally {
+			IOUtils.closeQuietly(fos);
+		}
 	}
 
 	private String getDyNetVersion(String python) throws IOException, InterruptedException {
@@ -73,14 +75,18 @@ public class DynetMetaReport extends ReportBase {
 			Process start = pb.start();
 			start.waitFor();
 
-			InputStream inputStream = start.getInputStream();
 			List<String> output = new ArrayList<>();
-			BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-			String l = null;
-			while ((l = r.readLine()) != null) {
-				output.add(l);
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new InputStreamReader(start.getInputStream(), "utf-8"));
+
+				String l = null;
+				while ((l = reader.readLine()) != null) {
+					output.add(l);
+				}
+			} finally {
+				IOUtils.closeQuietly(reader);
 			}
-			r.close();
 
 			return output.get(output.size() - 1);
 		} catch (Exception e) {
