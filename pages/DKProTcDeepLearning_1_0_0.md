@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Deep Learning (1.0.0 Release)"
+title: "DKPro TC Deep Learning"
 permalink: "/DKProTcDeepLearning_1_0_0/"
 ---
 
