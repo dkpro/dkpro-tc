@@ -119,14 +119,14 @@ public class WekaExternalResourceDemo implements Constants {
 	// ##### TRAIN-TEST #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.addReport(BatchTrainTestReport.class);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.addReport(BatchTrainTestReport.class);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

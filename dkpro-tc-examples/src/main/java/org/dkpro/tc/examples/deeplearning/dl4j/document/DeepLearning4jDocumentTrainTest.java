@@ -98,15 +98,15 @@ public class DeepLearning4jDocumentTrainTest
     public void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DeepLearning",
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DeepLearning",
                 Deeplearning4jAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchRuntimeReport.class);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchRuntimeReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

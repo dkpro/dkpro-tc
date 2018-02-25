@@ -70,13 +70,13 @@ public class WekaManualFoldCrossValidation
         // explained there.
         DemoUtils.setDkproHome(WekaManualFoldCrossValidation.class.getSimpleName());
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NERDemoCV", folds);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(new BatchCrossValidationReport());
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("NERDemoCV", folds);
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(new BatchCrossValidationReport());
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     public static ParameterSpace getParameterSpace(boolean manualFolds)

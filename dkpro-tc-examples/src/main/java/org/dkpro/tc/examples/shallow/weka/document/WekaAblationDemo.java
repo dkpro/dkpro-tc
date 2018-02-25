@@ -116,15 +116,15 @@ public class WekaAblationDemo implements Constants {
 	// ##### CV #####
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-		ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsCV", NUM_FOLDS);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchCrossValidationReport.class);
-		batch.addReport(BatchRuntimeReport.class);
+		ExperimentCrossValidation experiment = new ExperimentCrossValidation("TwentyNewsgroupsCV", NUM_FOLDS);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchCrossValidationReport.class);
+		experiment.addReport(BatchRuntimeReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

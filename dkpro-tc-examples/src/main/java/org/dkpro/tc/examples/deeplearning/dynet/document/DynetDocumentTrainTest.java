@@ -31,8 +31,8 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.deeplearning.dynet.LinewiseLangIdReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
 
@@ -67,16 +67,16 @@ public class DynetDocumentTrainTest implements Constants {
 		// configure training and test data reader dimension
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(LinewiseLangIdReader.class,
-				LinewiseLangIdReader.PARAM_LANGUAGE, "en", LinewiseLangIdReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				LinewiseLangIdReader.PARAM_PATTERNS, "*.txt");
+		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(LinewiseTextOutcomeReader.class,
+				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en", LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
 		dimReaders.put(DIM_READER_TRAIN, train);
 
 		// Careful - we need at least 2 sequences in the testing file otherwise
 		// things will crash
-		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(LinewiseLangIdReader.class,
-				LinewiseLangIdReader.PARAM_LANGUAGE, "en", LinewiseLangIdReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				LinewiseLangIdReader.PARAM_PATTERNS, "*.txt");
+		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(LinewiseTextOutcomeReader.class,
+				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en", LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
 		dimReaders.put(DIM_READER_TEST, test);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -92,11 +92,11 @@ public class DynetDocumentTrainTest implements Constants {
 	}
 
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DynetDocument", DynetAdapter.class);
-		batch.setParameterSpace(pSpace);
-		batch.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(ContextMemoryReport.class);
-		Lab.getInstance().run(batch);
+		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DynetDocument", DynetAdapter.class);
+		experiment.setParameterSpace(pSpace);
+		experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(ContextMemoryReport.class);
+		Lab.getInstance().run(experiment);
 	}
 }

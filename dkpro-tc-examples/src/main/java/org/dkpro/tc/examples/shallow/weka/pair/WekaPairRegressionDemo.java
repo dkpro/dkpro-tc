@@ -112,28 +112,28 @@ public class WekaPairRegressionDemo implements Constants {
 
 	// ##### CV #####
 	protected void runCrossValidation(ParameterSpace pSpace) throws Exception {
-		ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchCrossValidationReport.class);
+		ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchCrossValidationReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	// ##### TRAIN-TEST #####
 	protected void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest");
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchTrainTestReport.class);
-		batch.addReport(ContextMemoryReport.class);
+		ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionExampleTrainTest");
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchTrainTestReport.class);
+		experiment.addReport(ContextMemoryReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	public static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

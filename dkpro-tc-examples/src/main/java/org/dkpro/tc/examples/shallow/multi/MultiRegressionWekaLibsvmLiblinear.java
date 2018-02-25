@@ -39,7 +39,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.AvgSentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
-import org.dkpro.tc.io.LinwiseTextOutcomeReader;
+import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -82,15 +82,15 @@ public class MultiRegressionWekaLibsvmLiblinear implements Constants {
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/essays/train/essay_train.txt", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/test/essay_test.txt", LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/essays/test/essay_test.txt", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
@@ -112,15 +112,15 @@ public class MultiRegressionWekaLibsvmLiblinear implements Constants {
 
 	// ##### TRAIN-TEST #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		ExperimentTrainTest batch = new ExperimentTrainTest("WekaRegressionDemo");
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.addReport(BatchTrainTestReport.class);
-		batch.addReport(ContextMemoryReport.class);
-		batch.addReport(BatchRuntimeReport.class);
+		ExperimentTrainTest experiment = new ExperimentTrainTest("WekaRegressionDemo");
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.addReport(BatchTrainTestReport.class);
+		experiment.addReport(ContextMemoryReport.class);
+		experiment.addReport(BatchRuntimeReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {

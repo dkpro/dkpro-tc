@@ -83,15 +83,15 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation(
                 "LibsvmCrossvalidationBrownPosDemo", NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(ContextMemoryReport.class);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(ContextMemoryReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     // ##### Train Test #####
@@ -99,14 +99,14 @@ public class LibsvmBrownUnitPosDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo");
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(ContextMemoryReport.class);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(ContextMemoryReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     public static ParameterSpace getParameterSpace()

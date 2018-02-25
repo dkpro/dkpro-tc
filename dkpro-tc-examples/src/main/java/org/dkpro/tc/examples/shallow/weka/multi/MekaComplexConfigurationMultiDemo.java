@@ -152,14 +152,14 @@ public class MekaComplexConfigurationMultiDemo
     public void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest");
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
+        ExperimentTrainTest experiment = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchTrainTestReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

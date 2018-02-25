@@ -87,13 +87,13 @@ public class KerasSeq2SeqCrossValidation implements Constants {
 	}
 
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
-		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasSeq2SeqCv",
+		DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation("KerasSeq2SeqCv",
 				KerasAdapter.class, 2);
-		batch.setParameterSpace(pSpace);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchCrossValidationReport.class);
+		experiment.setParameterSpace(pSpace);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchCrossValidationReport.class);
 
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 }

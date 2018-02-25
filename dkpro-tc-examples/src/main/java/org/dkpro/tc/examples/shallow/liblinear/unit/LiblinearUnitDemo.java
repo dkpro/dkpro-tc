@@ -82,26 +82,26 @@ public class LiblinearUnitDemo implements Constants {
 	// ##### CV #####
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-		ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV", NUM_FOLDS);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		ExperimentCrossValidation experiment = new ExperimentCrossValidation("BrownPosDemoCV", NUM_FOLDS);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	// ##### Train Test #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV");
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(ContextMemoryReport.class);
+		ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(ContextMemoryReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {

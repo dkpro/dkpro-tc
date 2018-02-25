@@ -102,15 +102,15 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		
 		DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
 		
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
-		batch.setParameterSpace(pSpace);
-		batch.setPreprocessing(getPreprocessing());
+		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
+		experiment.setParameterSpace(pSpace);
+		experiment.setPreprocessing(getPreprocessing());
 		if(r != null){
-		    batch.addReport(r);
+		    experiment.addReport(r);
 		}
-		batch.addReport(new BatchTrainTestReport());
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(new BatchTrainTestReport());
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 }

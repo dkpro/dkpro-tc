@@ -99,12 +99,12 @@ public class DynetSeq2SeqTrainTest implements Constants {
 	}
 
 	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("DynetSeq2Seq", DynetAdapter.class);
-		batch.setParameterSpace(pSpace);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(ContextMemoryReport.class);
-		batch.addReport(new BatchTrainTestReport());
-		Lab.getInstance().run(batch);
+		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DynetSeq2Seq", DynetAdapter.class);
+		experiment.setParameterSpace(pSpace);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(ContextMemoryReport.class);
+		experiment.addReport(new BatchTrainTestReport());
+		Lab.getInstance().run(experiment);
 	}
 }

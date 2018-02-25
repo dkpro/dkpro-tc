@@ -30,6 +30,7 @@ import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.core.Constants
+import org.dkpro.tc.io.SequenceOutcomeReader;
 import org.dkpro.tc.examples.shallow.io.NERDemoReader
 import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
@@ -62,10 +63,12 @@ implements Constants {
         TcFeatureFactory.create(InitialCharacterUpperCase.class)
     ))
     
-    def trainreader = CollectionReaderFactory.createReaderDescription(NERDemoReader.class,
-       NERDemoReader.PARAM_LANGUAGE,  "de",
-       NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-       NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt"
+    def trainreader = CollectionReaderFactory.createReaderDescription(SequenceOutcomeReader.class,
+       SequenceOutcomeReader.PARAM_LANGUAGE,  "de",
+	   SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
+	   SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
+       SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       SequenceOutcomeReader.PARAM_PATTERNS, "*.txt"
     );
     
     def dimReaders = Dimension.createBundle("readers", [

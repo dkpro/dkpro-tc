@@ -36,10 +36,10 @@ public class LinewiseTextOutcomeReaderTest {
 	@Test
 	public void testReader() throws Exception {
 
-		CollectionReader reader = CollectionReaderFactory.createReader(LinwiseTextOutcomeReader.class,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 2, LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/semEval2017Task4/",
-				LinwiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+		CollectionReader reader = CollectionReaderFactory.createReader(LinewiseTextOutcomeReader.class,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 2, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
+				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/semEval2017Task4/",
+				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
 
 		List<String> readDocumentSpans = new ArrayList<>();
 		List<String> readOutcomes = new ArrayList<>();

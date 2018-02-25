@@ -39,11 +39,11 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.NERDemoReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
+import org.dkpro.tc.io.SequenceOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
@@ -101,15 +101,15 @@ public class CRFSuiteNERSequenceDemo
     public void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest");
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     public static ParameterSpace getParameterSpace()
@@ -117,14 +117,20 @@ public class CRFSuiteNERSequenceDemo
     {
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
-                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+                SequenceOutcomeReader.class, SequenceOutcomeReader.PARAM_LANGUAGE, "de",
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
+                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
+                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
+                SequenceOutcomeReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                NERDemoReader.class, NERDemoReader.PARAM_LANGUAGE, "de",
-                NERDemoReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                NERDemoReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+                SequenceOutcomeReader.class, SequenceOutcomeReader.PARAM_LANGUAGE, "de",
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
+                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
+                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
+                SequenceOutcomeReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);

@@ -122,15 +122,15 @@ public class SemanticTextSimilarityDemo
     public void runCrossValidation(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.addReport(ScatterplotReport.class);
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.addReport(ScatterplotReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     // ##### TRAIN-TEST #####
@@ -138,16 +138,16 @@ public class SemanticTextSimilarityDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("RegressionExampleTrainTest");
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
-        batch.addReport(ScatterplotReport.class);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionExampleTrainTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(ScatterplotReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     public static AnalysisEngineDescription getPreprocessing()

@@ -158,15 +158,15 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+        ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
         // each outcome label
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchTrainTestReport.class);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchTrainTestReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
     
     // ##### TRAIN-TEST #####
@@ -174,14 +174,14 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         throws Exception
     {
 
-    	ExperimentCrossValidation batch = new ExperimentCrossValidation("TwentyNewsgroupsTrainTest", 2);
+    	ExperimentCrossValidation experiment = new ExperimentCrossValidation("TwentyNewsgroupsTrainTest", 2);
         // each outcome label
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

@@ -34,7 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.io.LinwiseTextOutcomeReader;
+import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -61,17 +61,17 @@ public class KerasRegressionWassa implements Constants {
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/wassa2017/train/", LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-				LinwiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/wassa2017/train/", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/wassa2017/dev/", LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-				LinwiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/wassa2017/dev/", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -91,16 +91,16 @@ public class KerasRegressionWassa implements Constants {
 	// ##### TRAIN-TEST #####
 	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest(
+		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
 				"KerasRegressionWassa2017AngerTrainTest", KerasAdapter.class);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.addReport(ContextMemoryReport.class);
-		batch.addReport(new BatchTrainTestReport());
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.addReport(ContextMemoryReport.class);
+		experiment.addReport(new BatchTrainTestReport());
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

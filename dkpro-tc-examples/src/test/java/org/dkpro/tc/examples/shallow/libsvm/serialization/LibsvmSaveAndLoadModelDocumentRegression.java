@@ -49,7 +49,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.AvgSentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
-import org.dkpro.tc.io.LinwiseTextOutcomeReader;
+import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
@@ -96,9 +96,9 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
 	}
 
 	private void regressionLoadModel(File modelFolder) throws UIMAException, IOException {
-		CollectionReader reader = CollectionReaderFactory.createReader(LinwiseTextOutcomeReader.class,
-				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0, LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION, regressionTest, LinwiseTextOutcomeReader.PARAM_LANGUAGE,
+		CollectionReader reader = CollectionReaderFactory.createReader(LinewiseTextOutcomeReader.class,
+				LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0, LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, regressionTest, LinewiseTextOutcomeReader.PARAM_LANGUAGE,
 				"en");
 
 		AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
@@ -134,9 +134,9 @@ public class LibsvmSaveAndLoadModelDocumentRegression extends TestCaseSuperClass
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				"src/main/resources/data/essays/train/essay_train.txt", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
 		@SuppressWarnings("unchecked")

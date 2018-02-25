@@ -133,19 +133,15 @@ public class WekaUniformClassDistributionDemo
         throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation(
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation(
                 "UniformClassDistFeatureFilterCV", NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        // batch.addInnerReport(WekaClassificationReport.class);
-        // add a second report to TestTask which creates a report about average feature values for
-        // each outcome label
-        // batch.addInnerReport(WekaFeatureValuesReport.class);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchCrossValidationReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     // ##### TRAIN-TEST #####
@@ -153,13 +149,13 @@ public class WekaUniformClassDistributionDemo
         throws Exception
     {
 
-        ExperimentTrainTest batch = new ExperimentTrainTest("UniformClassDistFeatureFilterTT");
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("UniformClassDistFeatureFilterTT");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

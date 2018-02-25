@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}, which
  * are the data types DKPro TC requires for processing the read data.
  */
-public class LinwiseTextOutcomeReader extends JCasResourceCollectionReader_ImplBase {
+public class LinewiseTextOutcomeReader extends JCasResourceCollectionReader_ImplBase {
 
 	/**
 	 * The separating character that separates textual information from its

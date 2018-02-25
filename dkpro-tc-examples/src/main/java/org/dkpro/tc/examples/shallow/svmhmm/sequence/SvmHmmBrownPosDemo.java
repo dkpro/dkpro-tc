@@ -119,14 +119,14 @@ public class SvmHmmBrownPosDemo
     public void runTrainTest(ParameterSpace pSpace)
                 throws Exception
     {
-        final ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTestBatchTask");
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
-        batch.addReport(ContextMemoryReport.class);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownTrainTestBatchTask");
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     public static void main(String[] args)

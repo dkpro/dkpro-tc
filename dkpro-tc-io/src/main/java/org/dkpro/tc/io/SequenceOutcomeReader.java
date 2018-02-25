@@ -33,6 +33,8 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
  * This reader reads a common data format for sequence classification tasks, for
@@ -40,12 +42,12 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * outcome e.g.:
  * 
  * <pre>
- * 		The    TAB DET
- * 		car    TAB NOUN
+ * 		The TAB DET
+ * 		car	TAB NOUN
  * 		drives TAB VERB
  * 		 
- * 		The		TAB DET
- * 		sun		TAB NOUN
+ * 		The	TAB DET
+ * 		sun	TAB NOUN
  * 		shines	TAB VERB
  * </pre>
  * 
@@ -53,8 +55,12 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * {@link org.dkpro.tc.api.type.TextClassificationTarget} and the outcome is
  * annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}. An
  * empty lines separates consecutive sequences which are annotated as
- * {@link org.dkpro.tc.api.type.TextClassificationSequence}. Each sequence is
- * read into an own JCas.
+ * {@link org.dkpro.tc.api.type.TextClassificationSequence}. The tokens are
+ * additionally annotated as
+ * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token} and the
+ * sequence as
+ * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence} Each
+ * sequence is read into an own JCas.
  */
 public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase {
 
@@ -102,6 +108,7 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 			int tokStart = documentText.length();
 			int tokEnd = tokStart + token.length();
 			
+			setToken(aJCas, tokStart, tokEnd);
 			setTextClassificationTarget(aJCas, tokStart, tokEnd);
 			setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
 			
@@ -112,7 +119,18 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 		}
 		
 		setTextClassificationSequence(aJCas, seqStart, documentText.length());
+		setSentence(aJCas, seqStart, documentText.length());
 		aJCas.setDocumentText(documentText.toString());
+	}
+
+	private void setToken(JCas aJCas, int begin, int end) {
+		Token token = new Token(aJCas, begin, end);
+		token.addToIndexes();
+	}
+
+	private void setSentence(JCas aJCas, int begin, int end) {
+		Sentence sentence = new Sentence(aJCas, begin, end);
+		sentence.addToIndexes();
 	}
 
 	protected void setTextClassificationTarget(JCas aJCas, int begin, int end) {

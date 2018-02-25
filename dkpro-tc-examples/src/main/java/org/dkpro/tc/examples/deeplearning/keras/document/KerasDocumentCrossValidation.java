@@ -85,15 +85,15 @@ public class KerasDocumentCrossValidation implements Constants {
 	// ##### TRAIN-TEST #####
 	public static void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-		DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasCrossValidation",
+		DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation("KerasCrossValidation",
 				KerasAdapter.class, 2);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.addReport(ContextMemoryReport.class);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.addReport(ContextMemoryReport.class);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

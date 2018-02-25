@@ -152,13 +152,13 @@ public class WekaComplexConfigurationSingleDemo
     public void runTrainTest(ParameterSpace pSpace)
         throws Exception
     {
-        ExperimentTrainTest batch = new ExperimentTrainTest(EXPERIMENT_NAME);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.addReport(BatchTrainTestReport.class);
+        ExperimentTrainTest experiment = new ExperimentTrainTest(EXPERIMENT_NAME);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

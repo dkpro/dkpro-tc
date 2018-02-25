@@ -34,7 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.io.LinwiseTextOutcomeReader;
+import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -66,21 +66,21 @@ public class KerasRegression
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinwiseTextOutcomeReader.class, 
-				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
-				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+				LinewiseTextOutcomeReader.class, 
+				LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
+				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
 				"src/main/resources/data/essays/train/essay_train.txt", 
-				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-        		LinwiseTextOutcomeReader.class, 
-				LinwiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinwiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
-				LinwiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+        		LinewiseTextOutcomeReader.class, 
+				LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
+				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
 				"src/main/resources/data/essays/train/essay_test.txt", 
-				LinwiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -103,16 +103,16 @@ public class KerasRegression
         throws Exception
     {
 
-        DeepLearningExperimentCrossValidation batch = new DeepLearningExperimentCrossValidation("KerasRegressionCrossValidation",
+        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation("KerasRegressionCrossValidation",
                 KerasAdapter.class, 2);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.addReport(ContextMemoryReport.class);
-        batch.addReport(BatchCrossValidationReport.class);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected static AnalysisEngineDescription getPreprocessing()

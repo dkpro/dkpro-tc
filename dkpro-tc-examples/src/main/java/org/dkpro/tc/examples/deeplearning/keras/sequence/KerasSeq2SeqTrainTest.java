@@ -109,12 +109,12 @@ public class KerasSeq2SeqTrainTest
             System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
 //        }
         
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
                 KerasAdapter.class);
-        batch.setParameterSpace(pSpace);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setParameterSpace(pSpace);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 }

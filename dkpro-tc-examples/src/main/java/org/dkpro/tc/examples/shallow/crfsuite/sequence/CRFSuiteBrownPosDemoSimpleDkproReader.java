@@ -115,14 +115,14 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 	// ##### CV #####
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
 
-		ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite", NUM_FOLDS);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchCrossValidationReport.class);
+		ExperimentCrossValidation experiment = new ExperimentCrossValidation("BrownPosDemoCV_CRFSuite", NUM_FOLDS);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchCrossValidationReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
@@ -130,13 +130,13 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 	}
 
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		ExperimentTrainTest batch = new ExperimentTrainTest("BrownTrainTest");
-		batch.setParameterSpace(pSpace);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchTrainTestReport.class);
-		batch.addReport(ContextMemoryReport.class);
+		ExperimentTrainTest experiment = new ExperimentTrainTest("BrownTrainTest");
+		experiment.setParameterSpace(pSpace);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchTrainTestReport.class);
+		experiment.addReport(ContextMemoryReport.class);
 
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 }

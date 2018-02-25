@@ -104,14 +104,14 @@ public class KerasMultiLabel
         throws Exception
     {
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTestMultiLabel",
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasTrainTestMultiLabel",
                 KerasAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected AnalysisEngineDescription getPreprocessing()

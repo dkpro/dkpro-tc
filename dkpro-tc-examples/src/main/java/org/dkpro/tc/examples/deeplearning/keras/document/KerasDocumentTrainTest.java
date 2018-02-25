@@ -103,16 +103,16 @@ public class KerasDocumentTrainTest
         throws Exception
     {
 
-        DeepLearningExperimentTrainTest batch = new DeepLearningExperimentTrainTest("KerasTrainTest",
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasTrainTest",
                 KerasAdapter.class);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(new BatchTrainTestReport());
-        batch.addReport(new ContextMemoryReport());
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(new BatchTrainTestReport());
+        experiment.addReport(new ContextMemoryReport());
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     protected static AnalysisEngineDescription getPreprocessing()
