@@ -33,6 +33,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
@@ -108,6 +109,7 @@ public class KerasDocumentTrainTest
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(new BatchTrainTestReport());
+        batch.addReport(new ContextMemoryReport());
 
         // Run
         Lab.getInstance().run(batch);
