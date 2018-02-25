@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -153,7 +154,7 @@ public class LinewiseTextOutcomeReader extends JCasResourceCollectionReader_Impl
 		try {
 			next = nextFile();
 		} catch (Exception e) {
-			// catch silently
+			LogFactory.getLog(getClass()).debug("No more resources to be read");
 		}
 		return next;
 	}

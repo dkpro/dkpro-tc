@@ -98,7 +98,7 @@ public class SvmHmmTestTask
     	readerGold.close();
     	readerPrediction.close();
     	
-    	predictionsFile.delete();
+    	FileUtils.deleteQuietly(predictionsFile);
     	FileUtils.moveFile(createTempFile, predictionsFile);
 	}
 

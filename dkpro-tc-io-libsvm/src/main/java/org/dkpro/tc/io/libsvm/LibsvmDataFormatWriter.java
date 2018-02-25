@@ -76,18 +76,18 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	@Override
 	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
 		
-		try{
-		initGeneric();
+		try {
+			initGeneric();
 
-		// bulk-write - in sequence mode this keeps the instances together that
-		// belong to the same sequence!
-		Instance[] array = instances.toArray(new Instance[0]);
-		bw.write(gson.toJson(array) + System.lineSeparator());
-
-		bw.close();
-		bw = null;
-		}catch(Exception e){
+			// bulk-write - in sequence mode this keeps the instances together
+			// that belong to the same sequence!
+			Instance[] array = instances.toArray(new Instance[0]);
+			bw.write(gson.toJson(array) + System.lineSeparator());
+		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
+		} finally {
+			IOUtils.closeQuietly(bw);
+			bw = null;
 		}
 	}
 
@@ -227,7 +227,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 		}
 	}
 
-	private void writeFeatureName2idMapping(File outputDirectory2, String featurename2instanceid2,
+	private void writeFeatureName2idMapping(File outputDirectory, String featurename2instanceid,
 			Map<String, Integer> stringToInt) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		
@@ -235,7 +235,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
 		}
 		
-		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid2), sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid), sb.toString(), "utf-8");
 	}
 
 	private void initClassifierFormat() throws Exception {
@@ -318,11 +318,10 @@ public class LibsvmDataFormatWriter implements DataWriter {
 	private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId) {
 		Collection<Feature> features = instance.getFeatures();
 		for (Feature f : features) {
-			if (!f.getName().equals(Constants.ID_FEATURE_NAME)) {
-				continue;
+			if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
+				index2instanceId.put(i + "", f.getValue() + "");
+				return;
 			}
-			index2instanceId.put(i + "", f.getValue() + "");
-			return;
 		}
 	}
 

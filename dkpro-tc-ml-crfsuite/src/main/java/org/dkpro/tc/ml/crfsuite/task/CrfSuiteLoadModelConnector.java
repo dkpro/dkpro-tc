@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -80,7 +81,6 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 			int sequenceId = 0;
 			List<Instance> instance = new ArrayList<>();
 			for (TextClassificationSequence seq : JCasUtil.select(jcas, TextClassificationSequence.class)) {
-
 				instance.addAll(getInstancesInSequence(featureExtractors, jcas, seq, true, sequenceId++));
 			}
 
@@ -120,9 +120,14 @@ public class CrfSuiteLoadModelConnector extends ModelSerialization_ImplBase {
 		pb.redirectError(Redirect.INHERIT);
 		pb.command(command);
 		Process process = pb.start();
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
-		writer.write(buffer.toString());
-		writer.close();
+		
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
+			writer.write(buffer.toString());
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
 		return CrfSuiteTestTask.captureProcessOutput(process);
 	}
 

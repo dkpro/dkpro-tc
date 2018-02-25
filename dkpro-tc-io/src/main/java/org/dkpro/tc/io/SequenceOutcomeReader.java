@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
@@ -87,6 +88,7 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 	private BufferedReader reader;
 
 	private List<String> nextSequence = null;
+	private String line = null;
 
 	private int runningId = 0;
 
@@ -185,7 +187,7 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 		try {
 			next = nextFile();
 		} catch (Exception e) {
-			// catch silently
+			LogFactory.getLog(getClass()).debug("No more resources to be read");
 		}
 		return next;
 	}
@@ -193,17 +195,12 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 	protected List<String> read() {
 		
 		List<String> buffer = new ArrayList<>();
-		
-		String line = null;
 		try {
-			while (((line = reader.readLine()) != null && !line.isEmpty())) {
-				
-				if(skipLinePrefix != null && !skipLinePrefix.isEmpty()){
-					if(line.startsWith(skipLinePrefix)){
-						continue;
-					}
+			while (sequenceIncomplete()) {
+				if (skipElement()) {
+					continue;
 				}
-				
+
 				buffer.add(line);
 			}
 		} catch (IOException e) {
@@ -211,6 +208,14 @@ public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase
 		}
 		
 		return buffer;
+	}
+
+	private boolean skipElement() {
+		return skipLinePrefix != null && line.startsWith(skipLinePrefix);
+	}
+
+	private boolean sequenceIncomplete() throws IOException {
+		return (line = reader.readLine()) != null && !line.isEmpty();
 	}
 
 	protected void initReader(Resource nextFile) {

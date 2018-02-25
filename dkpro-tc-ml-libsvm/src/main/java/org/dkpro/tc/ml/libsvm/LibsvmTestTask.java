@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
@@ -96,32 +97,49 @@ public class LibsvmTestTask extends LibsvmDataFormatTestTask implements Constant
 
 	@Override
 	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
+		File predFile = executeLibsvm(aContext, model);
+		mergePredictionWithGold(aContext, predFile);
+	}
 
-		File theModel = (File) model;
+	private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception {
 		
 		File fileTest = getTestFile(aContext);
+		File prediction = getPredictionFile(aContext);
+		BufferedWriter bw = null;
+		try {
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
+
+			List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
+			List<String> pred = FileUtils.readLines(predFile, "utf-8");
+			bw.write("#PREDICTION;GOLD" + "\n");
+			for (int i = 0; i < gold.size(); i++) {
+				String p = pred.get(i);
+				String g = gold.get(i);
+				bw.write(p + ";" + g);
+				bw.write("\n");
+			}
+		} finally {
+			IOUtils.closeQuietly(bw);
+		}		
+	}
+
+	private File executeLibsvm(TaskContext aContext, Object model) throws Exception {
+		File theModel = (File) model;
+		File fileTest = getTestFile(aContext);
 		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-		
 		LibsvmPredict predictor = new LibsvmPredict();
 		File predTmp = createTemporaryPredictionFile();
-		DataOutputStream output = new DataOutputStream(new FileOutputStream(predTmp));
-		svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
-		predictor.predict(r, output, svmModel, 0);
-		output.close();
-
-		File prediction = getPredictionFile(aContext);
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
-
-		List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
-		List<String> pred = FileUtils.readLines(predTmp, "utf-8");
-		bw.write("#PREDICTION;GOLD" + "\n");
-		for (int i = 0; i < gold.size(); i++) {
-			String p = pred.get(i);
-			String g = gold.get(i);
-			bw.write(p + ";" + g);
-			bw.write("\n");
+		
+		DataOutputStream output = null;
+		try {
+			output = new DataOutputStream(new FileOutputStream(predTmp));
+			svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
+			predictor.predict(r, output, svmModel, 0);
+		} finally {
+			IOUtils.closeQuietly(output);
 		}
-		bw.close();
+		
+		return predTmp;
 	}
 
 }

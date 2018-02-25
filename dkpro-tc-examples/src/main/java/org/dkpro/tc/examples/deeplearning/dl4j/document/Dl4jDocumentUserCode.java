@@ -49,7 +49,7 @@ public class Dl4jDocumentUserCode
 
     @Override
     public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
-            File embedding, int seed, File prediction)
+            File embedding, int seed, int maximumLength, double threshold, File prediction)
                 throws Exception
     {
 

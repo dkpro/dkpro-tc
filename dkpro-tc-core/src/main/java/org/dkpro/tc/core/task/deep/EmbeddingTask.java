@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -83,34 +84,38 @@ public class EmbeddingTask extends ExecutableTaskBase {
 	private void wordPreparation(TaskContext aContext) throws Exception {
 		Set<String> vocabulary = loadVocabulary(aContext);
 
-		BufferedReader reader = getEmbeddingReader();
-		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
+		BufferedReader reader = null;
+		BufferedWriter writer = null;
+		try {
+			reader = getEmbeddingReader();
+			writer = getPrunedEmbeddingWriter(aContext);
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (line.trim().isEmpty()) {
-				continue;
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				if (line.trim().isEmpty()) {
+					continue;
+				}
+
+				int indexOf = line.indexOf(" ");
+				String token = line.substring(0, indexOf);
+
+				if (vocabulary.contains(token)) {
+					writer.write(line + System.lineSeparator());
+					vocabulary.remove(token);
+				}
+				if (lenVec < 0) {
+					String vector = line.substring(indexOf + 1);
+					lenVec = vector.split(" ").length;
+				}
 			}
 
-			int indexOf = line.indexOf(" ");
-			String token = line.substring(0, indexOf);
-
-			if (vocabulary.contains(token)) {
-				writer.write(line + System.lineSeparator());
-				vocabulary.remove(token);
+			for (String k : vocabulary) {
+				writer.write(k + " " + randomVector(lenVec) + System.lineSeparator());
 			}
-			if (lenVec < 0) {
-				String vector = line.substring(indexOf + 1);
-				lenVec = vector.split(" ").length;
-			}
+		} finally {
+			IOUtils.closeQuietly(writer);
+			IOUtils.closeQuietly(reader);
 		}
-
-		for (String k : vocabulary) {
-			writer.write(k + " " + randomVector(lenVec) + System.lineSeparator());
-		}
-
-		writer.close();
-		reader.close();
 
 	}
 

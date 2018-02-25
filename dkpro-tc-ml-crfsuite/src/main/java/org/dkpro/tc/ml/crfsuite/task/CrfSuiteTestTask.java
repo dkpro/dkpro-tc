@@ -207,7 +207,7 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
 		if(f.getAbsolutePath().length() >= 254 && isWindows()) {
-			deleteFile(input);
+			FileUtils.deleteQuietly(input);
 		}
 	}
 
@@ -221,20 +221,13 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(model);
-			aContext.storeBinary(MODEL_CLASSIFIER, new FileInputStream(model));
+			aContext.storeBinary(MODEL_CLASSIFIER, fis);
 		} finally {
 			IOUtils.closeQuietly(fis);
 		}
 		File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-		deleteFile(model);
+		FileUtils.deleteQuietly(model);
 		return modelLocation;
-	}
-
-	private void deleteFile(File f) {
-		boolean delete = f.delete();
-		if (!delete) {
-			throw new IllegalStateException("Could not delete file [" + f.getAbsolutePath() + "]");
-		}
 	}
 
 	private void processParameters(List<Object> classificationArguments) throws Exception {

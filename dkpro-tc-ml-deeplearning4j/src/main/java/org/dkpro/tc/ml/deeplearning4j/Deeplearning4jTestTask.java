@@ -43,7 +43,7 @@ public class Deeplearning4jTestTask extends ExecutableTaskBase implements Consta
 	private Integer seed;
 	
 	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-	private double threshold;
+	private Double threshold;
 
 	@Override
 	public void execute(TaskContext aContext) throws Exception {
@@ -60,8 +60,11 @@ public class Deeplearning4jTestTask extends ExecutableTaskBase implements Consta
 		if (seed==null){
 			seed = 123456789;
 		}
+		
+		int maxLen = maximumLength != null ? maximumLength : -1;
+		double thres = threshold != null ? threshold : -1.0;
 
-		userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector, embeddingPath, seed,
+		userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector, embeddingPath, seed, maxLen, thres,
 				outputTarget);
 	}
 
