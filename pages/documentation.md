@@ -20,10 +20,13 @@ _latest release_
 {% unless unstable.version == null %}
 ### DKPro TC {{ unstable.version }}
 * [Setting Up DKProTC](/dkpro-tc/SettingUpDKPro/)
+
 * [Basics](/dkpro-tc/DKProTcBasics_1_0_0/)
 * [Processing Modes](/dkpro-tc/DKProTcProcessingModes/)
 * [Using DKPro Core Readers](/dkpro-tc/DKProTcUsingDKProCoreReaders/)
+
 * [Deep Learning](/dkpro-tc/DKProTcDeepLearning_1_0_0/)
+* [Debugging Deep Learning Experiments](/dkpro-tc/DKProTcDebugginPythonDeepLearningExperiments/)
 
 _upcoming release - links may be temporarily broken while a build is in progress_
 
