@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC basics (1.0.0 Release)"
+title: "DKPro TC Basics"
 permalink: "/DKProTcBasics_1_0_0/"
 ---
 
