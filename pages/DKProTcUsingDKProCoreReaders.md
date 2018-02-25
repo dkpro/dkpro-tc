@@ -1,13 +1,13 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Using DKPro Core Readers"
+title: "Using DKPro Core Readers"
 permalink: "/DKProTcUsingDKProCoreReaders/"
 ---
 
-DKProTC works with two data types that are expected to be present when an experiment is executed. `TextClassificationTarget` and the corresponding actual value of this target, the `TextClassificationOutcome`. For sequence classification examples an additional `TextClassificationSequence` is necessary that marks explicitly the span of the sequence. The data readers provided by DKProTC set these values in the reader. When one of the many data format readers in DKPro Core are used, these information are not set, yet. The two required data types exist only in DKPro TC and are not used by DKPro Core.
+DKProTC works with two data types that are expected to be present when an experiment is executed. `TextClassificationTarget` and the corresponding actual value of this target, the `TextClassificationOutcome`. For sequence classification examples an additional `TextClassificationSequence` is necessary that marks explicitly the span of the sequence. The data readers provided by DKPro TC in the package `dkpro-tc-io` set these values in the reader. When one of the many DKPro Core data format readers is used, these information are not set, yet. The required data types exist only in DKPro TC and are not used by DKPro Core.
 
-Consequently, an additional step is needed that adds the required information when readers from DKPro Core (or elsewhere) are used. This is most easily done by adding a `Preprocessing` step to a DKPro TC experiment. Below is an example how it could be used for Part-of-Speech Tagging for instance.
-In order to be used in the `Preprocessing`, the class have to inherit from `JCasAnnotator_ImplBase`:
+Consequently, an additional step is needed that adds the required annotation. This is most easily done by adding a `Preprocessing` step to a DKPro TC experiment. Below is an example how it could be used for Part-of-Speech (PoS) tagging. In PoS tagging, each token (`TextClassificationTarget`) of a sentence (`TextClassificationSequence`) is assigned a single label (`TextClassificationOutcome`).
+In order to be used in the `Preprocessing` step, the class have to inherit from `JCasAnnotator_ImplBase`:
 
 {% highlight java %} 
 public class SequenceOutcomeAnnotator
@@ -62,11 +62,12 @@ To add the `Preprocessing` to your experiment, only a minor modification to your
 
 {% highlight java %} 
 ExperimentTrainTest experiment = new ExperimentTrainTest("CrfExperiment");
-experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.class)); //Here, the preprocessing is added
+//The following line adds the above class as preprocessing component
+experiment.setPreprocessing(createEngineDescription(SequenceOutcomeAnnotator.class)); 
 experiment.setParameterSpace(pSpace);
 {% endhighlight %}
 
-`Preprocessing` is not limited to a single component, assuming we would read plain text with the reader, we would need Tokenization and a Part-Of-Speech Tagger in order to train a sequence classifier (in practice, you probably do not want to train a model on tags that are automatically annotated but for the sake of the example, lets assume you do). In this case, the preprocessing could look like this:
+The `Preprocessing` is not limited to a single component, assuming we would read plain text with the reader, we would need additionally tokenization (to split the text into sentences and words) and a PoS tagger that provides the expected outcomen in order to train a sequence classifier. In practice, you probably do not want to train a model on tags that are automatically annotated but for the sake of this example, lets assume you do. In this case, the preprocessing could look like shown belown. Note the order of the preprocessing steps, PoS tagging requires tokens why the the segmentation step is comes first, the `SequenceOutcomeAnnotator` requires tokens and the PoS and is consequently the last component.
 
 {% highlight java %} 
 experiment.setPreprocessing(createEngineDescription(
