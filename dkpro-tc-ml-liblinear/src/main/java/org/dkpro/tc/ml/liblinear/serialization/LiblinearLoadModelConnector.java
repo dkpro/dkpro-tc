@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
@@ -54,15 +55,19 @@ public class LiblinearLoadModelConnector extends LibsvmDataFormatLoadModelConnec
 		
 		File tmp = File.createTempFile("libLinearePrediction",".txt");
 		
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
-		Feature[][] testInstances = predictionProblem.x;
-		for (int i = 0; i < testInstances.length; i++) {
-			Feature[] instance = testInstances[i];
-			Double prediction = Linear.predict(liblinearModel, instance);
-			writer.write(prediction.toString() + "\n");
-		}
+		BufferedWriter writer = null;
 		
-		writer.close();
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
+			Feature[][] testInstances = predictionProblem.x;
+			for (int i = 0; i < testInstances.length; i++) {
+				Feature[] instance = testInstances[i];
+				Double prediction = Linear.predict(liblinearModel, instance);
+				writer.write(prediction.toString() + "\n");
+			}
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
 		
 		tmp.deleteOnExit();
 		return tmp;
