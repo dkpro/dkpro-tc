@@ -31,7 +31,7 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteLoadModelConnector;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteSerializeModelConnector;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.writer.CRFSuiteDataWriter;
+import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteDataWriter;
 
 /**
  * CRFSuite machine learning adapter. Details about available algorithm and their configuration is
@@ -73,7 +73,7 @@ public class CrfSuiteAdapter
     @Override
     public Class<? extends DataWriter> getDataWriterClass()
     {
-        return CRFSuiteDataWriter.class;
+        return CrfSuiteDataWriter.class;
     }
 
     @Override

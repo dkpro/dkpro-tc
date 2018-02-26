@@ -40,7 +40,7 @@ import org.dkpro.tc.core.io.DataWriter;
 
 import com.google.gson.Gson;
 
-public class CRFSuiteDataWriter implements DataWriter {
+public class CrfSuiteDataWriter implements DataWriter {
 	CrfSuiteFeatureFormatExtractionIterator iterator;
 	File outputDirectory;
 	boolean useSparse;

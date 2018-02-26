@@ -30,21 +30,21 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
  * Train-Test setup
  * 
  */
-public class SaveModelCRFSuiteTrainTestTask
+public class SaveModelCrfSuiteTrainTestTask
     extends ExperimentTrainTest
 {
 
     private CrfSuiteSerializeModelConnector saveModelTask;
     private File outputFolder;
 
-    public SaveModelCRFSuiteTrainTestTask()
+    public SaveModelCrfSuiteTrainTestTask()
     {/* needed for Groovy */
     }
 
     /**
      * Preconfigured train-test setup that also stores the trained classifier.
      */
-    public SaveModelCRFSuiteTrainTestTask(String aExperimentName,  File outputFolder)
+    public SaveModelCrfSuiteTrainTestTask(String aExperimentName,  File outputFolder)
             throws TextClassificationException
     {
     	super(aExperimentName);

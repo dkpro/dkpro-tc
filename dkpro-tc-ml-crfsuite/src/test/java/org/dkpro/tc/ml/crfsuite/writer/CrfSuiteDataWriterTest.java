@@ -41,7 +41,7 @@ public class CrfSuiteDataWriterTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    CRFSuiteDataWriter writer;
+    CrfSuiteDataWriter writer;
     File outputDirectory;
     List<Instance> instances;
     List<String> outcomes;
@@ -50,7 +50,7 @@ public class CrfSuiteDataWriterTest
         throws Exception
     {
         outputDirectory = folder.newFolder();
-        writer = new CRFSuiteDataWriter();
+        writer = new CrfSuiteDataWriter();
         outcomes = new ArrayList<>();
         outcomes.add("1");
         outcomes.add("2");
