@@ -44,6 +44,10 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 	public LibsvmDataFormatOutcomeIdReport() {
 		
 	}
+	
+	boolean isRegression;
+	boolean isUnit;
+	boolean isSequence;
 
 	@Override
 	public void execute() throws Exception {
@@ -53,9 +57,11 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			THRESHOLD_CONSTANT = threshold;
 		}
 		
-		boolean isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
-		boolean isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
-		boolean isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
+		isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
+		isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
+		isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
+		
+		setup();
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 		String header = buildHeader(id2label, isRegression);
@@ -71,18 +77,21 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			}
 			String[] split = line.split(";");
 			String key = index2instanceIdMap.get(lineCounter + "");
+			
+			String predictionString = getPrediction(split[0]);
+			String goldString = split[1];
 
 			if (isRegression) {
-				prop.setProperty(key, split[0] + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
+				prop.setProperty(key, predictionString + ";" + goldString + ";" + THRESHOLD_CONSTANT);
 			} else {
-				int pred = Double.valueOf(split[0]).intValue();
-				int gold = Double.valueOf(split[1]).intValue();
+				int pred = Double.valueOf(predictionString).intValue();
+				int gold = Double.valueOf(goldString).intValue();
 				prop.setProperty(key, pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
 			}
 			lineCounter++;
 		}
 
-		File targetFile = getId2OutcomeFileLocation();
+		File targetFile = getTargetOutputFile();
 
 		FileWriterWithEncoding fw = null;
 		try{
@@ -92,6 +101,17 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			IOUtils.closeQuietly(fw);
 		}
 
+	}
+
+	protected String getPrediction(String string) {
+		// This method is overloaded in the baseline reports to return an
+		// appropriate baseline value here
+		return string;
+	}
+
+	protected void setup() throws Exception {
+		// This method is overloaded in a subclass for performing some
+		// initialization for computing baseline values
 	}
 
 	private Map<String, String> getMapping(boolean isUnit) throws IOException {
@@ -117,23 +137,18 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			}
 			String[] split = l.split("\t");
 
-			// if (isUnit) {
 			m.put(idx + "", split[0]);
 			idx++;
-			// } else {
-			// m.put(split[0], split[1]);
-			// }
-
 		}
 		return m;
 	}
 
-	private File getId2OutcomeFileLocation() {
+	protected File getTargetOutputFile() {
 		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
 		return new File(evaluationFolder, ID_OUTCOME_KEY);
 	}
 
-	private List<String> readPredictions() throws IOException {
+	protected List<String> readPredictions() throws IOException {
 		File predFolder = getContext().getFolder("", AccessMode.READWRITE);
 		return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
 	}
