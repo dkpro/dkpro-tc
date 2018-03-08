@@ -22,6 +22,8 @@ import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.keras.reports.KerasMetaReport;
 import org.dkpro.tc.ml.report.DeepLearningId2OutcomeReport;
+import org.dkpro.tc.ml.report.DeepLearningMajorityClass2OutcomeReport;
+import org.dkpro.tc.ml.report.DeepLearningRandomBaseline2OutcomeReport;
 
 public class KerasAdapter
     implements TcDeepLearningAdapter
@@ -38,6 +40,17 @@ public class KerasAdapter
     {
         return new DeepLearningId2OutcomeReport();
     }
+    
+	@Override
+	public ReportBase getMajorityBaselineIdReportClass() {
+		return new DeepLearningMajorityClass2OutcomeReport();
+	}
+
+	@Override
+	public ReportBase getRandomBaselineIdReportClass() {
+		return new DeepLearningRandomBaseline2OutcomeReport();
+	}
+
 
     @Override
     public int lowestIndex()
