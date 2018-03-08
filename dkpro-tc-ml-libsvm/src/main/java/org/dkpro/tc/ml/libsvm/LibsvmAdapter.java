@@ -28,8 +28,10 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatRandomBaselineIdReport;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmLoadModelConnector;
 import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
 
@@ -66,13 +68,11 @@ public class LibsvmAdapter
     implements TcShallowLearningAdapter
 {
 
-    public static TcShallowLearningAdapter getInstance()
-    {
+    public static TcShallowLearningAdapter getInstance() {
         return new LibsvmAdapter();
     }
 
-    public static String getOutcomeMappingFilename()
-    {
+    public static String getOutcomeMappingFilename() {
         return "outcome-mapping.txt";
     }
     
@@ -80,45 +80,48 @@ public class LibsvmAdapter
 		return "feature-name-mapping.txt";
 	}
 
-    public static String getFeatureNames()
-    {
+    public static String getFeatureNames() {
         return "featurenames.txt";
     }
 
     @Override
-    public ExecutableTaskBase getTestTask()
-    {
+    public ExecutableTaskBase getTestTask() {
         return new LibsvmTestTask();
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
-    {
+    public Class<? extends ReportBase> getOutcomeIdReportClass() {
         return LibsvmDataFormatOutcomeIdReport.class;
+    }
+    
+    @Override
+    public Class<? extends ReportBase> getBaselineIdReportClass() {
+        return LibsvmDataFormatBaselineIdReport.class;
+    }
+    
+    @Override
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+        return LibsvmDataFormatRandomBaselineIdReport.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
-    {
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds) {
         return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
-    {
+    public Class<? extends DataWriter> getDataWriterClass() {
         return LibsvmDataFormatWriter.class;
     }
 
     @Override
-    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
-    {
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
         return LibsvmLoadModelConnector.class;
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
-    {
+    public Class<? extends ModelSerializationTask> getSaveModelTask() {
         return LibsvmSerializeModelConnector.class;
     }
     
@@ -128,7 +131,7 @@ public class LibsvmAdapter
 	}
     
     @Override
-    public String toString(){
+    public String toString() {
     	return getClass().getSimpleName();
     }
 }

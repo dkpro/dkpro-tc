@@ -85,6 +85,16 @@ public class DKProTcShallowTestTask extends DefaultBatchTask implements Constant
 		ExecutableTaskBase testTask = adapter.getTestTask();
 
 		testTask.addReport(adapter.getOutcomeIdReportClass());
+		
+		Class<? extends ReportBase> baselineIdReportClass = adapter.getBaselineIdReportClass();
+		if(baselineIdReportClass != null){
+			testTask.addReport(baselineIdReportClass);
+		}
+		
+		Class<? extends ReportBase> randomBaselineIdReportClass = adapter.getRandomBaselineIdReportClass();
+		if(randomBaselineIdReportClass != null){
+			testTask.addReport(randomBaselineIdReportClass);
+		}
 
 		if (reports != null) {
 			for (ReportBase b : reports) {

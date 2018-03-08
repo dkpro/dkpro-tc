@@ -54,6 +54,18 @@ public interface TcShallowLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     Class<? extends ReportBase> getOutcomeIdReportClass();
+    
+    /**
+     * This report is always added to provide baseline values. For classification, this report assigns the majority class to all instances, in case of regression the mean value of all regression values encountered during training. 
+     * @return a report in the same format as {@link getOutcomeIdReportClass()}.
+     */
+    Class<? extends ReportBase> getBaselineIdReportClass();
+    
+    /**
+     * This report is always added to provide a random baseline. A uniformly distributed value is generated as prediciton. 
+     * @return a report in the same format as {@link getOutcomeIdReportClass()}.
+     */
+    Class<? extends ReportBase> getRandomBaselineIdReportClass();
 
     /**
      * @param  files

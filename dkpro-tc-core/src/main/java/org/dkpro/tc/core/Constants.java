@@ -265,10 +265,18 @@ public interface Constants
      */
     String STATISTICS_REPORT_FILENAME = "statistics_eval.csv";
     /**
-     * Name of the global file which folds the classifier predictions and gold standard for all test
+     * Name of the file which folds the classifier predictions and gold standard for all test
      * instances.
      */
     String ID_OUTCOME_KEY = "id2outcome.txt";
+    /**
+     * Name of the file which assigns the majority class as prediction or the mean floating point value in case of regression, as baseline
+     */
+    String BASELINE_ID_OUTCOME_KEY = "baseline2outcome.txt";
+    /**
+     * Name of the file which assigns for each instance a randomly predicted class or value, as baseline
+     */
+    String RANDOM_BASELINE_ID_OUTCOME_KEY = "randomBaseline2outcome.txt";
     /**
      * Name of the results file which stores detailed outcome results with id and tc unit text
      */
@@ -292,7 +300,7 @@ public interface Constants
      * Machine Learning (General)
      */
     /**
-     * Name of the file which the names of used features
+     * Name of the file which holds the names of all used features
      */
     String FILENAME_FEATURES = "featureNames.txt";
 

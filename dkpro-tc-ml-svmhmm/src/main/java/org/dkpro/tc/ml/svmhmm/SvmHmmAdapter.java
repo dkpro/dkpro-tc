@@ -29,7 +29,9 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatRandomBaselineIdReport;
 import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmSerializeModelConnector;
@@ -71,9 +73,18 @@ public class SvmHmmAdapter
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass()
-    {
+    public Class<? extends ReportBase> getOutcomeIdReportClass() {
         return LibsvmDataFormatOutcomeIdReport.class;
+    }
+    
+    @Override
+    public Class<? extends ReportBase> getBaselineIdReportClass() {
+        return LibsvmDataFormatBaselineIdReport.class;
+    }
+    
+    @Override
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+        return LibsvmDataFormatRandomBaselineIdReport.class;
     }
 
     @SuppressWarnings("unchecked")

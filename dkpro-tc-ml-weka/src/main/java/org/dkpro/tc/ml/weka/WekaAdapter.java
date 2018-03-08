@@ -52,6 +52,16 @@ public class WekaAdapter
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
 		return WekaOutcomeIDReport.class;
 	}
+	
+    @Override
+    public Class<? extends ReportBase> getBaselineIdReportClass() {
+        return null;
+    }
+    
+    @Override
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+        return null;
+    }
 
 	@SuppressWarnings("unchecked")
     @Override

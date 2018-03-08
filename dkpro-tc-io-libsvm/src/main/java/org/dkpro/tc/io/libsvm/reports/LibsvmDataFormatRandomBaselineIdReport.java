@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.io.libsvm;
+package org.dkpro.tc.io.libsvm.reports;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,42 +26,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.io.libsvm.AdapterFormat;
+import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implements Constants {
+public class LibsvmDataFormatRandomBaselineIdReport extends TcBatchReportBase {
 
 	private String THRESHOLD_CONSTANT = "-1";
+	
+	private Random random = new Random();
+	private Double upper=Double.MIN_VALUE;
+	private Double lower=Double.MAX_VALUE;
 
-	public LibsvmDataFormatOutcomeIdReport() {
+	public LibsvmDataFormatRandomBaselineIdReport() {
 		
 	}
 
 	@Override
 	public void execute() throws Exception {
 		
-		String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+		String threshold = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
 		if(threshold != null){
 			THRESHOLD_CONSTANT = threshold;
 		}
 		
-		boolean isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
-		boolean isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
-		boolean isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
+		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+		boolean isUnit = getDiscriminator(getContext(), DIM_FEATURE_MODE).equals(FM_UNIT);
+		boolean isSequence = getDiscriminator(getContext(), DIM_FEATURE_MODE).equals(FM_SEQUENCE);
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 		String header = buildHeader(id2label, isRegression);
-
+		
 		List<String> predictions = readPredictions();
+		determineRangeOfValues(predictions, isRegression);
 		Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
 
 		Properties prop = new SortedKeyProperties();
 		int lineCounter = 0;
+		
+		// we iterate the prediction file but do not use the predicted value but instead
+		// use the baseline value computed before as replacement
 		for (String line : predictions) {
 			if (line.startsWith("#")) {
 				continue;
@@ -70,21 +81,54 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			String key = index2instanceIdMap.get(lineCounter + "");
 
 			if (isRegression) {
-				prop.setProperty(key, split[0] + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
+				prop.setProperty(key, getRandomDouble() + ";" + split[1] + ";" + THRESHOLD_CONSTANT);
 			} else {
-				int pred = Double.valueOf(split[0]).intValue();
-				int gold = Double.valueOf(split[1]).intValue();
+				int pred = Integer.parseInt(getRandomInt());
+				int gold = Integer.parseInt(split[1]);
 				prop.setProperty(key, pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
 			}
 			lineCounter++;
 		}
 
-		File targetFile = getId2OutcomeFileLocation();
+		File targetFile = getBaseline2OutcomeFileLocation();
 
-		FileWriterWithEncoding fw = new FileWriterWithEncoding(targetFile, "utf-8");
-		prop.store(fw, header);
-		fw.close();
+		FileWriterWithEncoding fw = null;
+		try{
+			fw = new FileWriterWithEncoding(targetFile, "utf-8");
+			prop.store(fw, header);
+		}finally{
+			IOUtils.closeQuietly(fw);
+		}
 
+	}
+
+	private void determineRangeOfValues(List<String> predictions, boolean isRegression) {
+		
+		for(String l : predictions){
+			if(l.startsWith("#") || l.isEmpty()){
+				continue;
+			}
+			String[] split = l.split(";");
+			
+			double gold = Double.parseDouble(split[1]);
+			
+			if (gold > upper){
+				upper = gold;
+			}
+			if(gold < lower){
+				lower = gold;
+			}
+		}
+	}
+	
+	private String getRandomInt(){
+		Integer r = random.nextInt(upper.intValue() - lower.intValue() + 1) + lower.intValue();
+		return r.toString();
+	}
+	
+	private String getRandomDouble(){
+		Double r = random.nextDouble() * (upper - lower) + lower;
+		return r.toString();
 	}
 
 	private Map<String, String> getMapping(boolean isUnit) throws IOException {
@@ -95,7 +139,7 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 					LibsvmDataFormatWriter.INDEX2INSTANCEID);
 		} else {
 			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+					FILENAME_DOCUMENT_META_DATA_LOG);
 		}
 
 		Map<String, String> m = new HashMap<>();
@@ -110,25 +154,21 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			}
 			String[] split = l.split("\t");
 
-			// if (isUnit) {
 			m.put(idx + "", split[0]);
 			idx++;
-			// } else {
-			// m.put(split[0], split[1]);
-			// }
 
 		}
 		return m;
 	}
 
-	private File getId2OutcomeFileLocation() {
+	private File getBaseline2OutcomeFileLocation() {
 		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, ID_OUTCOME_KEY);
+		return new File(evaluationFolder, RANDOM_BASELINE_ID_OUTCOME_KEY);
 	}
 
 	private List<String> readPredictions() throws IOException {
 		File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
+		return FileUtils.readLines(new File(predFolder, FILENAME_PREDICTIONS), "utf-8");
 	}
 
 	private String buildHeader(Map<Integer, String> id2label, boolean isRegression)

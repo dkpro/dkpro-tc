@@ -47,11 +47,21 @@ public class MekaAdapter
 	public ExecutableTaskBase getTestTask() {
 		return new WekaTestTask();
 	}
+	
+	@Override
+	public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+		return null;
+	}
 
 	@Override
 	public Class<? extends ReportBase> getOutcomeIdReportClass() {
 		return WekaOutcomeIDReport.class;
 	}
+	
+    @Override
+    public Class<? extends ReportBase> getBaselineIdReportClass() {
+        return null;
+    }
 
 	@SuppressWarnings("unchecked")
     @Override
