@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
-import org.dkpro.tc.examples.deeplearning.dynet.sequence.DynetSeq2SeqTrainTest;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
@@ -47,8 +46,8 @@ public class DyNetDocumentTest extends PythonLocator {
 		}
 		
 		if (testConditon) {
-			ParameterSpace ps = DynetSeq2SeqTrainTest.getParameterSpace(python3);
-			DynetSeq2SeqTrainTest.runTrainTest(ps);
+			ParameterSpace ps = DynetDocumentTrainTest.getParameterSpace(python3);
+			DynetDocumentTrainTest.runTrainTest(ps);
 			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
 			Accuracy<String> acc = new Accuracy<>(data);
 			assertTrue(acc.getResult() > 0.1);

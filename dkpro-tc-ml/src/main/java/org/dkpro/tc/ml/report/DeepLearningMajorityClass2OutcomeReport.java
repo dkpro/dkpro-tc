@@ -18,10 +18,14 @@
 
 package org.dkpro.tc.ml.report;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
 
@@ -45,9 +49,10 @@ public class DeepLearningMajorityClass2OutcomeReport extends DeepLearningId2Outc
 
 	@Override
 	protected void baselinePreparation() throws Exception {
-		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
-		determineMajorityClass(predictions);
+		
+		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File file = new File(folder, FILENAME_OUTCOME_VECTOR);
+		determineMajorityClass(file);
 	}
 	
 	@Override
@@ -55,17 +60,23 @@ public class DeepLearningMajorityClass2OutcomeReport extends DeepLearningId2Outc
 		return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
 	}
 
-	private void determineMajorityClass(List<String> predictions) throws Exception {
+	private void determineMajorityClass(File f) throws Exception {
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 		
-		for(String p : predictions){
-			if(p.isEmpty()){
-				continue;
+		BufferedReader reader = null;
+		try{
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+			String line=null;
+			while((line=reader.readLine())!=null){
+				String[] split = line.split(" ");
+				for(String v : split){
+					fd.addSample(v, 1);
+				}
 			}
-			String[] split = p.split("\t");
-			fd.addSample(split[1], 1);
+		}finally{
+			IOUtils.closeQuietly(reader);
 		}
-
+		
 		majorityClass = fd.getSampleWithMaxFreq();
 	}
 	
@@ -75,6 +86,9 @@ public class DeepLearningMajorityClass2OutcomeReport extends DeepLearningId2Outc
 		List<String> out = new ArrayList<>();
 		
 		for (String p : predictions) {
+			if(p.isEmpty()){
+				continue;
+			}
 			String[] split = p.split("\t");
 			out.add(split[0] + "\t" + majorityClass);
 		}

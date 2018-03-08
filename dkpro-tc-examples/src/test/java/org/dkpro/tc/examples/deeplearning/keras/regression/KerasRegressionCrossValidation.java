@@ -53,7 +53,7 @@ public class KerasRegressionCrossValidation extends PythonLocator {
 			SpearmanCorrelation spear = new SpearmanCorrelation(data);
 			
 			
-			assertTrue(spear.getResult() > 0.1);
+			assertTrue(spear.getResult() < 0.0);
 		}
 	}
 }

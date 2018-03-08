@@ -18,11 +18,15 @@
 
 package org.dkpro.tc.ml.report;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
@@ -47,17 +51,27 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 	@Override
 	protected void baselinePreparation() throws Exception {
 		
-		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
-		buildPool(predictions);
+		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File file = new File(folder, FILENAME_OUTCOME_VECTOR);
+		buildPool(file);
 	}
 
-	private void buildPool(List<String> predictions) throws Exception {
-		for (String p : predictions) {
-			String[] split = p.split("\t");
-			if (!labelPool.contains(split[0])) {
-				labelPool.add(split[0]);
+	private void buildPool(File file) throws Exception {
+
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				String[] split = line.split(" ");
+				for (String v : split) {
+					if (!labelPool.contains(v)) {
+						labelPool.add(v);
+					}
+				}
 			}
+		} finally {
+			IOUtils.closeQuietly(reader);
 		}
 	}
 	
@@ -72,6 +86,9 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 		List<String> out = new ArrayList<>();
 		
 		for (String p : predictions) {
+			if(p.isEmpty()){
+				continue;
+			}
 			String[] split = p.split("\t");
 			Integer idx = random.nextInt(labelPool.size());
 			out.add(split[0] + "\t" + labelPool.get(idx));

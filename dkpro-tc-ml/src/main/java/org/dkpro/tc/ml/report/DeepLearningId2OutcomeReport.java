@@ -76,7 +76,7 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		List<String> k = new ArrayList<>(map.keySet());
 		for (Integer i = 0; i < map.keySet().size(); i++) {
 			if (!isRegression) {
-				if (isIntegerMode) {
+				if (!isIntegerMode) {
 					header.append(i + "=" + inverseMap.get(i+""));
 				} else {
 					header.append( i + "=" + map.get(i+""));
@@ -134,12 +134,12 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		}
 
 		File id2o = getTargetFile();
-		OutputStreamWriter fos = null;
+		OutputStreamWriter osw = null;
 		try {
-			fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-			prop.store(fos, header.toString());
+			osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+			prop.store(osw, header.toString());
 		} finally {
-			IOUtils.closeQuietly(fos);
+			IOUtils.closeQuietly(osw);
 		}
 	}
 	

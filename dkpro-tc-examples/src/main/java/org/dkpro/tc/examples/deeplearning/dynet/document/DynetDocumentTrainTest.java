@@ -59,8 +59,7 @@ public class DynetDocumentTrainTest implements Constants {
 
 		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-		DynetDocumentTrainTest experiment = new DynetDocumentTrainTest();
-		experiment.runTrainTest(pSpace);
+		DynetDocumentTrainTest.runTrainTest(pSpace);
 	}
 
 	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
@@ -91,7 +90,7 @@ public class DynetDocumentTrainTest implements Constants {
 		return pSpace;
 	}
 
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
 		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DynetDocument", DynetAdapter.class);
 		experiment.setParameterSpace(pSpace);
 		experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
