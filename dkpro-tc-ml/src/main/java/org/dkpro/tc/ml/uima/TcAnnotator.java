@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -66,6 +67,14 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 	public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
 	@ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = false)
 	private String nameUnit;
+	
+	/**
+	 * This parameter allows to remove the created {@link TextClassificationTarget} annotation after classification in case they are not needed anymore.
+	 * Default is to keep the annotation.
+	 */
+	public static final String PARAM_RETAIN_TARGETS = "retainTargets";
+	@ConfigurationParameter(name = PARAM_RETAIN_TARGETS, mandatory = true, defaultValue="true")
+	private boolean retainTargets;
 
 	private String learningMode;
 	private String featureMode;
@@ -134,9 +143,13 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		File file = new File(tcModelLocation, MODEL_FEATURE_MODE);
 		Properties prop = new Properties();
 
-		FileInputStream fis = new FileInputStream(file);
-		prop.load(fis);
-		fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			prop.load(fis);
+		} finally {
+			IOUtils.closeQuietly(fis);
+		}
 
 		return prop.getProperty(DIM_FEATURE_MODE);
 	}
@@ -145,9 +158,13 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		File file = new File(tcModelLocation, MODEL_LEARNING_MODE);
 		Properties prop = new Properties();
 
-		FileInputStream fis = new FileInputStream(file);
-		prop.load(fis);
-		fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			prop.load(fis);
+		} finally {
+			IOUtils.closeQuietly(fis);
+		}
 
 		return prop.getProperty(DIM_LEARNING_MODE);
 	}
@@ -203,49 +220,55 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 	}
 
 	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		if (!JCasUtil.exists(jcas, JCasId.class)) {
-			JCasId id = new JCasId(jcas);
+	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		if (!JCasUtil.exists(aJCas, JCasId.class)) {
+			JCasId id = new JCasId(aJCas);
 			id.setId(jcasId++);
 			id.addToIndexes();
 		}
 
 		switch (featureMode) {
 		case Constants.FM_DOCUMENT:
-			processDocument(jcas);
+			processDocument(aJCas);
 			break;
 		case Constants.FM_PAIR:
 			// same as document
-			processDocument(jcas);
+			processDocument(aJCas);
 			break;
 		case Constants.FM_SEQUENCE:
-			processSequence(jcas);
+			processSequence(aJCas);
 			break;
 		case Constants.FM_UNIT:
-			processUnit(jcas);
+			processUnit(aJCas);
 			break;
 		default:
 			throw new IllegalStateException("Feature mode ["+featureMode+"] is unknown");
 		}
+		
+		if(!retainTargets){
+			for(TextClassificationTarget t : JCasUtil.select(aJCas, TextClassificationTarget.class)){
+				t.removeFromIndexes();
+			}
+		}
 	}
 
-	private void processUnit(JCas jcas) throws AnalysisEngineProcessException {
-		Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
-		Collection<AnnotationFS> select = CasUtil.select(jcas.getCas(), type);
+	private void processUnit(JCas aJCas) throws AnalysisEngineProcessException {
+		Type type = aJCas.getCas().getTypeSystem().getType(nameUnit);
+		Collection<AnnotationFS> select = CasUtil.select(aJCas.getCas(), type);
 		List<AnnotationFS> unitAnnotation = new ArrayList<AnnotationFS>(select);
 		TextClassificationOutcome tco = null;
 		List<String> outcomes = new ArrayList<String>();
 
 		// iterate the units and set on each a prepared dummy outcome
 		for (AnnotationFS unit : unitAnnotation) {
-			TextClassificationTarget tcs = new TextClassificationTarget(jcas, unit.getBegin(), unit.getEnd());
+			TextClassificationTarget tcs = new TextClassificationTarget(aJCas, unit.getBegin(), unit.getEnd());
 			tcs.addToIndexes();
 
-			tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
+			tco = new TextClassificationOutcome(aJCas, unit.getBegin(), unit.getEnd());
 			tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
 			tco.addToIndexes();
 
-			engine.process(jcas);
+			engine.process(aJCas);
 
 			// store the outcome
 			outcomes.add(tco.getOutcome());
@@ -256,38 +279,30 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		// iterate again to set for each unit the outcome
 		for (int i = 0; i < unitAnnotation.size(); i++) {
 			AnnotationFS unit = unitAnnotation.get(i);
-			tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
+			tco = new TextClassificationOutcome(aJCas, unit.getBegin(), unit.getEnd());
 			tco.setOutcome(outcomes.get(i));
 			tco.addToIndexes();
 		}
 
 	}
 
-	private void processSequence(JCas jcas) throws AnalysisEngineProcessException {
-		getLogger().debug("START: process(JCAS)");
+	private void processSequence(JCas aJCas) throws AnalysisEngineProcessException {
 
-		addTCSequenceAnnotation(jcas);
-		addTCUnitAndOutcomeAnnotation(jcas);
+		addTCSequenceAnnotation(aJCas);
+		addTCUnitAndOutcomeAnnotation(aJCas);
 
 		// process and classify
-		engine.process(jcas);
-
-		// for (TextClassificationOutcome o : JCasUtil.select(jcas,
-		// TextClassificationOutcome.class)){
-		// System.out.println(o.getOutcome());
-		// }
-
-		getLogger().debug("FINISH: process(JCAS)");
+		engine.process(aJCas);
 	}
 
-	private void addTCUnitAndOutcomeAnnotation(JCas jcas) {
-		Type type = jcas.getCas().getTypeSystem().getType(nameUnit);
+	private void addTCUnitAndOutcomeAnnotation(JCas aJCas) {
+		Type type = aJCas.getCas().getTypeSystem().getType(nameUnit);
 
-		Collection<AnnotationFS> unitAnnotation = CasUtil.select(jcas.getCas(), type);
+		Collection<AnnotationFS> unitAnnotation = CasUtil.select(aJCas.getCas(), type);
 		for (AnnotationFS unit : unitAnnotation) {
-			TextClassificationTarget tcs = new TextClassificationTarget(jcas, unit.getBegin(), unit.getEnd());
+			TextClassificationTarget tcs = new TextClassificationTarget(aJCas, unit.getBegin(), unit.getEnd());
 			tcs.addToIndexes();
-			TextClassificationOutcome tco = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
+			TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, unit.getBegin(), unit.getEnd());
 			tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
 			tco.addToIndexes();
 		}
@@ -303,15 +318,15 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		}
 	}
 
-	private void processDocument(JCas jcas) throws AnalysisEngineProcessException {
-		if (!JCasUtil.exists(jcas, TextClassificationTarget.class)) {
-			TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+	private void processDocument(JCas aJCas) throws AnalysisEngineProcessException {
+		if (!JCasUtil.exists(aJCas, TextClassificationTarget.class)) {
+			TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length());
 			aTarget.addToIndexes();
 		}
 
 		// we need an outcome annotation to be present
-		if (!JCasUtil.exists(jcas, TextClassificationOutcome.class)) {
-			TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
+		if (!JCasUtil.exists(aJCas, TextClassificationOutcome.class)) {
+			TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
 			outcome.setOutcome("");
 			outcome.addToIndexes();
 		}
@@ -320,7 +335,7 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 		// this annotator will get initialized with its own set of parameters
 		// loaded from the model
 		try {
-			engine.process(jcas);
+			engine.process(aJCas);
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		}
