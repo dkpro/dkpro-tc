@@ -282,6 +282,8 @@ public class DeepLearningExperimentCrossValidation extends DeepLearningExperimen
 
 		// // always add OutcomeIdReport
 		learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
+		learningTask.addReport(mlAdapter.getMajorityBaselineIdReportClass());
+		learningTask.addReport(mlAdapter.getRandomBaselineIdReportClass());
 		learningTask.addReport(mlAdapter.getMetaCollectionReport());
 		learningTask.addReport(BasicResultReport.class);
 		learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY, TcDeepLearningAdapter.PREPARATION_FOLDER);

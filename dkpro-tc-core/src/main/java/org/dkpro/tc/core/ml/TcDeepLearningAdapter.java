@@ -54,6 +54,22 @@ public interface TcDeepLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     ReportBase getOutcomeIdReportClass();
+    
+    /**
+	 * This report is added for classification experiments and provides the
+	 * majority class results as baseline
+	 *
+	 * @return The report that collects the outcomeId to prediction values.
+	 */
+    ReportBase getMajorityBaselineIdReportClass();
+    
+    /**
+	 * This report is added for classification experiments and provides a random
+	 * baseline
+	 *
+	 * @return The report that collects the outcomeId to prediction values.
+	 */
+    ReportBase getRandomBaselineIdReportClass();
 
     /**
      * The lowest index from which transformation into integer values will start. Normally, this

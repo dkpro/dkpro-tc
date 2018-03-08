@@ -50,18 +50,17 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 	private String THRESHOLD = "-1";
 
 	int counter = 0;
+	
+	boolean isMultiLabel;
+	boolean isRegression;
+	boolean isIntegerMode;
 
 	@Override
 	public void execute() throws Exception {
-
-		boolean isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
-		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
-
-		if (isMultiLabel) {
-			THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
-		}
-
-		boolean isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DIM_VECTORIZE_TO_INTEGER));
+		
+		init();
+		
+		baselinePreparation();
 
 		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
@@ -129,7 +128,7 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 					prediction = map.get(split[1]).toString();
 				}
 			}
-			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+			prop.setProperty("" + id, getPrediction(prediction) + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}
 
 		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
@@ -140,6 +139,26 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
+	}
+	
+	protected String getPrediction(String prediction) {
+		//is overwritten in baseline reports
+		return prediction;
+	}
+
+	protected void baselinePreparation() throws Exception {
+		//is overwritten in baseline reports
+	}
+
+	protected void init() {
+		isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
+		isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+
+		if (isMultiLabel) {
+			THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
+		}
+
+		isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DIM_VECTORIZE_TO_INTEGER));		
 	}
 
 	private Map<String, String> inverseMap(Map<String, String> map) {
