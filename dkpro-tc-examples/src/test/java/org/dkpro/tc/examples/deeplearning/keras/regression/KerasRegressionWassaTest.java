@@ -28,7 +28,7 @@ import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 
 public class KerasRegressionWassaTest extends PythonLocator {
 	@Test
@@ -49,10 +49,10 @@ public class KerasRegressionWassaTest extends PythonLocator {
 			ParameterSpace ps = KerasRegressionWassa.getParameterSpace(python3);
 			KerasRegressionWassa.runTrainTest(ps);
 
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
-			Accuracy<String> acc = new Accuracy<>(data);
+			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
+			PearsonCorrelation p = new PearsonCorrelation(data);
 			
-			assertTrue(acc.getResult() > 0.1);
+			assertTrue(p.getResult() < 0.0);
 		}
 	}
 }
