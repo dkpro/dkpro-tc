@@ -272,11 +272,11 @@ public interface Constants
     /**
      * Name of the file which assigns the majority class as prediction or the mean floating point value in case of regression, as baseline
      */
-    String BASELINE_ID_OUTCOME_KEY = "baseline2outcome.txt";
+    String BASELINE_MAJORITIY_ID_OUTCOME_KEY = "baselineMajority2outcome.txt";
     /**
      * Name of the file which assigns for each instance a randomly predicted class or value, as baseline
      */
-    String RANDOM_BASELINE_ID_OUTCOME_KEY = "randomBaseline2outcome.txt";
+    String BASELINE_RANDOM_ID_OUTCOME_KEY = "baselineRandom2outcome.txt";
     /**
      * Name of the results file which stores detailed outcome results with id and tc unit text
      */

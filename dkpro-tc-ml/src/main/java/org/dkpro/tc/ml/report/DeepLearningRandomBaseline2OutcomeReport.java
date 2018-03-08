@@ -18,25 +18,19 @@
 
 package org.dkpro.tc.ml.report;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2OutcomeReport
 		implements DeepLearningConstants {
 
 	private Random random = new Random(42);
-	private Integer upper = Integer.MIN_VALUE;
-	private Integer lower = Integer.MAX_VALUE;
-
 	private List<String> labelPool = new ArrayList<>();
 	
 	@Override
@@ -52,72 +46,38 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 
 	@Override
 	protected void baselinePreparation() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_OUTCOME_VECTOR);
 		
-		if (isIntegerMode) {
-			getMinMax(file);
-		} else {
-			buildLabelPool(file);
-		}
+		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
+		List<String> predictions = getPredictions(file);
+		buildPool(predictions);
 	}
 
-	private void buildLabelPool(File file) throws Exception {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				for(String l : line.split(" ")){
-					if(!labelPool.contains(l)){
-						labelPool.add(l);
-					}
-				}
+	private void buildPool(List<String> predictions) throws Exception {
+		for (String p : predictions) {
+			String[] split = p.split("\t");
+			if (!labelPool.contains(split[0])) {
+				labelPool.add(split[0]);
 			}
-			
-		}finally{
-			IOUtils.closeQuietly(reader);
 		}
-	}
-
-	private void getMinMax(File file) throws Exception {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				String[] split = line.split(" ");
-				for (String v : split) {
-					
-					int intVal = Integer.parseInt(v);
-					
-					if(intVal > upper){
-						upper = intVal;
-					}
-					
-					if(intVal < lower){
-						lower = intVal;
-					}
-					
-				}
-			}
-
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
-
 	}
 	
 	@Override
-	protected String getPrediction(String prediction) {
-		if (isIntegerMode) {
-			Integer r = random.nextInt(upper - lower + 1) + lower;
-			return r.toString();
-		} else {
+	protected File getTargetFile() {
+		return getContext().getFile(Constants.BASELINE_RANDOM_ID_OUTCOME_KEY, AccessMode.READWRITE);
+	}
+	
+	@Override
+	protected List<String> update(List<String> predictions) {
+		
+		List<String> out = new ArrayList<>();
+		
+		for (String p : predictions) {
+			String[] split = p.split("\t");
 			Integer idx = random.nextInt(labelPool.size());
-			return labelPool.get(idx);
+			out.add(split[0] + "\t" + labelPool.get(idx));
 		}
+		
+		return out;
 	}
 
 }

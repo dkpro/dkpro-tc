@@ -64,6 +64,8 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 
 		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
 		List<String> predictions = getPredictions(file);
+		
+		predictions = update(predictions);
 
 		Map<String, String> map = loadMap(isIntegerMode);
 		Map<String, String> inverseMap = inverseMap(map);
@@ -128,10 +130,10 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 					prediction = map.get(split[1]).toString();
 				}
 			}
-			prop.setProperty("" + id, getPrediction(prediction) + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
 		}
 
-		File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
+		File id2o = getTargetFile();
 		OutputStreamWriter fos = null;
 		try {
 			fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
@@ -141,9 +143,13 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		}
 	}
 	
-	protected String getPrediction(String prediction) {
+	protected List<String> update(List<String> predictions) {
 		//is overwritten in baseline reports
-		return prediction;
+		return predictions;
+	}
+
+	protected File getTargetFile() {
+		return getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
 	}
 
 	protected void baselinePreparation() throws Exception {
@@ -249,7 +255,7 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		return m;
 	}
 
-	private List<String> getPredictions(File file) throws IOException {
+	protected List<String> getPredictions(File file) throws IOException {
 		List<String> readLines = FileUtils.readLines(file, "utf-8");
 		return readLines.subList(1, readLines.size());// ignore first-line with
 														// comments

@@ -61,7 +61,7 @@ public class BasicResultReport
         
         // Baseline results
         File baseline2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
-                BASELINE_ID_OUTCOME_KEY);
+                BASELINE_MAJORITIY_ID_OUTCOME_KEY);
         //FIXME: Remove if-check after implementing this report for all adapters
         if(baseline2outcomeFile != null && baseline2outcomeFile.exists()){
         	Map<String, String> baseline = MetricComputationUtil.getResults(baseline2outcomeFile, learningMode);
@@ -73,7 +73,7 @@ public class BasicResultReport
         
         // Random baseline results
         File randomBaseline2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
-                RANDOM_BASELINE_ID_OUTCOME_KEY);
+                BASELINE_RANDOM_ID_OUTCOME_KEY);
         //FIXME: Remove if-check after implementing this report for all adapters
         if(randomBaseline2outcomeFile != null && randomBaseline2outcomeFile.exists()){
         	Map<String, String> randomBaseline = MetricComputationUtil.getResults(randomBaseline2outcomeFile, learningMode);
