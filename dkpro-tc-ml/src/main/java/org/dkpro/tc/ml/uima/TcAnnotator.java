@@ -54,16 +54,35 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+
 public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 
 	public static final String PARAM_TC_MODEL_LOCATION = "tcModel";
 	@ConfigurationParameter(name = PARAM_TC_MODEL_LOCATION, mandatory = true)
 	protected File tcModelLocation;
 
+	/**
+	 * This parameter is relevant for sequence classification tasks but is not
+	 * needed for unit or document classification. This name of this annotation
+	 * marks the span which will be considered as consecutive sequence, which is
+	 * annotated internally as {@link TextClassificationSequence}. The span of
+	 * this annotation is expected to contain two or more annotations of the
+	 * annotation provided as {@link #PARAM_NAME_UNIT_ANNOTATION}. Typically, a
+	 * sequence is a {@link Sentence} annotation with {@link Token} as units.
+	 */
 	public static final String PARAM_NAME_SEQUENCE_ANNOTATION = "sequenceAnnotation";
 	@ConfigurationParameter(name = PARAM_NAME_SEQUENCE_ANNOTATION, mandatory = false)
 	private String nameSequence;
 
+	/**
+	 * This parameter is relevant for sequence and unit classification tasks but
+	 * is not needed for document classification. The units will become the
+	 * classification targets. Typically, the unit is the {@link Token}
+	 * annotation but other annotations can be specified by providing the
+	 * respective type name.
+	 */
 	public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
 	@ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = false)
 	private String nameUnit;
