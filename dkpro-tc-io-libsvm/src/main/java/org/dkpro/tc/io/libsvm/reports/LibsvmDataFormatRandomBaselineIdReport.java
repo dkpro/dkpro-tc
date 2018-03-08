@@ -35,7 +35,18 @@ public class LibsvmDataFormatRandomBaselineIdReport extends LibsvmDataFormatOutc
 	}
 	
 	@Override
-	protected void setup() throws IOException{
+	public void execute() throws Exception {
+		init();
+
+		if (isRegression) {
+			return;
+		}
+
+		super.execute();
+	}
+	
+	@Override
+	protected void baslinePreparation() throws IOException{
 		List<String> readPredictions = readPredictions();
 		determineRangeOfValues(readPredictions);
 	}
@@ -61,23 +72,10 @@ public class LibsvmDataFormatRandomBaselineIdReport extends LibsvmDataFormatOutc
 	
 	@Override
 	protected String getPrediction(String p){
-		if(isRegression){
-			return getRandomDouble();
-		}
-		
-		return getRandomInt();
-	}
-	
-	private String getRandomInt(){
 		Integer r = random.nextInt(upper.intValue() - lower.intValue() + 1) + lower.intValue();
 		return r.toString();
 	}
 	
-	private String getRandomDouble(){
-		Double r = random.nextDouble() * (upper - lower) + lower;
-		return r.toString();
-	}
-
 	@Override
 	protected File getTargetOutputFile() {
 		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);

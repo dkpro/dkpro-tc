@@ -52,16 +52,9 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 	@Override
 	public void execute() throws Exception {
 		
-		String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
-		if(threshold != null){
-			THRESHOLD_CONSTANT = threshold;
-		}
+		init();
 		
-		isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
-		isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
-		isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
-		
-		setup();
+		baslinePreparation();
 
 		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
 		String header = buildHeader(id2label, isRegression);
@@ -103,13 +96,24 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 
 	}
 
+	protected void init() {
+		String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+		if (threshold != null) {
+			THRESHOLD_CONSTANT = threshold;
+		}
+
+		isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
+		isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
+		isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
+	}
+
 	protected String getPrediction(String string) {
 		// This method is overloaded in the baseline reports to return an
 		// appropriate baseline value here
 		return string;
 	}
 
-	protected void setup() throws Exception {
+	protected void baslinePreparation() throws Exception {
 		// This method is overloaded in a subclass for performing some
 		// initialization for computing baseline values
 	}

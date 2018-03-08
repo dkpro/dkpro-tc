@@ -28,32 +28,38 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LibsvmDataFormatBaselineIdReport extends LibsvmDataFormatOutcomeIdReport {
-	
+
 	String majorityClass;
-	String averageFloat;
 
 	public LibsvmDataFormatBaselineIdReport() {
-		
+
 	}
-	
+
 	@Override
-	protected void setup() throws Exception{
+	public void execute() throws Exception {
+		init();
+
+		if (isRegression) {
+			return;
+		}
+
+		super.execute();
+	}
+
+	@Override
+	protected void baslinePreparation() throws Exception {
 		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
 		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		determineMajorityClass(file);
 	}
-	
+
 	@Override
-	protected String getPrediction(String p){
-		if(isRegression){
-			return averageFloat;
-		}
+	protected String getPrediction(String p) {
 		return majorityClass;
 	}
 
 	private void determineMajorityClass(File file) throws Exception {
 
-		Double meanFloatingPointValue = 0.0;
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
 		BufferedReader reader = null;
@@ -61,32 +67,20 @@ public class LibsvmDataFormatBaselineIdReport extends LibsvmDataFormatOutcomeIdR
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
 			String line = null;
-			int valueCounter = 0;
 			while ((line = reader.readLine()) != null) {
 				if (line.isEmpty()) {
 					continue;
 				}
 
 				String[] split = line.split("\t");
-				if (isRegression) {
-					meanFloatingPointValue += Double.parseDouble(split[0]);
-					valueCounter++;
-				} else {
-					fd.addSample(split[0], 1);
-				}
+				fd.addSample(split[0], 1);
 			}
-
-			meanFloatingPointValue /= valueCounter;
 
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
 
-		if (isRegression) {
-			averageFloat = meanFloatingPointValue.toString();
-		} else {
-			majorityClass = fd.getSampleWithMaxFreq();
-		}
+		majorityClass = fd.getSampleWithMaxFreq();
 	}
 
 	@Override
