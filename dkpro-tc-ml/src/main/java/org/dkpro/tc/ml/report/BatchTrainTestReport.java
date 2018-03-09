@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
@@ -80,12 +81,33 @@ public class BatchTrainTestReport extends TcBatchReportBase implements Constants
 
 				Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
 				discriminatorsMap.putAll(resultMap);
+				
+				File majBaseline = getBaselineMajorityClassId2Outcome(subId);
+				if (isAvailable(majBaseline)) {
+					Map<String, String> results = MetricComputationUtil.getResults(majBaseline, mode);
+					for(Entry<String, String> e : results.entrySet()){
+						discriminatorsMap.put(e.getKey() + ".MajorityBaseline", e.getValue());
+					}
+				}
+
+				File randomBaseline = getBaselineRandomId2Outcome(subId);
+				if (isAvailable(randomBaseline)) {
+					Map<String, String> results = MetricComputationUtil.getResults(randomBaseline, mode);
+					for(Entry<String, String> e : results.entrySet()){
+						discriminatorsMap.put(e.getKey() + ".RandomBaseline", e.getValue());
+					}
+				}
+				
 
 				table.addRow(getContextLabel(subId), discriminatorsMap);
 			}
 		}
 
 		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
+	}
+
+	private boolean isAvailable(File f) {
+		return f != null && f.exists();
 	}
 
 	private Map<String, String> getDiscriminators(StorageService store, String id) {

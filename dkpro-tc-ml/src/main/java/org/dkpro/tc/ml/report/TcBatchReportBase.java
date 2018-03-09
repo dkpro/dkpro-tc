@@ -56,7 +56,47 @@ public abstract class TcBatchReportBase extends BatchReportBase implements Const
 	 */
 	protected File getId2Outcome(String id) throws Exception {
 		StorageService store = getContext().getStorageService();
-		File id2outcomeFile = store.locateKey(id, Constants.ID_OUTCOME_KEY);
+		File id2outcomeFile = store.locateKey(id, ID_OUTCOME_KEY);
+		return id2outcomeFile;
+	}
+	
+	/**
+	 * Retrieves the id2outcome file in a train test setup. The behavior of this
+	 * method in cross validation tasks is undefined.
+	 * 
+	 * @param id
+	 *            context id of machine learning adapter
+	 * 
+	 * @return file to the majority class id2 outcome file in the machine
+	 *         learning adapter or null if the folder of machine learning
+	 *         adapter was not found, i.e. majority class is not defined for
+	 *         regression tasks
+	 * @throws Exception
+	 *             in case of errors
+	 */
+	protected File getBaselineMajorityClassId2Outcome(String id) throws Exception {
+		StorageService store = getContext().getStorageService();
+		File id2outcomeFile = store.locateKey(id, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+		return id2outcomeFile;
+	}
+	
+	/**
+	 * Retrieves the id2outcome file in a train test setup. The behavior of this
+	 * method in cross validation tasks is undefined.
+	 * 
+	 * @param id
+	 *            context id of machine learning adapter
+	 * 
+	 * @return file to the majority class id2 outcome file in the machine
+	 *         learning adapter or null if the folder of machine learning
+	 *         adapter was not found, i.e. random baseline is available for
+	 *         regression tasks
+	 * @throws Exception
+	 *             in case of errors
+	 */
+	protected File getBaselineRandomId2Outcome(String id) throws Exception {
+		StorageService store = getContext().getStorageService();
+		File id2outcomeFile = store.locateKey(id, BASELINE_RANDOM_ID_OUTCOME_KEY);
 		return id2outcomeFile;
 	}
 
