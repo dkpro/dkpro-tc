@@ -19,10 +19,11 @@
 package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
@@ -30,12 +31,8 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.crfsuite.sequence.filter.FilterLuceneCharacterNgramStartingWithLetter;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
  * This test just ensures that the experiment runs without throwing any
@@ -50,18 +47,9 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 		javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
 	}
 
-	@Test
-	public void testFeatureFilter() throws Exception {
-		double runTrainTest = runTrainTestNoFilter();
-		double runTrainTestFilter = runTrainTestFilter();
-
-		// hard to tell what is suppose to happen - the data is too small to
-		// learn anything robust - but, the numbers should differ
-		assertTrue(Math.abs(runTrainTest - runTrainTestFilter) > 0.001);
-	}
-
 	@SuppressWarnings("unchecked")
-	public Double runTrainTestNoFilter() throws Exception {
+	@Test
+	public void runTrainTestNoFilter() throws Exception {
 		// Random parameters for demonstration!
         //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
@@ -70,15 +58,56 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
 		javaExperiment.runTrainTest(pSpace);
-
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
-        Accuracy<String> acc = new Accuracy<String>(data);
 		
-		return acc.getResult();
+		assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+
+		List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
+		assertEquals(34, lines.size());
+		
+		assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+		assertEquals("#labels 0=NN 1=pct 2=JJ 3=CC 4=NP 5=VBN 6=IN 7=WDT 8=VB 9=AP 10=RB 11=PPS 12=NNS 13=AT 14=VBD 15=TO 16=%28null%29", lines.get(1));
+		// 2nd line time stamp
+		
+		// Crfsuite results are sensitive to some extend to the platform, to
+		// account for this sensitivity we check only that the "prediction"
+		// field is filled with any number but do not test for a specific value
+		assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;13;-1"));
+		assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
+		assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;1;-1"));
+		assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;7;-1"));
+		assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;4;-1"));
+		assertTrue(lines.get(8).matches("0000_0000_0005_said=[0-9]+;14;-1"));
+		assertTrue(lines.get(9).matches("0000_0000_0006_he=[0-9]+;11;-1"));
+		assertTrue(lines.get(10).matches("0000_0000_0007_drafted=[0-9]+;14;-1"));
+		assertTrue(lines.get(11).matches("0000_0000_0008_personally=[0-9]+;10;-1"));
+		assertTrue(lines.get(12).matches("0000_0000_0009_,=[0-9]+;1;-1"));
+		assertTrue(lines.get(13).matches("0000_0000_0010_would=[0-9]+;16;-1"));
+		assertTrue(lines.get(14).matches("0000_0000_0011_force=[0-9]+;8;-1"));
+		assertTrue(lines.get(15).matches("0000_0000_0012_banks=[0-9]+;12;-1"));
+		assertTrue(lines.get(16).matches("0000_0000_0013_,=[0-9]+;1;-1"));
+		assertTrue(lines.get(17).matches("0000_0000_0014_insurance=[0-9]+;0;-1"));
+		assertTrue(lines.get(18).matches("0000_0000_0015_firms=[0-9]+;12;-1"));
+		assertTrue(lines.get(19).matches("0000_0000_0016_,=[0-9]+;1;-1"));
+		assertTrue(lines.get(20).matches("0000_0000_0017_pipeline=[0-9]+;0;-1"));
+		assertTrue(lines.get(21).matches("0000_0000_0018_companies=[0-9]+;12;-1"));
+		assertTrue(lines.get(22).matches("0000_0000_0019_and=[0-9]+;3;-1"));
+		assertTrue(lines.get(23).matches("0000_0000_0020_other=[0-9]+;9;-1"));
+		assertTrue(lines.get(24).matches("0000_0000_0021_corporations=[0-9]+;12;-1"));
+		assertTrue(lines.get(25).matches("0000_0000_0022_to=[0-9]+;15;-1"));
+		assertTrue(lines.get(26).matches("0000_0000_0023_report=[0-9]+;8;-1"));
+		assertTrue(lines.get(27).matches("0000_0000_0024_such=[0-9]+;2;-1"));
+		assertTrue(lines.get(28).matches("0000_0000_0025_property=[0-9]+;0;-1"));
+		assertTrue(lines.get(29).matches("0000_0000_0026_to=[0-9]+;6;-1"));
+		assertTrue(lines.get(30).matches("0000_0000_0027_the=[0-9]+;13;-1"));
+		assertTrue(lines.get(31).matches("0000_0000_0028_state=[0-9]+;0;-1"));
+		assertTrue(lines.get(32).matches("0000_0000_0029_treasurer=[0-9]+;0;-1"));
+		assertTrue(lines.get(33).matches("0000_0000_0030_.=[0-9]+;1;-1"));
+
 	}
 
 	@SuppressWarnings("unchecked")
-	public Double runTrainTestFilter() throws Exception {
+	@Test
+	public void runTrainTestFilter() throws Exception {
 		// Random parameters for demonstration!
 		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
 				asList(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
@@ -90,10 +119,7 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 				Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
 
 		javaExperiment.runTrainTest(pSpace);
-
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
-        Accuracy<String> acc = new Accuracy<String>(data);
 		
-		return acc.getResult();
+		
 	}
 }
