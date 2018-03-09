@@ -17,23 +17,27 @@
  ******************************************************************************/
 package org.dkpro.tc.io.libsvm.reports;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
-public class LibsvmDataFormatRandomBaselineIdReport extends LibsvmDataFormatOutcomeIdReport {
+public class LibsvmDataFormatBaselineRandomIdReport extends LibsvmDataFormatOutcomeIdReport {
 
 	private Random random = new Random(42);
-	private Double upper = Double.MIN_VALUE;
-	private Double lower = Double.MAX_VALUE;
+	private List<String> pool = new ArrayList<>();
 
-	public LibsvmDataFormatRandomBaselineIdReport() {
-		
+	public LibsvmDataFormatBaselineRandomIdReport() {
+
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
 		init();
@@ -44,38 +48,43 @@ public class LibsvmDataFormatRandomBaselineIdReport extends LibsvmDataFormatOutc
 
 		super.execute();
 	}
-	
+
 	@Override
-	protected void baslinePreparation() throws IOException{
-		List<String> readPredictions = readPredictions();
-		determineRangeOfValues(readPredictions);
+	protected void baslinePreparation() throws Exception {
+		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		buildPool(file);
 	}
 
-	private void determineRangeOfValues(List<String> predictions) {
-		
-		for(String l : predictions){
-			if(l.startsWith("#") || l.isEmpty()){
-				continue;
+	private void buildPool(File file) throws Exception {
+
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				if (line.isEmpty()) {
+					continue;
+				}
+				String[] split = line.split("\t");
+				String o = split[0];
+				if (!pool.contains(o)) {
+					pool.add(o);
+				}
 			}
-			String[] split = l.split(";");
-			
-			double gold = Double.parseDouble(split[1]);
-			
-			if (gold > upper){
-				upper = gold;
-			}
-			if(gold < lower){
-				lower = gold;
-			}
+		} finally {
+			IOUtils.closeQuietly(reader);
 		}
+
+		Collections.shuffle(pool);
 	}
-	
+
 	@Override
-	protected String getPrediction(String p){
-		Integer r = random.nextInt(upper.intValue() - lower.intValue() + 1) + lower.intValue();
-		return r.toString();
+	protected String getPrediction(String p) {
+		Integer idx = random.nextInt(pool.size());
+		return pool.get(idx);
 	}
-	
+
 	@Override
 	protected File getTargetOutputFile() {
 		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);

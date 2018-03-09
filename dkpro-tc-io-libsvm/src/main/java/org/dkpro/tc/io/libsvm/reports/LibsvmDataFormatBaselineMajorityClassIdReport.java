@@ -27,11 +27,11 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class LibsvmDataFormatBaselineIdReport extends LibsvmDataFormatOutcomeIdReport {
+public class LibsvmDataFormatBaselineMajorityClassIdReport extends LibsvmDataFormatOutcomeIdReport {
 
 	String majorityClass;
 
-	public LibsvmDataFormatBaselineIdReport() {
+	public LibsvmDataFormatBaselineMajorityClassIdReport() {
 
 	}
 

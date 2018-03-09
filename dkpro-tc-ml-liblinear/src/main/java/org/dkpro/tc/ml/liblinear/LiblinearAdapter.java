@@ -29,9 +29,9 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
-import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineMajorityClassIdReport;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
-import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatRandomBaselineIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearLoadModelConnector;
 import org.dkpro.tc.ml.liblinear.serialization.LiblinearSerializeModelConnector;
 
@@ -86,12 +86,12 @@ public class LiblinearAdapter
 	
     @Override
     public Class<? extends ReportBase> getBaselineIdReportClass() {
-        return LibsvmDataFormatBaselineIdReport.class;
+        return LibsvmDataFormatBaselineMajorityClassIdReport.class;
     }
     
     @Override
     public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
-        return LibsvmDataFormatRandomBaselineIdReport.class;
+        return LibsvmDataFormatBaselineRandomIdReport.class;
     }
 
 	@SuppressWarnings("unchecked")

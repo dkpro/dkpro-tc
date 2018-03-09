@@ -28,13 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.StringUtils;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.storage.impl.PropertiesAdapter;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.InitTask;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
@@ -48,7 +47,7 @@ import weka.core.Instances;
  * Writes a instanceId / outcome data for each classification instance.
  */
 public class WekaOutcomeIDReport
-    extends ReportBase
+    extends TcBatchReportBase
 {
     /**
      * Character that is used for separating fields in the output file
@@ -62,45 +61,55 @@ public class WekaOutcomeIDReport
         // required by groovy
     }
 
-    @Override
-    public void execute()
-        throws Exception
-    {
+	
+	boolean isRegression;
+	boolean isUnit;
+	boolean isMultiLabel;
+
+	protected void init() {
+		isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+		isUnit = getDiscriminator(getContext(), DIM_FEATURE_MODE).equals(FM_UNIT);
+		isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
+	}
+
+	@Override
+	public void execute() throws Exception {
+		
+		init();
+		
         File arff = WekaUtils.getFile(getContext(), "",
-                Constants.FILENAME_PREDICTIONS, AccessMode.READONLY);
+                FILENAME_PREDICTIONS, AccessMode.READONLY);
         mlResults = WekaUtils.getFile(getContext(), "",
                 WekaTestTask.evaluationBin, AccessMode.READONLY);
 
-        boolean multiLabel = getDiscriminators()
-                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-                .equals(Constants.LM_MULTI_LABEL);
-        boolean regression = getDiscriminators()
-                .get(WekaTestTask.class.getName() + "|" + Constants.DIM_LEARNING_MODE)
-                .equals(Constants.LM_REGRESSION);
-        boolean isUnit = getDiscriminators()
-                .get(InitTask.class.getName() + "|" + Constants.DIM_FEATURE_MODE)
-                .equals(Constants.FM_UNIT);
+        Instances predictions = WekaUtils.getInstances(arff, isMultiLabel);
 
-        Instances predictions = WekaUtils.getInstances(arff, multiLabel);
-
-        List<String> labels = getLabels(predictions, multiLabel, regression);
+        List<String> labels = getLabels(predictions, isMultiLabel, isRegression);
         
         Properties props;
         
-        if(multiLabel){
+        if(isMultiLabel){
         	MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
         	props = generateMlProperties(predictions, labels, r);
         }
         else{
         	Map<Integer, String> documentIdMap = loadDocumentMap();
-        	props = generateSlProperties(predictions, regression, isUnit, documentIdMap, labels);
+        	props = generateSlProperties(predictions, isRegression, isUnit, documentIdMap, labels);
         }
         
-
-        
-        getContext().storeBinary(Constants.ID_OUTCOME_KEY,
-                new PropertiesAdapter(props, generateHeader(labels)));
+        FileWriterWithEncoding fw = null;
+        try{
+			fw = new FileWriterWithEncoding(getTargetOutputFile(), "utf-8");
+			props.store(fw, generateHeader(labels));
+		}finally{
+			IOUtils.closeQuietly(fw);
+		}
     }
+	
+	protected File getTargetOutputFile() {
+		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+		return new File(evaluationFolder, ID_OUTCOME_KEY);
+	}
 
     private List<String> getLabels(Instances predictions, boolean multiLabel, boolean regression)
     {
@@ -137,7 +146,7 @@ public class WekaOutcomeIDReport
             classValues[i] = predictions.classAttribute().value(i);
         }
 
-        int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index();
+        int attOffset = predictions.attribute(ID_FEATURE_NAME).index();
 
             Map<String, Integer> class2number = classNamesToMapping(labels);
             int[][] goldmatrix = r.getGoldstandard();
@@ -163,7 +172,7 @@ public class WekaOutcomeIDReport
     
     protected Properties generateSlProperties(Instances predictions,
             boolean isRegression, boolean isUnit, Map<Integer,String> documentIdMap, List<String> labels)
-                throws ClassNotFoundException, IOException
+                throws Exception
     {
     	
         Properties props = new SortedKeyProperties();
@@ -173,33 +182,35 @@ public class WekaOutcomeIDReport
             classValues[i] = predictions.classAttribute().value(i);
         }
 
-        int attOffset = predictions.attribute(Constants.ID_FEATURE_NAME).index(); 
+        int attOffset = predictions.attribute(ID_FEATURE_NAME).index(); 
+        
+        prepareBaseline();
    
         int idx=0;
         for (Instance inst : predictions) {
             Double gold;
             try {
                 gold = new Double(inst.value(predictions.attribute(
-                        Constants.CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
+                        CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
             }
             catch (NullPointerException e) {
                 // if train and test data have not been balanced
                 gold = new Double(
-                        inst.value(predictions.attribute(Constants.CLASS_ATTRIBUTE_NAME)));
+                        inst.value(predictions.attribute(CLASS_ATTRIBUTE_NAME)));
             }
             Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
             Double prediction = new Double(inst.value(gsAtt));
             if (!isRegression) {
                 Map<String, Integer> class2number = classNamesToMapping(labels);
-                Integer predictionAsNumber = class2number
-                        .get(gsAtt.value(prediction.intValue()));
+//                Integer predictionAsNumber = class2number
+//                        .get(gsAtt.value(prediction.intValue()));
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
                 
                 String stringValue = inst.stringValue(attOffset);
 				if (!isUnit && documentIdMap != null) {
 					stringValue = documentIdMap.get(idx++);
 				}
-                props.setProperty(stringValue, predictionAsNumber
+                props.setProperty(stringValue, getPrediction(prediction, class2number, gsAtt)
                         + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
             }
             else {
@@ -215,6 +226,16 @@ public class WekaOutcomeIDReport
         return props;
     }
 
+	protected String getPrediction(Double prediction, Map<String, Integer> class2number, Attribute gsAtt) {
+		// is overwritten in baseline reports
+		 return class2number
+                 .get(gsAtt.value(prediction.intValue())).toString();
+	}
+
+	protected void prepareBaseline() throws Exception {
+		// is overwritten in baseline reports
+	}
+
 	private static Map<String, Integer> classNamesToMapping(List<String> labels) {
 		Map<String, Integer> mapping = new HashMap<String, Integer>();
         for (int i = 0; i < labels.size(); i++) {
@@ -227,8 +248,8 @@ public class WekaOutcomeIDReport
 		
 		Map<Integer, String> documentIdMap = new HashMap<>();
 		
-		File f = new File(getContext().getFolder(Constants.TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-				Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+		File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+				FILENAME_DOCUMENT_META_DATA_LOG);
 		List<String> readLines = FileUtils.readLines(f, "utf-8");
 
 		int idx = 0;

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -73,6 +74,8 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
+		
+		Collections.shuffle(labelPool);
 	}
 	
 	@Override
