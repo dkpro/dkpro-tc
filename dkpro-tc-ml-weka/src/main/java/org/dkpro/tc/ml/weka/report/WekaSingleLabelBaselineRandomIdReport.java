@@ -78,10 +78,14 @@ public class WekaSingleLabelBaselineRandomIdReport extends WekaOutcomeIDReport {
 				}
 
 				String[] split = line.split(",");
+				
+				String v = split[split.length-1];
+				if(hasInstanceWeighting(v)){
+					v = split[split.length-2];
+				}
 
-				String label = split[split.length - 1];
-				if (!pool.contains(label)) {
-					pool.add(label);
+				if (!pool.contains(v)) {
+					pool.add(v);
 				}
 			}
 
@@ -90,6 +94,10 @@ public class WekaSingleLabelBaselineRandomIdReport extends WekaOutcomeIDReport {
 		}
 		
 		Collections.shuffle(pool);
+	}
+	
+	private boolean hasInstanceWeighting(String v) {
+		return v.startsWith("{") && v.endsWith("}");
 	}
 
 }

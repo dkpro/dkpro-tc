@@ -76,7 +76,13 @@ public class WekaSingleLabelBaselineMajorityClassIdReport extends WekaOutcomeIDR
 				}
 
 				String[] split = line.split(",");
-				fd.addSample(split[split.length-1], 1);
+				
+				String v = split[split.length-1];
+				if(hasInstanceWeighting(v)){
+					v = split[split.length-2];
+				}
+				
+				fd.addSample(v, 1);
 			}
 
 		} finally {
@@ -84,6 +90,10 @@ public class WekaSingleLabelBaselineMajorityClassIdReport extends WekaOutcomeIDR
 		}
 
 		majorityClass = fd.getSampleWithMaxFreq();
+	}
+
+	private boolean hasInstanceWeighting(String v) {
+		return v.startsWith("{") && v.endsWith("}");
 	}
 
 }
