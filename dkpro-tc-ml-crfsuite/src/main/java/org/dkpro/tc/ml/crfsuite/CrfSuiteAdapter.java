@@ -64,13 +64,13 @@ public class CrfSuiteAdapter
     }
     
     @Override
-    public Class<? extends ReportBase> getBaselineIdReportClass() {
-        return null;
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+        return CrfSuiteBaselineMajorityClassIdReport.class;
     }
     
     @Override
     public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
-        return null;
+        return CrfSuiteBaselineRandomIdReport.class;
     }
 
     @SuppressWarnings("unchecked")

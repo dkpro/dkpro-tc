@@ -95,7 +95,7 @@ public class LibsvmAdapter
     }
     
     @Override
-    public Class<? extends ReportBase> getBaselineIdReportClass() {
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
         return LibsvmDataFormatBaselineMajorityClassIdReport.class;
     }
     

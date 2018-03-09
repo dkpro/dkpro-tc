@@ -33,11 +33,11 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaSingleLabelBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
+public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 
 	private String majorityClass;
 
-	public WekaSingleLabelBaselineMajorityClassIdReport() {
+	public WekaBaselineMajorityClassIdReport() {
 		// required by groovy
 	}
 

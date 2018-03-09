@@ -36,13 +36,13 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaSingleLabelBaselineRandomIdReport extends WekaOutcomeIDReport {
+public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 
 	private Random random = new Random(42);
 
 	private List<String> pool = new ArrayList<>();
 
-	public WekaSingleLabelBaselineRandomIdReport() {
+	public WekaBaselineRandomIdReport() {
 		// required by groovy
 	}
 

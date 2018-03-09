@@ -59,7 +59,7 @@ public class MekaAdapter
 	}
 	
     @Override
-    public Class<? extends ReportBase> getBaselineIdReportClass() {
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
         return null;
     }
 

@@ -25,20 +25,21 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  */
 public class CrfSuiteOutcomeIDReport
-    extends ReportBase
+    extends TcBatchReportBase
 {
 
     /**
@@ -46,7 +47,7 @@ public class CrfSuiteOutcomeIDReport
      */
     public static final String SEPARATOR_CHAR = ";";
 
-    private static final String ID_CONSTANT_VALUE = Constants.ID_FEATURE_NAME + "=";
+    private static final String ID_CONSTANT_VALUE = ID_FEATURE_NAME + "=";
 
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
     
@@ -58,6 +59,8 @@ public class CrfSuiteOutcomeIDReport
     public void execute()
         throws Exception
     {
+    	prepareBaseline();
+    	
         List<String> labelGoldVsActual = getGoldAndPredictions();
 
         HashMap<String, Integer> mapping = createMappingLabel2Number(labelGoldVsActual);
@@ -73,17 +76,29 @@ public class CrfSuiteOutcomeIDReport
             sb.append(" " + mapping.get(label) + "=" + URLEncoder.encode(label, "UTF-8"));
         }
 
-        File id2o = getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
+        File id2o = getTargetFile();
 
         String header = "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
                 + "THRESHOLD" + "\n" + "#" + sb.toString();
 
-        OutputStreamWriter fos = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-        prop.store(fos, header);
-        fos.close();
+        OutputStreamWriter osw = null;
+		try {
+			osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+			prop.store(osw, header);
+		} finally {
+			IOUtils.closeQuietly(osw);
+		}
     }
 
-    private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
+    protected void prepareBaseline() throws Exception {
+    	//overwritten by baseline reports
+	}
+
+	protected File getTargetFile() {
+    	return getContext().getFile(ID_OUTCOME_KEY, AccessMode.READWRITE);
+	}
+
+	private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
     {
         HashSet<String> labels = new HashSet<String>();
 
@@ -125,7 +140,7 @@ public class CrfSuiteOutcomeIDReport
         File storage = getContext().getFolder(CrfSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
-        File testFile = new File(storage.getAbsolutePath() + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        File testFile = new File(storage.getAbsolutePath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
 
@@ -135,13 +150,13 @@ public class CrfSuiteOutcomeIDReport
     private List<String> getGoldAndPredictions()
         throws Exception
     {
-        File predictionFile = getContext().getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READONLY);
+        File predictionFile = getContext().getFile(FILENAME_PREDICTIONS, AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
 
         return readLines;
     }
 
-    protected static Properties generateProperties(HashMap<String, Integer> aMapping,
+    protected Properties generateProperties(HashMap<String, Integer> aMapping,
             List<String> predictions, List<String> testFeatures)
                 throws Exception
     {
@@ -163,7 +178,7 @@ public class CrfSuiteOutcomeIDReport
 					Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]),
 					idsplit.length > 3 ? "_" + idsplit[3] : "");
 			int numGold = aMapping.get(split[0]);
-            int numPred = aMapping.get(split[1]);
+            String numPred = getPrediction(aMapping, split[1]);
             p.setProperty(zeroPaddedId,
                     numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
@@ -171,7 +186,12 @@ public class CrfSuiteOutcomeIDReport
         return p;
     }
 
-    private static String extractTCId(String line)
+    protected String getPrediction(Map<String,Integer> map, String s) {
+    	//overwritten by baseline report
+		return map.get(s).toString();
+	}
+
+	private static String extractTCId(String line)
     {
         int begin = line.indexOf(ID_CONSTANT_VALUE);
         int end = line.indexOf("\t", begin + ID_CONSTANT_VALUE.length());

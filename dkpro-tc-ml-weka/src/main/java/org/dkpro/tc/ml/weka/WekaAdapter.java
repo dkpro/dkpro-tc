@@ -30,8 +30,8 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
-import org.dkpro.tc.ml.weka.report.WekaSingleLabelBaselineMajorityClassIdReport;
-import org.dkpro.tc.ml.weka.report.WekaSingleLabelBaselineRandomIdReport;
+import org.dkpro.tc.ml.weka.report.WekaBaselineMajorityClassIdReport;
+import org.dkpro.tc.ml.weka.report.WekaBaselineRandomIdReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
 import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
@@ -56,13 +56,13 @@ public class WekaAdapter
 	}
 	
     @Override
-    public Class<? extends ReportBase> getBaselineIdReportClass() {
-        return WekaSingleLabelBaselineMajorityClassIdReport.class;
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+        return WekaBaselineMajorityClassIdReport.class;
     }
     
     @Override
     public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
-        return WekaSingleLabelBaselineRandomIdReport.class;
+        return WekaBaselineRandomIdReport.class;
     }
 
 	@SuppressWarnings("unchecked")
