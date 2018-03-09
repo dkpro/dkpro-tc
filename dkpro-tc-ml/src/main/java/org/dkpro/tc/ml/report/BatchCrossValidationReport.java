@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -58,15 +59,34 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 				continue;
 			}
 
-			File combinedId2outcome = store.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
 
 			Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id, Task.DISCRIMINATORS_KEY);
 
-			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
-
 			Map<String, String> values = new HashMap<String, String>();
 			values.putAll(discriminatorsMap);
+
+			//The classification result is always there
+			File combinedId2outcome = store.locateKey(id, FILE_COMBINED_ID_OUTCOME_KEY);
+			Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome, learningMode);
 			values.putAll(results);
+			
+			//Majority baseline is not defined for regression i.e. might not be there
+			File majBaseline = store.locateKey(id, FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY);
+			if (isAvailable(majBaseline)) {
+				Map<String, String> r = MetricComputationUtil.getResults(majBaseline, learningMode);
+				for(Entry<String, String> e : r.entrySet()){
+					values.put(e.getKey() + ".MajorityBaseline", e.getValue());
+				}
+			}
+
+			//Random baseline is not defined for regression i.e. might not be there
+			File randomBaseline = store.locateKey(id, FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY);
+			if (isAvailable(randomBaseline)) {
+				Map<String, String> r = MetricComputationUtil.getResults(randomBaseline, learningMode);
+				for(Entry<String, String> e : r.entrySet()){
+					values.put(e.getKey() + ".RandomBaseline", e.getValue());
+				}
+			}
 
 			table.addRow(getContextLabel(id), values);
 		}
@@ -78,6 +98,10 @@ public class BatchCrossValidationReport extends TcBatchReportBase implements Con
 		 */
 
 		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
+	}
+	
+	private boolean isAvailable(File f) {
+		return f != null && f.exists();
 	}
 
 	private String determineLearningMode(StorageService store, Set<String> idPool) throws Exception {

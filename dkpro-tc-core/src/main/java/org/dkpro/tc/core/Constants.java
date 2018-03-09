@@ -282,10 +282,18 @@ public interface Constants
      */
     String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.csv";
     /**
-     * Name of the global homogenized file which contains the classifier predictions and gold
+     * Name of the global file which contains the classifier predictions and gold
      * standard for all test instances.
      */
     String FILE_COMBINED_ID_OUTCOME_KEY = "combinedId2Outcome.txt";
+    /**
+     * Name of the global file which contains a prediction with the majority class for all test instances.
+     */
+    String FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY = "combinedBaselineMajorityId2Outcome.txt";
+    /**
+     * Name of the global file which contains a prediction with a random class for all test instances.
+     */
+    String FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY = "combinedBaselineRandomId2Outcome.txt";
     /**
      * Name of the meta task file which holds the tc unit text and context for all test instances.
      */

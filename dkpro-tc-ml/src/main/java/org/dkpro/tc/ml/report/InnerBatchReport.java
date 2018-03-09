@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -53,6 +54,8 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		Properties prop = new Properties();
 
 		List<File> id2outcomeFiles = new ArrayList<>();
+		List<File> baselineMajorityClass2outcomeFiles = new ArrayList<>();
+		List<File> baselineRandom2outcomeFiles = new ArrayList<>();
 		Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
 		
 		for (String id : ids) {
@@ -76,8 +79,18 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 				Map<String, String> discriminatorsMap = store
 						.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-				File id2outcomeFile = store.locateKey(subId, Constants.ID_OUTCOME_KEY);
+				File id2outcomeFile = store.locateKey(subId, ID_OUTCOME_KEY);
 				id2outcomeFiles.add(id2outcomeFile);
+				
+				File baselineMajority2outcomeFile = store.locateKey(subId, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+				if(baselineMajority2outcomeFile!=null){
+					baselineMajorityClass2outcomeFiles.add(baselineMajority2outcomeFile);
+				}
+				
+				File baselineRandom2outcomeFile = store.locateKey(subId, BASELINE_RANDOM_ID_OUTCOME_KEY);
+				if(baselineRandom2outcomeFile!=null){
+					baselineRandom2outcomeFiles.add(baselineRandom2outcomeFile);
+				}
 
 				
 				for(Entry<String, String> e : discriminatorsMap.entrySet()){
@@ -91,20 +104,28 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 
 		String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
 
-		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
-		for (File id2o : id2outcomeFiles) {
-			aggregator.add(id2o, learningMode);
-		}
-
-		writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
+		writeCombinedOutcomeReport(FILE_COMBINED_ID_OUTCOME_KEY, aggregate(learningMode, id2outcomeFiles));
+		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY, aggregate(learningMode, baselineMajorityClass2outcomeFiles));
+		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY, aggregate(learningMode, baselineRandom2outcomeFiles));
 	}
 
-	private void writeCombinedOutcomeReport(String payload) throws Exception {
-		File file = getContext().getFile(FILE_COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
-		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+	private String aggregate(String learningMode, List<File> files) throws Exception {
+		
+		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
+		for (File id2o : files) {
+			aggregator.add(id2o, learningMode);
+		}
+		return aggregator.generateId2OutcomeFile();
+	}
 
-		writer.write(payload);
-
-		writer.close();
+	private void writeCombinedOutcomeReport(String key, String payload) throws Exception {
+		File file = getContext().getFile(key, AccessMode.READWRITE);
+		Writer writer = null;
+		try{
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+			writer.write(payload);
+		}finally{
+			IOUtils.closeQuietly(writer);
+		}
 	}
 }
