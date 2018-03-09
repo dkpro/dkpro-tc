@@ -41,6 +41,17 @@ public class CrfSuiteBaselineRandomIdReport extends CrfSuiteOutcomeIDReport {
 	public CrfSuiteBaselineRandomIdReport() {
 		// requried by groovy
 	}
+	
+	@Override
+	public void execute() throws Exception{
+		
+		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+		if(isRegression){
+			return;
+		}
+		
+		super.execute();
+	}
 
 	@Override
 	protected File getTargetFile() {

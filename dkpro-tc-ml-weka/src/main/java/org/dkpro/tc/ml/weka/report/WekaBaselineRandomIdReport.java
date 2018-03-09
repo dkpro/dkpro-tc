@@ -45,6 +45,18 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 	public WekaBaselineRandomIdReport() {
 		// required by groovy
 	}
+	
+	@Override
+	public void execute() throws Exception {
+
+		init();
+
+		if (isRegression) {
+			return;
+		}
+
+		super.execute();
+	}
 
 	@Override
 	protected String getPrediction(Double prediction, Map<String, Integer> class2number, Attribute gsAtt) {

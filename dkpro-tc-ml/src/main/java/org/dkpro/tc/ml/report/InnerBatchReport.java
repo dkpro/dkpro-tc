@@ -83,12 +83,12 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 				id2outcomeFiles.add(id2outcomeFile);
 				
 				File baselineMajority2outcomeFile = store.locateKey(subId, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-				if(baselineMajority2outcomeFile!=null){
+				if(isAvailable(baselineMajority2outcomeFile)){
 					baselineMajorityClass2outcomeFiles.add(baselineMajority2outcomeFile);
 				}
 				
 				File baselineRandom2outcomeFile = store.locateKey(subId, BASELINE_RANDOM_ID_OUTCOME_KEY);
-				if(baselineRandom2outcomeFile!=null){
+				if(isAvailable(baselineRandom2outcomeFile)){
 					baselineRandom2outcomeFiles.add(baselineRandom2outcomeFile);
 				}
 
@@ -107,6 +107,10 @@ public class InnerBatchReport extends TcBatchReportBase implements Constants {
 		writeCombinedOutcomeReport(FILE_COMBINED_ID_OUTCOME_KEY, aggregate(learningMode, id2outcomeFiles));
 		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY, aggregate(learningMode, baselineMajorityClass2outcomeFiles));
 		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY, aggregate(learningMode, baselineRandom2outcomeFiles));
+	}
+	
+	private boolean isAvailable(File f) {
+		return f != null && f.exists();
 	}
 
 	private String aggregate(String learningMode, List<File> files) throws Exception {
