@@ -124,15 +124,15 @@ public class MultiSvmUsingWekaLibsvmLiblinear implements Constants {
 	// ##### TRAIN-TEST #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		batch.addReport(BatchTrainTestReport.class);
-		batch.addReport(new ContextMemoryReport());
+		ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		experiment.addReport(BatchTrainTestReport.class);
+		experiment.addReport(new ContextMemoryReport());
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {

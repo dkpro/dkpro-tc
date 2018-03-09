@@ -124,15 +124,15 @@ public class MultiRegressionWekaLibsvmLiblinear implements Constants {
 	}
 
 	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
-		ExperimentCrossValidation batch = new ExperimentCrossValidation("WekaRegressionDemo", 2);
-		batch.setPreprocessing(getPreprocessing());
-		batch.setParameterSpace(pSpace);
-		batch.addReport(BatchCrossValidationReport.class);
-		batch.addReport(ContextMemoryReport.class);
-		batch.addReport(BatchRuntimeReport.class);
+		ExperimentCrossValidation experiment = new ExperimentCrossValidation("WekaRegressionDemo", 2);
+		experiment.setPreprocessing(getPreprocessing());
+		experiment.setParameterSpace(pSpace);
+		experiment.addReport(BatchCrossValidationReport.class);
+		experiment.addReport(ContextMemoryReport.class);
+		experiment.addReport(BatchRuntimeReport.class);
 
 		// Run
-		Lab.getInstance().run(batch);
+		Lab.getInstance().run(experiment);
 	}
 
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
