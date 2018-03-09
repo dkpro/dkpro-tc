@@ -203,7 +203,7 @@ public class CrfSuiteTestTask extends ExecutableTaskBase implements Constants {
 
 
 	private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key) {
-		File folder = aContext.getFolder(key, AccessMode.READWRITE);
+		File folder = aContext.getFolder(key, AccessMode.READONLY);
 		File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		
 		if(f.getAbsolutePath().length() >= 254 && isWindows()) {
