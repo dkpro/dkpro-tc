@@ -139,9 +139,7 @@ public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements 
 	private void initDocumentMetaDataLogger() throws Exception {
 		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 		documentMetaLogger.write("# Order in which JCas documents have been processed");
-		documentMetaLogger.write("\n");
 		documentMetaLogger.write("#ID\tTitle");
-		documentMetaLogger.write("\n");
 	}
 
 	@Override
