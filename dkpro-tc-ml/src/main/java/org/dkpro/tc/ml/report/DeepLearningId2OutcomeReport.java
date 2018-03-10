@@ -220,7 +220,7 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 			List<String> outcomeMappings = FileUtils.readLines(mapping, "utf-8");
 			for (String s : outcomeMappings) {
 				String[] split = s.split("\t");
-				m.put(split[0], split[1]);
+				m.put(split[1], split[0]);
 			}
 			return m;
 		}
