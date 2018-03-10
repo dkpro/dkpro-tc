@@ -52,11 +52,11 @@ public class KerasRegressionWassaTest extends PythonLocator {
 			assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
 			List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-			assertEquals(11, lines.size());
+			assertEquals(87, lines.size());
 
 			// line-wise compare
 			assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-			assertEquals("#labels", lines.get(1));
+			assertEquals("#labels ", lines.get(1));
 			assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
 			assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
 			assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
