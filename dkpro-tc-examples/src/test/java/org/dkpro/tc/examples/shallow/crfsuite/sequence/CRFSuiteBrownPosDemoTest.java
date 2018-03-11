@@ -71,37 +71,11 @@ public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
 		// Crfsuite results are sensitive to some extend to the platform, to
 		// account for this sensitivity we check only that the "prediction"
 		// field is filled with any number but do not test for a specific value
-		assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;13;-1"));
+		assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;29;-1"));
 		assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
-		assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;1;-1"));
-		assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;7;-1"));
-		assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;4;-1"));
-		assertTrue(lines.get(8).matches("0000_0000_0005_said=[0-9]+;14;-1"));
-		assertTrue(lines.get(9).matches("0000_0000_0006_he=[0-9]+;11;-1"));
-		assertTrue(lines.get(10).matches("0000_0000_0007_drafted=[0-9]+;14;-1"));
-		assertTrue(lines.get(11).matches("0000_0000_0008_personally=[0-9]+;10;-1"));
-		assertTrue(lines.get(12).matches("0000_0000_0009_,=[0-9]+;1;-1"));
-		assertTrue(lines.get(13).matches("0000_0000_0010_would=[0-9]+;16;-1"));
-		assertTrue(lines.get(14).matches("0000_0000_0011_force=[0-9]+;8;-1"));
-		assertTrue(lines.get(15).matches("0000_0000_0012_banks=[0-9]+;12;-1"));
-		assertTrue(lines.get(16).matches("0000_0000_0013_,=[0-9]+;1;-1"));
-		assertTrue(lines.get(17).matches("0000_0000_0014_insurance=[0-9]+;0;-1"));
-		assertTrue(lines.get(18).matches("0000_0000_0015_firms=[0-9]+;12;-1"));
-		assertTrue(lines.get(19).matches("0000_0000_0016_,=[0-9]+;1;-1"));
-		assertTrue(lines.get(20).matches("0000_0000_0017_pipeline=[0-9]+;0;-1"));
-		assertTrue(lines.get(21).matches("0000_0000_0018_companies=[0-9]+;12;-1"));
-		assertTrue(lines.get(22).matches("0000_0000_0019_and=[0-9]+;3;-1"));
-		assertTrue(lines.get(23).matches("0000_0000_0020_other=[0-9]+;9;-1"));
-		assertTrue(lines.get(24).matches("0000_0000_0021_corporations=[0-9]+;12;-1"));
-		assertTrue(lines.get(25).matches("0000_0000_0022_to=[0-9]+;15;-1"));
-		assertTrue(lines.get(26).matches("0000_0000_0023_report=[0-9]+;8;-1"));
-		assertTrue(lines.get(27).matches("0000_0000_0024_such=[0-9]+;2;-1"));
-		assertTrue(lines.get(28).matches("0000_0000_0025_property=[0-9]+;0;-1"));
-		assertTrue(lines.get(29).matches("0000_0000_0026_to=[0-9]+;6;-1"));
-		assertTrue(lines.get(30).matches("0000_0000_0027_the=[0-9]+;13;-1"));
-		assertTrue(lines.get(31).matches("0000_0000_0028_state=[0-9]+;0;-1"));
-		assertTrue(lines.get(32).matches("0000_0000_0029_treasurer=[0-9]+;0;-1"));
-		assertTrue(lines.get(33).matches("0000_0000_0030_.=[0-9]+;1;-1"));
+		assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;17;-1"));
+		assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;22;-1"));
+		assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;2;-1"));
 
 	}
 
