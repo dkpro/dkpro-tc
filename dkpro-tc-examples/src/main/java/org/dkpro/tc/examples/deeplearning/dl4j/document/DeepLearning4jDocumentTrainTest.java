@@ -33,6 +33,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
@@ -103,6 +104,7 @@ public class DeepLearning4jDocumentTrainTest
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchRuntimeReport.class);
+        experiment.addReport(ContextMemoryReport.class);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

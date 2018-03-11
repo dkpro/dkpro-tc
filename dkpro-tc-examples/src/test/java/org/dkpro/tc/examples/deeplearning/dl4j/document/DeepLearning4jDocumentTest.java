@@ -18,8 +18,15 @@
  */
 package org.dkpro.tc.examples.deeplearning.dl4j.document;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.deeplearning.dl4j.document.DeepLearning4jDocumentTrainTest;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.junit.Test;
 
 public class DeepLearning4jDocumentTest extends TestCaseSuperClass
@@ -30,5 +37,13 @@ public class DeepLearning4jDocumentTest extends TestCaseSuperClass
     {
         DeepLearning4jDocumentTrainTest dl4j = new DeepLearning4jDocumentTrainTest();
         dl4j.runTrainTest(DeepLearning4jDocumentTrainTest.getParameterSpace());
+        
+    	List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
+		assertEquals(203, lines.size());
+		// line-wise compare
+		assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+		assertEquals("#labels 0=bollywood 1=business 2=crime 3=politics", lines.get(1));
+		assertTrue(lines.get(3).matches("1=[0-9]+;1;-1"));
+		assertTrue(lines.get(4).matches("10=[0-9]+;1;-1"));
     }
 }
