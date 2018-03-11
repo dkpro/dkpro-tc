@@ -60,8 +60,9 @@ public class SvmhmmLoadModelConnector extends LibsvmDataFormatLoadModelConnector
 		List<String> command = SvmHmmTestTask.buildPredictionCommand(binary, localTestFile, localModel, prediction);
 		SvmHmmTestTask.runCommand(command);
 
-		localModel.delete();
-		localTestFile.delete();
+		
+		FileUtils.deleteQuietly(localModel);
+		FileUtils.deleteQuietly(localTestFile);
 		
 		return prediction;
 	}

@@ -66,8 +66,8 @@ public class SvmhmmSerializeModelConnector
 		
 		FileUtils.copyFile(tmpModelLocation, model);
 		
-		tmpModelLocation.delete();
-		newTrainFileLocation.delete();
+		FileUtils.deleteQuietly(tmpModelLocation);
+		FileUtils.deleteQuietly(newTrainFileLocation);
 		
 	}
 

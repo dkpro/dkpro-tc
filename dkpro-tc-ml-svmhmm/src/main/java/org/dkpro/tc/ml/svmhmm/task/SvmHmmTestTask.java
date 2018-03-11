@@ -207,8 +207,8 @@ public class SvmHmmTestTask
 		File modelFile = aContext.getFile(MODEL_NAME, StorageService.AccessMode.READWRITE);
 		FileUtils.copyFile(tmpModelLocation, modelFile);
 		
-		newTrainFileLocation.delete();
-		tmpModelLocation.delete();
+		FileUtils.deleteQuietly(newTrainFileLocation);
+		FileUtils.deleteQuietly(tmpModelLocation);
 		
 		return modelFile;
 	}
@@ -234,8 +234,8 @@ public class SvmHmmTestTask
 		List<String> predictionCommand = buildPredictionCommand(binary, localTestFile, localModel, predictionsFile);
 		runCommand(predictionCommand);
 		
-		localModel.delete();
-		localTestFile.delete();
+		FileUtils.deleteQuietly(localModel);
+		FileUtils.deleteQuietly(localTestFile);
 		
 		combinePredictionAndExpectedGoldLabels(fileTest, predictionsFile);		
 	}

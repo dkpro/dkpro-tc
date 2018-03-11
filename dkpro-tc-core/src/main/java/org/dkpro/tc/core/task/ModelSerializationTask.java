@@ -268,11 +268,17 @@ public abstract class ModelSerializationTask extends ExecutableTaskBase implemen
 	}
 
 	private void copySingleFile(File source, File destination) throws IOException {
-		InputStream is = new FileInputStream(source);
-		OutputStream os = new FileOutputStream(destination);
-		IOUtils.copy(is, os);
-		IOUtils.closeQuietly(is);
-		IOUtils.closeQuietly(os);
+		
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			is = new FileInputStream(source);
+			os = new FileOutputStream(destination);
+			IOUtils.copy(is, os);
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(os);
+		}
 	}
 
 	protected void writeModelAdapterInformation(File aOutputFolder, String aModelMeta) throws Exception {

@@ -215,15 +215,16 @@ public class ExperimentCrossValidation
                 }
             }
 
-        	/**
-			 * 
-			 * @param outputFolder
-			 * 			where the new cas are written to
-			 */            
             private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
             {
                 int numCas = 0;
-                for (File f : outputFolder.listFiles()) {
+                
+                File[] listFiles = outputFolder.listFiles();
+                if(listFiles == null){
+                	throw new NullPointerException("Retrieving files in folder led to a NullPointer");
+                }
+                
+                for (File f : listFiles) {
                     if (f.getName().contains(".bin")) {
                         numCas++;
                     }
