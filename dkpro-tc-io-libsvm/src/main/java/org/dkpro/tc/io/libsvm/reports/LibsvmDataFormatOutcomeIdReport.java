@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
@@ -185,17 +185,15 @@ public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implement
 			return new HashMap<>();
 		}
 		
-		File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY,
+		File outcomeFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-		File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
+		File outcomeFiles = new File(outcomeFolder, AdapterFormat.getOutcomeMappingFilename());
 		List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
-		Collections.sort(outcomes);
 
 		Map<Integer, String> map = new HashMap<Integer, String>();
-
-		int i=0;
 		for (String line : outcomes) {
-			map.put(i++, line);
+			String[] split = line.split("\t");
+			map.put(Integer.parseInt(split[1]), split[0]);
 		}
 
 		return map;
