@@ -84,7 +84,7 @@ public class WekaOutcomeIDReport
 
         Instances predictions = WekaUtils.getInstances(arff, isMultiLabel);
 
-        List<String> labels = getLabels(predictions, isMultiLabel, isRegression);
+        List<String> labels = getLabels(isMultiLabel, isRegression);
         
         Properties props;
         
@@ -111,13 +111,19 @@ public class WekaOutcomeIDReport
 		return new File(evaluationFolder, ID_OUTCOME_KEY);
 	}
 
-    private List<String> getLabels(Instances predictions, boolean multiLabel, boolean regression)
+    private List<String> getLabels(boolean multiLabel, boolean regression) throws IOException
     {
         if (regression) {
             return Collections.emptyList();
         }
-
-        return WekaUtils.getClassLabels(predictions, multiLabel);
+        
+        File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY,
+                AccessMode.READONLY);
+		File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
+		List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+		Collections.sort(outcomes);
+		return outcomes; 
+//        return WekaUtils.getClassLabels(predictions, multiLabel);
     }
 
     protected static String generateHeader(List<String> labels)
