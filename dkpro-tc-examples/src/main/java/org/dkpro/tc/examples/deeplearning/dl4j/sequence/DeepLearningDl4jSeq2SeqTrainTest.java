@@ -35,6 +35,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
@@ -109,6 +110,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
 		    experiment.addReport(r);
 		}
 		experiment.addReport(new BatchTrainTestReport());
+		experiment.addReport(ContextMemoryReport.class);
 		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
 		Lab.getInstance().run(experiment);
