@@ -36,7 +36,7 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 		implements DeepLearningConstants {
 
 	private Random random = new Random(42);
-	private List<String> labelPool = new ArrayList<>();
+	private List<String> pool = new ArrayList<>();
 	
 	@Override
 	public void execute() throws Exception {
@@ -66,8 +66,8 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 			while ((line = reader.readLine()) != null) {
 				String[] split = line.split(" ");
 				for (String v : split) {
-					if (!labelPool.contains(v)) {
-						labelPool.add(v);
+					if (!pool.contains(v)) {
+						pool.add(v);
 					}
 				}
 			}
@@ -75,7 +75,7 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 			IOUtils.closeQuietly(reader);
 		}
 		
-		Collections.shuffle(labelPool);
+		Collections.shuffle(pool);
 	}
 	
 	@Override
@@ -93,8 +93,8 @@ public class DeepLearningRandomBaseline2OutcomeReport extends DeepLearningId2Out
 				continue;
 			}
 			String[] split = p.split("\t");
-			Integer idx = random.nextInt(labelPool.size());
-			out.add(split[0] + "\t" + labelPool.get(idx));
+			Integer idx = random.nextInt(pool.size() - 1);
+			out.add(split[0] + "\t" + pool.get(idx));
 		}
 		
 		return out;

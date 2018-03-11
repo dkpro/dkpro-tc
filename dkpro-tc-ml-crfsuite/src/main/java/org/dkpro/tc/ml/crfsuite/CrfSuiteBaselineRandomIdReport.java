@@ -67,7 +67,7 @@ public class CrfSuiteBaselineRandomIdReport extends CrfSuiteOutcomeIDReport {
 
 	@Override
 	protected String getPrediction(Map<String, Integer> map, String s) {
-		return "" + random.nextInt(pool.size());
+		return "" + random.nextInt(pool.size() - 1);
 	}
 
 	private void buildPool(File file) throws Exception {

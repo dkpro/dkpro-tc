@@ -81,7 +81,7 @@ public class LibsvmDataFormatBaselineRandomIdReport extends LibsvmDataFormatOutc
 
 	@Override
 	protected String getPrediction(String p) {
-		Integer idx = random.nextInt(pool.size());
+		Integer idx = random.nextInt(pool.size() - 1);
 		return pool.get(idx);
 	}
 
