@@ -45,6 +45,7 @@ import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -69,12 +70,14 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader implements Constants {
 		// instructions first :)
 		DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
 
+		List<Object>  o = new ArrayList<>();
+		o.add(new CrfSuiteAdapter());
 		@SuppressWarnings("unchecked")
 		ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
-				Dimension.create(DIM_CLASSIFICATION_ARGS, new ArrayList<>()), null);
+				Dimension.create(DIM_CLASSIFICATION_ARGS, o), null);
 
 		CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
-		experiment.runCrossValidation(pSpace);
+		experiment.runTrainTest(pSpace);
 	}
 
 	public static ParameterSpace getParameterSpace(String featureMode, String learningMode,

@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -63,7 +62,7 @@ public class CrfSuiteOutcomeIDReport
     	
         List<String> labelGoldVsActual = getGoldAndPredictions();
 
-        HashMap<String, Integer> mapping = createMappingLabel2Number(labelGoldVsActual);
+        Map<String, Integer> mapping = createMappingLabel2Number();
 
         List<String> testData = getTestData();
 
@@ -98,32 +97,18 @@ public class CrfSuiteOutcomeIDReport
     	return getContext().getFile(ID_OUTCOME_KEY, AccessMode.READWRITE);
 	}
 
-	private HashMap<String, Integer> createMappingLabel2Number(List<String> aLabelGoldVsActual)
+	private Map<String, Integer> createMappingLabel2Number() throws Exception
     {
-        HashSet<String> labels = new HashSet<String>();
+		File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY,
+                AccessMode.READONLY);
+		File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
+		List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+		
+		outcomes.add("(null)"); //Crfsuite might output this additional "label";
 
-        int maxLines = aLabelGoldVsActual.size();
-        for (int i = 0; i < maxLines; i++) {
-            if (i == 0) {
-                // skip the headline row
-                continue;
-            }
-            String line = aLabelGoldVsActual.get(i);
-            String[] split = line.split("\t");
-            if (split.length == 0) {
-                continue;
-            }
-            if (split.length >= 1) {
-                labels.add(split[0]);
-            }
-            if (split.length >= 2) {
-                labels.add(split[1]);
-            }
-        }
-
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<String, Integer>();
         int i = 0;
-        for (String label : labels) {
+        for (String label : outcomes) {
             if (label.isEmpty()) {
                 continue;
             }
@@ -134,7 +119,7 @@ public class CrfSuiteOutcomeIDReport
         return map;
     }
 
-    private List<String> getTestData()
+	private List<String> getTestData()
         throws Exception
     {
         File storage = getContext().getFolder(CrfSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
@@ -156,7 +141,7 @@ public class CrfSuiteOutcomeIDReport
         return readLines;
     }
 
-    protected Properties generateProperties(HashMap<String, Integer> aMapping,
+    protected Properties generateProperties(Map<String, Integer> aMapping,
             List<String> predictions, List<String> testFeatures)
                 throws Exception
     {
