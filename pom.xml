@@ -112,6 +112,7 @@
     <module>dkpro-tc-ml-libsvm</module>
     <module>dkpro-tc-ml-svmhmm</module>
     <module>dkpro-tc-ml-weka</module>
+    <module>dkpro-tc-ml-xgboost</module>
     <module>dkpro-tc-testing</module>
   </modules>
   <dependencyManagement>
@@ -217,6 +218,11 @@
         <artifactId>dkpro-tc-ml-weka</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.dkpro.tc</groupId>
+        <artifactId>dkpro-tc-ml-xgboost</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>      
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-testing</artifactId>
