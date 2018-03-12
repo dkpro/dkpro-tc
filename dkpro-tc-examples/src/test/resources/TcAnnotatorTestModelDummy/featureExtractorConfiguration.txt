@@ -1,0 +1,3 @@
+org.dkpro.tc.features.ngram.CharacterNGram	ngramMinN=1	uniqueFeatureExtractorName=CharacterNGram6079469781775	ngramUseTopK=50	ngramMaxN=3
+org.dkpro.tc.examples.shallow.crfsuite.serialization.BrownClusterFeature	brownClusterLocations=enTweetBrownC1000F40	uniqueFeatureExtractorName=BrownClusterFeature6079470129625
+org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument	uniqueFeatureExtractorName=AvgTokenLengthRatioPerDocument6079470629589

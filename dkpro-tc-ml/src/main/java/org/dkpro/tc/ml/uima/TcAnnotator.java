@@ -31,6 +31,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
+import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -88,12 +89,23 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 	private String nameUnit;
 	
 	/**
-	 * This parameter allows to remove the created {@link TextClassificationTarget} annotation after classification in case they are not needed anymore.
-	 * Default is to keep the annotation.
+	 * This parameter allows to remove the created {@link TextClassificationTarget}
+	 * annotation after classification in case they are not needed anymore. Default
+	 * is to keep the annotation.
 	 */
 	public static final String PARAM_RETAIN_TARGETS = "retainTargets";
 	@ConfigurationParameter(name = PARAM_RETAIN_TARGETS, mandatory = true, defaultValue="true")
 	private boolean retainTargets;
+	
+	
+	/**
+	 * Provides the name and parameters of an UIMA conversion annotator. This
+	 * conversion annotator is supposed to fill the results in the @{link
+	 * TextClassificationOutcome} into the desired result annotation, e.g. PoS, NER, etc. 
+	 */
+	public static final String PARAM_CONVERTION_ANNOTATOR = "conversionAnnotator";
+	@ConfigurationParameter(name = PARAM_CONVERTION_ANNOTATOR, mandatory = false)
+	private String [] conversionAnnotator;
 
 	private String learningMode;
 	private String featureMode;
@@ -264,10 +276,36 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 			throw new IllegalStateException("Feature mode ["+featureMode+"] is unknown");
 		}
 		
+		
+		if(conversionAnnotator != null && conversionAnnotator.length > 0) {
+			callConversionEngine(aJCas);
+		}
+		
 		if(!retainTargets){
-			for(TextClassificationTarget t : JCasUtil.select(aJCas, TextClassificationTarget.class)){
-				t.removeFromIndexes();
-			}
+			removeTargets(aJCas);
+		}
+	}
+
+	private void removeTargets(JCas aJCas) {
+		for (TextClassificationTarget t : JCasUtil.select(aJCas, TextClassificationTarget.class)) {
+			t.removeFromIndexes();
+		}
+	}
+
+	private void callConversionEngine(JCas aJCas) throws AnalysisEngineProcessException {
+		String name = conversionAnnotator[0];
+		Object[] parameters = new String[0];
+		if (conversionAnnotator.length > 1) {
+			parameters = new String[conversionAnnotator.length - 1];
+			System.arraycopy(conversionAnnotator, 1, parameters, 0, conversionAnnotator.length - 1);
+		}
+		try {
+			@SuppressWarnings("unchecked")
+			Class<? extends AnalysisComponent> forName = (Class<? extends AnalysisComponent>) Class.forName(name);
+			AnalysisEngine conversionEngine = AnalysisEngineFactory.createEngine(forName, parameters);
+			conversionEngine.process(aJCas);
+		} catch (Exception e) {
+			throw new AnalysisEngineProcessException(e);
 		}
 	}
 
