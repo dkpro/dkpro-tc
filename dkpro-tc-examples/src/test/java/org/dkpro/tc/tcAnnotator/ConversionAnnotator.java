@@ -26,6 +26,11 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 
+/**
+ * This is a dummy annotator that takes the predicted classification outcomes
+ * and creates POS annotations from the predicted values. This annotator is not
+ * intended for productive use but can be adapted accordingly.
+ */
 public class ConversionAnnotator extends JCasAnnotator_ImplBase {
 	
 	public static final String PARAM_SUFFIX = "pointlessParameterToTestParameterPassing";

@@ -97,11 +97,13 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 	@ConfigurationParameter(name = PARAM_RETAIN_TARGETS, mandatory = true, defaultValue="true")
 	private boolean retainTargets;
 	
-	
 	/**
 	 * Provides the name and parameters of an UIMA conversion annotator. This
 	 * conversion annotator is supposed to fill the results in the @{link
-	 * TextClassificationOutcome} into the desired result annotation, e.g. PoS, NER, etc. 
+	 * TextClassificationOutcome} into the desired result annotation, e.g. PoS, NER,
+	 * etc. If a conversion annotator is provided, the
+	 * {@link TextClassificationOutcome} annotation is deleted after the annotator
+	 * has been executed
 	 */
 	public static final String PARAM_CONVERTION_ANNOTATOR = "conversionAnnotator";
 	@ConfigurationParameter(name = PARAM_CONVERTION_ANNOTATOR, mandatory = false)
@@ -306,6 +308,10 @@ public class TcAnnotator extends JCasAnnotator_ImplBase implements Constants {
 			conversionEngine.process(aJCas);
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
+		}
+		
+		for(TextClassificationOutcome o : JCasUtil.select(aJCas, TextClassificationOutcome.class)) {
+			o.removeFromIndexes();
 		}
 	}
 
