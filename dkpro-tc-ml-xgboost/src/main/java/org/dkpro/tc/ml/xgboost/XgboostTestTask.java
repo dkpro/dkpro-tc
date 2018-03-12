@@ -34,6 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
+import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 
@@ -52,7 +53,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		return runtimeProvider.getFile("xgboost");
 	}
 
-	private List<String> getClassificationParameters() {
+	private List<String> getClassificationParameters(TaskContext aContext) throws IOException {
 		List<String> parameters = new ArrayList<>();
 		if (classificationArguments != null) {
 			for (int i = 1; i < classificationArguments.size(); i++) {
@@ -60,6 +61,14 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 				parameters.add(a);
 			}
 		}
+		
+		if(!learningMode.equals(LM_REGRESSION)) {
+			File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+			File file = new File(folder, FILENAME_OUTCOMES);
+			List<String> outcomes = FileUtils.readLines(file, "utf-8");
+			parameters.add("num_class=" + outcomes.size() + "\n");
+		}
+		
 		return parameters;
 	}
 
@@ -92,41 +101,68 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		File fileTrain = getTrainFile(aContext);
 		File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
 		
-		List<String> parameters = getClassificationParameters();
-		String configFile = buildConfigFile(fileTrain, model, parameters);
-		
+		List<String> parameters = getClassificationParameters(aContext);
+		String configFile = buildTrainConfigFile(fileTrain, model, parameters);
 		File executable = getExecutable();
-		File config = new File(executable.getParentFile(), "setup.conf");
+		File config = new File(executable.getParentFile(), "train.conf");
 		FileUtils.writeStringToFile(config, configFile, "utf-8");
 		
 		List<String> trainCommand = new ArrayList<>();
 		trainCommand.add(executable.getAbsolutePath());
 		trainCommand.add(config.getAbsolutePath());
-		runTrain(trainCommand);
+		runCommand(trainCommand);
 		
 		FileUtils.deleteQuietly(config);
 		 
 		return model;
 	}
 	
-	private void runTrain(List<String> aModelTrainCommand) throws Exception {
-		Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
+	private void runCommand(List<String> aCommand) throws Exception {
+		Process process = new ProcessBuilder().inheritIO().command(aCommand).start();
 		process.waitFor();
 	}
 	
-	public String buildConfigFile(File train, File model, List<String> parameter) throws Exception {
+	public String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
 		StringBuilder sb = new StringBuilder();
+		sb.append("objective=multi:softmax" + "\n"); //FIXME: Nicht hardcoden!
 		sb.append("task=train" + "\n");
 		sb.append("data=" + train.getAbsolutePath() + "\n");
-		sb.append("model_dir=" + model.getParentFile().getAbsolutePath() + "\n");
-		sb.append("model_out=" + model.getName() + "\n");
+		sb.append("model_out=" + model.getAbsolutePath() + "\n");
+		
+		for(String p : parameter) {
+			sb.append(p + "\n");
+		}
+		
 		return sb.toString();
 	}
 
 	@Override
 	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
+		
+		File testFile = getTestFile(aContext);
+		File prediction = getPredictionFile(aContext);
+		File executable = getExecutable();
+		String conf = buildTestConfigFile(testFile, (File) model, prediction);
+		File configFile = new File(executable.getParentFile(), "predict.conf");
+		FileUtils.writeStringToFile(configFile, conf, "utf-8");
+		
+		List<String> predictionCommand = new ArrayList<>();
+		predictionCommand.add(executable.getAbsolutePath());
+		predictionCommand.add(configFile.getAbsolutePath());
+		runCommand(predictionCommand);
+		
 		File predFile = executeLibsvm(aContext, model);
 		mergePredictionWithGold(aContext, predFile);
+	}
+	
+	public String buildTestConfigFile(File f, File model, File predictionOut) throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append("objective=multi:softmax" + "\n");
+		sb.append("task=pred" + "\n");
+		sb.append("test:data=" + f.getAbsolutePath() + "\n");
+		sb.append("model_in=" + model.getAbsolutePath() + "\n");
+		sb.append("name_pred=" + predictionOut.getAbsolutePath() + "\n");
+		return sb.toString();
 	}
 
 	private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception {
