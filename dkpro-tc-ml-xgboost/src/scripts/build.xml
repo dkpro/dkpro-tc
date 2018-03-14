@@ -62,13 +62,42 @@
 		</untar>
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/xgboost/osx-x86_64/README">
-			XGBoost Version 0.7 from https://github.com/dmlc/xgboost commit hash 4aa346c10b29febc41ef5d5e84934abd222c1ae7
+			XGBoost Version 0.7 
+			from https://github.com/dmlc/xgboost commit hash 4aa346c10b29febc41ef5d5e84934abd222c1ae7
 		</echo>
 
 		<propertyfile
 		    file="target/model-staging/org/dkpro/tc/ml/xgboost/osx-x86_64/manifest.properties">
 			<entry  key="xgboost" value="executable"/>
 		</propertyfile>
+		
+		<!-- LINUX 32 bit -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/xgboost/linux-x86_32"/>
+		<get 
+	    		src="http://dl.bintray.com/inofficalbinarystore/generic/xgboost-0.7.linux-x86_32.tar.gz" 
+	    		dest="target/download/xgboost.linux-x86_32.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/xgboost.linux-x86_32.tar.gz"
+				dest="target/download/xgboost.linux-x86_32.tar"/>
+		<untar 
+				src="target/download/xgboost.linux-x86_32.tar"
+				dest="target/model-staging/org/dkpro/tc/ml/xgboost/linux-x86_32">
+			<patternset>
+				<include name="*" />
+			</patternset>
+			<mapper type="flatten" />
+		</untar>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/xgboost/linux-x86_32/README">
+			XGBoost Version 0.7 
+			from https://github.com/dmlc/xgboost commit hash 4aa346c10b29febc41ef5d5e84934abd222c1ae7
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/xgboost/linux-x86_32/manifest.properties">
+			<entry  key="xgboost" value="executable"/>
+		</propertyfile>		
 
 		<jar 
 			destfile="target/org.dkpro.tc.ml.xgboost-bin-${version.bin}.jar" 
