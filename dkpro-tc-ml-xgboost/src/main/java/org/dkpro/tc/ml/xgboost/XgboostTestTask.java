@@ -17,10 +17,13 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.xgboost;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +37,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 
@@ -53,7 +55,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		return runtimeProvider.getFile("xgboost");
 	}
 
-	private List<String> getClassificationParameters(TaskContext aContext) throws IOException {
+	static List<String> getClassificationParameters(TaskContext aContext, List<Object> classificationArguments, String learningMode) throws IOException {
 		List<String> parameters = new ArrayList<>();
 		if (classificationArguments != null) {
 			for (int i = 1; i < classificationArguments.size(); i++) {
@@ -72,59 +74,41 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		return parameters;
 	}
 
-	private List<String> pickGold(List<String> readLines) {
-		List<String> gold = new ArrayList<>();
-		for (String l : readLines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			int indexOf = l.indexOf("\t");
-			gold.add(l.substring(0, indexOf));
-		}
-
-		return gold;
-	}
-
-	private File createTemporaryPredictionFile() throws IOException {
-		DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
-		Date today = Calendar.getInstance().getTime();
-		String now = df.format(today);
-
-		File createTempFile = FileUtil.createTempFile("libsvmPrediction" + now, ".libsvm");
-		createTempFile.deleteOnExit();
-		return createTempFile;
-	}
-
 	@Override
 	protected Object trainModel(TaskContext aContext) throws Exception {
 
 		File fileTrain = getTrainFile(aContext);
 		File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
 		
-		List<String> parameters = getClassificationParameters(aContext);
-		String configFile = buildTrainConfigFile(fileTrain, model, parameters);
+		List<String> parameters = getClassificationParameters(aContext, classificationArguments, learningMode);
+		String configContent = buildTrainConfigFile(fileTrain, model, parameters);
 		File executable = getExecutable();
-		File config = new File(executable.getParentFile(), "train.conf");
-		FileUtils.writeStringToFile(config, configFile, "utf-8");
+		
+		File configFile = writeConfigFile(executable.getParentFile(), "train.conf", configContent);
 		
 		List<String> trainCommand = new ArrayList<>();
 		trainCommand.add(executable.getAbsolutePath());
-		trainCommand.add(config.getAbsolutePath());
+		trainCommand.add(configFile.getAbsolutePath());
 		runCommand(trainCommand);
 		
-		FileUtils.deleteQuietly(config);
+		FileUtils.deleteQuietly(configFile);
 		 
 		return model;
 	}
 	
-	private void runCommand(List<String> aCommand) throws Exception {
+	static File writeConfigFile(File parentFile, String fileName, String content) throws Exception {
+		File config = new File(parentFile, fileName);
+		FileUtils.writeStringToFile(config, content, "utf-8");
+		return config;
+	}
+
+	static void runCommand(List<String> aCommand) throws Exception {
 		Process process = new ProcessBuilder().inheritIO().command(aCommand).start();
 		process.waitFor();
 	}
 	
-	public String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
+	public static String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("objective=multi:softmax" + "\n"); //FIXME: Nicht hardcoden!
 		sb.append("task=train" + "\n");
 		sb.append("data=" + train.getAbsolutePath() + "\n");
 		sb.append("model_out=" + model.getAbsolutePath() + "\n");
@@ -140,32 +124,31 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
 		
 		File testFile = getTestFile(aContext);
-		File prediction = getPredictionFile(aContext);
+		File prediction = createTemporaryPredictionFile();
 		File executable = getExecutable();
-		String conf = buildTestConfigFile(testFile, (File) model, prediction);
-		File configFile = new File(executable.getParentFile(), "predict.conf");
-		FileUtils.writeStringToFile(configFile, conf, "utf-8");
+		String content = buildTestConfigFile(testFile, (File) model, prediction);
+		
+		File file = writeConfigFile(executable.getParentFile(), "predict.conf", content);
 		
 		List<String> predictionCommand = new ArrayList<>();
 		predictionCommand.add(executable.getAbsolutePath());
-		predictionCommand.add(configFile.getAbsolutePath());
+		predictionCommand.add(file.getAbsolutePath());
 		runCommand(predictionCommand);
 		
-		File predFile = executeLibsvm(aContext, model);
-		mergePredictionWithGold(aContext, predFile);
+		mergePredictionWithGold(aContext, prediction);
 	}
 	
-	public String buildTestConfigFile(File f, File model, File predictionOut) throws Exception {
+	static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("objective=multi:softmax" + "\n");
 		sb.append("task=pred" + "\n");
-		sb.append("test:data=" + f.getAbsolutePath() + "\n");
+		sb.append("test:data=" + data.getAbsolutePath() + "\n");
 		sb.append("model_in=" + model.getAbsolutePath() + "\n");
 		sb.append("name_pred=" + predictionOut.getAbsolutePath() + "\n");
 		return sb.toString();
 	}
 
-	private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception {
+	private void mergePredictionWithGold(TaskContext aContext, File tmpPrediction) throws Exception {
 		
 		File fileTest = getTestFile(aContext);
 		File prediction = getPredictionFile(aContext);
@@ -173,8 +156,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		try {
 			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
 
-			List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
-			List<String> pred = FileUtils.readLines(predFile, "utf-8");
+			List<String> gold = readGoldValues(fileTest);
+			List<String> pred = FileUtils.readLines(tmpPrediction, "utf-8");
 			bw.write("#PREDICTION;GOLD" + "\n");
 			for (int i = 0; i < gold.size(); i++) {
 				String p = pred.get(i);
@@ -186,25 +169,36 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 			IOUtils.closeQuietly(bw);
 		}		
 	}
-
-	private File executeLibsvm(TaskContext aContext, Object model) throws Exception {
-//		File theModel = (File) model;
-//		File fileTest = getTestFile(aContext);
-//		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-//		LibsvmPredict predictor = new LibsvmPredict();
-//		File predTmp = createTemporaryPredictionFile();
-//		
-//		DataOutputStream output = null;
-//		try {
-//			output = new DataOutputStream(new FileOutputStream(predTmp));
-//			svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
-//			predictor.predict(r, output, svmModel, 0);
-//		} finally {
-//			IOUtils.closeQuietly(output);
-//		}
-//		
-//		return predTmp;
-		return null;
+	
+	private List<String> readGoldValues(File f) throws Exception {
+		List<String> goldValues = new ArrayList<>();
+		BufferedReader reader=null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+			
+			String line=null;
+			while((line=reader.readLine())!=null) {
+				if(line.isEmpty()) {
+					continue;
+				}
+				String[] split = line.split("\t");
+				goldValues.add(split[0]);
+			}
+			
+		}finally {
+			IOUtils.closeQuietly(reader);
+		}
+		
+		return goldValues;
 	}
 
+	static File createTemporaryPredictionFile() throws IOException {
+		DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
+		Date today = Calendar.getInstance().getTime();
+		String now = df.format(today);
+
+		File createTempFile = FileUtil.createTempFile("xgboostPrediction" + now, ".txt");
+		createTempFile.deleteOnExit();
+		return createTempFile;
+	}
 }

@@ -16,43 +16,40 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.libsvm.serialization;
+package org.dkpro.tc.ml.xgboost;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
-import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 
-public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
+public class XgboostSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	@Override
 	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
-		LibsvmTrainModel ltm = new LibsvmTrainModel();
+		
 		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
-		ltm.run(buildParameters(fileTrain, model));
+		List<String> parameter = XgboostTestTask.getClassificationParameters(aContext, classificationArguments, learningMode);
+		String content = XgboostTestTask.buildTrainConfigFile(fileTrain, model, parameter);
+		
+		File executable = XgboostTestTask.getExecutable();
+		File configFile = XgboostTestTask.writeConfigFile(executable.getParentFile(), "train.conf", content);
+		
+		List<String> trainCommand = new ArrayList<>();
+		trainCommand.add(executable.getAbsolutePath());
+		trainCommand.add(configFile.getAbsolutePath());
+		XgboostTestTask.runCommand(trainCommand);
+		
+		FileUtils.deleteQuietly(configFile);
 	}
 
 	@Override
 	protected void writeAdapter() throws Exception {
-		writeModelAdapterInformation(outputFolder, LibsvmAdapter.class.getName());
-	}
-
-	private String[] buildParameters(File fileTrain, File model) {
-		List<String> parameters = new ArrayList<>();
-		if (classificationArguments != null) {
-			for (int i = 1; i < classificationArguments.size(); i++) {
-				String a = (String) classificationArguments.get(i);
-				parameters.add(a);
-			}
-		}
-		parameters.add(fileTrain.getAbsolutePath());
-		parameters.add(model.getAbsolutePath());
-		return parameters.toArray(new String[0]);
+		writeModelAdapterInformation(outputFolder, XgboostAdapter.class.getName());
 	}
 
 }

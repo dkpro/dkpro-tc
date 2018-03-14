@@ -50,13 +50,13 @@ public abstract class LibsvmDataFormatSerializeModelConnector extends ModelSeria
 
 		File fileTrain = getTrainFile(aContext);
 
-		trainModel(fileTrain);
+		trainModel(aContext, fileTrain);
 
 		copyOutcomeMappingToThisFolder(aContext);
 		copyFeatureNameMappingToThisFolder(aContext);
 	}
 
-	protected abstract void trainModel(File fileTrain) throws Exception;
+	protected abstract void trainModel(TaskContext aContext, File fileTrain) throws Exception;
 
 	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
 

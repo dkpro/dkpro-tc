@@ -86,7 +86,7 @@ public class XgboostDocumentPlain implements Constants {
 
 		@SuppressWarnings("unchecked")
 		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new XgboostAdapter() }));
+				Arrays.asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
 
 		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
 				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
