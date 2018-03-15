@@ -98,7 +98,7 @@ public class XgboostDocumentPlain implements Constants {
 	// ##### TRAIN-TEST #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
 
-		ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+		ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostDocumentTest");
 		experiment.setPreprocessing(getPreprocessing());
 		experiment.setParameterSpace(pSpace);
 		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

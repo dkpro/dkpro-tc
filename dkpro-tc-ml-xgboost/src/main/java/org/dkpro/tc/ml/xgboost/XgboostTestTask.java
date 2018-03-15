@@ -158,6 +158,10 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 
 			List<String> gold = readGoldValues(fileTest);
 			List<String> pred = FileUtils.readLines(tmpPrediction, "utf-8");
+			
+			checkNoDataCondition(pred, tmpPrediction);
+			checkNoDataCondition(gold, fileTest);
+			
 			bw.write("#PREDICTION;GOLD" + "\n");
 			for (int i = 0; i < gold.size(); i++) {
 				String p = pred.get(i);
@@ -170,6 +174,12 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		}		
 	}
 	
+	private void checkNoDataCondition(List<String> l, File source) {
+		if(l.isEmpty()){
+			throw new IllegalStateException("The file [" + source.getAbsolutePath() +"] contains no prediction results");
+		}		
+	}
+
 	private List<String> readGoldValues(File f) throws Exception {
 		List<String> goldValues = new ArrayList<>();
 		BufferedReader reader=null;

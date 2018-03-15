@@ -95,7 +95,7 @@ public class XgboostRegression implements Constants {
 
 	// ##### TRAIN-TEST #####
 	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		ExperimentTrainTest experiment = new ExperimentTrainTest("WekaRegressionDemo");
+		ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostRegression");
 		experiment.setPreprocessing(getPreprocessing());
 		experiment.setParameterSpace(pSpace);
 		experiment.addReport(BatchTrainTestReport.class);
