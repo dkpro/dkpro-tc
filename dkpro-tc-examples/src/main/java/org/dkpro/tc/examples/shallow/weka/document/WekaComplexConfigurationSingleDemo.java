@@ -53,7 +53,7 @@ import weka.classifiers.meta.Bagging;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 
-/**
+/*
  * This demo is to show-case a somewhat more complex experiment setup for a single-label experiment,
  * including parameter sweeping (6 different combinations), (Weka) classifier configuration, and
  * Feature Selection.
@@ -67,9 +67,6 @@ public class WekaComplexConfigurationSingleDemo
     private static final String LANGUAGE_CODE = "en";
     private static final String EXPERIMENT_NAME = "TwentyNewsgroupsComplex";
 
-    /**
-     * Starts the experiment.
-     */
     public static void main(String[] args)
         throws Exception
     {
