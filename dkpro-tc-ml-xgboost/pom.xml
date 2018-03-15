@@ -6,6 +6,12 @@
   	<artifactId>dkpro-tc</artifactId>
   	<version>1.0.0-SNAPSHOT</version>
   </parent>
+   <repositories>
+    <repository>
+      <id>tmp</id>
+      <url>http://134.91.18.140:34001/artifactory/models/</url>
+    </repository>
+    </repositories>
    <dependencyManagement>
     <dependencies>
       <dependency>
