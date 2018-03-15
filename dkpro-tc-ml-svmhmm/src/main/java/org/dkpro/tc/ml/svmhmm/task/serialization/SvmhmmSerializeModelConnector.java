@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
@@ -39,7 +40,7 @@ public class SvmhmmSerializeModelConnector
 	}
 
 	@Override
-	protected void trainModel(File fileTrain) throws Exception {
+	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
 
 		List<String> stringArgs = new ArrayList<>();
 		for (int i = 1; i < classificationArguments.size(); i++) {

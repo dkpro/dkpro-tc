@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.liblinear.serialization;
 
 import java.io.File;
 
+import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
@@ -40,7 +41,7 @@ public class LiblinearSerializeModelConnector extends LibsvmDataFormatSerializeM
 	}
 
 	@Override
-	protected void trainModel(File fileTrain) throws Exception {
+	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
 		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
 		double C = LiblinearUtils.getParameterC(classificationArguments);
 		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
