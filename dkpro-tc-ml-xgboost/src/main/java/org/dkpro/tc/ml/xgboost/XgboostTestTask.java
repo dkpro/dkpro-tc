@@ -140,7 +140,6 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	
 	static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("objective=multi:softmax" + "\n");
 		sb.append("task=pred" + "\n");
 		sb.append("test:data=" + data.getAbsolutePath() + "\n");
 		sb.append("model_in=" + model.getAbsolutePath() + "\n");
