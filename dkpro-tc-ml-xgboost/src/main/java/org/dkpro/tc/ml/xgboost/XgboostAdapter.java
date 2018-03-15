@@ -132,10 +132,10 @@ import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
 				'grow_skmaker': uses the approximate sketching algorithm.
 				'sync': synchronizes trees in all distributed nodes.
 				'refresh': refreshes tree's statistics and/or leaf values based on the current data. Note that no random subsampling of data rows is performed.
-				'prune': prunes the splits where loss < min_split_loss (or gamma).
+				'prune': prunes the splits where loss &lt; min_split_loss (or gamma).
 			In a distributed setting, the implicit updater sequence value would be adjusted as follows:
 			'grow_histmaker,prune' when dsplit='row' (or default) and prob_buffer_row == 1 (or default); or when data has multiple sparse pages
-			'grow_histmaker,refresh,prune' when dsplit='row' and prob_buffer_row < 1
+			'grow_histmaker,refresh,prune' when dsplit='row' and prob_buffer_row &lt; 1
 			'distcol' when dsplit='col'
 			
 	refresh_leaf, [default=1]
