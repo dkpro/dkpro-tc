@@ -66,7 +66,7 @@ public class JsonDataWriter implements DataWriter, Constants {
 			Iterator<Instance> iterator = instances.iterator();
 			while (iterator.hasNext()) {
 				Instance next = iterator.next();
-				bw.write(gson.toJson(next) + System.lineSeparator());
+				bw.write(gson.toJson(next) + "\n");
 			}
 			bw.close();
 			bw = null;

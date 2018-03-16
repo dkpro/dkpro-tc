@@ -82,7 +82,7 @@ public class LibsvmDataFormatWriter implements DataWriter {
 			// bulk-write - in sequence mode this keeps the instances together
 			// that belong to the same sequence!
 			Instance[] array = instances.toArray(new Instance[0]);
-			bw.write(gson.toJson(array) + System.lineSeparator());
+			bw.write(gson.toJson(array) + "\n");
 		} catch (Exception e) {
 			throw new AnalysisEngineProcessException(e);
 		} finally {

@@ -100,7 +100,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 				String token = line.substring(0, indexOf);
 
 				if (vocabulary.contains(token)) {
-					writer.write(line + System.lineSeparator());
+					writer.write(line + "\n");
 					vocabulary.remove(token);
 				}
 				if (lenVec < 0) {
@@ -110,7 +110,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 			}
 
 			for (String k : vocabulary) {
-				writer.write(k + " " + randomVector(lenVec) + System.lineSeparator());
+				writer.write(k + " " + randomVector(lenVec) + "\n");
 			}
 		} finally {
 			IOUtils.closeQuietly(writer);
@@ -154,7 +154,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 			String vector = line.substring(indexOf + 1);
 
 			if (tokenIdMap.containsKey(token)) {
-				writer.write(tokenIdMap.get(token) + " " + vector + System.lineSeparator());
+				writer.write(tokenIdMap.get(token) + " " + vector + "\n");
 				tokenIdMap.remove(token);
 			}
 			if (lenVec < 0) {
@@ -163,7 +163,7 @@ public class EmbeddingTask extends ExecutableTaskBase {
 		}
 
 		for(Entry<String,String> e : tokenIdMap.entrySet()) {
-			writer.write(e.getValue() + " " + randomVector(lenVec) + System.lineSeparator());
+			writer.write(e.getValue() + " " + randomVector(lenVec) + "\n");
 		}
 
 		writer.close();

@@ -68,7 +68,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 			File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
 			File file = new File(folder, FILENAME_OUTCOMES);
 			List<String> outcomes = FileUtils.readLines(file, "utf-8");
-			parameters.add("num_class=" + outcomes.size() + System.lineSeparator());
+			parameters.add("num_class=" + outcomes.size() + "\n");
 		}
 		
 		return parameters;
@@ -115,12 +115,12 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	
 	public static String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("task=train" + System.lineSeparator());
-		sb.append("data=\"" + flipBackslash(train.getAbsolutePath()) + "\""+ System.lineSeparator());
-		sb.append("model_out=\"" + flipBackslash(model.getAbsolutePath()) + "\""+ System.lineSeparator());
+		sb.append("task=train" + "\n");
+		sb.append("data=\"" + flipBackslash(train.getAbsolutePath()) + "\""+ "\n");
+		sb.append("model_out=\"" + flipBackslash(model.getAbsolutePath()) + "\""+ "\n");
 		
 		for(String p : parameter) {
-			sb.append(p + System.lineSeparator());
+			sb.append(p + "\n");
 		}
 		
 		return sb.toString();
@@ -147,10 +147,10 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	
 	static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception {
 		StringBuilder sb = new StringBuilder();
-		sb.append("task=pred" + System.lineSeparator());
-		sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + System.lineSeparator());
-		sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + System.lineSeparator());
-		sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + System.lineSeparator());
+		sb.append("task=pred" + "\n");
+		sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + "\n");
+		sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
+		sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + "\n");
 		return sb.toString();
 	}
 
@@ -168,7 +168,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 			checkNoDataCondition(pred, tmpPrediction);
 			checkNoDataCondition(gold, fileTest);
 			
-			bw.write("#PREDICTION;GOLD" + System.lineSeparator());
+			bw.write("#PREDICTION;GOLD" + "\n");
 			for (int i = 0; i < gold.size(); i++) {
 				String p = pred.get(i);
 				String g = gold.get(i);

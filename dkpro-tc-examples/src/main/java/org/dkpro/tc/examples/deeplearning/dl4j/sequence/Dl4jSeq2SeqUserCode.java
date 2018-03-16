@@ -107,7 +107,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 				toDataSet(testVec, testOutcome, maxLen, maxTagsetSize, embedding));
 		DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
 		StringBuilder sb = new StringBuilder();
-		sb.append("#Gold\tPrediction" + System.lineSeparator());
+		sb.append("#Gold\tPrediction" + "\n");
 		// Run evaluation. This is on 25k reviews, so can take some time
 		while (iTest.hasNext()) {
 			DataSet t = iTest.next();
@@ -162,7 +162,7 @@ public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
 		for (int i = 0; i < nExamples; i++) {
 			int actual = (int) realOutcomeIndex.getDouble(i);
 			int predicted = (int) guessIndex.getDouble(i);
-			sb.append(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted] + System.lineSeparator());
+			sb.append(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted] + "\n");
 		}
 	}
 

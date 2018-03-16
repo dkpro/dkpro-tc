@@ -59,7 +59,7 @@ public class CrfSuiteDataWriter implements DataWriter {
 			// that
 			// belong to the same sequence!
 			Instance[] array = instances.toArray(new Instance[0]);
-			bw.write(gson.toJson(array) + System.lineSeparator());
+			bw.write(gson.toJson(array) + "\n");
 
 			bw.close();
 			bw = null;

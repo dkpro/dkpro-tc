@@ -76,7 +76,7 @@ public class FeatureMetaData implements Constants {
 				sb.append("\t" + enumFeatureName.get(k));
 			}
 			
-			sb.append(System.lineSeparator());
+			sb.append("\n");
 		}
 		return sb.toString();
 	}

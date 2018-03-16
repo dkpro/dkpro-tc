@@ -110,14 +110,14 @@ public class UniformClassDistributionFilter
 				for (Instance i : ins) {
 					// write the minimal class
 					if (minOutcome.equals(i.getOutcome())) {
-						writer.write(line + System.lineSeparator());
+						writer.write(line + "\n");
 						lineId++;
 						continue;
 					}
 
 					boolean write = outcomeLineMap.get(i.getOutcome()).contains(lineId);
 					if (write) {
-						writer.write(line + System.lineSeparator());
+						writer.write(line + "\n");
 					}
 				}
 				lineId++;

@@ -35,7 +35,7 @@ public class DocumentMetaLogger implements Constants {
 	}
 
 	public void write(String s) throws IOException {
-		logger.write(s + System.lineSeparator());
+		logger.write(s + "\n");
 	}
 
 	public void close() throws IOException {

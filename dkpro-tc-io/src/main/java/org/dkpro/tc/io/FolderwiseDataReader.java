@@ -51,7 +51,7 @@ public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase 
 
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				buffer.append(line + System.lineSeparator());
+				buffer.append(line + "\n");
 			}
 
 			String text = buffer.toString().trim();

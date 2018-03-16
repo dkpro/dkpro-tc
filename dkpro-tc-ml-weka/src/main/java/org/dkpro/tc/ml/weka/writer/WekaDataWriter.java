@@ -108,7 +108,7 @@ public class WekaDataWriter implements DataWriter, Constants {
 		try {
 			initGeneric();
 
-			bw.write(gson.toJson(instances.toArray(new Instance[0])) + System.lineSeparator());
+			bw.write(gson.toJson(instances.toArray(new Instance[0])) + "\n");
 
 			bw.close();
 			bw = null;

@@ -102,7 +102,7 @@ public class Dl4jDocumentUserCode
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Gold\tPrediction" + System.lineSeparator());
+        sb.append("#Gold\tPrediction" + "\n");
         // Run evaluation. This is on 25k reviews, so can take some time
         while (iTest.hasNext()) {
             DataSet t = iTest.next();
@@ -140,7 +140,7 @@ public class Dl4jDocumentUserCode
         for (int i = 0; i < nExamples; i++) {
             int actual = (int) realOutcomeIndex.getDouble(i);
             int predicted = (int) guessIndex.getDouble(i);
-            sb.append(actual + "\t" + predicted + System.lineSeparator());
+            sb.append(actual + "\t" + predicted + "\n");
         }
     }
 }
