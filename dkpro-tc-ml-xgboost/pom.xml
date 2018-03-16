@@ -41,7 +41,7 @@
 			<dependency>
 				<groupId>org.dkpro.tc</groupId>
 				<artifactId>org.dkpro.tc.ml.xgboost-bin</artifactId>
-				<version>20171230.1</version>
+				<version>20171230.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
