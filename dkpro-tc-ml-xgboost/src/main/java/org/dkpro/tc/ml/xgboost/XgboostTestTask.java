@@ -98,7 +98,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	}
 	
 	private static String flipBackslash(String s) {
-		return s.replaceAll("\\", "/");
+		//escaping regex-backslash is a bit redundant i.e. matches a single char-backslash to replace it with a forwards-slash
+		return s.replaceAll("\\\\", "/");
 	}
 
 	static File writeConfigFile(File parentFile, String fileName, String content) throws Exception {
