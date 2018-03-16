@@ -40,6 +40,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 
+import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constants {
@@ -76,6 +77,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 
 	@Override
 	protected Object trainModel(TaskContext aContext) throws Exception {
+		
+		catchWindows32BitUsers();
 
 		File fileTrain = getTrainFile(aContext);
 		File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
@@ -97,6 +100,13 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		return model;
 	}
 	
+	private void catchWindows32BitUsers() {
+		PlatformDetector pd = new PlatformDetector();
+		if (pd.getOs().equals(PlatformDetector.OS_WINDOWS) && pd.getArch().equals(PlatformDetector.ARCH_X86_32)) {
+			throw new UnsupportedOperationException("Xgboost is not available for 32bit Windows OS. Please use a 64bit version.");
+		}
+	}
+
 	private static String flipBackslash(String s) {
 		//escaping regex-backslash is a bit redundant i.e. matches a single char-backslash to replace it with a forwards-slash
 		return s.replaceAll("\\\\", "/");
