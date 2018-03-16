@@ -103,7 +103,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	private void catchWindows32BitUsers() {
 		PlatformDetector pd = new PlatformDetector();
 		if (pd.getOs().equals(PlatformDetector.OS_WINDOWS) && pd.getArch().equals(PlatformDetector.ARCH_X86_32)) {
-			throw new UnsupportedOperationException("Xgboost is not available for 32bit Windows OS. Please use a 64bit version.");
+			throw new UnsupportedOperationException("Xgboost is not available for 32bit Windows operating systems. Please use a 64bit version.");
 		}
 	}
 
