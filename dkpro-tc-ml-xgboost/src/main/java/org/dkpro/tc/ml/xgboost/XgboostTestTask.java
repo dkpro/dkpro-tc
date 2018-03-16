@@ -133,6 +133,10 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		List<String> predictionCommand = new ArrayList<>();
 		predictionCommand.add(executable.getAbsolutePath());
 		predictionCommand.add(file.getAbsolutePath());
+		
+		System.err.println(content);
+		System.err.println(predictionCommand);
+		
 		runCommand(predictionCommand);
 		
 		mergePredictionWithGold(aContext, prediction);
@@ -207,7 +211,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		String now = df.format(today);
 
 		File createTempFile = FileUtil.createTempFile("xgboostPrediction" + now, ".txt");
-		createTempFile.deleteOnExit();
+//		createTempFile.deleteOnExit();
 		return createTempFile;
 	}
 }
