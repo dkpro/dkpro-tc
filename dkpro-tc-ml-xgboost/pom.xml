@@ -28,12 +28,6 @@
 	<repository>
 		<id>tmp</id>
 		<url>http://134.91.18.140:34001/artifactory/models/</url>
-		<releases>
-			<enabled>false</enabled>
-		</releases>
-		<snapshots>
-			<enabled>true</enabled>
-		</snapshots>
 	</repository>
 </repositories>
 	<dependencyManagement>
