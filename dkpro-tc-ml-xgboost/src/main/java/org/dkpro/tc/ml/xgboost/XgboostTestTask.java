@@ -84,22 +84,23 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		String content = buildTrainConfigFile(fileTrain, model, parameters);
 		File executable = getExecutable();
 		
-		File configFile = writeConfigFile(executable.getParentFile(), "train.conf", content);
+		File file = writeConfigFile(executable.getParentFile(), "train.conf", content);
 		
 		List<String> command = new ArrayList<>();
-		command.add(executable.getAbsolutePath());
-		command.add(configFile.getAbsolutePath());
-		
-		System.out.println(content);
-		System.out.println(command);
+		command.add(flipBackslash(executable.getAbsolutePath()));
+		command.add(flipBackslash(file.getAbsolutePath()));
 		
 		runCommand(command);
 		
-		FileUtils.deleteQuietly(configFile);
+		FileUtils.deleteQuietly(file);
 		 
 		return model;
 	}
 	
+	private static String flipBackslash(String s) {
+		return s.replaceAll("\\", "/");
+	}
+
 	static File writeConfigFile(File parentFile, String fileName, String content) throws Exception {
 		File config = new File(parentFile, fileName);
 		FileUtils.writeStringToFile(config, content, "utf-8");
@@ -114,8 +115,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	public static String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("task=train" + System.lineSeparator());
-		sb.append("data=\"" + train.getAbsolutePath() + "\""+ System.lineSeparator());
-		sb.append("model_out=\"" + model.getAbsolutePath() + "\""+ System.lineSeparator());
+		sb.append("data=\"" + flipBackslash(train.getAbsolutePath()) + "\""+ System.lineSeparator());
+		sb.append("model_out=\"" + flipBackslash(model.getAbsolutePath()) + "\""+ System.lineSeparator());
 		
 		for(String p : parameter) {
 			sb.append(p + System.lineSeparator());
@@ -135,11 +136,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		File file = writeConfigFile(executable.getParentFile(), "predict.conf", content);
 		
 		List<String> command = new ArrayList<>();
-		command.add(executable.getAbsolutePath());
-		command.add(file.getAbsolutePath());
-		
-		System.out.println(content);
-		System.out.println(command);
+		command.add(flipBackslash(executable.getAbsolutePath()));
+		command.add(flipBackslash(file.getAbsolutePath()));
 		
 		runCommand(command);
 		
@@ -149,9 +147,9 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("task=pred" + System.lineSeparator());
-		sb.append("test:data=\"" + data.getAbsolutePath() + "\"" + System.lineSeparator());
-		sb.append("model_in=\"" + model.getAbsolutePath() + "\"" + System.lineSeparator());
-		sb.append("name_pred=\"" + predictionOut.getAbsolutePath() + "\"" + System.lineSeparator());
+		sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + System.lineSeparator());
+		sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + System.lineSeparator());
+		sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + System.lineSeparator());
 		return sb.toString();
 	}
 
