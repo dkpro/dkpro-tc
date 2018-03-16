@@ -86,11 +86,14 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		
 		File configFile = writeConfigFile(executable.getParentFile(), "train.conf", content);
 		
-		List<String> trainCommand = new ArrayList<>();
-		trainCommand.add(executable.getAbsolutePath());
-		trainCommand.add(configFile.getAbsolutePath());
+		List<String> command = new ArrayList<>();
+		command.add(executable.getAbsolutePath());
+		command.add(configFile.getAbsolutePath());
 		
-		runCommand(trainCommand);
+		System.out.println(content);
+		System.out.println(command);
+		
+		runCommand(command);
 		
 		FileUtils.deleteQuietly(configFile);
 		 
@@ -131,11 +134,14 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		
 		File file = writeConfigFile(executable.getParentFile(), "predict.conf", content);
 		
-		List<String> predictionCommand = new ArrayList<>();
-		predictionCommand.add(executable.getAbsolutePath());
-		predictionCommand.add(file.getAbsolutePath());
+		List<String> command = new ArrayList<>();
+		command.add(executable.getAbsolutePath());
+		command.add(file.getAbsolutePath());
 		
-		runCommand(predictionCommand);
+		System.out.println(content);
+		System.out.println(command);
+		
+		runCommand(command);
 		
 		mergePredictionWithGold(aContext, prediction);
 	}
