@@ -81,14 +81,15 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
 		
 		List<String> parameters = getClassificationParameters(aContext, classificationArguments, learningMode);
-		String configContent = buildTrainConfigFile(fileTrain, model, parameters);
+		String content = buildTrainConfigFile(fileTrain, model, parameters);
 		File executable = getExecutable();
 		
-		File configFile = writeConfigFile(executable.getParentFile(), "train.conf", configContent);
+		File configFile = writeConfigFile(executable.getParentFile(), "train.conf", content);
 		
 		List<String> trainCommand = new ArrayList<>();
 		trainCommand.add(executable.getAbsolutePath());
 		trainCommand.add(configFile.getAbsolutePath());
+		
 		runCommand(trainCommand);
 		
 		FileUtils.deleteQuietly(configFile);
@@ -110,8 +111,8 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	public static String buildTrainConfigFile(File train, File model, List<String> parameter) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("task=train" + "\n");
-		sb.append("data=" + train.getAbsolutePath() + "\n");
-		sb.append("model_out=" + model.getAbsolutePath() + "\n");
+		sb.append("data=\"" + train.getAbsolutePath() + "\"\n");
+		sb.append("model_out=\"" + model.getAbsolutePath() + "\"\n");
 		
 		for(String p : parameter) {
 			sb.append(p + "\n");
@@ -134,9 +135,6 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		predictionCommand.add(executable.getAbsolutePath());
 		predictionCommand.add(file.getAbsolutePath());
 		
-		System.err.println(content);
-		System.err.println(predictionCommand);
-		
 		runCommand(predictionCommand);
 		
 		mergePredictionWithGold(aContext, prediction);
@@ -145,9 +143,9 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 	static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("task=pred" + "\n");
-		sb.append("test:data=" + data.getAbsolutePath() + "\n");
-		sb.append("model_in=" + model.getAbsolutePath() + "\n");
-		sb.append("name_pred=" + predictionOut.getAbsolutePath() + "\n");
+		sb.append("test:data=\"" + data.getAbsolutePath() + "\"\n");
+		sb.append("model_in=\"" + model.getAbsolutePath() + "\"\n");
+		sb.append("name_pred=\"" + predictionOut.getAbsolutePath() + "\"\n");
 		return sb.toString();
 	}
 
@@ -211,7 +209,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 		String now = df.format(today);
 
 		File createTempFile = FileUtil.createTempFile("xgboostPrediction" + now, ".txt");
-//		createTempFile.deleteOnExit();
+		createTempFile.deleteOnExit();
 		return createTempFile;
 	}
 }
