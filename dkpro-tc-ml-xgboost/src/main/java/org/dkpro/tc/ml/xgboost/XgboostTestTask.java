@@ -68,7 +68,7 @@ public class XgboostTestTask extends LibsvmDataFormatTestTask implements Constan
 			File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
 			File file = new File(folder, FILENAME_OUTCOMES);
 			List<String> outcomes = FileUtils.readLines(file, "utf-8");
-			parameters.add("num_class=" + outcomes.size() + "\n");
+			parameters.add("num_class=" + outcomes.size() + System.lineSeparator());
 		}
 		
 		return parameters;
