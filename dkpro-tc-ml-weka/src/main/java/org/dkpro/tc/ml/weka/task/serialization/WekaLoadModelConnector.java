@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
@@ -102,28 +103,27 @@ public class WekaLoadModelConnector
         }
     }
     
-    private String initBipartitionThreshold(File tcModelLocation)
-            throws FileNotFoundException, IOException
-        {
-            File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
-            Properties prop = new Properties();
+	private String initBipartitionThreshold(File tcModelLocation) throws FileNotFoundException, IOException {
+		File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+		Properties prop = new Properties();
 
-            FileInputStream fis = new FileInputStream(file);
-            prop.load(fis);
-            fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			prop.load(fis);
+		} finally {
+			IOUtils.closeQuietly(fis);
+		}
 
-            return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
-        }
+		return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+	}
 
-    private void loadClassLabels()
-        throws IOException
-    {
-        classLabels = new ArrayList<>();
-        for (String classLabel : FileUtils
-                .readLines(new File(tcModelLocation, MODEL_CLASS_LABELS), "utf-8")) {
-            classLabels.add(classLabel);
-        }
-    }
+	private void loadClassLabels() throws IOException {
+		classLabels = new ArrayList<>();
+		for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS), "utf-8")) {
+			classLabels.add(classLabel);
+		}
+	}
 
     private void loadTrainingData()
         throws IOException, ClassNotFoundException
