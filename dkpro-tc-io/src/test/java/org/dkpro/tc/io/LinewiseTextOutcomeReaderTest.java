@@ -31,29 +31,35 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
-public class LinewiseTextOutcomeReaderTest {
+public class LinewiseTextOutcomeReaderTest
+{
 
-	@Test
-	public void testReader() throws Exception {
+    @Test
+    public void testReader() throws Exception
+    {
 
-		CollectionReader reader = CollectionReaderFactory.createReader(LinewiseTextOutcomeReader.class,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 2, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/semEval2017Task4/",
-				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 2,
+                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/semEval2017Task4/", LinewiseTextOutcomeReader.PARAM_PATTERNS,
+                "*.txt");
 
-		List<String> readDocumentSpans = new ArrayList<>();
-		List<String> readOutcomes = new ArrayList<>();
+        List<String> readDocumentSpans = new ArrayList<>();
+        List<String> readOutcomes = new ArrayList<>();
 
-		while (reader.hasNext()) {
-			JCas emptyCas = JCasFactory.createJCas();
-			reader.getNext(emptyCas.getCas());
+        while (reader.hasNext()) {
+            JCas emptyCas = JCasFactory.createJCas();
+            reader.getNext(emptyCas.getCas());
 
-			readDocumentSpans.add(JCasUtil.selectSingle(emptyCas, TextClassificationTarget.class).getCoveredText());
-			readOutcomes.add(JCasUtil.selectSingle(emptyCas, TextClassificationOutcome.class).getOutcome());
-		}
+            readDocumentSpans.add(JCasUtil.selectSingle(emptyCas, TextClassificationTarget.class)
+                    .getCoveredText());
+            readOutcomes.add(
+                    JCasUtil.selectSingle(emptyCas, TextClassificationOutcome.class).getOutcome());
+        }
 
-		assertEquals(15, readDocumentSpans.size());
-		assertEquals(15, readOutcomes.size());
-	}
+        assertEquals(15, readDocumentSpans.size());
+        assertEquals(15, readOutcomes.size());
+    }
 
 }

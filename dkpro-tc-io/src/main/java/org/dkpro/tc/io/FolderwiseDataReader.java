@@ -29,49 +29,56 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 
 /**
- * This reader is suited when several text documents (without any labels) are
- * placed in a folder and the folder name is a suited label. 
+ * This reader is suited when several text documents (without any labels) are placed in a folder and
+ * the folder name is a suited label.
  * 
  * The text of a file in a folder is read as self-contained document into a JCas and the entire
- * text-span is {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is
- * set as {@link org.dkpro.tc.api.type.TextClassificationOutcome}.
+ * text-span is {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is set as
+ * {@link org.dkpro.tc.api.type.TextClassificationOutcome}.
  */
-public class FolderwiseDataReader extends JCasResourceCollectionReader_ImplBase {
+public class FolderwiseDataReader
+    extends JCasResourceCollectionReader_ImplBase
+{
 
-	@Override
-	public void getNext(JCas aJCas) throws IOException, CollectionException {
+    @Override
+    public void getNext(JCas aJCas) throws IOException, CollectionException
+    {
 
-		Resource currentFile = nextFile();
+        Resource currentFile = nextFile();
 
-		initCas(aJCas, currentFile);
+        initCas(aJCas, currentFile);
 
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(currentFile.getInputStream(), "utf-8"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(currentFile.getInputStream(), "utf-8"))) {
 
-			StringBuilder buffer = new StringBuilder();
+            StringBuilder buffer = new StringBuilder();
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line + "\n");
-			}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line + "\n");
+            }
 
-			String text = buffer.toString().trim();
-			
-			setTextClassificationTarget(aJCas, currentFile, 0, text.length());
-			setTextClassificationOutcome(aJCas, currentFile, 0, text.length());
+            String text = buffer.toString().trim();
 
-			aJCas.setDocumentText(text.trim());
-		}
-	}
+            setTextClassificationTarget(aJCas, currentFile, 0, text.length());
+            setTextClassificationOutcome(aJCas, currentFile, 0, text.length());
 
-	protected void setTextClassificationTarget(JCas aJCas, Resource currentFile, int begin, int end) {
-		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
-		aTarget.addToIndexes();
-	}
+            aJCas.setDocumentText(text.trim());
+        }
+    }
 
-	protected void setTextClassificationOutcome(JCas aJCas, Resource currentFile, int begin, int end)
-			throws IOException {
-		TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
-		tco.setOutcome(currentFile.getResource().getFile().getParentFile().getName());
-		tco.addToIndexes();
-	}
+    protected void setTextClassificationTarget(JCas aJCas, Resource currentFile, int begin, int end)
+    {
+        TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
+        aTarget.addToIndexes();
+    }
+
+    protected void setTextClassificationOutcome(JCas aJCas, Resource currentFile, int begin,
+            int end)
+        throws IOException
+    {
+        TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
+        tco.setOutcome(currentFile.getResource().getFile().getParentFile().getName());
+        tco.addToIndexes();
+    }
 }

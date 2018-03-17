@@ -38,9 +38,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * This reader reads a common data format for sequence classification tasks, for
- * instance Part-of-Speech tagging, where each token is associated with an own
- * outcome e.g.:
+ * This reader reads a common data format for sequence classification tasks, for instance
+ * Part-of-Speech tagging, where each token is associated with an own outcome e.g.:
  * 
  * <pre>
  * 		The TAB DET
@@ -52,188 +51,205 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * 		shines	TAB VERB
  * </pre>
  * 
- * Each token is annotated as
- * {@link org.dkpro.tc.api.type.TextClassificationTarget} and the outcome is
- * annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}. An
- * empty lines separates consecutive sequences which are annotated as
- * {@link org.dkpro.tc.api.type.TextClassificationSequence}. The tokens are
- * additionally annotated as
- * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token} and the
- * sequence as
- * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence} Each
- * sequence is read into an own JCas.
+ * Each token is annotated as {@link org.dkpro.tc.api.type.TextClassificationTarget} and the outcome
+ * is annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}. An empty lines separates
+ * consecutive sequences which are annotated as
+ * {@link org.dkpro.tc.api.type.TextClassificationSequence}. The tokens are additionally annotated
+ * as {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token} and the sequence as
+ * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence} Each sequence is read into
+ * an own JCas.
  */
-public class SequenceOutcomeReader extends JCasResourceCollectionReader_ImplBase {
+public class SequenceOutcomeReader
+    extends JCasResourceCollectionReader_ImplBase
+{
 
-	/**
-	 * The separating character that separates textual information from its
-	 * outcome, i.e. a label or a numerical value. Defaults to TAB
-	 */
-	public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
-	@ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
-	private String separatingChar;
+    /**
+     * The separating character that separates textual information from its outcome, i.e. a label or
+     * a numerical value. Defaults to TAB
+     */
+    public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
+    @ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
+    private String separatingChar;
 
-	public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
-	@ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
-	private String skipLinePrefix;
-	
-	public static final String PARAM_TOKEN_INDEX = "PARAM_TOKEN_INDEX";
-	@ConfigurationParameter(name = PARAM_TOKEN_INDEX, mandatory = true, defaultValue = "0")
-	private Integer tokenIdx;
+    public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
+    @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
+    private String skipLinePrefix;
 
-	public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
-	@ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
-	private Integer outcomeIdx;
+    public static final String PARAM_TOKEN_INDEX = "PARAM_TOKEN_INDEX";
+    @ConfigurationParameter(name = PARAM_TOKEN_INDEX, mandatory = true, defaultValue = "0")
+    private Integer tokenIdx;
 
-	private BufferedReader reader;
+    public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
+    @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
+    private Integer outcomeIdx;
 
-	private List<String> nextSequence = null;
-	private String line = null;
+    private BufferedReader reader;
 
-	private int runningId = 0;
+    private List<String> nextSequence = null;
+    private String line = null;
 
-	@Override
-	public void getNext(JCas aJCas) throws IOException, CollectionException {
+    private int runningId = 0;
 
-		initializeJCas(aJCas);
+    @Override
+    public void getNext(JCas aJCas) throws IOException, CollectionException
+    {
 
-		StringBuilder documentText = new StringBuilder();
+        initializeJCas(aJCas);
 
-		int seqStart = documentText.length();
-		for(int i=0; i < nextSequence.size(); i++){
-			String e = nextSequence.get(i);
-			String[] entry = e.split(separatingChar);
-			
-			String token = entry[tokenIdx];
-			String outcome = entry[outcomeIdx];
-			
-			int tokStart = documentText.length();
-			int tokEnd = tokStart + token.length();
-			
-			setToken(aJCas, tokStart, tokEnd);
-			setTextClassificationTarget(aJCas, tokStart, tokEnd);
-			setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
-			
-			documentText.append(token);
-			if (i + 1 < nextSequence.size()) {
-				documentText.append(" ");
-			}
-		}
-		
-		setTextClassificationSequence(aJCas, seqStart, documentText.length());
-		setSentence(aJCas, seqStart, documentText.length());
-		aJCas.setDocumentText(documentText.toString());
-	}
+        StringBuilder documentText = new StringBuilder();
 
-	private void setToken(JCas aJCas, int begin, int end) {
-		Token token = new Token(aJCas, begin, end);
-		token.addToIndexes();
-	}
+        int seqStart = documentText.length();
+        for (int i = 0; i < nextSequence.size(); i++) {
+            String e = nextSequence.get(i);
+            String[] entry = e.split(separatingChar);
 
-	private void setSentence(JCas aJCas, int begin, int end) {
-		Sentence sentence = new Sentence(aJCas, begin, end);
-		sentence.addToIndexes();
-	}
+            String token = entry[tokenIdx];
+            String outcome = entry[outcomeIdx];
 
-	protected void setTextClassificationTarget(JCas aJCas, int begin, int end) {
-		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
-		aTarget.addToIndexes();
-	}
+            int tokStart = documentText.length();
+            int tokEnd = tokStart + token.length();
 
-	protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end) throws IOException {
-		TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
-		tco.setOutcome(outcome);
-		tco.addToIndexes();
-	}
-	
-	protected void setTextClassificationSequence(JCas aJCas, int begin, int end) {
-		TextClassificationSequence aSequence = new TextClassificationSequence(aJCas, begin, end);
-		aSequence.addToIndexes();
-	}
-	
+            setToken(aJCas, tokStart, tokEnd);
+            setTextClassificationTarget(aJCas, tokStart, tokEnd);
+            setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
 
-	protected void initializeJCas(JCas aJCas) {
-		DocumentMetaData data = new DocumentMetaData(aJCas);
-		data.setDocumentId(runningId + "");
-		data.addToIndexes();
+            documentText.append(token);
+            if (i + 1 < nextSequence.size()) {
+                documentText.append(" ");
+            }
+        }
 
-		runningId++;
-	}
+        setTextClassificationSequence(aJCas, seqStart, documentText.length());
+        setSentence(aJCas, seqStart, documentText.length());
+        aJCas.setDocumentText(documentText.toString());
+    }
 
-	@Override
-	public boolean hasNext() {
+    private void setToken(JCas aJCas, int begin, int end)
+    {
+        Token token = new Token(aJCas, begin, end);
+        token.addToIndexes();
+    }
 
-		if (reader == null) {
-			Resource nextFile = getNextResource();
-			if (nextFile == null) {
-				return false;
-			}
-			initReader(nextFile);
-		}
+    private void setSentence(JCas aJCas, int begin, int end)
+    {
+        Sentence sentence = new Sentence(aJCas, begin, end);
+        sentence.addToIndexes();
+    }
 
-		nextSequence = read();
+    protected void setTextClassificationTarget(JCas aJCas, int begin, int end)
+    {
+        TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
+        aTarget.addToIndexes();
+    }
 
-		if (nextSequence.isEmpty()) {
-			close();
-			reader = null;
-			return hasNext();
-		}
+    protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end)
+        throws IOException
+    {
+        TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
+        tco.setOutcome(outcome);
+        tco.addToIndexes();
+    }
 
-		return true;
-	}
+    protected void setTextClassificationSequence(JCas aJCas, int begin, int end)
+    {
+        TextClassificationSequence aSequence = new TextClassificationSequence(aJCas, begin, end);
+        aSequence.addToIndexes();
+    }
 
-	protected Resource getNextResource() {
-		Resource next = null;
-		try {
-			next = nextFile();
-		} catch (Exception e) {
-			LogFactory.getLog(getClass()).debug("No more resources to be read");
-		}
-		return next;
-	}
+    protected void initializeJCas(JCas aJCas)
+    {
+        DocumentMetaData data = new DocumentMetaData(aJCas);
+        data.setDocumentId(runningId + "");
+        data.addToIndexes();
 
-	protected List<String> read() {
-		
-		List<String> buffer = new ArrayList<>();
-		try {
-			while (sequenceIncomplete()) {
-				if (skipElement()) {
-					continue;
-				}
+        runningId++;
+    }
 
-				buffer.add(line);
-			}
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
-		
-		return buffer;
-	}
+    @Override
+    public boolean hasNext()
+    {
 
-	private boolean skipElement() {
-		return skipLinePrefix != null && line.startsWith(skipLinePrefix);
-	}
+        if (reader == null) {
+            Resource nextFile = getNextResource();
+            if (nextFile == null) {
+                return false;
+            }
+            initReader(nextFile);
+        }
 
-	private boolean sequenceIncomplete() throws IOException {
-		return (line = reader.readLine()) != null && !line.isEmpty();
-	}
+        nextSequence = read();
 
-	protected void initReader(Resource nextFile) {
-		try {
-			reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), "utf-8"));
-		} catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
+        if (nextSequence.isEmpty()) {
+            close();
+            reader = null;
+            return hasNext();
+        }
 
-	@Override
-	public void close() {
-		try {
-			IOUtils.closeQuietly(reader);
-			super.close();
-		} catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
+        return true;
+    }
+
+    protected Resource getNextResource()
+    {
+        Resource next = null;
+        try {
+            next = nextFile();
+        }
+        catch (Exception e) {
+            LogFactory.getLog(getClass()).debug("No more resources to be read");
+        }
+        return next;
+    }
+
+    protected List<String> read()
+    {
+
+        List<String> buffer = new ArrayList<>();
+        try {
+            while (sequenceIncomplete()) {
+                if (skipElement()) {
+                    continue;
+                }
+
+                buffer.add(line);
+            }
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+        return buffer;
+    }
+
+    private boolean skipElement()
+    {
+        return skipLinePrefix != null && line.startsWith(skipLinePrefix);
+    }
+
+    private boolean sequenceIncomplete() throws IOException
+    {
+        return (line = reader.readLine()) != null && !line.isEmpty();
+    }
+
+    protected void initReader(Resource nextFile)
+    {
+        try {
+            reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), "utf-8"));
+        }
+        catch (Exception e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    @Override
+    public void close()
+    {
+        try {
+            IOUtils.closeQuietly(reader);
+            super.close();
+        }
+        catch (Exception e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
 }

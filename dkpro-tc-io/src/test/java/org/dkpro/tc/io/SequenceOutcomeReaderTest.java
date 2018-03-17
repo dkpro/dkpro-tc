@@ -33,190 +33,200 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
-public class SequenceOutcomeReaderTest {
+public class SequenceOutcomeReaderTest
+{
 
-	@Test
-	public void testReader() throws Exception {
+    @Test
+    public void testReader() throws Exception
+    {
 
-		CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-				SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
-				SequenceOutcomeReader.PARAM_PATTERNS, "posDummy.txt");
+        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+                SequenceOutcomeReader.PARAM_PATTERNS, "posDummy.txt");
 
-		List<List<String>> readSequences = new ArrayList<>();
-		List<List<String>> readOutcomes = new ArrayList<>();
+        List<List<String>> readSequences = new ArrayList<>();
+        List<List<String>> readOutcomes = new ArrayList<>();
 
-		int seqTargets=0;
-		
-		while (reader.hasNext()) {
-			JCas theJCas = JCasFactory.createJCas();
-			reader.getNext(theJCas.getCas());
+        int seqTargets = 0;
 
-			Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas, TextClassificationTarget.class);
-			List<String> tokens = new ArrayList<>();
-			for(TextClassificationTarget target : targets){
-				tokens.add(target.getCoveredText());
-			}
-			readSequences.add(tokens);
-			
-			Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas, TextClassificationOutcome.class);
-			List<String> outcomes = new ArrayList<>();
-			for(TextClassificationOutcome o : outcomeAnnotations){
-				outcomes.add(o.getOutcome());
-			}
-			readOutcomes.add(outcomes);
-			
-			seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
-		}
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
 
-		assertEquals(3, seqTargets);
-		assertEquals(3, readSequences.size());
-		assertEquals(3, readOutcomes.size());
-		
-		assertEquals(4, readSequences.get(0).size());
-		//1 - tokens
-		assertEquals("This", readSequences.get(0).get(0));
-		assertEquals("is", readSequences.get(0).get(1));
-		assertEquals("a", readSequences.get(0).get(2));
-		assertEquals("test", readSequences.get(0).get(3));
-		//2 - outcomes
-		assertEquals("DET", readOutcomes.get(0).get(0));
-		assertEquals("VERB", readOutcomes.get(0).get(1));
-		assertEquals("DET", readOutcomes.get(0).get(2));
-		assertEquals("NOUN", readOutcomes.get(0).get(3));
-		
-		assertEquals(5, readSequences.get(1).size());
-		//2 - tokens
-		assertEquals("This2", readSequences.get(1).get(0));
-		assertEquals("is2", readSequences.get(1).get(1));
-		assertEquals("a2", readSequences.get(1).get(2));
-		assertEquals("#test2", readSequences.get(1).get(3));
-		assertEquals("!", readSequences.get(1).get(4));
-		//2 - outcomes		
-		assertEquals("DET2", readOutcomes.get(1).get(0));
-		assertEquals("VERB2", readOutcomes.get(1).get(1));
-		assertEquals("DET2", readOutcomes.get(1).get(2));
-		assertEquals("NOUN2", readOutcomes.get(1).get(3));
-		assertEquals("PUNCT2", readOutcomes.get(1).get(4));
-		
-		assertEquals(6, readSequences.get(2).size());
-		//3 - tokens
-		assertEquals("This3", readSequences.get(2).get(0));
-		assertEquals("is3", readSequences.get(2).get(1));
-		assertEquals("a3", readSequences.get(2).get(2));
-		assertEquals("test3", readSequences.get(2).get(3));
-		assertEquals("!", readSequences.get(2).get(4));
-		assertEquals("!", readSequences.get(2).get(5));
-		//3 - outcomes
-		assertEquals("DET3", readOutcomes.get(2).get(0));
-		assertEquals("VERB3", readOutcomes.get(2).get(1));
-		assertEquals("DET3", readOutcomes.get(2).get(2));
-		assertEquals("NOUN3", readOutcomes.get(2).get(3));
-		assertEquals("PUNCT3", readOutcomes.get(2).get(4));
-		assertEquals("PUNCT3", readOutcomes.get(2).get(5));
-	}
-	
-	@Test
-	public void testReaderIndexParameter() throws Exception {
+            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
+                    TextClassificationTarget.class);
+            List<String> tokens = new ArrayList<>();
+            for (TextClassificationTarget target : targets) {
+                tokens.add(target.getCoveredText());
+            }
+            readSequences.add(tokens);
 
-		CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-				SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
-				SequenceOutcomeReader.PARAM_PATTERNS, "otherFormat.txt",
-				SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-				SequenceOutcomeReader.PARAM_TOKEN_INDEX, 2
-				);
+            Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
+                    TextClassificationOutcome.class);
+            List<String> outcomes = new ArrayList<>();
+            for (TextClassificationOutcome o : outcomeAnnotations) {
+                outcomes.add(o.getOutcome());
+            }
+            readOutcomes.add(outcomes);
 
-		List<List<String>> readSequences = new ArrayList<>();
-		List<List<String>> readOutcomes = new ArrayList<>();
+            seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
+        }
 
-		int seqTargets=0;
-		
-		while (reader.hasNext()) {
-			JCas theJCas = JCasFactory.createJCas();
-			reader.getNext(theJCas.getCas());
+        assertEquals(3, seqTargets);
+        assertEquals(3, readSequences.size());
+        assertEquals(3, readOutcomes.size());
 
-			Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas, TextClassificationTarget.class);
-			List<String> tokens = new ArrayList<>();
-			for(TextClassificationTarget target : targets){
-				tokens.add(target.getCoveredText());
-			}
-			readSequences.add(tokens);
-			
-			Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas, TextClassificationOutcome.class);
-			List<String> outcomes = new ArrayList<>();
-			for(TextClassificationOutcome o : outcomeAnnotations){
-				outcomes.add(o.getOutcome());
-			}
-			readOutcomes.add(outcomes);
-			
-			seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
-		}
+        assertEquals(4, readSequences.get(0).size());
+        // 1 - tokens
+        assertEquals("This", readSequences.get(0).get(0));
+        assertEquals("is", readSequences.get(0).get(1));
+        assertEquals("a", readSequences.get(0).get(2));
+        assertEquals("test", readSequences.get(0).get(3));
+        // 2 - outcomes
+        assertEquals("DET", readOutcomes.get(0).get(0));
+        assertEquals("VERB", readOutcomes.get(0).get(1));
+        assertEquals("DET", readOutcomes.get(0).get(2));
+        assertEquals("NOUN", readOutcomes.get(0).get(3));
 
-		assertEquals(2, seqTargets);
-		assertEquals(2, readSequences.size());
-		assertEquals(2, readOutcomes.size());
-		
-		assertEquals(4, readSequences.get(0).size());
-		//1 - tokens
-		assertEquals("This", readSequences.get(0).get(0));
-		assertEquals("is", readSequences.get(0).get(1));
-		assertEquals("a", readSequences.get(0).get(2));
-		assertEquals("test", readSequences.get(0).get(3));
-		//2 - outcomes
-		assertEquals("DET", readOutcomes.get(0).get(0));
-		assertEquals("VERB", readOutcomes.get(0).get(1));
-		assertEquals("DET", readOutcomes.get(0).get(2));
-		assertEquals("NOUN", readOutcomes.get(0).get(3));
-		
-		assertEquals(5, readSequences.get(1).size());
-		//2 - tokens
-		assertEquals("This2", readSequences.get(1).get(0));
-		assertEquals("is2", readSequences.get(1).get(1));
-		assertEquals("a2", readSequences.get(1).get(2));
-		assertEquals("test2", readSequences.get(1).get(3));
-		assertEquals("!2", readSequences.get(1).get(4));
-		//2 - outcomes		
-		assertEquals("DET2", readOutcomes.get(1).get(0));
-		assertEquals("VERB2", readOutcomes.get(1).get(1));
-		assertEquals("DET2", readOutcomes.get(1).get(2));
-		assertEquals("NOUN2", readOutcomes.get(1).get(3));
-		assertEquals("PUNCT2", readOutcomes.get(1).get(4));
-	}
-	
-	@Test
-	public void testSkipLineReader() throws Exception {
+        assertEquals(5, readSequences.get(1).size());
+        // 2 - tokens
+        assertEquals("This2", readSequences.get(1).get(0));
+        assertEquals("is2", readSequences.get(1).get(1));
+        assertEquals("a2", readSequences.get(1).get(2));
+        assertEquals("#test2", readSequences.get(1).get(3));
+        assertEquals("!", readSequences.get(1).get(4));
+        // 2 - outcomes
+        assertEquals("DET2", readOutcomes.get(1).get(0));
+        assertEquals("VERB2", readOutcomes.get(1).get(1));
+        assertEquals("DET2", readOutcomes.get(1).get(2));
+        assertEquals("NOUN2", readOutcomes.get(1).get(3));
+        assertEquals("PUNCT2", readOutcomes.get(1).get(4));
 
-		CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-				SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/posDummy.txt",
-				SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#");
+        assertEquals(6, readSequences.get(2).size());
+        // 3 - tokens
+        assertEquals("This3", readSequences.get(2).get(0));
+        assertEquals("is3", readSequences.get(2).get(1));
+        assertEquals("a3", readSequences.get(2).get(2));
+        assertEquals("test3", readSequences.get(2).get(3));
+        assertEquals("!", readSequences.get(2).get(4));
+        assertEquals("!", readSequences.get(2).get(5));
+        // 3 - outcomes
+        assertEquals("DET3", readOutcomes.get(2).get(0));
+        assertEquals("VERB3", readOutcomes.get(2).get(1));
+        assertEquals("DET3", readOutcomes.get(2).get(2));
+        assertEquals("NOUN3", readOutcomes.get(2).get(3));
+        assertEquals("PUNCT3", readOutcomes.get(2).get(4));
+        assertEquals("PUNCT3", readOutcomes.get(2).get(5));
+    }
 
-		List<List<String>> readSequences = new ArrayList<>();
-		List<List<String>> readOutcomes = new ArrayList<>();
+    @Test
+    public void testReaderIndexParameter() throws Exception
+    {
 
-		while (reader.hasNext()) {
-			JCas theJCas = JCasFactory.createJCas();
-			reader.getNext(theJCas.getCas());
+        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+                SequenceOutcomeReader.PARAM_PATTERNS, "otherFormat.txt",
+                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 1,
+                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 2);
 
-			Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas, TextClassificationTarget.class);
-			List<String> tokens = new ArrayList<>();
-			for(TextClassificationTarget target : targets){
-				tokens.add(target.getCoveredText());
-			}
-			readSequences.add(tokens);
-			
-			Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas, TextClassificationOutcome.class);
-			List<String> outcomes = new ArrayList<>();
-			for(TextClassificationOutcome o : outcomeAnnotations){
-				outcomes.add(o.getOutcome());
-			}
-			readOutcomes.add(outcomes);
-		}
-		
-		assertEquals(4, readSequences.get(1).size());
-		//2 - tokens
-		assertEquals("This2", readSequences.get(1).get(0));
-		assertEquals("is2", readSequences.get(1).get(1));
-		assertEquals("a2", readSequences.get(1).get(2));
-		assertEquals("!", readSequences.get(1).get(3));
-	}
+        List<List<String>> readSequences = new ArrayList<>();
+        List<List<String>> readOutcomes = new ArrayList<>();
+
+        int seqTargets = 0;
+
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+
+            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
+                    TextClassificationTarget.class);
+            List<String> tokens = new ArrayList<>();
+            for (TextClassificationTarget target : targets) {
+                tokens.add(target.getCoveredText());
+            }
+            readSequences.add(tokens);
+
+            Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
+                    TextClassificationOutcome.class);
+            List<String> outcomes = new ArrayList<>();
+            for (TextClassificationOutcome o : outcomeAnnotations) {
+                outcomes.add(o.getOutcome());
+            }
+            readOutcomes.add(outcomes);
+
+            seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
+        }
+
+        assertEquals(2, seqTargets);
+        assertEquals(2, readSequences.size());
+        assertEquals(2, readOutcomes.size());
+
+        assertEquals(4, readSequences.get(0).size());
+        // 1 - tokens
+        assertEquals("This", readSequences.get(0).get(0));
+        assertEquals("is", readSequences.get(0).get(1));
+        assertEquals("a", readSequences.get(0).get(2));
+        assertEquals("test", readSequences.get(0).get(3));
+        // 2 - outcomes
+        assertEquals("DET", readOutcomes.get(0).get(0));
+        assertEquals("VERB", readOutcomes.get(0).get(1));
+        assertEquals("DET", readOutcomes.get(0).get(2));
+        assertEquals("NOUN", readOutcomes.get(0).get(3));
+
+        assertEquals(5, readSequences.get(1).size());
+        // 2 - tokens
+        assertEquals("This2", readSequences.get(1).get(0));
+        assertEquals("is2", readSequences.get(1).get(1));
+        assertEquals("a2", readSequences.get(1).get(2));
+        assertEquals("test2", readSequences.get(1).get(3));
+        assertEquals("!2", readSequences.get(1).get(4));
+        // 2 - outcomes
+        assertEquals("DET2", readOutcomes.get(1).get(0));
+        assertEquals("VERB2", readOutcomes.get(1).get(1));
+        assertEquals("DET2", readOutcomes.get(1).get(2));
+        assertEquals("NOUN2", readOutcomes.get(1).get(3));
+        assertEquals("PUNCT2", readOutcomes.get(1).get(4));
+    }
+
+    @Test
+    public void testSkipLineReader() throws Exception
+    {
+
+        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt",
+                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#");
+
+        List<List<String>> readSequences = new ArrayList<>();
+        List<List<String>> readOutcomes = new ArrayList<>();
+
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+
+            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
+                    TextClassificationTarget.class);
+            List<String> tokens = new ArrayList<>();
+            for (TextClassificationTarget target : targets) {
+                tokens.add(target.getCoveredText());
+            }
+            readSequences.add(tokens);
+
+            Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
+                    TextClassificationOutcome.class);
+            List<String> outcomes = new ArrayList<>();
+            for (TextClassificationOutcome o : outcomeAnnotations) {
+                outcomes.add(o.getOutcome());
+            }
+            readOutcomes.add(outcomes);
+        }
+
+        assertEquals(4, readSequences.get(1).size());
+        // 2 - tokens
+        assertEquals("This2", readSequences.get(1).get(0));
+        assertEquals("is2", readSequences.get(1).get(1));
+        assertEquals("a2", readSequences.get(1).get(2));
+        assertEquals("!", readSequences.get(1).get(3));
+    }
 
 }
