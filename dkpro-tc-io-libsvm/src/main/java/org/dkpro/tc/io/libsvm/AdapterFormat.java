@@ -17,18 +17,22 @@
  ******************************************************************************/
 package org.dkpro.tc.io.libsvm;
 
-public class AdapterFormat {
+public class AdapterFormat
+{
 
-	public static String getOutcomeMappingFilename() {
-		return "outcome-mapping.txt";
-	}
+    public static String getOutcomeMappingFilename()
+    {
+        return "outcome-mapping.txt";
+    }
 
-	public static String getFeatureNameMappingFilename() {
-		return "feature-name-mapping.txt";
-	}
+    public static String getFeatureNameMappingFilename()
+    {
+        return "feature-name-mapping.txt";
+    }
 
-	public static String getFeatureNames() {
-		return "featurenames.txt";
-	}
+    public static String getFeatureNames()
+    {
+        return "featurenames.txt";
+    }
 
 }

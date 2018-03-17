@@ -27,52 +27,61 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 
-public abstract class LibsvmDataFormatTestTask extends ExecutableTaskBase implements Constants {
+public abstract class LibsvmDataFormatTestTask
+    extends ExecutableTaskBase
+    implements Constants
+{
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	protected List<Object> classificationArguments;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    protected List<Object> classificationArguments;
 
-	@Discriminator(name = DIM_LEARNING_MODE)
-	protected String learningMode;
+    @Discriminator(name = DIM_LEARNING_MODE)
+    protected String learningMode;
 
-	@Discriminator(name = DIM_FEATURE_MODE)
-	protected String featureMode;
-	
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		throwExceptionIfMultiLabelMode();
-		
-		Object model = trainModel(aContext);
-		runPrediction(aContext, model);
-	}
+    @Discriminator(name = DIM_FEATURE_MODE)
+    protected String featureMode;
 
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
+        throwExceptionIfMultiLabelMode();
 
-	protected abstract Object trainModel(TaskContext aContext) throws Exception;
-	protected abstract void runPrediction(TaskContext aContext, Object model) throws Exception;
+        Object model = trainModel(aContext);
+        runPrediction(aContext, model);
+    }
 
-	protected File getPredictionFile(TaskContext aContext) {
-		File folder = aContext.getFolder("", AccessMode.READWRITE);
-		return new File(folder, Constants.FILENAME_PREDICTIONS);
-	}
+    protected abstract Object trainModel(TaskContext aContext) throws Exception;
 
-	protected File getTestFile(TaskContext aContext) {
-		File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
-		File fileTest = new File(testFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		return fileTest;
-	}
+    protected abstract void runPrediction(TaskContext aContext, Object model) throws Exception;
 
-	protected File getTrainFile(TaskContext aContext) {
-		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+    protected File getPredictionFile(TaskContext aContext)
+    {
+        File folder = aContext.getFolder("", AccessMode.READWRITE);
+        return new File(folder, Constants.FILENAME_PREDICTIONS);
+    }
 
-		return fileTrain;
-	}
+    protected File getTestFile(TaskContext aContext)
+    {
+        File testFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY);
+        File fileTest = new File(testFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        return fileTest;
+    }
 
-	protected void throwExceptionIfMultiLabelMode() throws TextClassificationException {
-		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
-		if (multiLabel) {
-			throw new TextClassificationException("Multi-label is not supported");
-		}
-	}
+    protected File getTrainFile(TaskContext aContext)
+    {
+        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+
+        return fileTrain;
+    }
+
+    protected void throwExceptionIfMultiLabelMode() throws TextClassificationException
+    {
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+        if (multiLabel) {
+            throw new TextClassificationException("Multi-label is not supported");
+        }
+    }
 
 }

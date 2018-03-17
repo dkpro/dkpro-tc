@@ -30,65 +30,77 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
-public abstract class LibsvmDataFormatSerializeModelConnector extends ModelSerializationTask implements Constants {
+public abstract class LibsvmDataFormatSerializeModelConnector
+    extends ModelSerializationTask
+    implements Constants
+{
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	protected List<Object> classificationArguments;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    protected List<Object> classificationArguments;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		trainAndStoreModel(aContext);
-		writeModelConfiguration(aContext);
-	}
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
+        trainAndStoreModel(aContext);
+        writeModelConfiguration(aContext);
+    }
 
-	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+    private void trainAndStoreModel(TaskContext aContext) throws Exception
+    {
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
-		if (multiLabel) {
-			throw new TextClassificationException("Multi-label is not yet implemented");
-		}
+        if (multiLabel) {
+            throw new TextClassificationException("Multi-label is not yet implemented");
+        }
 
-		File fileTrain = getTrainFile(aContext);
+        File fileTrain = getTrainFile(aContext);
 
-		trainModel(aContext, fileTrain);
+        trainModel(aContext, fileTrain);
 
-		copyOutcomeMappingToThisFolder(aContext);
-		copyFeatureNameMappingToThisFolder(aContext);
-	}
+        copyOutcomeMappingToThisFolder(aContext);
+        copyFeatureNameMappingToThisFolder(aContext);
+    }
 
-	protected abstract void trainModel(TaskContext aContext, File fileTrain) throws Exception;
+    protected abstract void trainModel(TaskContext aContext, File fileTrain) throws Exception;
 
-	private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException {
+    private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException
+    {
 
-		if (isRegression()) {
-			return;
-		}
+        if (isRegression()) {
+            return;
+        }
 
-		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		String mapping = AdapterFormat.getOutcomeMappingFilename();
+        File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        String mapping = AdapterFormat.getOutcomeMappingFilename();
 
-		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-	}
+        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+    }
 
-	private boolean isRegression() {
-		return learningMode.equals(Constants.LM_REGRESSION);
-	}
+    private boolean isRegression()
+    {
+        return learningMode.equals(Constants.LM_REGRESSION);
+    }
 
-	private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException {
-		File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		String mapping = AdapterFormat.getFeatureNameMappingFilename();
+    private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException
+    {
+        File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        String mapping = AdapterFormat.getFeatureNameMappingFilename();
 
-		FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
-	}
+        FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
+    }
 
-	private File getTrainFile(TaskContext aContext) {
-		File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+    private File getTrainFile(TaskContext aContext)
+    {
+        File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File fileTrain = new File(trainFolder, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-		return fileTrain;
-	}
+        return fileTrain;
+    }
 
-	@Override
-	protected abstract void writeAdapter() throws Exception;
+    @Override
+    protected abstract void writeAdapter() throws Exception;
 
 }

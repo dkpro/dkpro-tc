@@ -29,66 +29,76 @@ import java.util.Random;
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
-public class LibsvmDataFormatBaselineRandomIdReport extends LibsvmDataFormatOutcomeIdReport {
+public class LibsvmDataFormatBaselineRandomIdReport
+    extends LibsvmDataFormatOutcomeIdReport
+{
 
-	private Random random = new Random(42);
-	private List<String> pool = new ArrayList<>();
+    private Random random = new Random(42);
+    private List<String> pool = new ArrayList<>();
 
-	public LibsvmDataFormatBaselineRandomIdReport() {
+    public LibsvmDataFormatBaselineRandomIdReport()
+    {
 
-	}
+    }
 
-	@Override
-	public void execute() throws Exception {
-		init();
+    @Override
+    public void execute() throws Exception
+    {
+        init();
 
-		if (isRegression) {
-			return;
-		}
+        if (isRegression) {
+            return;
+        }
 
-		super.execute();
-	}
+        super.execute();
+    }
 
-	@Override
-	protected void baslinePreparation() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		buildPool(file);
-	}
+    @Override
+    protected void baslinePreparation() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        buildPool(file);
+    }
 
-	private void buildPool(File file) throws Exception {
+    private void buildPool(File file) throws Exception
+    {
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty()) {
-					continue;
-				}
-				String[] split = line.split("\t");
-				String o = split[0];
-				if (!pool.contains(o)) {
-					pool.add(o);
-				}
-			}
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                String[] split = line.split("\t");
+                String o = split[0];
+                if (!pool.contains(o)) {
+                    pool.add(o);
+                }
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
 
-		Collections.shuffle(pool);
-	}
+        Collections.shuffle(pool);
+    }
 
-	@Override
-	protected String getPrediction(String p) {
-		Integer idx = random.nextInt(pool.size() - 1);
-		return pool.get(idx);
-	}
+    @Override
+    protected String getPrediction(String p)
+    {
+        Integer idx = random.nextInt(pool.size() - 1);
+        return pool.get(idx);
+    }
 
-	@Override
-	protected File getTargetOutputFile() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
-	}
+    @Override
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
+    }
 
 }

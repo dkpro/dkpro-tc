@@ -27,66 +27,76 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class LibsvmDataFormatBaselineMajorityClassIdReport extends LibsvmDataFormatOutcomeIdReport {
+public class LibsvmDataFormatBaselineMajorityClassIdReport
+    extends LibsvmDataFormatOutcomeIdReport
+{
 
-	String majorityClass;
+    String majorityClass;
 
-	public LibsvmDataFormatBaselineMajorityClassIdReport() {
+    public LibsvmDataFormatBaselineMajorityClassIdReport()
+    {
 
-	}
+    }
 
-	@Override
-	public void execute() throws Exception {
-		init();
+    @Override
+    public void execute() throws Exception
+    {
+        init();
 
-		if (isRegression) {
-			return;
-		}
+        if (isRegression) {
+            return;
+        }
 
-		super.execute();
-	}
+        super.execute();
+    }
 
-	@Override
-	protected void baslinePreparation() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		determineMajorityClass(file);
-	}
+    @Override
+    protected void baslinePreparation() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        determineMajorityClass(file);
+    }
 
-	@Override
-	protected String getPrediction(String p) {
-		return majorityClass;
-	}
+    @Override
+    protected String getPrediction(String p)
+    {
+        return majorityClass;
+    }
 
-	private void determineMajorityClass(File file) throws Exception {
+    private void determineMajorityClass(File file) throws Exception
+    {
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty()) {
-					continue;
-				}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    continue;
+                }
 
-				String[] split = line.split("\t");
-				fd.addSample(split[0], 1);
-			}
+                String[] split = line.split("\t");
+                fd.addSample(split[0], 1);
+            }
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
 
-		majorityClass = fd.getSampleWithMaxFreq();
-	}
+        majorityClass = fd.getSampleWithMaxFreq();
+    }
 
-	@Override
-	protected File getTargetOutputFile() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-	}
+    @Override
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+    }
 
 }

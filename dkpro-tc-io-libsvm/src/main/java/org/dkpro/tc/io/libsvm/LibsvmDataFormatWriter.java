@@ -51,287 +51,327 @@ import com.google.gson.Gson;
  * 
  * For example: 1 1:1 3:1 4:1 6:1 2 2:1 3:1 5:1 7:1 1 3:1 5:1
  */
-public class LibsvmDataFormatWriter implements DataWriter {
+public class LibsvmDataFormatWriter
+    implements DataWriter
+{
 
-	public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
+    public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 
-	private File outputDirectory;
+    private File outputDirectory;
 
-	private String learningMode;
+    private String learningMode;
 
-	private File classifierFormatOutputFile;
+    private File classifierFormatOutputFile;
 
-	private BufferedWriter bw = null;
+    private BufferedWriter bw = null;
 
-	private Map<String, String> index2instanceId;
+    private Map<String, String> index2instanceId;
 
-	private Gson gson = new Gson();
+    private Gson gson = new Gson();
 
-	protected int maxId = 0;
+    protected int maxId = 0;
 
-	private Map<String, Integer> featureNames2id;
+    private Map<String, Integer> featureNames2id;
 
-	private Map<String, Integer> outcomeMap;
+    private Map<String, Integer> outcomeMap;
 
-	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
-		
-		try {
-			initGeneric();
+    @Override
+    public void writeGenericFormat(Collection<Instance> instances)
+        throws AnalysisEngineProcessException
+    {
 
-			// bulk-write - in sequence mode this keeps the instances together
-			// that belong to the same sequence!
-			Instance[] array = instances.toArray(new Instance[0]);
-			bw.write(gson.toJson(array) + "\n");
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		} finally {
-			IOUtils.closeQuietly(bw);
-			bw = null;
-		}
-	}
+        try {
+            initGeneric();
 
-	private void initGeneric() throws IOException {
-		if (bw != null) {
-			return;
-		}
-		bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
-	}
+            // bulk-write - in sequence mode this keeps the instances together
+            // that belong to the same sequence!
+            Instance[] array = instances.toArray(new Instance[0]);
+            bw.write(gson.toJson(array) + "\n");
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+        finally {
+            IOUtils.closeQuietly(bw);
+            bw = null;
+        }
+    }
 
-	@Override
-	public void transformFromGeneric() throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+    private void initGeneric() throws IOException
+    {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(
+                                new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
+                        "utf-8"));
+    }
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			Instance[] instance = gson.fromJson(line, Instance[].class);
-			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
-			writeClassifierFormat(ins);
-		}
+    @Override
+    public void transformFromGeneric() throws Exception
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
+                "utf-8"));
 
-		reader.close();
-		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
-	}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            Instance[] instance = gson.fromJson(line, Instance[].class);
+            List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+            writeClassifierFormat(ins);
+        }
 
-	@Override
-	public void writeClassifierFormat(Collection<Instance> in) throws AnalysisEngineProcessException {
+        reader.close();
+        FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
+    }
 
-		try {
-			if (featureNames2id == null) {
-				createFeatureNameMap();
-			}
+    @Override
+    public void writeClassifierFormat(Collection<Instance> in) throws AnalysisEngineProcessException
+    {
 
-			initClassifierFormat();
+        try {
+            if (featureNames2id == null) {
+                createFeatureNameMap();
+            }
 
-			List<Instance> instances = new ArrayList<>(in);
+            initClassifierFormat();
 
-			for (Instance instance : instances) {
-				Map<Integer, Double> entry = new HashMap<>();
-				recordInstanceId(instance, maxId++, index2instanceId);
-				for (Feature f : instance.getFeatures()) {
-					Integer id = featureNames2id.get(f.getName());
-					Double val = toValue(f.getValue());
+            List<Instance> instances = new ArrayList<>(in);
 
-					if (Math.abs(val) < 0.00000001) {
-						// skip zero values
-						continue;
-					}
+            for (Instance instance : instances) {
+                Map<Integer, Double> entry = new HashMap<>();
+                recordInstanceId(instance, maxId++, index2instanceId);
+                for (Feature f : instance.getFeatures()) {
+                    Integer id = featureNames2id.get(f.getName());
+                    Double val = toValue(f.getValue());
 
-					entry.put(id, val);
-				}
-				List<Integer> keys = new ArrayList<Integer>(entry.keySet());
-				Collections.sort(keys);
+                    if (Math.abs(val) < 0.00000001) {
+                        // skip zero values
+                        continue;
+                    }
 
-				if (isRegression()) {
-					bw.append(instance.getOutcome() + "\t");
-				} else {
-					bw.append(outcomeMap.get(instance.getOutcome()) + "\t");
-				}
+                    entry.put(id, val);
+                }
+                List<Integer> keys = new ArrayList<Integer>(entry.keySet());
+                Collections.sort(keys);
 
-				bw.append(injectSequenceId(instance));
+                if (isRegression()) {
+                    bw.append(instance.getOutcome() + "\t");
+                }
+                else {
+                    bw.append(outcomeMap.get(instance.getOutcome()) + "\t");
+                }
 
-				for (int i = 0; i < keys.size(); i++) {
-					Integer key = keys.get(i);
-					Double value = entry.get(key);
-					bw.append("" + key.toString() + ":" + value.toString());
-					if (i + 1 < keys.size()) {
-						bw.append("\t");
-					}
-				}
-				bw.append("\n");
-			}
+                bw.append(injectSequenceId(instance));
 
-			writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
-			writeFeatureName2idMapping(outputDirectory, AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
-			writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(), outcomeMap);
+                for (int i = 0; i < keys.size(); i++) {
+                    Integer key = keys.get(i);
+                    Double value = entry.get(key);
+                    bw.append("" + key.toString() + ":" + value.toString());
+                    if (i + 1 < keys.size()) {
+                        bw.append("\t");
+                    }
+                }
+                bw.append("\n");
+            }
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		} finally {
-			IOUtils.closeQuietly(bw);
-			bw = null; //important, we reopen the stream only if the pointer is null!
-		}
-	}
+            writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
+            writeFeatureName2idMapping(outputDirectory,
+                    AdapterFormat.getFeatureNameMappingFilename(), featureNames2id);
+            writeOutcomeMapping(outputDirectory, AdapterFormat.getOutcomeMappingFilename(),
+                    outcomeMap);
 
-	protected String injectSequenceId(Instance instance) {
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+        finally {
+            IOUtils.closeQuietly(bw);
+            bw = null; // important, we reopen the stream only if the pointer is null!
+        }
+    }
 
-		// this method is a place holder for SvmHmm which uses an almost
-		// identical format to the Libsvm format, except that it additionally
-		// carries a sequence information. SvmHmm overloads this method.
+    protected String injectSequenceId(Instance instance)
+    {
 
-		return "";
-	}
+        // this method is a place holder for SvmHmm which uses an almost
+        // identical format to the Libsvm format, except that it additionally
+        // carries a sequence information. SvmHmm overloads this method.
 
-	private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map) throws IOException {
+        return "";
+    }
 
-		if (isRegression()) {
-			return;
-		}
+    private void writeOutcomeMapping(File outputDirectory, String file, Map<String, Integer> map)
+        throws IOException
+    {
 
-		StringBuilder sb = new StringBuilder();
-		for (Entry<String, Integer> e : map.entrySet()) {
-			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
-		}
+        if (isRegression()) {
+            return;
+        }
 
-		FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), "utf-8");
-	}
+        StringBuilder sb = new StringBuilder();
+        for (Entry<String, Integer> e : map.entrySet()) {
+            sb.append(e.getKey() + "\t" + e.getValue() + "\n");
+        }
 
-	private Double toValue(Object value) {
-		double v;
-		if (value instanceof Number) {
-			v = ((Number) value).doubleValue();
-		} else {
-			v = 1.0;
-		}
+        FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), "utf-8");
+    }
 
-		return v;
-	}
+    private Double toValue(Object value)
+    {
+        double v;
+        if (value instanceof Number) {
+            v = ((Number) value).doubleValue();
+        }
+        else {
+            v = 1.0;
+        }
 
-	private void createFeatureNameMap() throws IOException {
-		featureNames2id = new HashMap<>();
-		List<String> readLines = FileUtils.readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
+        return v;
+    }
 
-		// add a "bias" feature node; otherwise LIBLINEAR is unable to predict
-		// the majority class for
-		// instances consisting entirely of features never seen during training
-		featureNames2id.put("x.BIAS", 1);
+    private void createFeatureNameMap() throws IOException
+    {
+        featureNames2id = new HashMap<>();
+        List<String> readLines = FileUtils
+                .readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
 
-		Integer i = 2;
-		for (String l : readLines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			featureNames2id.put(l, i++);
-		}
-	}
+        // add a "bias" feature node; otherwise LIBLINEAR is unable to predict
+        // the majority class for
+        // instances consisting entirely of features never seen during training
+        featureNames2id.put("x.BIAS", 1);
 
-	private void writeFeatureName2idMapping(File outputDirectory, String featurename2instanceid,
-			Map<String, Integer> stringToInt) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		
-		for(Entry<String, Integer> e : stringToInt.entrySet()) {
-			sb.append(e.getKey() + "\t" + e.getValue() + "\n");
-		}
-		
-		FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid), sb.toString(), "utf-8");
-	}
+        Integer i = 2;
+        for (String l : readLines) {
+            if (l.isEmpty()) {
+                continue;
+            }
+            featureNames2id.put(l, i++);
+        }
+    }
 
-	private void initClassifierFormat() throws Exception {
-		if (bw != null) {
-			return;
-		}
+    private void writeFeatureName2idMapping(File outputDirectory, String featurename2instanceid,
+            Map<String, Integer> stringToInt)
+        throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
 
-		bw = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
-	}
+        for (Entry<String, Integer> e : stringToInt.entrySet()) {
+            sb.append(e.getKey() + "\t" + e.getValue() + "\n");
+        }
 
-	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
-			String[] outcomes) throws Exception {
-		this.outputDirectory = outputDirectory;
-		this.learningMode = learningMode;
-		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid),
+                sb.toString(), "utf-8");
+    }
 
-		index2instanceId = new HashMap<>();
+    private void initClassifierFormat() throws Exception
+    {
+        if (bw != null) {
+            return;
+        }
 
-		// Caution: DKPro Lab imports (aka copies!) the data of the train task
-		// as test task. We use
-		// appending mode for streaming. We might append the old training file
-		// with
-		// testing data!
-		// Force delete the old training file to make sure we start with a
-		// clean, empty file
-		if (classifierFormatOutputFile.exists()) {
-			FileUtils.forceDelete(classifierFormatOutputFile);
-		}
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+    }
 
-		buildOutcomeMap(outcomes);
-	}
+    @Override
+    public void init(File outputDirectory, boolean useSparse, String learningMode,
+            boolean applyWeighting, String[] outcomes)
+        throws Exception
+    {
+        this.outputDirectory = outputDirectory;
+        this.learningMode = learningMode;
+        classifierFormatOutputFile = new File(outputDirectory,
+                Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-	/**
-	 * Creates a mapping from the label names to integer values to identify
-	 * labels by integers
-	 * 
-	 * @param outcomes
-	 */
-	private void buildOutcomeMap(String[] outcomes) {
-		if (isRegression()) {
-			return;
-		}
-		outcomeMap = new HashMap<>();
-		Integer i = getStartIndexForOutcomeMap();
-		List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
-		Collections.sort(outcomesSorted);
-		for (String o : outcomesSorted) {
-			outcomeMap.put(o, i++);
-		}
-	}
+        index2instanceId = new HashMap<>();
 
-	protected Integer getStartIndexForOutcomeMap() {
-		// SvmHmm extension, which starts counting at 1
-		return 0;
-	}
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task
+        // as test task. We use
+        // appending mode for streaming. We might append the old training file
+        // with
+        // testing data!
+        // Force delete the old training file to make sure we start with a
+        // clean, empty file
+        if (classifierFormatOutputFile.exists()) {
+            FileUtils.forceDelete(classifierFormatOutputFile);
+        }
 
-	@Override
-	public boolean canStream() {
-		return true;
-	}
+        buildOutcomeMap(outcomes);
+    }
 
-	@Override
-	public String getGenericFileName() {
-		return Constants.GENERIC_FEATURE_FILE;
-	}
+    /**
+     * Creates a mapping from the label names to integer values to identify labels by integers
+     * 
+     * @param outcomes
+     */
+    private void buildOutcomeMap(String[] outcomes)
+    {
+        if (isRegression()) {
+            return;
+        }
+        outcomeMap = new HashMap<>();
+        Integer i = getStartIndexForOutcomeMap();
+        List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
+        Collections.sort(outcomesSorted);
+        for (String o : outcomesSorted) {
+            outcomeMap.put(o, i++);
+        }
+    }
 
-	private void writeMapping(File outputDirectory, String fileName, Map<String, String> index2instanceId)
-			throws IOException {
-		StringBuilder sb = new StringBuilder();
-		sb.append("#Index\tDkProInstanceId\n");
-		for (String k : index2instanceId.keySet()) {
-			sb.append(k + "\t" + index2instanceId.get(k) + "\n");
-		}
-		FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
-	}
+    protected Integer getStartIndexForOutcomeMap()
+    {
+        // SvmHmm extension, which starts counting at 1
+        return 0;
+    }
 
-	// build a map between the dkpro instance id and the index in the file
-	private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId) {
-		Collection<Feature> features = instance.getFeatures();
-		for (Feature f : features) {
-			if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
-				index2instanceId.put(i + "", f.getValue() + "");
-				return;
-			}
-		}
-	}
+    @Override
+    public boolean canStream()
+    {
+        return true;
+    }
 
-	private boolean isRegression() {
-		return learningMode.equals(Constants.LM_REGRESSION);
-	}
+    @Override
+    public String getGenericFileName()
+    {
+        return Constants.GENERIC_FEATURE_FILE;
+    }
 
-	@Override
-	public void close() throws Exception {
+    private void writeMapping(File outputDirectory, String fileName,
+            Map<String, String> index2instanceId)
+        throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Index\tDkProInstanceId\n");
+        for (String k : index2instanceId.keySet()) {
+            sb.append(k + "\t" + index2instanceId.get(k) + "\n");
+        }
+        FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
+    }
 
-	}
+    // build a map between the dkpro instance id and the index in the file
+    private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
+    {
+        Collection<Feature> features = instance.getFeatures();
+        for (Feature f : features) {
+            if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
+                index2instanceId.put(i + "", f.getValue() + "");
+                return;
+            }
+        }
+    }
+
+    private boolean isRegression()
+    {
+        return learningMode.equals(Constants.LM_REGRESSION);
+    }
+
+    @Override
+    public void close() throws Exception
+    {
+
+    }
 
 }

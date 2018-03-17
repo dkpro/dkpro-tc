@@ -37,166 +37,186 @@ import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class LibsvmDataFormatOutcomeIdReport extends TcBatchReportBase implements Constants {
+public class LibsvmDataFormatOutcomeIdReport
+    extends TcBatchReportBase
+    implements Constants
+{
 
-	private String THRESHOLD_CONSTANT = "-1";
+    private String THRESHOLD_CONSTANT = "-1";
 
-	public LibsvmDataFormatOutcomeIdReport() {
-		
-	}
-	
-	boolean isRegression;
-	boolean isUnit;
-	boolean isSequence;
+    public LibsvmDataFormatOutcomeIdReport()
+    {
 
-	@Override
-	public void execute() throws Exception {
-		
-		init();
-		
-		baslinePreparation();
+    }
 
-		Map<Integer, String> id2label = getId2LabelMapping(isRegression);
-		String header = buildHeader(id2label, isRegression);
+    boolean isRegression;
+    boolean isUnit;
+    boolean isSequence;
 
-		List<String> predictions = readPredictions();
-		Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
+    @Override
+    public void execute() throws Exception
+    {
 
-		Properties prop = new SortedKeyProperties();
-		int lineCounter = 0;
-		for (String line : predictions) {
-			if (line.startsWith("#")) {
-				continue;
-			}
-			String[] split = line.split(";");
-			String key = index2instanceIdMap.get(lineCounter + "");
-			
-			String predictionString = getPrediction(split[0]);
-			String goldString = split[1];
+        init();
 
-			if (isRegression) {
-				prop.setProperty(key, predictionString + ";" + goldString + ";" + THRESHOLD_CONSTANT);
-			} else {
-				int pred = Double.valueOf(predictionString).intValue();
-				int gold = Double.valueOf(goldString).intValue();
-				prop.setProperty(key, pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
-			}
-			lineCounter++;
-		}
+        baslinePreparation();
 
-		File targetFile = getTargetOutputFile();
+        Map<Integer, String> id2label = getId2LabelMapping(isRegression);
+        String header = buildHeader(id2label, isRegression);
 
-		FileWriterWithEncoding fw = null;
-		try{
-			fw = new FileWriterWithEncoding(targetFile, "utf-8");
-			prop.store(fw, header);
-		}finally{
-			IOUtils.closeQuietly(fw);
-		}
+        List<String> predictions = readPredictions();
+        Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
 
-	}
+        Properties prop = new SortedKeyProperties();
+        int lineCounter = 0;
+        for (String line : predictions) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            String[] split = line.split(";");
+            String key = index2instanceIdMap.get(lineCounter + "");
 
-	protected void init() {
-		String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
-		if (threshold != null) {
-			THRESHOLD_CONSTANT = threshold;
-		}
+            String predictionString = getPrediction(split[0]);
+            String goldString = split[1];
 
-		isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE).equals(Constants.LM_REGRESSION);
-		isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_UNIT);
-		isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE).equals(Constants.FM_SEQUENCE);
-	}
+            if (isRegression) {
+                prop.setProperty(key,
+                        predictionString + ";" + goldString + ";" + THRESHOLD_CONSTANT);
+            }
+            else {
+                int pred = Double.valueOf(predictionString).intValue();
+                int gold = Double.valueOf(goldString).intValue();
+                prop.setProperty(key, pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+            }
+            lineCounter++;
+        }
 
-	protected String getPrediction(String string) {
-		// This method is overloaded in the baseline reports to return an
-		// appropriate baseline value here
-		return string;
-	}
+        File targetFile = getTargetOutputFile();
 
-	protected void baslinePreparation() throws Exception {
-		// This method is overloaded in a subclass for performing some
-		// initialization for computing baseline values
-	}
+        FileWriterWithEncoding fw = null;
+        try {
+            fw = new FileWriterWithEncoding(targetFile, "utf-8");
+            prop.store(fw, header);
+        }
+        finally {
+            IOUtils.closeQuietly(fw);
+        }
 
-	private Map<String, String> getMapping(boolean isUnit) throws IOException {
+    }
 
-		File f;
-		if (isUnit) {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					LibsvmDataFormatWriter.INDEX2INSTANCEID);
-		} else {
-			f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-					Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-		}
+    protected void init()
+    {
+        String threshold = getDiscriminator(getContext(), Constants.DIM_BIPARTITION_THRESHOLD);
+        if (threshold != null) {
+            THRESHOLD_CONSTANT = threshold;
+        }
 
-		Map<String, String> m = new HashMap<>();
+        isRegression = getDiscriminator(getContext(), Constants.DIM_LEARNING_MODE)
+                .equals(Constants.LM_REGRESSION);
+        isUnit = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE)
+                .equals(Constants.FM_UNIT);
+        isSequence = getDiscriminator(getContext(), Constants.DIM_FEATURE_MODE)
+                .equals(Constants.FM_SEQUENCE);
+    }
 
-		int idx = 0;
-		for (String l : FileUtils.readLines(f, "utf-8")) {
-			if (l.startsWith("#")) {
-				continue;
-			}
-			if (l.trim().isEmpty()) {
-				continue;
-			}
-			String[] split = l.split("\t");
+    protected String getPrediction(String string)
+    {
+        // This method is overloaded in the baseline reports to return an
+        // appropriate baseline value here
+        return string;
+    }
 
-			m.put(idx + "", split[0]);
-			idx++;
-		}
-		return m;
-	}
+    protected void baslinePreparation() throws Exception
+    {
+        // This method is overloaded in a subclass for performing some
+        // initialization for computing baseline values
+    }
 
-	protected File getTargetOutputFile() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, ID_OUTCOME_KEY);
-	}
+    private Map<String, String> getMapping(boolean isUnit) throws IOException
+    {
 
-	protected List<String> readPredictions() throws IOException {
-		File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
-	}
+        File f;
+        if (isUnit) {
+            f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+                    LibsvmDataFormatWriter.INDEX2INSTANCEID);
+        }
+        else {
+            f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+                    Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+        }
 
-	private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
-			throws UnsupportedEncodingException {
-		StringBuilder header = new StringBuilder();
-		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+        Map<String, String> m = new HashMap<>();
 
-		if (isRegression) {
-			// no label mapping for regression so that is all we have to do
-			return header.toString();
-		}
+        int idx = 0;
+        for (String l : FileUtils.readLines(f, "utf-8")) {
+            if (l.startsWith("#")) {
+                continue;
+            }
+            if (l.trim().isEmpty()) {
+                continue;
+            }
+            String[] split = l.split("\t");
 
-		int numKeys = id2label.keySet().size();
-		List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
-		for (int i = 0; i < numKeys; i++) {
-			Integer key = keys.get(i);
-			header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
-			if (i + 1 < numKeys) {
-				header.append(" ");
-			}
-		}
-		return header.toString();
-	}
+            m.put(idx + "", split[0]);
+            idx++;
+        }
+        return m;
+    }
 
-	private Map<Integer, String> getId2LabelMapping(boolean isRegression) throws Exception {
-		if (isRegression) {
-			// no map for regression;
-			return new HashMap<>();
-		}
-		
-		File outcomeFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, ID_OUTCOME_KEY);
+    }
+
+    protected List<String> readPredictions() throws IOException
+    {
+        File predFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
+    }
+
+    private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
+        throws UnsupportedEncodingException
+    {
+        StringBuilder header = new StringBuilder();
+        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+
+        if (isRegression) {
+            // no label mapping for regression so that is all we have to do
+            return header.toString();
+        }
+
+        int numKeys = id2label.keySet().size();
+        List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
+        for (int i = 0; i < numKeys; i++) {
+            Integer key = keys.get(i);
+            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
+            if (i + 1 < numKeys) {
+                header.append(" ");
+            }
+        }
+        return header.toString();
+    }
+
+    private Map<Integer, String> getId2LabelMapping(boolean isRegression) throws Exception
+    {
+        if (isRegression) {
+            // no map for regression;
+            return new HashMap<>();
+        }
+
+        File outcomeFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
-		File outcomeFiles = new File(outcomeFolder, AdapterFormat.getOutcomeMappingFilename());
-		List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+        File outcomeFiles = new File(outcomeFolder, AdapterFormat.getOutcomeMappingFilename());
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
 
-		Map<Integer, String> map = new HashMap<Integer, String>();
-		for (String line : outcomes) {
-			String[] split = line.split("\t");
-			map.put(Integer.parseInt(split[1]), split[0]);
-		}
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        for (String line : outcomes) {
+            String[] split = line.split("\t");
+            map.put(Integer.parseInt(split[1]), split[0]);
+        }
 
-		return map;
-	}
+        return map;
+    }
 
 }

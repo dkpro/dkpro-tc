@@ -46,164 +46,183 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
-public abstract class LibsvmDataFormatLoadModelConnector extends ModelSerialization_ImplBase {
+public abstract class LibsvmDataFormatLoadModelConnector
+    extends ModelSerialization_ImplBase
+{
 
-	protected String OUTCOME_PLACEHOLDER = "-1";
+    protected String OUTCOME_PLACEHOLDER = "-1";
 
-	@ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
-	protected File tcModelLocation;
+    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+    protected File tcModelLocation;
 
-	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-	protected FeatureExtractorResource_ImplBase[] featureExtractors;
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
-	protected String featureMode;
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true)
+    protected String featureMode;
 
-	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
-	protected String learningMode;
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true)
+    protected String learningMode;
 
-	protected Map<String, String> integer2OutcomeMapping;
-	protected Map<String, Integer> featureMapping;
+    protected Map<String, String> integer2OutcomeMapping;
+    protected Map<String, Integer> featureMapping;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		try {
-			integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
-			featureMapping = loadFeature2IntegerMapping(tcModelLocation);
-			verifyTcVersion(tcModelLocation, getClass());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
+        try {
+            integer2OutcomeMapping = loadInteger2OutcomeMapping(tcModelLocation);
+            featureMapping = loadFeature2IntegerMapping(tcModelLocation);
+            verifyTcVersion(tcModelLocation, getClass());
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
 
-	}
+    }
 
-	private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException {
-		Map<String, Integer> map = new HashMap<>();
-		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, AdapterFormat.getFeatureNameMappingFilename()), "utf-8");
-		for (String l : readLines) {
-			String[] split = l.split("\t");
-			map.put(split[0], Integer.valueOf(split[1]));
-		}
-		return map;
-	}
+    private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException
+    {
+        Map<String, Integer> map = new HashMap<>();
+        List<String> readLines = FileUtils.readLines(
+                new File(tcModelLocation, AdapterFormat.getFeatureNameMappingFilename()), "utf-8");
+        for (String l : readLines) {
+            String[] split = l.split("\t");
+            map.put(split[0], Integer.valueOf(split[1]));
+        }
+        return map;
+    }
 
-	private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation) throws IOException {
-		if (isRegression()) {
-			return new HashMap<>();
-		}
+    private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation) throws IOException
+    {
+        if (isRegression()) {
+            return new HashMap<>();
+        }
 
-		Map<String, String> map = new HashMap<>();
-		List<String> readLines = FileUtils
-				.readLines(new File(tcModelLocation, AdapterFormat.getOutcomeMappingFilename()), "utf-8");
-		for (String l : readLines) {
-			String[] split = l.split("\t");
-			map.put(split[1], split[0]);
-		}
-		return map;
-	}
+        Map<String, String> map = new HashMap<>();
+        List<String> readLines = FileUtils.readLines(
+                new File(tcModelLocation, AdapterFormat.getOutcomeMappingFilename()), "utf-8");
+        for (String l : readLines) {
+            String[] split = l.split("\t");
+            map.put(split[1], split[0]);
+        }
+        return map;
+    }
 
-	private boolean isRegression() {
-		return learningMode.equals(Constants.LM_REGRESSION);
-	}
+    private boolean isRegression()
+    {
+        return learningMode.equals(Constants.LM_REGRESSION);
+    }
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		try {
-			File tempFile = createInputFile(jcas);
+    @Override
+    public void process(JCas jcas) throws AnalysisEngineProcessException
+    {
+        try {
+            File tempFile = createInputFile(jcas);
 
-			File prediction = runPrediction(tempFile);
+            File prediction = runPrediction(tempFile);
 
-			List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
-			List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
+            List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
+            List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
 
-			checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes, writtenPredictions);
+            checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
+                    writtenPredictions);
 
-			for (int i = 0; i < outcomes.size(); i++) {
+            for (int i = 0; i < outcomes.size(); i++) {
 
-				if (isRegression()) {
-					String val = writtenPredictions.get(i);
-					outcomes.get(i).setOutcome(val);
-				} else {
-					String val = writtenPredictions.get(i).replaceAll("\\.0", "");
-					String pred = integer2OutcomeMapping.get(val);
-					outcomes.get(i).setOutcome(pred);
-				}
+                if (isRegression()) {
+                    String val = writtenPredictions.get(i);
+                    outcomes.get(i).setOutcome(val);
+                }
+                else {
+                    String val = writtenPredictions.get(i).replaceAll("\\.0", "");
+                    String pred = integer2OutcomeMapping.get(val);
+                    outcomes.get(i).setOutcome(pred);
+                }
 
-			}
+            }
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
 
-	}
+    }
 
-	private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas) {
-		return new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
-	}
+    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
+    {
+        return new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
+    }
 
-	private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(List<TextClassificationOutcome> outcomes,
-			List<String> readLines) {
-		if (outcomes.size() != readLines.size()) {
-			throw new IllegalStateException(
-					"Expected [" + outcomes.size() + "] predictions but were [" + readLines.size() + "]");
-		}
-	}
+    private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
+            List<TextClassificationOutcome> outcomes, List<String> readLines)
+    {
+        if (outcomes.size() != readLines.size()) {
+            throw new IllegalStateException("Expected [" + outcomes.size()
+                    + "] predictions but were [" + readLines.size() + "]");
+        }
+    }
 
-	protected abstract File runPrediction(File tempFile) throws Exception;
+    protected abstract File runPrediction(File tempFile) throws Exception;
 
-	private File createInputFile(JCas jcas) throws Exception {
-		File tempFile = FileUtil.createTempFile("libsvm", ".txt");
-		tempFile.deleteOnExit();
-		
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
+    private File createInputFile(JCas jcas) throws Exception
+    {
+        File tempFile = FileUtil.createTempFile("libsvm", ".txt");
+        tempFile.deleteOnExit();
 
-		InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, true);
-		List<Instance> instances =extractor.getInstances(jcas, true);
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
 
-		for (Instance instance : instances) {
-			bw.write(OUTCOME_PLACEHOLDER);
-			
-			bw.write(injectSequenceId(instance));
-			
-			for (Feature f : instance.getFeatures()) {
-				if (!sanityCheckValue(f)) {
-					continue;
-				}
-				bw.write("\t");
-				bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
-			}
-			bw.write("\n");
-		}
-		bw.close();
+        InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, true);
+        List<Instance> instances = extractor.getInstances(jcas, true);
 
-		return tempFile;
-	}
+        for (Instance instance : instances) {
+            bw.write(OUTCOME_PLACEHOLDER);
 
-	protected String injectSequenceId(Instance instance) {
-		
-		//SvmHmm extension nothing to do here in the normal case
-		
-		return "";
-	}
+            bw.write(injectSequenceId(instance));
 
-	private boolean sanityCheckValue(Feature f) {
-		if (f.getValue() instanceof Number) {
-			return true;
-		}
-		if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
-			return false;
-		}
+            for (Feature f : instance.getFeatures()) {
+                if (!sanityCheckValue(f)) {
+                    continue;
+                }
+                bw.write("\t");
+                bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
+            }
+            bw.write("\n");
+        }
+        bw.close();
 
-		try {
-			Double.valueOf((String) f.getValue());
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]", e);
-		}
-		return false;
-	}
+        return tempFile;
+    }
+
+    protected String injectSequenceId(Instance instance)
+    {
+
+        // SvmHmm extension nothing to do here in the normal case
+
+        return "";
+    }
+
+    private boolean sanityCheckValue(Feature f)
+    {
+        if (f.getValue() instanceof Number) {
+            return true;
+        }
+        if (f.getName().equals(Constants.ID_FEATURE_NAME)) {
+            return false;
+        }
+
+        try {
+            Double.valueOf((String) f.getValue());
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Feature [" + f.getName() + "] has a non-numeric value [" + f.getValue() + "]",
+                    e);
+        }
+        return false;
+    }
 
 }
