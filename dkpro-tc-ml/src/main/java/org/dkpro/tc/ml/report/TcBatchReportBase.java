@@ -20,7 +20,6 @@ package org.dkpro.tc.ml.report;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +37,6 @@ import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.TcTaskTypeUtil;
 
 public abstract class TcBatchReportBase extends BatchReportBase implements Constants {
 
@@ -100,47 +98,6 @@ public abstract class TcBatchReportBase extends BatchReportBase implements Const
 		return id2outcomeFile;
 	}
 
-	/**
-	 * Retrieves the training data folder of a train-test run. Behavior is
-	 * undefined if called during cross-validation
-	 * 
-	 * @return file of the training data folder
-	 * @throws IOException
-	 *             in case of error
-	 */
-	protected File getTrainDataFolder() throws IOException {
-		StorageService store = getContext().getStorageService();
-
-		for (TaskContextMetadata subcontext : getSubtasks()) {
-			if (TcTaskTypeUtil.isFeatureExtractionTrainTask(store, subcontext.getId())) {
-				File folder = store.locateKey(subcontext.getId(), "");
-				return folder;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Retrieves the test data folder of a train-test run. Behavior is undefined
-	 * if called during cross-validation
-	 * 
-	 * @return file of the test data folder
-	 * @throws IOException
-	 *             in case of error
-	 */
-	protected File getTestDataFolder() throws IOException {
-		StorageService store = getContext().getStorageService();
-
-		for (TaskContextMetadata subcontext : getSubtasks()) {
-			if (TcTaskTypeUtil.isFeatureExtractionTestTask(store, subcontext.getId())) {
-				File folder = store.locateKey(subcontext.getId(), "");
-				return folder;
-			}
-		}
-
-		return null;
-	}
 
 	/**
 	 * Loads a mapping from the numeric values to their corresponding label. The
