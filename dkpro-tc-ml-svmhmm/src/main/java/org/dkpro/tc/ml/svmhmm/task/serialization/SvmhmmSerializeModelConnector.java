@@ -34,42 +34,46 @@ public class SvmhmmSerializeModelConnector
     implements Constants
 {
 
-	@Override
-	protected void writeAdapter() throws Exception {
-		writeModelAdapterInformation(outputFolder, SvmHmmAdapter.class.getName());
-	}
+    @Override
+    protected void writeAdapter() throws Exception
+    {
+        writeModelAdapterInformation(outputFolder, SvmHmmAdapter.class.getName());
+    }
 
-	@Override
-	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
+    @Override
+    protected void trainModel(TaskContext aContext, File fileTrain) throws Exception
+    {
 
-		List<String> stringArgs = new ArrayList<>();
-		for (int i = 1; i < classificationArguments.size(); i++) {
-			stringArgs.add((String) classificationArguments.get(i));
-		}
+        List<String> stringArgs = new ArrayList<>();
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            stringArgs.add((String) classificationArguments.get(i));
+        }
 
-		double paramC = SvmHmmUtils.getParameterC(stringArgs);
-		double paramEpsilon = SvmHmmUtils.getParameterEpsilon(stringArgs);
-		int paramOrderE = SvmHmmUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
-		int paramOrderT = SvmHmmUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
-		int paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
+        double paramC = SvmHmmUtils.getParameterC(stringArgs);
+        double paramEpsilon = SvmHmmUtils.getParameterEpsilon(stringArgs);
+        int paramOrderE = SvmHmmUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
+        int paramOrderT = SvmHmmUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
+        int paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
 
-		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
-		
-		File trainBinary = SvmHmmTestTask.resolveSvmHmmLearnCommand();
-		
-		File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
-		FileUtils.copyFile(fileTrain, newTrainFileLocation);
-		
-		File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
-		
-		List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(trainBinary, newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT, paramEpsilon, paramB);
-		SvmHmmTestTask.runCommand(buildTrainCommand);
-		
-		FileUtils.copyFile(tmpModelLocation, model);
-		
-		FileUtils.deleteQuietly(tmpModelLocation);
-		FileUtils.deleteQuietly(newTrainFileLocation);
-		
-	}
+        File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
+
+        File trainBinary = SvmHmmTestTask.resolveSvmHmmLearnCommand();
+
+        File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
+        FileUtils.copyFile(fileTrain, newTrainFileLocation);
+
+        File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
+
+        List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(trainBinary,
+                newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT,
+                paramEpsilon, paramB);
+        SvmHmmTestTask.runCommand(buildTrainCommand);
+
+        FileUtils.copyFile(tmpModelLocation, model);
+
+        FileUtils.deleteQuietly(tmpModelLocation);
+        FileUtils.deleteQuietly(newTrainFileLocation);
+
+    }
 
 }

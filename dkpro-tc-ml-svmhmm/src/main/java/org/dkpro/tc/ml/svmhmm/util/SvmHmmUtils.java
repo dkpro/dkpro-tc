@@ -44,10 +44,10 @@ public final class SvmHmmUtils
      * each line is a feature vector and the first token is the outcome label
      * 
      * @param files
-     * 			data files
-     * @return	sorted set of strings
+     *            data files
+     * @return sorted set of strings
      * @throws IOException
-     * 			in case of errors
+     *             in case of errors
      */
     public static SortedSet<String> extractOutcomeLabelsFromFeatureVectorFiles(File... files)
         throws IOException
@@ -63,14 +63,14 @@ public final class SvmHmmUtils
 
     /**
      * Extracts the outcome labels from the file; it corresponds to the first token on each line.
+     * 
      * @param featureVectorsFile
-     * 			the feature file
+     *            the feature file
      * @return list of strings
      * @throws IOException
-     * 			in case of errors
+     *             in case of errors
      */
-    public static List<String> extractOutcomeLabels(File featureVectorsFile)
-        throws IOException
+    public static List<String> extractOutcomeLabels(File featureVectorsFile) throws IOException
     {
         List<String> result = new ArrayList<>();
         List<String> lines = FileUtils.readLines(featureVectorsFile, "utf-8");
@@ -82,20 +82,17 @@ public final class SvmHmmUtils
         return result;
     }
 
-
-
-
     public static double getParameterC(List<String> classificationArguments)
     {
         double p = getDoubleParameter(classificationArguments, "-c");
         if (p == -1) {
             return 1.0;
         }
-        
-        if(p < 0){
+
+        if (p < 0) {
             throw new IllegalArgumentException("Parameter C is < 0");
         }
-        
+
         return p;
     }
 
@@ -105,7 +102,7 @@ public final class SvmHmmUtils
         if (p == -1) {
             return 0.5;
         }
-        if(p < 0){
+        if (p < 0) {
             throw new IllegalArgumentException("Epsilon is < 0");
         }
         return p;
@@ -118,11 +115,11 @@ public final class SvmHmmUtils
         if (p == -1) {
             return 1;
         }
-        
-        if(p < 0){
+
+        if (p < 0) {
             throw new IllegalArgumentException("Parameter order-t is < 0");
         }
-        
+
         return p;
     }
 
@@ -136,17 +133,17 @@ public final class SvmHmmUtils
             throw new IllegalArgumentException(
                     "Dependency of emission parameter [-e] has to be either zero (default) or one");
         }
-        
+
         return p;
     }
-    
+
     public static int getParameterBeamWidth(List<String> classificationArguments)
     {
         int p = getIntegerParameter(classificationArguments, "-b");
         if (p == -1) {
             return 0;
         }
-        if(p < 0){
+        if (p < 0) {
             throw new IllegalArgumentException("Parameter beam width is < 0");
         }
         return p;

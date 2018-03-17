@@ -66,63 +66,73 @@ import org.dkpro.tc.ml.liblinear.serialization.LiblinearSerializeModelConnector;
   }
  * </pre>
  */
-public class LiblinearAdapter 
-	implements TcShallowLearningAdapter
+public class LiblinearAdapter
+    implements TcShallowLearningAdapter
 {
 
-	public static TcShallowLearningAdapter getInstance() {
-		return new LiblinearAdapter();
-	}
-	
-	@Override
-	public ExecutableTaskBase getTestTask() {
-		return new LiblinearTestTask();
-	}
+    public static TcShallowLearningAdapter getInstance()
+    {
+        return new LiblinearAdapter();
+    }
 
-	@Override
-	public Class<? extends ReportBase> getOutcomeIdReportClass() {
-		return LibsvmDataFormatOutcomeIdReport.class;
-	}
-	
     @Override
-    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+    public ExecutableTaskBase getTestTask()
+    {
+        return new LiblinearTestTask();
+    }
+
+    @Override
+    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    {
+        return LibsvmDataFormatOutcomeIdReport.class;
+    }
+
+    @Override
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineMajorityClassIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineRandomIdReport.class;
     }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
-	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-			String[] files, int folds) {
-		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
-	}
-	
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return LibsvmDataFormatWriter.class;
-	}
-	
-	@Override
-	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return LiblinearLoadModelConnector.class;
-	}
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
+    {
+        return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
+    }
 
-	@Override
-	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-	    return LiblinearSerializeModelConnector.class;
-	}
+    @Override
+    public Class<? extends DataWriter> getDataWriterClass()
+    {
+        return LibsvmDataFormatWriter.class;
+    }
 
-	@Override
-	public boolean useSparseFeatures() {
-		return true;
-	}
-	
-	@Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    @Override
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
+    {
+        return LiblinearLoadModelConnector.class;
+    }
+
+    @Override
+    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    {
+        return LiblinearSerializeModelConnector.class;
+    }
+
+    @Override
+    public boolean useSparseFeatures()
+    {
+        return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }

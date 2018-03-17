@@ -36,7 +36,7 @@ public class LibsvmPredict
     {
         public void print(String s)
         {
-        	LogFactory.getLog(getClass()).info(s);
+            LogFactory.getLog(getClass()).info(s);
         }
     };
 
@@ -59,7 +59,7 @@ public class LibsvmPredict
 
     public void predict(BufferedReader input, DataOutputStream output, svm_model model,
             int predict_probability)
-                throws IOException
+        throws IOException
     {
         int correct = 0;
         int total = 0;
@@ -139,15 +139,14 @@ public class LibsvmPredict
 
     private void exit_with_help()
     {
-        System.err.print(
-                "usage: svm_predict [options] test_file model_file output_file\n" + "options:\n"
-                        + "-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet\n"
-                        + "-q : quiet mode (no outputs)\n");
+        System.err.print("usage: svm_predict [options] test_file model_file output_file\n"
+                + "options:\n"
+                + "-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet\n"
+                + "-q : quiet mode (no outputs)\n");
         System.exit(1);
     }
 
-    public void main(String argv[])
-        throws IOException
+    public void main(String argv[]) throws IOException
     {
         int i, predict_probability = 0;
         svm_print_string = svm_print_stdout;
@@ -171,7 +170,8 @@ public class LibsvmPredict
         }
         if (i >= argv.length - 2)
             exit_with_help();
-        BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(argv[i]), "utf-8"));
+        BufferedReader input = new BufferedReader(
+                new InputStreamReader(new FileInputStream(argv[i]), "utf-8"));
         DataOutputStream output = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(argv[i + 2])));
         svm_model model = svm.svm_load_model(argv[i + 1]);

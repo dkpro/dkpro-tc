@@ -32,30 +32,36 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
+public class LiblinearSerializeModelConnector
+    extends LibsvmDataFormatSerializeModelConnector
+    implements Constants
+{
 
-	boolean trainModel = true;
+    boolean trainModel = true;
 
-	public void trainModel(boolean b) {
-		trainModel = b;
-	}
+    public void trainModel(boolean b)
+    {
+        trainModel = b;
+    }
 
-	@Override
-	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
-		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
-		double C = LiblinearUtils.getParameterC(classificationArguments);
-		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
+    @Override
+    protected void trainModel(TaskContext aContext, File fileTrain) throws Exception
+    {
+        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
+        double C = LiblinearUtils.getParameterC(classificationArguments);
+        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
-		Linear.setDebugOutput(null);
+        Linear.setDebugOutput(null);
 
-		Parameter parameter = new Parameter(solver, C, eps);
-		Problem train = Problem.readFromFile(fileTrain, 1.0);
-		Model model = Linear.train(train, parameter);
-		model.save(new File(outputFolder, MODEL_CLASSIFIER));
-	}
+        Parameter parameter = new Parameter(solver, C, eps);
+        Problem train = Problem.readFromFile(fileTrain, 1.0);
+        Model model = Linear.train(train, parameter);
+        model.save(new File(outputFolder, MODEL_CLASSIFIER));
+    }
 
-	@Override
-	protected void writeAdapter() throws Exception {
-		writeModelAdapterInformation(outputFolder, LiblinearAdapter.class.getName());
-	}
+    @Override
+    protected void writeAdapter() throws Exception
+    {
+        writeModelAdapterInformation(outputFolder, LiblinearAdapter.class.getName());
+    }
 }

@@ -35,57 +35,62 @@ import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearTestTask extends LibsvmDataFormatTestTask implements Constants {
+public class LiblinearTestTask
+    extends LibsvmDataFormatTestTask
+    implements Constants
+{
 
-	public static final String SEPARATOR_CHAR = ";";
-	public static final double EPISILON_DEFAULT = 0.01;
-	public static final double PARAM_C_DEFAULT = 1.0;
+    public static final String SEPARATOR_CHAR = ";";
+    public static final double EPISILON_DEFAULT = 0.01;
+    public static final double PARAM_C_DEFAULT = 1.0;
 
-	@Override
-	protected Object trainModel(TaskContext aContext) throws Exception {
-		
-		File fileTrain = getTrainFile(aContext);
-		
-		// default for bias is -1, documentation says to set it to 1 in order to
-		// get results closer
-		// to libsvm
-		// writer adds bias, so if we de-activate that here for some reason, we
-		// need to also
-		// deactivate it there
-		Problem train = Problem.readFromFile(fileTrain, 1.0);
-		SolverType solver = LiblinearUtils.getSolver(classificationArguments);
-		double C = LiblinearUtils.getParameterC(classificationArguments);
-		double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
-		Linear.setDebugOutput(null);
-		Parameter parameter = new Parameter(solver, C, eps);
-		Model model = Linear.train(train, parameter);
-		return model;
-	}
+    @Override
+    protected Object trainModel(TaskContext aContext) throws Exception
+    {
 
-	@Override
-	protected void runPrediction(TaskContext aContext, Object trainedModel) throws Exception {
-		
-		Model model = (Model) trainedModel;
-		
-		File fileTest = getTestFile(aContext);
-		File predFolder = aContext.getFolder("", AccessMode.READWRITE);
-		File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
-		
-		BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
-		writer.append("#PREDICTION;GOLD" + "\n");
+        File fileTrain = getTrainFile(aContext);
 
-		Problem test = Problem.readFromFile(fileTest, 1.0);
-		Feature[][] testInstances = test.x;
-		for (int i = 0; i < testInstances.length; i++) {
-			Feature[] instance = testInstances[i];
-			Double prediction = Linear.predict(model, instance);
+        // default for bias is -1, documentation says to set it to 1 in order to
+        // get results closer
+        // to libsvm
+        // writer adds bias, so if we de-activate that here for some reason, we
+        // need to also
+        // deactivate it there
+        Problem train = Problem.readFromFile(fileTrain, 1.0);
+        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
+        double C = LiblinearUtils.getParameterC(classificationArguments);
+        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
+        Linear.setDebugOutput(null);
+        Parameter parameter = new Parameter(solver, C, eps);
+        Model model = Linear.train(train, parameter);
+        return model;
+    }
 
-			writer.write(prediction + SEPARATOR_CHAR + new Double(test.y[i]));
-			writer.write("\n");
-		}
+    @Override
+    protected void runPrediction(TaskContext aContext, Object trainedModel) throws Exception
+    {
 
-		writer.close();
-	}
+        Model model = (Model) trainedModel;
+
+        File fileTest = getTestFile(aContext);
+        File predFolder = aContext.getFolder("", AccessMode.READWRITE);
+        File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
+
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
+        writer.append("#PREDICTION;GOLD" + "\n");
+
+        Problem test = Problem.readFromFile(fileTest, 1.0);
+        Feature[][] testInstances = test.x;
+        for (int i = 0; i < testInstances.length; i++) {
+            Feature[] instance = testInstances[i];
+            Double prediction = Linear.predict(model, instance);
+
+            writer.write(prediction + SEPARATOR_CHAR + new Double(test.y[i]));
+            writer.write("\n");
+        }
+
+        writer.close();
+    }
 
 }

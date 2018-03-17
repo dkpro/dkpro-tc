@@ -74,8 +74,7 @@ public class LibsvmTrainModel
         System.exit(1);
     }
 
-    public void run(String argv[])
-        throws Exception
+    public void run(String argv[]) throws Exception
     {
         parse_command_line(argv);
         read_problem();
@@ -214,10 +213,10 @@ public class LibsvmTrainModel
 
     // read in a problem (in svmlight format)
 
-    private void read_problem()
-        throws IOException
+    private void read_problem() throws IOException
     {
-        BufferedReader fp = new BufferedReader(new InputStreamReader(new FileInputStream(input_file_name), "utf-8"));
+        BufferedReader fp = new BufferedReader(
+                new InputStreamReader(new FileInputStream(input_file_name), "utf-8"));
         Vector<Double> vy = new Vector<Double>();
         Vector<svm_node[]> vx = new Vector<svm_node[]>();
         int max_index = 0;
@@ -262,7 +261,8 @@ public class LibsvmTrainModel
                             "Wrong kernel matrix: first column must be 0:sample_serial_number\n");
                 }
                 if ((int) prob.x[i][0].value <= 0 || (int) prob.x[i][0].value > max_index) {
-                    throw new IllegalArgumentException("Wrong input format: sample_serial_number out of range\n");
+                    throw new IllegalArgumentException(
+                            "Wrong input format: sample_serial_number out of range\n");
                 }
             }
 

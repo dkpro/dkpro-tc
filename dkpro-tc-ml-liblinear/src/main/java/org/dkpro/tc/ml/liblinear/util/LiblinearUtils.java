@@ -111,7 +111,7 @@ public class LiblinearUtils
 
                 Double value;
                 try {
-                    value = Double.valueOf((String)classificationArguments.get(i + 1));
+                    value = Double.valueOf((String) classificationArguments.get(i + 1));
                 }
                 catch (NumberFormatException ex) {
                     throw new IllegalArgumentException(
@@ -144,7 +144,7 @@ public class LiblinearUtils
 
                 Double value;
                 try {
-                    value = Double.valueOf((String)classificationArguments.get(i + 1));
+                    value = Double.valueOf((String) classificationArguments.get(i + 1));
                 }
                 catch (NumberFormatException ex) {
                     throw new IllegalArgumentException(

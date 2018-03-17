@@ -29,63 +29,67 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
 
-public class SvmhmmLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
-	
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+public class SvmhmmLoadModelConnector
+    extends LibsvmDataFormatLoadModelConnector
+{
 
-		//SvmHmm doesn't like negative values or zeros as dummy outcomes
-		OUTCOME_PLACEHOLDER = "1";
-	}
-	
-	@Override
-	protected File runPrediction(File testFile) throws Exception {
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		File prediction = FileUtil.createTempFile("svmHmmPrediction", ".svmhmm");
-		prediction.deleteOnExit();
-		
-		File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
-		File binary = SvmHmmTestTask.resolveSvmHmmPredictionCommand();
+        // SvmHmm doesn't like negative values or zeros as dummy outcomes
+        OUTCOME_PLACEHOLDER = "1";
+    }
 
-		// SvmHmm struggles with paths longer than 255 characters to circumvent this
-		// issue, we copy all files together into a local directory to ensure short path
-		// names that are below this threshold
-		File localModel = new File(binary.getParentFile(), "model.tmp");
-		FileUtils.copyFile(model, localModel);
-		File localTestFile = new File(binary.getParentFile(), "testfile.txt");
-		FileUtils.copyFile(testFile, localTestFile);
-		
-		
-		List<String> command = SvmHmmTestTask.buildPredictionCommand(binary, localTestFile, localModel, prediction);
-		SvmHmmTestTask.runCommand(command);
+    @Override
+    protected File runPrediction(File testFile) throws Exception
+    {
 
-		
-		FileUtils.deleteQuietly(localModel);
-		FileUtils.deleteQuietly(localTestFile);
-		
-		return prediction;
-	}
+        File prediction = FileUtil.createTempFile("svmHmmPrediction", ".svmhmm");
+        prediction.deleteOnExit();
 
-	int currSeqId = 0;
-	int lastId = -1;
-	static final String TAB = "\t";
+        File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
+        File binary = SvmHmmTestTask.resolveSvmHmmPredictionCommand();
 
-	@Override
-	protected String injectSequenceId(Instance instance) {
-		/*
-		 * The sequence id must continuously increase, TC's id is Cas-relative
-		 * and restarts for a new Cas at zero again
-		 */
-		if (lastId < 0) {
-			lastId = instance.getJcasId();
-		}
+        // SvmHmm struggles with paths longer than 255 characters to circumvent this
+        // issue, we copy all files together into a local directory to ensure short path
+        // names that are below this threshold
+        File localModel = new File(binary.getParentFile(), "model.tmp");
+        FileUtils.copyFile(model, localModel);
+        File localTestFile = new File(binary.getParentFile(), "testfile.txt");
+        FileUtils.copyFile(testFile, localTestFile);
 
-		if (lastId > -1 && lastId != instance.getJcasId()) {
-			currSeqId++;
-		}
+        List<String> command = SvmHmmTestTask.buildPredictionCommand(binary, localTestFile,
+                localModel, prediction);
+        SvmHmmTestTask.runCommand(command);
 
-		return TAB + "qid:" + currSeqId;
-	}
+        FileUtils.deleteQuietly(localModel);
+        FileUtils.deleteQuietly(localTestFile);
+
+        return prediction;
+    }
+
+    int currSeqId = 0;
+    int lastId = -1;
+    static final String TAB = "\t";
+
+    @Override
+    protected String injectSequenceId(Instance instance)
+    {
+        /*
+         * The sequence id must continuously increase, TC's id is Cas-relative and restarts for a
+         * new Cas at zero again
+         */
+        if (lastId < 0) {
+            lastId = instance.getJcasId();
+        }
+
+        if (lastId > -1 && lastId != instance.getJcasId()) {
+            currSeqId++;
+        }
+
+        return TAB + "qid:" + currSeqId;
+    }
 
 }

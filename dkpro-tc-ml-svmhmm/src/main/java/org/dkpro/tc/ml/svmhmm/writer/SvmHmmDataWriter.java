@@ -21,31 +21,35 @@ package org.dkpro.tc.ml.svmhmm.writer;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 
-public class SvmHmmDataWriter extends LibsvmDataFormatWriter {
-	
-	int currSeqId=0;
-	int lastId=-1;
+public class SvmHmmDataWriter
+    extends LibsvmDataFormatWriter
+{
 
-	@Override
-	protected String injectSequenceId(Instance instance) {
-		/*
-		 * The sequence id must continuously increase, TC's id is Cas-relative
-		 * and restarts for a new Cas at zero again
-		 */
-		if (lastId < 0) {
-			lastId = instance.getJcasId();
-		}
-		
-		if(lastId > -1 && lastId != instance.getJcasId()){
-			currSeqId++;
-		}
-		
-		return "qid:" + currSeqId + "\t";
-	}
-	
-	@Override
-	protected Integer getStartIndexForOutcomeMap() {
-		//SvmHmm extension, which starts counting at 1
-		return 1;
-	}
+    int currSeqId = 0;
+    int lastId = -1;
+
+    @Override
+    protected String injectSequenceId(Instance instance)
+    {
+        /*
+         * The sequence id must continuously increase, TC's id is Cas-relative and restarts for a
+         * new Cas at zero again
+         */
+        if (lastId < 0) {
+            lastId = instance.getJcasId();
+        }
+
+        if (lastId > -1 && lastId != instance.getJcasId()) {
+            currSeqId++;
+        }
+
+        return "qid:" + currSeqId + "\t";
+    }
+
+    @Override
+    protected Integer getStartIndexForOutcomeMap()
+    {
+        // SvmHmm extension, which starts counting at 1
+        return 1;
+    }
 }

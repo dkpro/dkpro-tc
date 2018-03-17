@@ -33,44 +33,50 @@ import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LiblinearLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
+public class LiblinearLoadModelConnector
+    extends LibsvmDataFormatLoadModelConnector
+{
 
-	private Model liblinearModel;
-	
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+    private Model liblinearModel;
 
-		try {
-			liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-	@Override
-	protected File runPrediction(File infile) throws Exception {
-		
-		Problem predictionProblem = Problem.readFromFile(infile, 1.0);
-		
-		File tmp = File.createTempFile("libLinearePrediction",".txt");
-		
-		BufferedWriter writer = null;
-		
-		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
-			Feature[][] testInstances = predictionProblem.x;
-			for (int i = 0; i < testInstances.length; i++) {
-				Feature[] instance = testInstances[i];
-				Double prediction = Linear.predict(liblinearModel, instance);
-				writer.write(prediction.toString() + "\n");
-			}
-		} finally {
-			IOUtils.closeQuietly(writer);
-		}
-		
-		tmp.deleteOnExit();
-		return tmp;
-	}
+        try {
+            liblinearModel = Linear.loadModel(new File(tcModelLocation, MODEL_CLASSIFIER));
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
+
+    @Override
+    protected File runPrediction(File infile) throws Exception
+    {
+
+        Problem predictionProblem = Problem.readFromFile(infile, 1.0);
+
+        File tmp = File.createTempFile("libLinearePrediction", ".txt");
+
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
+            Feature[][] testInstances = predictionProblem.x;
+            for (int i = 0; i < testInstances.length; i++) {
+                Feature[] instance = testInstances[i];
+                Double prediction = Linear.predict(liblinearModel, instance);
+                writer.write(prediction.toString() + "\n");
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(writer);
+        }
+
+        tmp.deleteOnExit();
+        return tmp;
+    }
 
 }

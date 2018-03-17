@@ -46,100 +46,115 @@ import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmTestTask extends LibsvmDataFormatTestTask implements Constants {
+public class LibsvmTestTask
+    extends LibsvmDataFormatTestTask
+    implements Constants
+{
 
-	private String[] buildParameters(File fileTrain, File model) {
-		List<String> parameters = new ArrayList<>();
-		if (classificationArguments != null) {
-			for (int i = 1; i < classificationArguments.size(); i++) {
-				String a = (String) classificationArguments.get(i);
-				parameters.add(a);
-			}
-		}
-		parameters.add(fileTrain.getAbsolutePath());
-		parameters.add(model.getAbsolutePath());
-		return parameters.toArray(new String[0]);
-	}
+    private String[] buildParameters(File fileTrain, File model)
+    {
+        List<String> parameters = new ArrayList<>();
+        if (classificationArguments != null) {
+            for (int i = 1; i < classificationArguments.size(); i++) {
+                String a = (String) classificationArguments.get(i);
+                parameters.add(a);
+            }
+        }
+        parameters.add(fileTrain.getAbsolutePath());
+        parameters.add(model.getAbsolutePath());
+        return parameters.toArray(new String[0]);
+    }
 
-	private List<String> pickGold(List<String> readLines) {
-		List<String> gold = new ArrayList<>();
-		for (String l : readLines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			int indexOf = l.indexOf("\t");
-			gold.add(l.substring(0, indexOf));
-		}
+    private List<String> pickGold(List<String> readLines)
+    {
+        List<String> gold = new ArrayList<>();
+        for (String l : readLines) {
+            if (l.isEmpty()) {
+                continue;
+            }
+            int indexOf = l.indexOf("\t");
+            gold.add(l.substring(0, indexOf));
+        }
 
-		return gold;
-	}
+        return gold;
+    }
 
-	private File createTemporaryPredictionFile() throws IOException {
-		DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
-		Date today = Calendar.getInstance().getTime();
-		String now = df.format(today);
+    private File createTemporaryPredictionFile() throws IOException
+    {
+        DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
+        Date today = Calendar.getInstance().getTime();
+        String now = df.format(today);
 
-		File createTempFile = FileUtil.createTempFile("libsvmPrediction" + now, ".libsvm");
-		createTempFile.deleteOnExit();
-		return createTempFile;
-	}
+        File createTempFile = FileUtil.createTempFile("libsvmPrediction" + now, ".libsvm");
+        createTempFile.deleteOnExit();
+        return createTempFile;
+    }
 
-	@Override
-	protected Object trainModel(TaskContext aContext) throws Exception {
+    @Override
+    protected Object trainModel(TaskContext aContext) throws Exception
+    {
 
-		File fileTrain = getTrainFile(aContext);
-		File model = new File(aContext.getFolder("", AccessMode.READWRITE), Constants.MODEL_CLASSIFIER);
-		LibsvmTrainModel ltm = new LibsvmTrainModel();
-		ltm.run(buildParameters(fileTrain, model));
+        File fileTrain = getTrainFile(aContext);
+        File model = new File(aContext.getFolder("", AccessMode.READWRITE),
+                Constants.MODEL_CLASSIFIER);
+        LibsvmTrainModel ltm = new LibsvmTrainModel();
+        ltm.run(buildParameters(fileTrain, model));
 
-		return model;
-	}
+        return model;
+    }
 
-	@Override
-	protected void runPrediction(TaskContext aContext, Object model) throws Exception {
-		File predFile = executeLibsvm(aContext, model);
-		mergePredictionWithGold(aContext, predFile);
-	}
+    @Override
+    protected void runPrediction(TaskContext aContext, Object model) throws Exception
+    {
+        File predFile = executeLibsvm(aContext, model);
+        mergePredictionWithGold(aContext, predFile);
+    }
 
-	private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception {
-		
-		File fileTest = getTestFile(aContext);
-		File prediction = getPredictionFile(aContext);
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
+    private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception
+    {
 
-			List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
-			List<String> pred = FileUtils.readLines(predFile, "utf-8");
-			bw.write("#PREDICTION;GOLD" + "\n");
-			for (int i = 0; i < gold.size(); i++) {
-				String p = pred.get(i);
-				String g = gold.get(i);
-				bw.write(p + ";" + g);
-				bw.write("\n");
-			}
-		} finally {
-			IOUtils.closeQuietly(bw);
-		}		
-	}
+        File fileTest = getTestFile(aContext);
+        File prediction = getPredictionFile(aContext);
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
 
-	private File executeLibsvm(TaskContext aContext, Object model) throws Exception {
-		File theModel = (File) model;
-		File fileTest = getTestFile(aContext);
-		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-		LibsvmPredict predictor = new LibsvmPredict();
-		File predTmp = createTemporaryPredictionFile();
-		
-		DataOutputStream output = null;
-		try {
-			output = new DataOutputStream(new FileOutputStream(predTmp));
-			svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
-			predictor.predict(r, output, svmModel, 0);
-		} finally {
-			IOUtils.closeQuietly(output);
-		}
-		
-		return predTmp;
-	}
+            List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
+            List<String> pred = FileUtils.readLines(predFile, "utf-8");
+            bw.write("#PREDICTION;GOLD" + "\n");
+            for (int i = 0; i < gold.size(); i++) {
+                String p = pred.get(i);
+                String g = gold.get(i);
+                bw.write(p + ";" + g);
+                bw.write("\n");
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(bw);
+        }
+    }
+
+    private File executeLibsvm(TaskContext aContext, Object model) throws Exception
+    {
+        File theModel = (File) model;
+        File fileTest = getTestFile(aContext);
+        BufferedReader r = new BufferedReader(
+                new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+        LibsvmPredict predictor = new LibsvmPredict();
+        File predTmp = createTemporaryPredictionFile();
+
+        DataOutputStream output = null;
+        try {
+            output = new DataOutputStream(new FileOutputStream(predTmp));
+            svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
+            predictor.predict(r, output, svmModel, 0);
+        }
+        finally {
+            IOUtils.closeQuietly(output);
+        }
+
+        return predTmp;
+    }
 
 }

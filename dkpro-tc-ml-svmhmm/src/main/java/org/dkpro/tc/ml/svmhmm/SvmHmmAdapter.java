@@ -63,7 +63,7 @@ import org.dkpro.tc.ml.svmhmm.writer.SvmHmmDataWriter;
  * </pre>
  */
 public class SvmHmmAdapter
-	implements TcShallowLearningAdapter
+    implements TcShallowLearningAdapter
 {
 
     @Override
@@ -73,51 +73,57 @@ public class SvmHmmAdapter
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass() {
+    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    {
         return LibsvmDataFormatOutcomeIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineMajorityClassIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineRandomIdReport.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-            String[] files, int folds)
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
     {
         return new FoldDimensionBundle<>("files", Dimension.create("", files), folds);
     }
 
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return SvmHmmDataWriter.class;
-	}
+    @Override
+    public Class<? extends DataWriter> getDataWriterClass()
+    {
+        return SvmHmmDataWriter.class;
+    }
 
-	@Override
-	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return SvmhmmLoadModelConnector.class;
-	}
+    @Override
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
+    {
+        return SvmhmmLoadModelConnector.class;
+    }
 
-	@Override
-	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-		return SvmhmmSerializeModelConnector.class;
-	}
+    @Override
+    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    {
+        return SvmhmmSerializeModelConnector.class;
+    }
 
-	@Override
-	public boolean useSparseFeatures() {
-		return true;
-	}
-	
-	@Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    @Override
+    public boolean useSparseFeatures()
+    {
+        return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }
-
