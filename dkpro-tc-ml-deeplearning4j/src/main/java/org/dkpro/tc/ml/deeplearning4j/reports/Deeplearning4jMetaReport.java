@@ -21,12 +21,15 @@ package org.dkpro.tc.ml.deeplearning4j.reports;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.reporting.ReportBase;
 
-public class Deeplearning4jMetaReport extends ReportBase {
+public class Deeplearning4jMetaReport
+    extends ReportBase
+{
 
-	@Override
-	public void execute() throws Exception {
-		LogFactory.getLog(getClass())
-				.info("Deeplearning4j implements no Meta report as versioning is defined by the Maven dependency");
-	}
+    @Override
+    public void execute() throws Exception
+    {
+        LogFactory.getLog(getClass()).info(
+                "Deeplearning4j implements no Meta report as versioning is defined by the Maven dependency");
+    }
 
 }

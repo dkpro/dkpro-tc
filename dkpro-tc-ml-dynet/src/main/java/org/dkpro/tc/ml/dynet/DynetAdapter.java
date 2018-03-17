@@ -40,17 +40,18 @@ public class DynetAdapter
     {
         return new DeepLearningId2OutcomeReport();
     }
-    
-	@Override
-	public ReportBase getMajorityBaselineIdReportClass() {
-		return new DeepLearningMajorityClass2OutcomeReport();
-	}
 
-	@Override
-	public ReportBase getRandomBaselineIdReportClass() {
-		return new DeepLearningRandomBaseline2OutcomeReport();
-	}
+    @Override
+    public ReportBase getMajorityBaselineIdReportClass()
+    {
+        return new DeepLearningMajorityClass2OutcomeReport();
+    }
 
+    @Override
+    public ReportBase getRandomBaselineIdReportClass()
+    {
+        return new DeepLearningRandomBaseline2OutcomeReport();
+    }
 
     @Override
     public int lowestIndex()
@@ -65,7 +66,8 @@ public class DynetAdapter
     }
 
     @Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }

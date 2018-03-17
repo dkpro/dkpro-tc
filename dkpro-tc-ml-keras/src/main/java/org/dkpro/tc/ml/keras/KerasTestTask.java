@@ -47,63 +47,64 @@ public class KerasTestTask
 {
     @Discriminator(name = DIM_PYTHON_INSTALLATION)
     private String python;
-    
+
     @Discriminator(name = DIM_USER_CODE)
     private String userCode;
-    
+
     @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
-    
-	@Discriminator(name = DIM_SEED_VALUE)
-	private String randomSeed;
-	
-	@Discriminator(name = DIM_DICTIONARY_PATHS)
-	private List<String> dictionaries;
-	
-	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
-	private boolean intVectorization;
-	
-	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-	private double threshold;
+
+    @Discriminator(name = DIM_SEED_VALUE)
+    private String randomSeed;
+
+    @Discriminator(name = DIM_DICTIONARY_PATHS)
+    private List<String> dictionaries;
+
+    @Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
+    private boolean intVectorization;
+
+    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+    private double threshold;
 
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void execute(TaskContext aContext) throws Exception
     {
         File kerasResultOut = getResultLocation(aContext);
         List<String> command = buildTrainCommand(aContext, kerasResultOut);
         dumpDebug(aContext, command);
         train(command);
     }
-    
-    private void dumpDebug(TaskContext aContext, List<String> command) throws Exception {
 
-		StringBuilder sb = new StringBuilder();
+    private void dumpDebug(TaskContext aContext, List<String> command) throws Exception
+    {
 
-		for (String c : command) {
-			sb.append(c + " ");
-		}
-		try {
-			FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE), sb.toString(), "utf-8");
-		} catch (IOException e) {
-			throw new Exception(e);
-		}
-	}
+        StringBuilder sb = new StringBuilder();
+
+        for (String c : command) {
+            sb.append(c + " ");
+        }
+        try {
+            FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE),
+                    sb.toString(), "utf-8");
+        }
+        catch (IOException e) {
+            throw new Exception(e);
+        }
+    }
 
     private File getResultLocation(TaskContext aContext)
     {
-        return aContext.getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READWRITE);
+        return aContext.getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT,
+                AccessMode.READWRITE);
     }
 
-    private void train(List<String> command)
-        throws Exception
+    private void train(List<String> command) throws Exception
     {
         Process process = new ProcessBuilder().inheritIO().command(command).start();
         process.waitFor();
     }
 
-    private List<String> buildTrainCommand(TaskContext aContext, File resultOut)
-        throws Exception
+    private List<String> buildTrainCommand(TaskContext aContext, File resultOut) throws Exception
     {
         File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
@@ -111,7 +112,7 @@ public class KerasTestTask
         File testOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
         File embeddingPath = getEmbedding(aContext);
         String maxLen = getMaximumLength(aContext);
-        
+
         python = (python == null) ? "python" : python;
 
         List<String> command = new ArrayList<>();
@@ -125,85 +126,87 @@ public class KerasTestTask
         command.add(testDataVector.getAbsolutePath());
         command.add(PythonConstants.TEST_OUTCOME);
         command.add(testOutcomeVector.getAbsolutePath());
-        
-        if (embeddingPath != null) {
-        	command.add(PythonConstants.EMBEDDING);
-        	command.add(embeddingPath.getAbsolutePath());
-		}
-		if (randomSeed != null) {
-			command.add(PythonConstants.SEED);
-			command.add(randomSeed);
-		}
 
-		if (dictionaries!=null && dictionaries.size()>0){
-			List<String> dicts = retrieveDictionaryPaths(aContext);
-			command.add(PythonConstants.DICTIONARIES);
-			for(String d : dicts){
-				command.add(d);
-			}
-		}
-        
+        if (embeddingPath != null) {
+            command.add(PythonConstants.EMBEDDING);
+            command.add(embeddingPath.getAbsolutePath());
+        }
+        if (randomSeed != null) {
+            command.add(PythonConstants.SEED);
+            command.add(randomSeed);
+        }
+
+        if (dictionaries != null && dictionaries.size() > 0) {
+            List<String> dicts = retrieveDictionaryPaths(aContext);
+            command.add(PythonConstants.DICTIONARIES);
+            for (String d : dicts) {
+                command.add(d);
+            }
+        }
+
         command.add(PythonConstants.MAX_LEN);
         command.add(maxLen);
         command.add(PythonConstants.PREDICTION_OUT);
         command.add(resultOut.getAbsolutePath());
-        
-        
+
         return command;
     }
 
-	/**
-	 * Returns the file pointer to the integer-mapped version of the dictionary
-	 * if integer mapping is used otherwise the unaltered version
-	 * @param aContext 
-	 * 
-	 * @return
-	 * 		dictionary paths
-	 */
-	private List<String> retrieveDictionaryPaths(TaskContext aContext) {
+    /**
+     * Returns the file pointer to the integer-mapped version of the dictionary if integer mapping
+     * is used otherwise the unaltered version
+     * 
+     * @param aContext
+     * 
+     * @return dictionary paths
+     */
+    private List<String> retrieveDictionaryPaths(TaskContext aContext)
+    {
 
-		List<String> dicts = new ArrayList<>();
+        List<String> dicts = new ArrayList<>();
 
-		if (intVectorization) {
-			for (int i = 0; i < dictionaries.size(); i += 2) {
-				File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-				String name = new File(dictionaries.get(i)).getName();
-				dicts.add(new File(folder, name).getAbsolutePath());
-			}
-		} else {
-			for (int i = 0; i < dictionaries.size(); i += 2) {
-				dicts.add(dictionaries.get(i));
-			}
-		}
+        if (intVectorization) {
+            for (int i = 0; i < dictionaries.size(); i += 2) {
+                File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
+                        AccessMode.READONLY);
+                String name = new File(dictionaries.get(i)).getName();
+                dicts.add(new File(folder, name).getAbsolutePath());
+            }
+        }
+        else {
+            for (int i = 0; i < dictionaries.size(); i += 2) {
+                dicts.add(dictionaries.get(i));
+            }
+        }
 
-		return dicts;
-	}
+        return dicts;
+    }
 
-	/**
-	 * Returns the maximum length which is either user defined and might be
-	 * shorter than the actual longest sequence, or is the longest sequence in
-	 * the data if no value is provided
-	 * 
-	 * @param aContext
-	 *            Task Context
-	 * @return String value of maximum length
-	 * @throws IOException
-	 *             in case a read error occurs
-	 */
+    /**
+     * Returns the maximum length which is either user defined and might be shorter than the actual
+     * longest sequence, or is the longest sequence in the data if no value is provided
+     * 
+     * @param aContext
+     *            Task Context
+     * @return String value of maximum length
+     * @throws IOException
+     *             in case a read error occurs
+     */
     private String getMaximumLength(TaskContext aContext) throws IOException
     {
-        if(maximumLength!=null){
+        if (maximumLength != null) {
             return maximumLength.toString();
         }
-        
-        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-        String maxLenFromFile = FileUtils.readFileToString(new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
-        
+
+        File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
+                AccessMode.READONLY);
+        String maxLenFromFile = FileUtils.readFileToString(
+                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+
         return maxLenFromFile;
     }
 
-    private File getDataOutcome(TaskContext aContext, String key)
-        throws FileNotFoundException
+    private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
         File vector = new File(folder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
@@ -216,8 +219,7 @@ public class KerasTestTask
         return vector;
     }
 
-    private File getDataVector(TaskContext aContext, String key)
-        throws FileNotFoundException
+    private File getDataVector(TaskContext aContext, String key) throws FileNotFoundException
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
         File vector = new File(folder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);

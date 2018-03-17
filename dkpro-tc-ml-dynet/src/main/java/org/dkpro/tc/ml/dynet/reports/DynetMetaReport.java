@@ -33,65 +33,75 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DynetMetaReport extends TcBatchReportBase implements DeepLearningConstants{
+public class DynetMetaReport
+    extends TcBatchReportBase
+    implements DeepLearningConstants
+{
 
-	@Override
-	public void execute() throws Exception {
-		String python = getDiscriminator(getContext(), DIM_PYTHON_INSTALLATION);
+    @Override
+    public void execute() throws Exception
+    {
+        String python = getDiscriminator(getContext(), DIM_PYTHON_INSTALLATION);
 
-		String dynetVersion = getDyNetVersion(python);
-		String numpyVersion = getNumpyVersion(python);
+        String dynetVersion = getDyNetVersion(python);
+        String numpyVersion = getNumpyVersion(python);
 
-		Properties p = new SortedKeyProperties();
-		p.setProperty("NumpyVersion", numpyVersion);
-		p.setProperty("DyNetVersion", dynetVersion);
+        Properties p = new SortedKeyProperties();
+        p.setProperty("NumpyVersion", numpyVersion);
+        p.setProperty("DyNetVersion", dynetVersion);
 
-		File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(file);
-			p.store(fos, "Version information");
-		} finally {
-			IOUtils.closeQuietly(fos);
-		}
-	}
+        File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            p.store(fos, "Version information");
+        }
+        finally {
+            IOUtils.closeQuietly(fos);
+        }
+    }
 
-	private String getDyNetVersion(String python) throws IOException, InterruptedException {
-		return getVersion(python, "import dynet as dy; print(dy.__version__)");
-	}
+    private String getDyNetVersion(String python) throws IOException, InterruptedException
+    {
+        return getVersion(python, "import dynet as dy; print(dy.__version__)");
+    }
 
-	private String getNumpyVersion(String python) throws IOException, InterruptedException {
-		return getVersion(python, "import numpy; print(numpy.__version__)");
-	}
+    private String getNumpyVersion(String python) throws IOException, InterruptedException
+    {
+        return getVersion(python, "import numpy; print(numpy.__version__)");
+    }
 
-	private String getVersion(String python, String cmd) {
-		try {
-			List<String> command = new ArrayList<>();
-			command.add(python);
-			command.add("-c");
-			command.add(cmd);
+    private String getVersion(String python, String cmd)
+    {
+        try {
+            List<String> command = new ArrayList<>();
+            command.add(python);
+            command.add("-c");
+            command.add(cmd);
 
-			ProcessBuilder pb = new ProcessBuilder(command).command(command);
-			Process start = pb.start();
-			start.waitFor();
+            ProcessBuilder pb = new ProcessBuilder(command).command(command);
+            Process start = pb.start();
+            start.waitFor();
 
-			List<String> output = new ArrayList<>();
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new InputStreamReader(start.getInputStream(), "utf-8"));
+            List<String> output = new ArrayList<>();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(start.getInputStream(), "utf-8"));
 
-				String l = null;
-				while ((l = reader.readLine()) != null) {
-					output.add(l);
-				}
-			} finally {
-				IOUtils.closeQuietly(reader);
-			}
+                String l = null;
+                while ((l = reader.readLine()) != null) {
+                    output.add(l);
+                }
+            }
+            finally {
+                IOUtils.closeQuietly(reader);
+            }
 
-			return output.get(output.size() - 1);
-		} catch (Exception e) {
-			return "NotAvailable";
-		}
-	}
+            return output.get(output.size() - 1);
+        }
+        catch (Exception e) {
+            return "NotAvailable";
+        }
+    }
 
 }

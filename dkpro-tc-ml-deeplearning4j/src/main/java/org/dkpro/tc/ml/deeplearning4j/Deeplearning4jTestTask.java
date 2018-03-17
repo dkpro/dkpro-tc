@@ -30,77 +30,87 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.deeplearning4j.user.TcDeepLearning4jUser;
 
-public class Deeplearning4jTestTask extends ExecutableTaskBase implements Constants {
-	public static final String PREDICTION_FILE = "prediction.txt";
+public class Deeplearning4jTestTask
+    extends ExecutableTaskBase
+    implements Constants
+{
+    public static final String PREDICTION_FILE = "prediction.txt";
 
-	@Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
-	private TcDeepLearning4jUser userCode;
+    @Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
+    private TcDeepLearning4jUser userCode;
 
-	@Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
-	private Integer maximumLength;
-	
-	@Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
-	private Integer seed;
-	
-	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-	private Double threshold;
+    @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
+    private Integer maximumLength;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
-		File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
+    @Discriminator(name = DeepLearningConstants.DIM_SEED_VALUE)
+    private Integer seed;
 
-		File testDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
-		File testOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
+    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+    private Double threshold;
 
-		File embeddingPath = getEmbedding(aContext);
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
+        File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-		File outputTarget = aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
-		
-		if (seed==null){
-			seed = 123456789;
-		}
-		
-		int maxLen = maximumLength != null ? maximumLength : -1;
-		double thres = threshold != null ? threshold : -1.0;
+        File testDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
+        File testOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TEST_DATA);
 
-		userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector, embeddingPath, seed, maxLen, thres,
-				outputTarget);
-	}
+        File embeddingPath = getEmbedding(aContext);
 
-	private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException {
-		File folder = aContext.getFolder(key, AccessMode.READONLY);
-		File vector = new File(folder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+        File outputTarget = aContext.getFile(PREDICTION_FILE, AccessMode.READWRITE);
 
-		if (!vector.exists()) {
-			throw new FileNotFoundException("Could not locate file [" + DeepLearningConstants.FILENAME_OUTCOME_VECTOR
-					+ "] in folder [" + folder.getAbsolutePath() + "]");
-		}
-		return vector;
-	}
+        if (seed == null) {
+            seed = 123456789;
+        }
 
-	private File getDataVector(TaskContext aContext, String key) throws FileNotFoundException {
-		File folder = aContext.getFolder(key, AccessMode.READONLY);
-		File vector = new File(folder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+        int maxLen = maximumLength != null ? maximumLength : -1;
+        double thres = threshold != null ? threshold : -1.0;
 
-		if (!vector.exists()) {
-			throw new FileNotFoundException("Could not locate file [" + DeepLearningConstants.FILENAME_INSTANCE_VECTOR
-					+ "] in folder [" + folder.getAbsolutePath() + "]");
-		}
-		return vector;
-	}
+        userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector,
+                embeddingPath, seed, maxLen, thres, outputTarget);
+    }
 
-	private File getEmbedding(TaskContext aContext) {
-		File folder = aContext.getFolder(TcDeepLearningAdapter.EMBEDDING_FOLDER, AccessMode.READONLY);
-		File embedding = new File(folder, DeepLearningConstants.FILENAME_PRUNED_EMBEDDING);
+    private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException
+    {
+        File folder = aContext.getFolder(key, AccessMode.READONLY);
+        File vector = new File(folder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 
-		if (!embedding.exists()) {
-			LogFactory.getLog(getClass())
-					.debug("Did not find an embedding at location [" + folder.getAbsolutePath() + "]");
-			return null;
-		}
+        if (!vector.exists()) {
+            throw new FileNotFoundException(
+                    "Could not locate file [" + DeepLearningConstants.FILENAME_OUTCOME_VECTOR
+                            + "] in folder [" + folder.getAbsolutePath() + "]");
+        }
+        return vector;
+    }
 
-		return embedding;
-	}
+    private File getDataVector(TaskContext aContext, String key) throws FileNotFoundException
+    {
+        File folder = aContext.getFolder(key, AccessMode.READONLY);
+        File vector = new File(folder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+
+        if (!vector.exists()) {
+            throw new FileNotFoundException(
+                    "Could not locate file [" + DeepLearningConstants.FILENAME_INSTANCE_VECTOR
+                            + "] in folder [" + folder.getAbsolutePath() + "]");
+        }
+        return vector;
+    }
+
+    private File getEmbedding(TaskContext aContext)
+    {
+        File folder = aContext.getFolder(TcDeepLearningAdapter.EMBEDDING_FOLDER,
+                AccessMode.READONLY);
+        File embedding = new File(folder, DeepLearningConstants.FILENAME_PRUNED_EMBEDDING);
+
+        if (!embedding.exists()) {
+            LogFactory.getLog(getClass()).debug(
+                    "Did not find an embedding at location [" + folder.getAbsolutePath() + "]");
+            return null;
+        }
+
+        return embedding;
+    }
 
 }

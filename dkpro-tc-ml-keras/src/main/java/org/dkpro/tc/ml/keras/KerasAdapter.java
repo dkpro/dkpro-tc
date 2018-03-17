@@ -40,23 +40,24 @@ public class KerasAdapter
     {
         return new DeepLearningId2OutcomeReport();
     }
-    
-	@Override
-	public ReportBase getMajorityBaselineIdReportClass() {
-		return new DeepLearningMajorityClass2OutcomeReport();
-	}
 
-	@Override
-	public ReportBase getRandomBaselineIdReportClass() {
-		return new DeepLearningRandomBaseline2OutcomeReport();
-	}
+    @Override
+    public ReportBase getMajorityBaselineIdReportClass()
+    {
+        return new DeepLearningMajorityClass2OutcomeReport();
+    }
 
+    @Override
+    public ReportBase getRandomBaselineIdReportClass()
+    {
+        return new DeepLearningRandomBaseline2OutcomeReport();
+    }
 
     @Override
     public int lowestIndex()
     {
-		// The value 0 zero might be used in zero-padding i.e. padding would not
-		// be distinguishable from actual value zero
+        // The value 0 zero might be used in zero-padding i.e. padding would not
+        // be distinguishable from actual value zero
         return 1;
     }
 
@@ -67,7 +68,8 @@ public class KerasAdapter
     }
 
     @Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }
