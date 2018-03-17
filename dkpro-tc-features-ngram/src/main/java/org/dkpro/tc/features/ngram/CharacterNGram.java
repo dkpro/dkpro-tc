@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 /**
  * Extracts character n-grams.
  */
-@TypeCapability(inputs = {"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class CharacterNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
@@ -52,15 +52,18 @@ public class CharacterNGram
         throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC.getAnnotationCharacterNgrams(
-        		aTarget, ngramLowerCase, ngramMinN, ngramMaxN, '^', '$');
+        FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC
+                .getAnnotationCharacterNgrams(aTarget, ngramLowerCase, ngramMinN, ngramMaxN, '^',
+                        '$');
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentCharNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
@@ -72,11 +75,11 @@ public class CharacterNGram
         return CharacterNGramMC.LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
     }
 
-
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
 
     @Override
     protected int getTopN()
@@ -87,22 +90,21 @@ public class CharacterNGram
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(CharacterNGramMC.class,
-                parameterSettings).addStorageMapping(
-                        CharacterNGramMC.PARAM_TARGET_LOCATION,
-                        CharacterNGram.PARAM_SOURCE_LOCATION,
-                        CharacterNGramMC.LUCENE_DIR));
+        return Arrays
+                .asList(new MetaCollectorConfiguration(CharacterNGramMC.class, parameterSettings)
+                        .addStorageMapping(CharacterNGramMC.PARAM_TARGET_LOCATION,
+                                CharacterNGram.PARAM_SOURCE_LOCATION, CharacterNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected void logSelectionProcess(long N)
     {
         getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT CHARACTER ["
-                + range() + "]-GRAMS ("+caseSensitivity()+")");
+                + range() + "]-GRAMS (" + caseSensitivity() + ")");
     }
-    
+
     private String range()
     {
         return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;

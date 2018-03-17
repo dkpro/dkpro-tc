@@ -59,15 +59,17 @@ public class SkipWordNGram
         Set<Feature> features = new HashSet<Feature>();
 
         FrequencyDistribution<String> documentNgrams = SkipWordNGramMC.getDocumentSkipNgrams(jcas,
-        		aTarget, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
+                aTarget, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
                 skipSize, stopwords);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
@@ -76,13 +78,12 @@ public class SkipWordNGram
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(SkipWordNGramMC.class,
-                parameterSettings).addStorageMapping(
-                        SkipWordNGramMC.PARAM_TARGET_LOCATION,
-                        SkipWordNGram.PARAM_SOURCE_LOCATION,
-                        SkipWordNGramMC.LUCENE_DIR));
+        return Arrays
+                .asList(new MetaCollectorConfiguration(SkipWordNGramMC.class, parameterSettings)
+                        .addStorageMapping(SkipWordNGramMC.PARAM_TARGET_LOCATION,
+                                SkipWordNGram.PARAM_SOURCE_LOCATION, SkipWordNGramMC.LUCENE_DIR));
     }
 
     @Override

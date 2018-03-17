@@ -28,22 +28,27 @@ import org.dkpro.tc.features.ngram.meta.LuceneMC;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxNrOfTokensOverAllDocumentsMC extends LuceneMC {
-	
-	public static final String LUCENE_FIELD = "maxTokenOverAllDocuments";
-	Random r = new Random();
+public class MaxNrOfTokensOverAllDocumentsMC
+    extends LuceneMC
+{
 
-	@Override
-	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
+    public static final String LUCENE_FIELD = "maxTokenOverAllDocuments";
+    Random r = new Random();
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Collection<Token> select = JCasUtil.select(jcas, Token.class);
-		fd.addSample(select.size() + "_" + r.nextLong(), select.size());
-		return fd;
-	}
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
+    {
 
-	@Override
-	protected String getFieldName() {
-		return LUCENE_FIELD + featureExtractorName;
-	}
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+        Collection<Token> select = JCasUtil.select(jcas, Token.class);
+        fd.addSample(select.size() + "_" + r.nextLong(), select.size());
+        return fd;
+    }
+
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_FIELD + featureExtractorName;
+    }
 }

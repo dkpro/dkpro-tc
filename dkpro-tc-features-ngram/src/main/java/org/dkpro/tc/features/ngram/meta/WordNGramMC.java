@@ -36,8 +36,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class WordNGramMC
     extends LuceneMC
-    {
-    
+{
+
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
@@ -47,24 +47,23 @@ public class WordNGramMC
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     private String ngramStopwordsFile;
 
-    @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
     private boolean filterPartialStopwordMatches;
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringNgramLowerCase;
-    
+
     boolean ngramLowerCase = true;
 
     private Set<String> stopwords;
-    
+
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         ngramLowerCase = Boolean.valueOf(stringNgramLowerCase);
-        
+
         try {
             stopwords = FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
         }
@@ -72,20 +71,25 @@ public class WordNGramMC
             throw new ResourceInitializationException(e);
         }
     }
-    
+
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException{
-    	
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-        
-    	FrequencyDistribution<String> fd = null;
-    	fd = NGramUtils.getDocumentNgrams(jcas, fullDoc, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords, Token.class);
- 
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
+    {
+
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+
+        FrequencyDistribution<String> fd = null;
+        fd = NGramUtils.getDocumentNgrams(jcas, fullDoc, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN, ngramMaxN, stopwords, Token.class);
+
         return fd;
     }
-    
+
     @Override
-    protected String getFieldName(){
+    protected String getFieldName()
+    {
         return WordNGram.LUCENE_NGRAM_FIELD + featureExtractorName;
     }
 }

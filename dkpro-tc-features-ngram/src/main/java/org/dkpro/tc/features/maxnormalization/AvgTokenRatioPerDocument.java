@@ -38,43 +38,50 @@ import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfTokensOverAllDoc
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Ratio of the number of characters in a document with respect to the longest document in the
+ * training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenRatioPerDocument extends MaximumNormalizationExtractorBase  {
+public class AvgTokenRatioPerDocument
+    extends MaximumNormalizationExtractorBase
+{
+    public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
-	public static final String FEATURE_NAME = "TokenRatioPerTarget";
+    @Override
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+        throws TextClassificationException
+    {
 
-	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
-			throws TextClassificationException {
+        long maxLen = getMax();
 
-		long maxLen = getMax();
-		
-		Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
-		double ratio = getRatio(tokens.size(), maxLen);
-		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
-	}
+        Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
+        double ratio = getRatio(tokens.size(), maxLen);
+        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+    }
 
-	@Override
-	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
-			throws ResourceInitializationException {
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+        throws ResourceInitializationException
+    {
 
-		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgTokenRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
-	}
+        return Arrays.asList(new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class,
+                parameterSettings).addStorageMapping(
+                        MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                        AvgTokenRatioPerDocument.PARAM_SOURCE_LOCATION,
+                        MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
+    }
 
-	@Override
-	protected String getFieldName() {
-		return MaxNrOfTokensOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
-	}
+    @Override
+    protected String getFieldName()
+    {
+        return MaxNrOfTokensOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+    }
 
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
 
 }

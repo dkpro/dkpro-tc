@@ -39,52 +39,59 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * Ratio of the number of characters in a document with respect to the longest document in the training data
+ * Ratio of the number of characters in a document with respect to the longest document in the
+ * training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenRatioPerSentence extends MaximumNormalizationExtractorBase  {
+public class AvgTokenRatioPerSentence
+    extends MaximumNormalizationExtractorBase
+{
+    public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
-	public static final String FEATURE_NAME = "TokenRatioPerTarget";
+    @Override
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+        throws TextClassificationException
+    {
 
-	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
-			throws TextClassificationException {
+        long maxLen = getMax();
 
-		long maxLen = getMax();
-		
-		double avg=0.0;
-		
-		Collection<Sentence> sentences = JCasUtil.select(jcas, Sentence.class);
-		for (Sentence s : sentences){
-			Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-			avg += tokens.size();
-		}
-		avg /= sentences.size();
-		
-		double ratio = getRatio(avg, maxLen);
-		
-		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
-	}
+        double avg = 0.0;
 
-	@Override
-	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
-			throws ResourceInitializationException {
+        Collection<Sentence> sentences = JCasUtil.select(jcas, Sentence.class);
+        for (Sentence s : sentences) {
+            Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+            avg += tokens.size();
+        }
+        avg /= sentences.size();
 
-		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
-								AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
-								MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
-	}
+        double ratio = getRatio(avg, maxLen);
 
-	@Override
-	protected String getFieldName() {
-		return MaxNrOfTokensOverAllSentenceMC.LUCENE_FIELD + featureExtractorName;
-	}
+        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+    }
 
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+        throws ResourceInitializationException
+    {
+
+        return Arrays.asList(new MetaCollectorConfiguration(MaxNrOfTokensOverAllSentenceMC.class,
+                parameterSettings).addStorageMapping(
+                        MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION,
+                        AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION,
+                        MaxNrOfTokensOverAllSentenceMC.LUCENE_DIR));
+    }
+
+    @Override
+    protected String getFieldName()
+    {
+        return MaxNrOfTokensOverAllSentenceMC.LUCENE_FIELD + featureExtractorName;
+    }
+
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
 
 }

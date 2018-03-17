@@ -36,82 +36,98 @@ import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
-public class AvgCharRatioOfTokensPerDocumentTest extends LuceneMetaCollectionBasedFeatureTestBase {
-	private static String EXTRACTOR_NAME = "56465431";
+public class AvgCharRatioOfTokensPerDocumentTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
+    private static String EXTRACTOR_NAME = "56465431";
 
-	
-	@Before
-	public void setup(){
-		super.setup();
-		
-		featureClass = AvgTokenLengthRatioPerDocument.class;
-		metaCollectorClass = MaxNrOfCharsOverAllTokensMC.class;
-	}
-	
-	@Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
-		Collections.sort(entries);
-		entries = Lists.reverse(entries);
-		//
-		assertEquals(35, entries.size());
-		assertEquals("5", entries.get(0).split("_")[0]);
-	}
+    @Before
+    public void setup()
+    {
+        super.setup();
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
-		Collections.sort(instances, new Comparator<Instance>() {
+        featureClass = AvgTokenLengthRatioPerDocument.class;
+        metaCollectorClass = MaxNrOfCharsOverAllTokensMC.class;
+    }
 
-			@Override
-			public int compare(Instance o1, Instance o2) {
-				String v1 = ((Double) new ArrayList<Feature>(o1.getFeatures()).get(0).getValue()).toString();
-				String v2 = ((Double) new ArrayList<Feature>(o2.getFeatures()).get(0).getValue()).toString();
-				return v1.compareTo(v2);
-			}
-		});
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
+        Collections.sort(entries);
+        entries = Lists.reverse(entries);
+        //
+        assertEquals(35, entries.size());
+        assertEquals("5", entries.get(0).split("_")[0]);
+    }
 
-		assertEquals(3, instances.size());
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
+        Collections.sort(instances, new Comparator<Instance>()
+        {
 
-		double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0).getValue());
-		assertEquals(0.2, r, 0.01);
+            @Override
+            public int compare(Instance o1, Instance o2)
+            {
+                String v1 = ((Double) new ArrayList<Feature>(o1.getFeatures()).get(0).getValue())
+                        .toString();
+                String v2 = ((Double) new ArrayList<Feature>(o2.getFeatures()).get(0).getValue())
+                        .toString();
+                return v1.compareTo(v2);
+            }
+        });
 
-		r = (Double) (new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
-		assertEquals(0.2, r, 0.01);
+        assertEquals(3, instances.size());
 
-		r = (Double) (new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
-		assertEquals(0.7, r, 0.01);
-	}
+        double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0)
+                .getValue());
+        assertEquals(0.2, r, 0.01);
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-				TestReaderSingleLabel.PARAM_LANGUAGE, "en", TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-				"src/test/resources/ngrams/", TestReaderSingleLabel.PARAM_PATTERNS, "text*");
-	}
+        r = (Double) (new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
+        assertEquals(0.2, r, 0.01);
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-				TestReaderSingleLabel.PARAM_LANGUAGE, "en", TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-				"src/test/resources/ngrams/", TestReaderSingleLabel.PARAM_PATTERNS, "text*",
-				TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, false);
-	}
+        r = (Double) (new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
+        assertEquals(0.7, r, 0.01);
+    }
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokenLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
-				AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
-				AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1", AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MAX_N,
-				"1", };
-	}
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
+                TestReaderSingleLabel.PARAM_PATTERNS, "text*");
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
-	}
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
+                TestReaderSingleLabel.PARAM_PATTERNS, "text*",
+                TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, false);
+    }
+
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, AvgTokenLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
+                AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+                AvgTokenLengthRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+    }
+
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return new Object[] { AvgTokenLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
+    }
 }

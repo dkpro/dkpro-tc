@@ -53,17 +53,16 @@ public class SkipCharacterNGramMC
 
     @ConfigurationParameter(name = SkipCharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringLowerCase;
-    
+
     boolean lowerCase = true;
-    
+
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         lowerCase = Boolean.valueOf(stringLowerCase);
-        
+
     }
 
     @Override
@@ -71,9 +70,8 @@ public class SkipCharacterNGramMC
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        
-        return getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN,
-                skipSize);
+
+        return getCharacterSkipNgrams(jcas, fullDoc, lowerCase, minN, maxN, skipSize);
     }
 
     @Override
@@ -81,6 +79,7 @@ public class SkipCharacterNGramMC
     {
         return LUCENE_FIELD + featureExtractorName;
     }
+
     public static FrequencyDistribution<String> getCharacterSkipNgrams(JCas jcas, Annotation target,
             boolean lowerCaseNGrams, int minN, int maxN, int skipN)
     {
@@ -107,7 +106,7 @@ public class SkipCharacterNGramMC
         }
         return charNgrams;
     }
-    
+
     public static List<String> lower(List<String> ngram)
     {
         List<String> newNgram = new ArrayList<String>();

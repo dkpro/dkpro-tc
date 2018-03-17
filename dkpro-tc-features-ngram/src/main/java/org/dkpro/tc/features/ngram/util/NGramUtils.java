@@ -83,14 +83,13 @@ public class NGramUtils
         return annoNgrams;
     }
 
-
     /**
      * Returns document ngrams over any annotation type that extends Annotation. Intended use is
      * Lemma, Stem, etc.
      * 
      * @param jcas
      *            a jcas
-     * @param aTarget            
+     * @param aTarget
      *            target annotation span
      * @param lowerCaseNGrams
      *            lower caseing
@@ -112,7 +111,7 @@ public class NGramUtils
     public static FrequencyDistribution<String> getDocumentNgrams(JCas jcas, Annotation aTarget,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN,
             Set<String> stopwords, Class<? extends Annotation> annotationClass)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         FrequencyDistribution<String> documentNgrams = new FrequencyDistribution<String>();
         for (Sentence s : selectCovered(jcas, Sentence.class, aTarget)) {
@@ -176,7 +175,7 @@ public class NGramUtils
 
     public static <T extends Annotation> List<String> valuesToText(JCas jcas, Sentence s,
             String annotationClassName)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         List<String> texts = new ArrayList<String>();
 

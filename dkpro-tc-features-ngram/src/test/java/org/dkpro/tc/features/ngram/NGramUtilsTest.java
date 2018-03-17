@@ -83,24 +83,24 @@ public class NGramUtilsTest
     }
 
     @Test
-    public void phoneticNgramsTest()
-        throws Exception
+    public void phoneticNgramsTest() throws Exception
     {
         String text = "This is a big house";
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText(text);
-        
+
         TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, text.length());
         aTarget.addToIndexes();
-        
+
         JCasBuilder cb = new JCasBuilder(jcas);
         for (String token : text.split(" ")) {
             cb.add(token, Token.class);
         }
         cb.add(0, Sentence.class);
 
-        FrequencyDistribution<String> ngrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas, aTarget, 1, 3);
+        FrequencyDistribution<String> ngrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas,
+                aTarget, 1, 3);
 
         assertEquals(12, ngrams.getN());
         assertTrue(ngrams.contains("I000"));
@@ -108,8 +108,7 @@ public class NGramUtilsTest
     }
 
     @Test
-    public void characterBiGrams()
-        throws Exception
+    public void characterBiGrams() throws Exception
     {
         String text = "A house";
         JCas jcas = JCasFactory.createJCas();
@@ -122,8 +121,8 @@ public class NGramUtilsTest
         TextClassificationTarget tu = new TextClassificationTarget(jcas, 2, 7);
         tu.addToIndexes();
 
-        FrequencyDistribution<String> ngrams = CharacterNGramMC.getAnnotationCharacterNgrams(tu, false,
-                2, 3,'^', '$');
+        FrequencyDistribution<String> ngrams = CharacterNGramMC.getAnnotationCharacterNgrams(tu,
+                false, 2, 3, '^', '$');
         for (String s : ngrams.getKeys()) {
             System.out.println(s);
         }

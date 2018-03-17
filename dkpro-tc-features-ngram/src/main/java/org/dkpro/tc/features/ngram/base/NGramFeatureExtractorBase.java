@@ -49,7 +49,7 @@ public abstract class NGramFeatureExtractorBase
     public static final String PARAM_NGRAM_USE_TOP_K = "ngramUseTopK";
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int ngramUseTopK;
-    
+
     public static final String PARAM_TF_IDF_CALCULATION = "tfIdfCalculation";
     @ConfigurationParameter(name = PARAM_TF_IDF_CALCULATION, mandatory = true, defaultValue = "false")
     protected boolean tfIdfCalculation;
@@ -89,26 +89,29 @@ public abstract class NGramFeatureExtractorBase
             return false;
         }
 
-		stopwords = getStopwords();
+        stopwords = getStopwords();
 
-		topKSet = getTopNgrams();
+        topKSet = getTopNgrams();
 
-		prefix = getFeaturePrefix();
+        prefix = getFeaturePrefix();
 
-		return true;
+        return true;
     }
 
-	private Set<String> getStopwords() throws ResourceInitializationException {
-		try {
-			return FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+    private Set<String> getStopwords() throws ResourceInitializationException
+    {
+        try {
+            return FeatureUtil.getStopwords(ngramStopwordsFile, ngramLowerCase);
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
 
-	/*
-	 * This method should take care of some kind of caching the determined top-N values to avoid reading an index multiple times 
-	 */
-	protected abstract FrequencyDistribution<String> getTopNgrams()
+    /*
+     * This method should take care of some kind of caching the determined top-N values to avoid
+     * reading an index multiple times
+     */
+    protected abstract FrequencyDistribution<String> getTopNgrams()
         throws ResourceInitializationException;
 }

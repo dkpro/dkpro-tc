@@ -52,53 +52,48 @@ public class WordNGramMetaCollectorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     public static String UNIQUE_FEATURE_NAME = "123";
-    
+
     @Test
-    public void luceneNgramMetaCollectorTest()
-        throws Exception
+    public void luceneNgramMetaCollectorTest() throws Exception
     {
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TextReader.class, 
-                TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/",
-                TextReader.PARAM_LANGUAGE, "en",
-                TextReader.PARAM_PATTERNS, "text*.txt"
-        );
-        
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
-        
-        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
-                DocumentModeAnnotator.class,
-                DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-        
-        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                WordNGramMC.class,
-                WordNGramMC.PARAM_TARGET_LOCATION, tmpDir,
-                WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME
-        );
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/",
+                TextReader.PARAM_LANGUAGE, "en", TextReader.PARAM_PATTERNS, "text*.txt");
 
-        for (JCas jcas : new JCasIterable(reader, segmenter,doc, metaCollector)) {
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_DOCUMENT);
+
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
+                WordNGramMC.class, WordNGramMC.PARAM_TARGET_LOCATION, tmpDir,
+                WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, UNIQUE_FEATURE_NAME);
+
+        for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {
             System.out.println(jcas.getDocumentText().length());
         }
-        
+
         int i = 0;
         IndexReader index;
         try {
             index = DirectoryReader.open(FSDirectory.open(tmpDir));
             Fields fields = MultiFields.getFields(index);
             if (fields != null) {
-                Terms terms = fields.terms(WordNGram.LUCENE_NGRAM_FIELD+UNIQUE_FEATURE_NAME);
+                Terms terms = fields.terms(WordNGram.LUCENE_NGRAM_FIELD + UNIQUE_FEATURE_NAME);
                 if (terms != null) {
                     TermsEnum termsEnum = terms.iterator(null);
                     BytesRef text = null;
                     while ((text = termsEnum.next()) != null) {
-                        
+
                         if (text.utf8ToString().equals("this")) {
                             assertEquals(1, termsEnum.docFreq());
                             assertEquals(3, termsEnum.totalTermFreq());
                         }
-                        
+
                         i++;
                     }
                 }
@@ -107,37 +102,33 @@ public class WordNGramMetaCollectorTest
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        
-       assertEquals(35, i);    
+
+        assertEquals(35, i);
     }
-    
+
     @SuppressWarnings("unused")
     @Test
-    public void emptyDocumentTest()
-        throws Exception
+    public void emptyDocumentTest() throws Exception
     {
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TextReader.class, 
-                TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/empty/",
-                TextReader.PARAM_LANGUAGE, "en",
-                TextReader.PARAM_PATTERNS, "empty*.txt"
-        );
-        
-        AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
-        
-        AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT);
-        
+                TextReader.class, TextReader.PARAM_SOURCE_LOCATION, "src/test/resources/empty/",
+                TextReader.PARAM_LANGUAGE, "en", TextReader.PARAM_PATTERNS, "empty*.txt");
+
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_DOCUMENT);
+
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                WordNGramMC.class,
-                WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                WordNGramMC.PARAM_TARGET_LOCATION, tmpDir
-        );
+                WordNGramMC.class, WordNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                WordNGramMC.PARAM_TARGET_LOCATION, tmpDir);
 
         for (JCas jcas : new JCasIterable(reader, segmenter, doc, metaCollector)) {
-//            System.out.println(jcas.getDocumentText().length());
+            // System.out.println(jcas.getDocumentText().length());
         }
     }
 }

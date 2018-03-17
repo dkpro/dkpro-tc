@@ -35,7 +35,7 @@ public class KeywordNGramMC
     extends LuceneMC
 {
     public static final String KEYWORD_NGRAM_FIELD = "keywordngram";
-    
+
     @ConfigurationParameter(name = KeywordNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int minN;
 
@@ -58,8 +58,7 @@ public class KeywordNGramMC
     private Set<String> keywords;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -74,7 +73,8 @@ public class KeywordNGramMC
     @Override
     protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
     {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         return KeywordNGramUtils.getDocumentKeywordNgrams(jcas, fullDoc, minN, maxN,
                 markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }

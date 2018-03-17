@@ -47,7 +47,7 @@ public class SkipWordNGramMC
     extends LuceneMC
 {
     public static final String LUCENE_FIELD = "wordSkipNgram";
-    
+
     @ConfigurationParameter(name = LuceneFeatureExtractorBase.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "2")
     private int minN;
 
@@ -65,14 +65,13 @@ public class SkipWordNGramMC
 
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
     private String stringNgramLowerCase;
-    
+
     boolean ngramLowerCase = true;
 
     private Set<String> stopwords;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
         ngramLowerCase = Boolean.valueOf(stringNgramLowerCase);
@@ -89,8 +88,8 @@ public class SkipWordNGramMC
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        return getDocumentSkipNgrams(jcas, fullDoc, ngramLowerCase,
-                filterPartialStopwordMatches, minN, maxN, skipSize, stopwords);
+        return getDocumentSkipNgrams(jcas, fullDoc, ngramLowerCase, filterPartialStopwordMatches,
+                minN, maxN, skipSize, stopwords);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class SkipWordNGramMC
     {
         return LUCENE_FIELD + featureExtractorName;
     }
-    
+
     public static FrequencyDistribution<String> getDocumentSkipNgrams(JCas jcas, Annotation anno,
             boolean lowerCaseNGrams, boolean filterPartialMatches, int minN, int maxN, int skipN,
             Set<String> stopwords)
@@ -119,7 +118,7 @@ public class SkipWordNGramMC
         }
         return documentNgrams;
     }
-    
+
     private static boolean passesNgramFilter(List<String> tokenList, Set<String> stopwords,
             boolean filterPartialMatches)
     {
@@ -137,7 +136,7 @@ public class SkipWordNGramMC
             return filteredList.size() != 0;
         }
     }
-    
+
     private static List<String> lower(List<String> ngram)
     {
         List<String> newNgram = new ArrayList<String>();
@@ -145,5 +144,5 @@ public class SkipWordNGramMC
             newNgram.add(token.toLowerCase());
         }
         return newNgram;
-    }    
+    }
 }

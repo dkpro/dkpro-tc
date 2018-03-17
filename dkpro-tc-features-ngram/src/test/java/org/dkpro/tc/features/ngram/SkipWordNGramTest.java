@@ -32,70 +32,71 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.SkipWordNGramMC;
 import org.junit.Before;
 
-public class SkipWordNGramTest extends LuceneMetaCollectionBasedFeatureTestBase
+public class SkipWordNGramTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
 {
-	
-	final String FEATURE_NAME = "23424322";
-	
+
+    final String FEATURE_NAME = "23424322";
+
     @Before
     public void setup()
     {
-    	super.setup();
-    	featureClass = SkipWordNGram.class;
-    	metaCollectorClass = SkipWordNGramMC.class;
+        super.setup();
+        featureClass = SkipWordNGram.class;
+        metaCollectorClass = SkipWordNGramMC.class;
     }
-    
-    @Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-    	Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
-    	assertEquals(17, entriesFromIndex.size());
-	}
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
+        assertEquals(17, entriesFromIndex.size());
+    }
+
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
         assertEquals(1, instances.size());
-        
+
         List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
         assertEquals(1, features.size());
 
         assertEquals("SkipWordNGram_a_mice", features.get(0).getName());
-	}
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
                 "src/test/resources/skipngram/text1.txt");
-	}
+    }
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return getMetaReader();
-	}
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { 
-				SkipWordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				SkipWordNGram.PARAM_NGRAM_MIN_N, 2,
-				SkipWordNGram.PARAM_NGRAM_MAX_N, 2,
-				SkipWordNGram.PARAM_SKIP_SIZE, 1,
-				SkipWordNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(), 
-				SkipWordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-				};
-	}
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { SkipWordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                SkipWordNGram.PARAM_NGRAM_MIN_N, 2, SkipWordNGram.PARAM_NGRAM_MAX_N, 2,
+                SkipWordNGram.PARAM_SKIP_SIZE, 1, SkipWordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), SkipWordNGramMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return new Object[] { SkipWordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				SkipWordNGram.PARAM_NGRAM_USE_TOP_K, "1",
-				SkipWordNGram.PARAM_NGRAM_MIN_N, "2",
-				SkipWordNGram.PARAM_NGRAM_MAX_N, "2",
-				SkipWordNGram.PARAM_SKIP_SIZE, "1",
-				SkipWordNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(), 
-                SkipWordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-                };
-	}
-	
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return new Object[] { SkipWordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                SkipWordNGram.PARAM_NGRAM_USE_TOP_K, "1", SkipWordNGram.PARAM_NGRAM_MIN_N, "2",
+                SkipWordNGram.PARAM_NGRAM_MAX_N, "2", SkipWordNGram.PARAM_SKIP_SIZE, "1",
+                SkipWordNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                SkipWordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+    }
+
 }

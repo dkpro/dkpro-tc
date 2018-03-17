@@ -47,68 +47,73 @@ import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class WordNGramTest extends LuceneMetaCollectionBasedFeatureTestBase
+public class WordNGramTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
 {
     @Before
     public void setup()
     {
-    	super.setup();
-    	featureClass = WordNGram.class;
-    	metaCollectorClass = WordNGramMC.class;
+        super.setup();
+        featureClass = WordNGram.class;
+        metaCollectorClass = WordNGramMC.class;
     }
-    
-    @Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-    	Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
-    	assertEquals(86, entriesFromIndex.size());
-	}
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
+        assertEquals(86, entriesFromIndex.size());
+    }
+
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
         assertEquals(4, instances.size());
         assertEquals(1, getUniqueOutcomes(instances));
 
         Set<String> featureNames = new HashSet<String>();
-        for(Instance i : instances){
-            for(Feature f : i.getFeatures()){
+        for (Instance i : instances) {
+            for (Feature f : i.getFeatures()) {
                 featureNames.add(f.getName());
             }
         }
         assertEquals(3, featureNames.size());
         assertTrue(featureNames.contains("ngram_4"));
         assertTrue(featureNames.contains("ngram_5"));
-        assertTrue(featureNames.contains("ngram_5_5"));		
-	}
+        assertTrue(featureNames.contains("ngram_5_5"));
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/ngrams/*.txt");
-	}
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/*.txt");
+    }
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return getMetaReader();
-	}
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 WordNGram.PARAM_NGRAM_USE_TOP_K, "3", WordNGram.PARAM_SOURCE_LOCATION,
                 luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
-                luceneFolder.toString()};
-	}
+                luceneFolder.toString() };
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return getMetaCollectorParameters(luceneFolder);
-	}
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return getMetaCollectorParameters(luceneFolder);
+    }
 
     @Test
-    public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest()
-        throws Exception
+    public void luceneNGramFeatureExtractorNonDefaultFrequencyThresholdTest() throws Exception
     {
 
         File luceneFolder = folder.newFolder();
@@ -137,7 +142,7 @@ public class WordNGramTest extends LuceneMetaCollectionBasedFeatureTestBase
         AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
                 Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
-                Collections.emptyList(), fes, new String[]{});
+                Collections.emptyList(), fes, new String[] {});
 
         // run meta collector
         SimplePipeline.runPipeline(reader, segmenter, metaCollector);
@@ -161,5 +166,4 @@ public class WordNGramTest extends LuceneMetaCollectionBasedFeatureTestBase
         return outcomes.size();
     }
 
-	
 }

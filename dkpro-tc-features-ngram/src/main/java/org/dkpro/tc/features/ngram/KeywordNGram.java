@@ -48,7 +48,6 @@ public class KeywordNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-    
     public static final String PARAM_NGRAM_KEYWORDS_FILE = "keywordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
     protected String keywordsFile;
@@ -65,7 +64,6 @@ public class KeywordNGram
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
     protected boolean includeCommas;
 
-
     protected Set<String> keywords;
 
     @Override
@@ -80,15 +78,17 @@ public class KeywordNGram
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
     }
-    
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -109,13 +109,11 @@ public class KeywordNGram
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(
-                new MetaCollectorConfiguration(KeywordNGramMC.class, parameterSettings)
-                        .addStorageMapping(KeywordNGramMC.PARAM_TARGET_LOCATION,
-                                KeywordNGram.PARAM_SOURCE_LOCATION,
-                                KeywordNGramMC.LUCENE_DIR));
+        return Arrays.asList(new MetaCollectorConfiguration(KeywordNGramMC.class, parameterSettings)
+                .addStorageMapping(KeywordNGramMC.PARAM_TARGET_LOCATION,
+                        KeywordNGram.PARAM_SOURCE_LOCATION, KeywordNGramMC.LUCENE_DIR));
     }
 
     @Override
@@ -124,11 +122,11 @@ public class KeywordNGram
         return KeywordNGramMC.KEYWORD_NGRAM_FIELD + featureExtractorName;
     }
 
-
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
 
     @Override
     protected int getTopN()

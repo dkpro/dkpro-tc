@@ -43,8 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
-        "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-})
+        "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class PosNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
@@ -66,10 +65,12 @@ public class PosNGram
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentPOSNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
@@ -78,13 +79,11 @@ public class PosNGram
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(
-                new MetaCollectorConfiguration(PosNGramMC.class, parameterSettings)
-                        .addStorageMapping(PosNGramMC.PARAM_TARGET_LOCATION,
-                                PosNGram.PARAM_SOURCE_LOCATION,
-                                PosNGramMC.LUCENE_DIR));
+        return Arrays.asList(new MetaCollectorConfiguration(PosNGramMC.class, parameterSettings)
+                .addStorageMapping(PosNGramMC.PARAM_TARGET_LOCATION, PosNGram.PARAM_SOURCE_LOCATION,
+                        PosNGramMC.LUCENE_DIR));
     }
 
     @Override
@@ -93,11 +92,12 @@ public class PosNGram
         return PosNGramMC.LUCENE_POS_NGRAM_FIELD + featureExtractorName;
     }
 
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
-    
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
+
     @Override
     protected int getTopN()
     {

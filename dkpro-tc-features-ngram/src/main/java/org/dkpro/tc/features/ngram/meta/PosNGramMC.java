@@ -35,77 +35,87 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.NGramStringListIterable;
 
-public class PosNGramMC extends LuceneMC {
-	public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
+public class PosNGramMC
+    extends LuceneMC
+{
+    public static final String LUCENE_POS_NGRAM_FIELD = "posngram";
 
-	@ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	private int ngramMinN;
+    @ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-	@ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	private int ngramMaxN;
+    @ConfigurationParameter(name = PosNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
-	@ConfigurationParameter(name = PosNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
-	private boolean useCanonical;
+    @ConfigurationParameter(name = PosNGram.PARAM_USE_CANONICAL_POS, mandatory = true, defaultValue = "true")
+    private boolean useCanonical;
 
-	@Override
-	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
-		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-		return getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN, useCanonical);
-	}
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    {
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+        return getDocumentPosNgrams(jcas, fullDoc, ngramMinN, ngramMaxN, useCanonical);
+    }
 
-	@Override
-	protected String getFieldName() {
-		return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
-	}
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_POS_NGRAM_FIELD + featureExtractorName;
+    }
 
-	public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focus, int minN,
-			int maxN, boolean useCanonical) {
-		if (selectCovered(jcas, Sentence.class, focus).size() > 0) {
-			return sentenceBasedDistribution(jcas, focus, useCanonical, minN, maxN);
-		}
-		return documentBasedDistribution(jcas, focus, useCanonical, minN, maxN);
-	}
+    public static FrequencyDistribution<String> getDocumentPosNgrams(JCas jcas, Annotation focus,
+            int minN, int maxN, boolean useCanonical)
+    {
+        if (selectCovered(jcas, Sentence.class, focus).size() > 0) {
+            return sentenceBasedDistribution(jcas, focus, useCanonical, minN, maxN);
+        }
+        return documentBasedDistribution(jcas, focus, useCanonical, minN, maxN);
+    }
 
-	private static FrequencyDistribution<String> documentBasedDistribution(JCas jcas, Annotation focus,
-			boolean useCanonical, int minN, int maxN) {
+    private static FrequencyDistribution<String> documentBasedDistribution(JCas jcas,
+            Annotation focus, boolean useCanonical, int minN, int maxN)
+    {
 
-		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
+        FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
 
-		List<String> postagstrings = new ArrayList<String>();
-		for (POS p : selectCovered(jcas, POS.class, focus)) {
-			if (useCanonical) {
-				postagstrings.add(p.getClass().getSimpleName());
-			} else {
-				postagstrings.add(p.getPosValue());
-			}
-		}
-		String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
-		for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
-			posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
-		}
-		return posNgrams;
-	}
+        List<String> postagstrings = new ArrayList<String>();
+        for (POS p : selectCovered(jcas, POS.class, focus)) {
+            if (useCanonical) {
+                postagstrings.add(p.getClass().getSimpleName());
+            }
+            else {
+                postagstrings.add(p.getPosValue());
+            }
+        }
+        String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+        for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+            posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+        }
+        return posNgrams;
+    }
 
-	private static FrequencyDistribution<String> sentenceBasedDistribution(JCas jcas, Annotation focus,
-			boolean useCanonical, int minN, int maxN) {
+    private static FrequencyDistribution<String> sentenceBasedDistribution(JCas jcas,
+            Annotation focus, boolean useCanonical, int minN, int maxN)
+    {
 
-		FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
+        FrequencyDistribution<String> posNgrams = new FrequencyDistribution<String>();
 
-		for (Sentence s : selectCovered(jcas, Sentence.class, focus)) {
-			List<String> postagstrings = new ArrayList<String>();
-			for (POS p : selectCovered(jcas, POS.class, s)) {
-				if (useCanonical) {
-					postagstrings.add(p.getClass().getSimpleName());
-				} else {
-					postagstrings.add(p.getPosValue());
-				}
-			}
-			String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
-			for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
-				posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
-			}
-		}
-		return posNgrams;
-	}
+        for (Sentence s : selectCovered(jcas, Sentence.class, focus)) {
+            List<String> postagstrings = new ArrayList<String>();
+            for (POS p : selectCovered(jcas, POS.class, s)) {
+                if (useCanonical) {
+                    postagstrings.add(p.getClass().getSimpleName());
+                }
+                else {
+                    postagstrings.add(p.getPosValue());
+                }
+            }
+            String[] posarray = postagstrings.toArray(new String[postagstrings.size()]);
+            for (List<String> ngram : new NGramStringListIterable(posarray, minN, maxN)) {
+                posNgrams.inc(StringUtils.join(ngram, NGRAM_GLUE));
+            }
+        }
+        return posNgrams;
+    }
 
 }

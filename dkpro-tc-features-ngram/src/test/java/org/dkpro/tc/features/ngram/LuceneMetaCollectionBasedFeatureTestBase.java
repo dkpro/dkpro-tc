@@ -55,115 +55,140 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public abstract class LuceneMetaCollectionBasedFeatureTestBase {
-	
+public abstract class LuceneMetaCollectionBasedFeatureTestBase
+{
+
     @Before
     public void setup()
     {
         System.setProperty("org.apache.uima.logger.class",
                 "org.apache.uima.util.impl.Log4jLogger_impl");
     }
-	
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-	
-	public static Class<? extends AnalysisComponent> metaCollectorClass;
-	public static Class<? extends Resource_ImplBase> featureClass;
-	
-	@Test
-	public void runTest() throws Exception {
-		File luceneFolder = folder.newFolder();
-		File outputPath = folder.newFolder();
-		
-		Object[] metaParams = getMetaCollectorParameters(luceneFolder);
-		AnalysisEngineDescription metaCollector = prepareMetaCollector(metaCollectorClass, metaParams);
-		runMetaCollection(luceneFolder, metaCollector);
-		evaluateMetaCollection(luceneFolder);
-		
-		Object[] featureParams = getFeatureExtractorParameters(luceneFolder);
-		AnalysisEngineDescription featureExtractr = prepareFeatureExtractor(outputPath, featureClass, featureParams);
-		runFeatureExtractor(luceneFolder, featureExtractr);
-		evaluateExtractedFeatures(outputPath);
-	}
 
-	protected abstract void evaluateMetaCollection(File luceneFolder) throws Exception;
-	protected abstract void evaluateExtractedFeatures(File output) throws Exception;
-	protected abstract CollectionReaderDescription getMetaReader() throws Exception;
-	protected abstract CollectionReaderDescription getFeatureReader() throws Exception;
-	protected abstract Object[] getMetaCollectorParameters(File luceneFolder);
-	protected abstract Object[] getFeatureExtractorParameters(File luceneFolder);
-	
-	protected AnalysisEngineDescription prepareMetaCollector(Class<? extends AnalysisComponent> class1, Object[] parameters) throws Exception {
-		return AnalysisEngineFactory.createEngineDescription(class1, parameters);
-	}
-	
-	protected void runFeatureExtractor(File luceneFolder, AnalysisEngineDescription featureExtractor) throws Exception {
-		
-		CollectionReaderDescription reader = getFeatureReader(); 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
-		
-		SimplePipeline.runPipeline(reader, segmenter, featureExtractor);
-	}
-	
-	protected void runMetaCollection(File luceneFolder, AnalysisEngineDescription metaCollector) throws Exception {
+    public static Class<? extends AnalysisComponent> metaCollectorClass;
+    public static Class<? extends Resource_ImplBase> featureClass;
 
-		CollectionReaderDescription reader = getMetaReader();
+    @Test
+    public void runTest() throws Exception
+    {
+        File luceneFolder = folder.newFolder();
+        File outputPath = folder.newFolder();
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
+        Object[] metaParams = getMetaCollectorParameters(luceneFolder);
+        AnalysisEngineDescription metaCollector = prepareMetaCollector(metaCollectorClass,
+                metaParams);
+        runMetaCollection(luceneFolder, metaCollector);
+        evaluateMetaCollection(luceneFolder);
 
-		SimplePipeline.runPipeline(reader, segmenter, metaCollector);
-	}
+        Object[] featureParams = getFeatureExtractorParameters(luceneFolder);
+        AnalysisEngineDescription featureExtractr = prepareFeatureExtractor(outputPath,
+                featureClass, featureParams);
+        runFeatureExtractor(luceneFolder, featureExtractr);
+        evaluateExtractedFeatures(outputPath);
+    }
 
+    protected abstract void evaluateMetaCollection(File luceneFolder) throws Exception;
 
-	protected AnalysisEngineDescription prepareFeatureExtractor(File outputPath, Class<? extends Resource_ImplBase> class1, Object[] parameters) throws ResourceInitializationException {
-		List<ExternalResourceDescription> fes = makeResource(class1, parameters);
-		
-		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-				Constants.FM_DOCUMENT, false, false, false, false, Collections.emptyList(), fes, new String[] {});
-		
-		return featExtractorConnector;
-	}
+    protected abstract void evaluateExtractedFeatures(File output) throws Exception;
 
-	protected Set<String> getEntriesFromIndex(File luceneFolder) throws Exception {
-		Set<String> token = new HashSet<>();
-		@SuppressWarnings("deprecation")
-		IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-		Fields fields = MultiFields.getFields(idxReader);
-		for (String field : fields) {
-			if (field.equals("id")) {
-				continue;
-			}
-			Terms terms = fields.terms(field);
-			TermsEnum termsEnum = terms.iterator(null);
-			BytesRef text;
-			while ((text = termsEnum.next()) != null) {
-				token.add(text.utf8ToString());
-			}
-		}
-		return token;
-	}
-	
-	private List<ExternalResourceDescription> makeResource(Class<? extends Resource_ImplBase> class1, Object[] parameters) {
-		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(class1, parameters);
-		List<ExternalResourceDescription> fes = new ArrayList<>();
-		fes.add(featureExtractor);
-		return fes;
-	}
-	
-	protected List<Instance> readInstances(File output) throws IOException {
-		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME), "utf-8");
-		List<Instance> instances = new ArrayList<>();
-		for (String l : lines) {
-			instances.add(gson.fromJson(l, Instance.class));
-		}
-		
-		return instances;
-	}
-	
+    protected abstract CollectionReaderDescription getMetaReader() throws Exception;
+
+    protected abstract CollectionReaderDescription getFeatureReader() throws Exception;
+
+    protected abstract Object[] getMetaCollectorParameters(File luceneFolder);
+
+    protected abstract Object[] getFeatureExtractorParameters(File luceneFolder);
+
+    protected AnalysisEngineDescription prepareMetaCollector(
+            Class<? extends AnalysisComponent> class1, Object[] parameters)
+        throws Exception
+    {
+        return AnalysisEngineFactory.createEngineDescription(class1, parameters);
+    }
+
+    protected void runFeatureExtractor(File luceneFolder,
+            AnalysisEngineDescription featureExtractor)
+        throws Exception
+    {
+
+        CollectionReaderDescription reader = getFeatureReader();
+
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+
+        SimplePipeline.runPipeline(reader, segmenter, featureExtractor);
+    }
+
+    protected void runMetaCollection(File luceneFolder, AnalysisEngineDescription metaCollector)
+        throws Exception
+    {
+
+        CollectionReaderDescription reader = getMetaReader();
+
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+    }
+
+    protected AnalysisEngineDescription prepareFeatureExtractor(File outputPath,
+            Class<? extends Resource_ImplBase> class1, Object[] parameters)
+        throws ResourceInitializationException
+    {
+        List<ExternalResourceDescription> fes = makeResource(class1, parameters);
+
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
+
+        return featExtractorConnector;
+    }
+
+    protected Set<String> getEntriesFromIndex(File luceneFolder) throws Exception
+    {
+        Set<String> token = new HashSet<>();
+        @SuppressWarnings("deprecation")
+        IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
+        Fields fields = MultiFields.getFields(idxReader);
+        for (String field : fields) {
+            if (field.equals("id")) {
+                continue;
+            }
+            Terms terms = fields.terms(field);
+            TermsEnum termsEnum = terms.iterator(null);
+            BytesRef text;
+            while ((text = termsEnum.next()) != null) {
+                token.add(text.utf8ToString());
+            }
+        }
+        return token;
+    }
+
+    private List<ExternalResourceDescription> makeResource(
+            Class<? extends Resource_ImplBase> class1, Object[] parameters)
+    {
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(class1, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
+        return fes;
+    }
+
+    protected List<Instance> readInstances(File output) throws IOException
+    {
+        Gson gson = new Gson();
+        List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME),
+                "utf-8");
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
+
+        return instances;
+    }
+
 }

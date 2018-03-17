@@ -52,7 +52,7 @@ public class KeywordNGramUtils
      * @param jcas
      *            a jcas
      * @param anno
-     * 			the annotation
+     *            the annotation
      * @param minN
      *            minimum ngram length
      * @param maxN
@@ -135,8 +135,9 @@ public class KeywordNGramUtils
         for (JCas view : jcases) {
             TextClassificationTarget aTarget = JCasUtil.selectSingle(view,
                     TextClassificationTarget.class);
-            FrequencyDistribution<String> oneViewsNgrams = getDocumentKeywordNgrams(view, aTarget, minN, maxN,
-                    markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+            FrequencyDistribution<String> oneViewsNgrams = getDocumentKeywordNgrams(view, aTarget,
+                    minN, maxN, markSentenceBoundary, markSentenceLocation, includeCommas,
+                    keywords);
             // This is a hack because there's no method to combine 2 FD's
             for (String key : oneViewsNgrams.getKeys()) {
                 viewNgramsTotal.addSample(key, oneViewsNgrams.getCount(key));

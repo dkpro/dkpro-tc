@@ -34,74 +34,86 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxSentLenOverAllDocumentsMC;
 import org.junit.Before;
 
-public class AvgSentenceLengthPerDocumentTest extends LuceneMetaCollectionBasedFeatureTestBase {
+public class AvgSentenceLengthPerDocumentTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
 
-	private static String EXTRACTOR_NAME = "13233";
+    private static String EXTRACTOR_NAME = "13233";
 
-	@Before
-	public void setup(){
-		super.setup();
-		
-		featureClass = AvgSentenceLengthRatioPerDocument.class;
-		metaCollectorClass = MaxSentLenOverAllDocumentsMC.class;
-	}
+    @Before
+    public void setup()
+    {
+        super.setup();
 
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
-		Collections.sort(entries);
+        featureClass = AvgSentenceLengthRatioPerDocument.class;
+        metaCollectorClass = MaxSentLenOverAllDocumentsMC.class;
+    }
 
-		assertEquals("4", entries.get(0).split("_")[0]);
-		assertEquals("6", entries.get(1).split("_")[0]);		
-	}
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
+        Collections.sort(entries);
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
-		assertEquals(1, instances.size());
-		Iterator<Instance> iterator = instances.iterator();
-		double val=-1;
-		while (iterator.hasNext()) {
-			Instance next = iterator.next();
-			List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
-			assertEquals(1, arrayList.size());
+        assertEquals("4", entries.get(0).split("_")[0]);
+        assertEquals("6", entries.get(1).split("_")[0]);
+    }
 
-			Object value = arrayList.get(0).getValue();
-			
-			val = Double.valueOf(value.toString());
-		}
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
+        assertEquals(1, instances.size());
+        Iterator<Instance> iterator = instances.iterator();
+        double val = -1;
+        while (iterator.hasNext()) {
+            Instance next = iterator.next();
+            List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
+            assertEquals(1, arrayList.size());
 
-		double expected = (4.0/6 + 6/6)/2;
-		
-		assertEquals(expected, val, 0.01);
-	}
+            Object value = arrayList.get(0).getValue();
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/sentAvg/text4.txt");
-	}
+            val = Double.valueOf(value.toString());
+        }
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return  getMetaReader();
-	}
+        double expected = (4.0 / 6 + 6 / 6) / 2;
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, 1, AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, 1,
-				AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, 1 };
-	}
+        assertEquals(expected, val, 0.01);
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1", AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-				AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
-	}
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sentAvg/text4.txt");
+    }
+
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
+
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, 1,
+                AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, 1,
+                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, 1 };
+    }
+
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
+                AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+    }
 }

@@ -29,44 +29,51 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.ngrams.util.CharacterNGramStringIterable;
 
 /**
- * Creates a frequency distribution over all characters occurring in the entire
- * document text i.e. index zero to document-length.  
+ * Creates a frequency distribution over all characters occurring in the entire document text i.e.
+ * index zero to document-length.
  */
-public class CharacterNGramMC extends LuceneMC {
-	public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
+public class CharacterNGramMC
+    extends LuceneMC
+{
+    public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
 
-	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	private int ngramMinN;
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
 
-	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	private int ngramMaxN;
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
 
-	@ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
-	private String stringLowerCase;
+    @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_LOWER_CASE, mandatory = false, defaultValue = "true")
+    private String stringLowerCase;
 
-	boolean lowerCase = true;
+    boolean lowerCase = true;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		lowerCase = Boolean.valueOf(stringLowerCase);
+        lowerCase = Boolean.valueOf(stringLowerCase);
 
-	}
+    }
 
-	@Override
-	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) {
-		TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
-		FrequencyDistribution<String> fd = getAnnotationCharacterNgrams(fullDoc, lowerCase, ngramMinN, ngramMaxN, '^', '$');
-		return fd;
-	}
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    {
+        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
+        FrequencyDistribution<String> fd = getAnnotationCharacterNgrams(fullDoc, lowerCase,
+                ngramMinN, ngramMaxN, '^', '$');
+        return fd;
+    }
 
-	@Override
-	protected String getFieldName() {
-		return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
-	}
-	
-	 /**
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_CHAR_NGRAM_FIELD + featureExtractorName;
+    }
+
+    /**
      * Creates a frequency distribution of character ngrams over the span of an annotation. The
      * boundary* parameter allows it to provide a string that is added additionally at the beginning
      * and end of the respective annotation span. If for instance the 'begin of sequence' or 'end of

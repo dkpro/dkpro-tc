@@ -30,26 +30,31 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxNrOfTokensOverAllSentenceMC extends LuceneMC {
-	
-	public static final String LUCENE_FIELD = "maxTokenPerSentence";
-	Random r = new Random();
+public class MaxNrOfTokensOverAllSentenceMC
+    extends LuceneMC
+{
 
-	@Override
-	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
+    public static final String LUCENE_FIELD = "maxTokenPerSentence";
+    Random r = new Random();
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
-		for(Sentence s : select){
-			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-			fd.addSample(tokens.size() + "_" + r.nextLong(), tokens.size());
-		}
-		
-		return fd;
-	}
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
+    {
 
-	@Override
-	protected String getFieldName() {
-		return LUCENE_FIELD + featureExtractorName;
-	}
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+        Collection<Sentence> select = JCasUtil.select(jcas, Sentence.class);
+        for (Sentence s : select) {
+            List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+            fd.addSample(tokens.size() + "_" + r.nextLong(), tokens.size());
+        }
+
+        return fd;
+    }
+
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_FIELD + featureExtractorName;
+    }
 }

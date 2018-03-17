@@ -37,43 +37,50 @@ import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfSentencesOverAll
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Ratio of the number of sentences in a document with respect to the longest document in the training data
+ * Ratio of the number of sentences in a document with respect to the longest document in the
+ * training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentenceRatioPerDocument extends MaximumNormalizationExtractorBase  {
+public class AvgSentenceRatioPerDocument
+    extends MaximumNormalizationExtractorBase
+{
+    public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
 
-	public static final String FEATURE_NAME = "AvgSentencesRatioPerDocument";
+    @Override
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+        throws TextClassificationException
+    {
 
-	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
-			throws TextClassificationException {
+        long maxLen = getMax();
 
-		long maxLen = getMax();
+        List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
+        double ratio = getRatio(sentences.size(), maxLen);
+        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+    }
 
-		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
-		double ratio = getRatio(sentences.size(), maxLen);
-		return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
-	}
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+        throws ResourceInitializationException
+    {
 
+        return Arrays
+                .asList(new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class,
+                        parameterSettings).addStorageMapping(
+                                MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                                AvgSentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
+                                MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
+    }
 
-	@Override
-	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
-			throws ResourceInitializationException {
+    @Override
+    protected String getFieldName()
+    {
+        return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+    }
 
-		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgSentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
-	}
-
-	@Override
-	protected String getFieldName() {
-		return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
-	}
-
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getSimpleName();
+    }
 }

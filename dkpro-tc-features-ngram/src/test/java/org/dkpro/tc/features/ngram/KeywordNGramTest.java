@@ -51,131 +51,146 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class KeywordNGramTest {
+public class KeywordNGramTest
+{
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-	@Before
-	public void setupLogging() {
-		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-	}
+    @Before
+    public void setupLogging()
+    {
+        System.setProperty("org.apache.uima.logger.class",
+                "org.apache.uima.util.impl.Log4jLogger_impl");
+    }
 
-	private List<Instance> initialize(boolean includeComma, boolean markSentenceLocation) throws Exception {
+    private List<Instance> initialize(boolean includeComma, boolean markSentenceLocation)
+        throws Exception
+    {
 
-		File luceneFolder = folder.newFolder();
-		File outputPath = folder.newFolder();
+        File luceneFolder = folder.newFolder();
+        File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-				KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt",
-				KeywordNGram.PARAM_SOURCE_LOCATION, luceneFolder, KeywordNGramMC.PARAM_TARGET_LOCATION, luceneFolder,
-				KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, markSentenceLocation,
-				KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
+        Object[] parameters = new Object[] { KeywordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                KeywordNGram.PARAM_NGRAM_KEYWORDS_FILE, "src/test/resources/data/keywordlist.txt",
+                KeywordNGram.PARAM_SOURCE_LOCATION, luceneFolder,
+                KeywordNGramMC.PARAM_TARGET_LOCATION, luceneFolder,
+                KeywordNGram.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, markSentenceLocation,
+                KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
 
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-				"src/test/resources/ngrams/trees.txt");
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/ngrams/trees.txt");
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
 
-		AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(KeywordNGramMC.class,
-				parameters);
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(KeywordNGramMC.class, parameters);
 
-		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(KeywordNGram.class, toString(parameters));
-		List<ExternalResourceDescription> fes = new ArrayList<>();
-		fes.add(featureExtractor);
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(KeywordNGram.class, toString(parameters));
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
 
-		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-				Constants.FM_DOCUMENT, false, false, false, false, Collections.emptyList(), fes, new String[] {});
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
 
-		// run meta collector
-		SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+        // run meta collector
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
 
-		// run FE(s)
-		SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
+        // run FE(s)
+        SimplePipeline.runPipeline(reader, segmenter, featExtractorConnector);
 
-		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
-		List<Instance> instances = new ArrayList<>();
-		for (String l : lines) {
-			instances.add(gson.fromJson(l, Instance.class));
-		}
+        Gson gson = new Gson();
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
 
-		assertEquals(1, instances.size());
+        assertEquals(1, instances.size());
 
-		return instances;
-	}
+        return instances;
+    }
 
-	private Object[] toString(Object[] parameters) {
-		List<Object> out = new ArrayList<>();
-		for (Object o : parameters) {
-			out.add(o.toString());
-		}
+    private Object[] toString(Object[] parameters)
+    {
+        List<Object> out = new ArrayList<>();
+        for (Object o : parameters) {
+            out.add(o.toString());
+        }
 
-		return out.toArray();
-	}
+        return out.toArray();
+    }
 
-	@Test
-	public void extractKeywordsTest() throws Exception {
-		List<Instance> inst = initialize(false, false);
+    @Test
+    public void extractKeywordsTest() throws Exception
+    {
+        List<Instance> inst = initialize(false, false);
 
-		String prefix = KeywordNGram.class.getSimpleName();
+        String prefix = KeywordNGram.class.getSimpleName();
 
-		assertTrue(containsFeatureName(inst, prefix + "_cherry"));
-		assertTrue(containsFeatureName(inst, prefix + "_apricot_peach"));
-		assertTrue(containsFeatureName(inst, prefix + "_peach_nectarine_SB"));
-		assertTrue(containsFeatureName(inst,
-				KeywordNGram.class.getSimpleName() +"_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(containsFeatureName(inst, prefix + "_cherry"));
+        assertTrue(containsFeatureName(inst, prefix + "_apricot_peach"));
+        assertTrue(containsFeatureName(inst, prefix + "_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(inst, KeywordNGram.class.getSimpleName() + "_cherry"
+                + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-		assertFalse(containsFeatureName(inst, prefix + "_guava"));
-		assertFalse(containsFeatureName(inst, prefix + "_peach_CA"));
-		assertFalse(containsFeatureName(inst, prefix + "_nectarine_SBBEG"));
-	}
+        assertFalse(containsFeatureName(inst, prefix + "_guava"));
+        assertFalse(containsFeatureName(inst, prefix + "_peach_CA"));
+        assertFalse(containsFeatureName(inst, prefix + "_nectarine_SBBEG"));
+    }
 
-	private boolean containsFeatureName(List<Instance> ins, String name) {
-		for (Instance i : ins) {
-			for (Feature f : i.getFeatures()) {
-				if (f.getName().equals(name)) {
-					return true;
-				}
-			}
-		}
+    private boolean containsFeatureName(List<Instance> ins, String name)
+    {
+        for (Instance i : ins) {
+            for (Feature f : i.getFeatures()) {
+                if (f.getName().equals(name)) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Test
-	public void commasTest() throws Exception {
-		List<Instance> ins = initialize(true, false);
+    @Test
+    public void commasTest() throws Exception
+    {
+        List<Instance> ins = initialize(true, false);
 
-		String prefix = KeywordNGram.class.getSimpleName();
+        String prefix = KeywordNGram.class.getSimpleName();
 
-		assertTrue(containsFeatureName(ins, prefix + "_cherry"));
-		assertFalse(containsFeatureName(ins, prefix + "_apricot_peach"));
-		assertFalse(containsFeatureName(ins, prefix + "_peach_nectarine_SB"));
-		assertTrue(containsFeatureName(ins, prefix + "_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+        assertTrue(containsFeatureName(ins, prefix + "_cherry"));
+        assertFalse(containsFeatureName(ins, prefix + "_apricot_peach"));
+        assertFalse(containsFeatureName(ins, prefix + "_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(ins,
+                prefix + "_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-		assertFalse(containsFeatureName(ins, prefix + "_guava"));
-		assertTrue(containsFeatureName(ins, prefix + "_peach_CA"));
-		assertFalse(containsFeatureName(ins, prefix + "_nectarine_SBBEG"));
+        assertFalse(containsFeatureName(ins, prefix + "_guava"));
+        assertTrue(containsFeatureName(ins, prefix + "_peach_CA"));
+        assertFalse(containsFeatureName(ins, prefix + "_nectarine_SBBEG"));
 
-	}
+    }
 
-	@Test
-	public void sentenceLocationTest() throws Exception {
-		List<Instance> ins = initialize(false, true);
-		String prefix = KeywordNGram.class.getSimpleName();
-		assertTrue(containsFeatureName(ins, prefix + "_cherry"));
-		assertTrue(containsFeatureName(ins, prefix + "_apricot_peach"));
-		assertFalse(containsFeatureName(ins, prefix + "_peach_nectarine_SB"));
-		assertTrue(containsFeatureName(ins, prefix + "_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
+    @Test
+    public void sentenceLocationTest() throws Exception
+    {
+        List<Instance> ins = initialize(false, true);
+        String prefix = KeywordNGram.class.getSimpleName();
+        assertTrue(containsFeatureName(ins, prefix + "_cherry"));
+        assertTrue(containsFeatureName(ins, prefix + "_apricot_peach"));
+        assertFalse(containsFeatureName(ins, prefix + "_peach_nectarine_SB"));
+        assertTrue(containsFeatureName(ins,
+                prefix + "_cherry" + KeywordNGramUtils.MIDNGRAMGLUE + "trees"));
 
-		assertFalse(containsFeatureName(ins, prefix + "_guava"));
-		assertFalse(containsFeatureName(ins, prefix + "_peach_CA"));
-		assertTrue(containsFeatureName(ins, prefix + "_nectarine_SBBEG"));
-	}
+        assertFalse(containsFeatureName(ins, prefix + "_guava"));
+        assertFalse(containsFeatureName(ins, prefix + "_peach_CA"));
+        assertTrue(containsFeatureName(ins, prefix + "_nectarine_SBBEG"));
+    }
 
 }

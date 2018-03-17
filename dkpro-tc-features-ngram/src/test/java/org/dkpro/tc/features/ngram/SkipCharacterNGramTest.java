@@ -32,71 +32,73 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.SkipCharacterNGramMC;
 import org.junit.Before;
 
-public class SkipCharacterNGramTest extends LuceneMetaCollectionBasedFeatureTestBase{
-	
-	static String FEATURE_NAME = "234234234332434";
-	
-	@Before
-	public void setup() {
-		super.setup();
-		featureClass = SkipCharacterNGram.class;
-		metaCollectorClass = SkipCharacterNGramMC.class;
-	}
+public class SkipCharacterNGramTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
 
-	@Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
-		assertEquals(40, entriesFromIndex.size());
-	}
+    static String FEATURE_NAME = "234234234332434";
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
-		assertEquals(1, instances.size());
-		
-		assertEquals(1, instances.get(0).getFeatures().size());
-		
-		List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
-		assertEquals("SkipCharacterNGram_a_a", features.get(0).getName());
-	}
+    @Before
+    public void setup()
+    {
+        super.setup();
+        featureClass = SkipCharacterNGram.class;
+        metaCollectorClass = SkipCharacterNGramMC.class;
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/skipngram/text2.txt");
-	}
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
+        assertEquals(40, entriesFromIndex.size());
+    }
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { 
-				SkipCharacterNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				SkipCharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				SkipCharacterNGram.PARAM_NGRAM_MIN_N, 2, 
-				SkipCharacterNGram.PARAM_NGRAM_MAX_N, 2,
-				SkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, 1,
-				SkipCharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-		};
-	}
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
+        assertEquals(1, instances.size());
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return new Object[] { 
-				SkipCharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				SkipCharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				SkipCharacterNGram.PARAM_NGRAM_USE_TOP_K, "1",
-				SkipCharacterNGram.PARAM_NGRAM_MIN_N, "2", 
-				SkipCharacterNGram.PARAM_NGRAM_MAX_N, "2",
-				SkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, "1",
-				SkipCharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-		};
-	}
+        assertEquals(1, instances.get(0).getFeatures().size());
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return getMetaReader();
-	}
+        List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
+        assertEquals("SkipCharacterNGram_a_a", features.get(0).getName());
+    }
 
-	 
- 
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/skipngram/text2.txt");
+    }
+
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { SkipCharacterNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                SkipCharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                SkipCharacterNGram.PARAM_NGRAM_MIN_N, 2, SkipCharacterNGram.PARAM_NGRAM_MAX_N, 2,
+                SkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, 1,
+                SkipCharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+    }
+
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return new Object[] { SkipCharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                SkipCharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                SkipCharacterNGram.PARAM_NGRAM_USE_TOP_K, "1", SkipCharacterNGram.PARAM_NGRAM_MIN_N,
+                "2", SkipCharacterNGram.PARAM_NGRAM_MAX_N, "2",
+                SkipCharacterNGram.PARAM_CHAR_SKIP_SIZE, "1",
+                SkipCharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+    }
+
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
+
 }

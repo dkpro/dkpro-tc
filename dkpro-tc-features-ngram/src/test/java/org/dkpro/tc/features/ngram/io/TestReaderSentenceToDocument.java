@@ -51,16 +51,15 @@ public class TestReaderSentenceToDocument
     public static final String PARAM_SENTENCES_FILE = "SentencesFile";
     @ConfigurationParameter(name = PARAM_SENTENCES_FILE, mandatory = true)
     private String sentencesFile;
-	
-	public static final String LANGUAGE_CODE = "en";
-	private int offset;
-    private List<String> texts;    
-    
-    int jcasId=0;
-    
+
+    public static final String LANGUAGE_CODE = "en";
+    private int offset;
+    private List<String> texts;
+
+    int jcasId = 0;
+
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -79,13 +78,11 @@ public class TestReaderSentenceToDocument
 
         offset = 0;
     }
-    
 
     @Override
-    public void getNext(JCas aJCas)
-        throws IOException, CollectionException
-    {        
-    	// setting the document text
+    public void getNext(JCas aJCas) throws IOException, CollectionException
+    {
+        // setting the document text
         aJCas.setDocumentText(texts.get(offset));
         aJCas.setDocumentLanguage(LANGUAGE_CODE);
 
@@ -96,39 +93,36 @@ public class TestReaderSentenceToDocument
         dmd.setDocumentTitle("Sentence" + offset);
         dmd.setDocumentUri("Sentence" + offset);
         dmd.setDocumentId(String.valueOf(offset));
-        
+
         JCasId id = new JCasId(aJCas);
         id.setId(jcasId);
         id.addToIndexes();
-        
 
         // setting the outcome / label for this document
         TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
         outcome.setOutcome(getTextClassificationOutcome(aJCas));
         outcome.addToIndexes();
-        
+
         new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length()).addToIndexes();
 
         offset++;
     }
-    
 
     @Override
-    public String getTextClassificationOutcome(JCas jcas)
-        throws CollectionException
+    public String getTextClassificationOutcome(JCas jcas) throws CollectionException
     {
         return "test";
     }
-    
 
-	@Override
-	public boolean hasNext() throws IOException, CollectionException {
-		return offset < texts.size();
-	}
-	
+    @Override
+    public boolean hasNext() throws IOException, CollectionException
+    {
+        return offset < texts.size();
+    }
 
-	@Override
-	public Progress[] getProgress() {
-		return new Progress[] { new ProgressImpl(offset, texts.size(), "sentences") };
-	}
+    @Override
+    public Progress[] getProgress()
+    {
+        return new Progress[] { new ProgressImpl(offset, texts.size(), "sentences") };
+    }
 }

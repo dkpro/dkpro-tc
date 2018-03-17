@@ -32,73 +32,78 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
 import org.junit.Before;
 
-public class CharacterNGramTest extends LuceneMetaCollectionBasedFeatureTestBase{
-	
-	static String FEATURE_NAME = "23423432434";
-	
-	@Before
-	public void setup() {
-		super.setup();
-		featureClass = CharacterNGram.class;
-		metaCollectorClass = CharacterNGramMC.class;
-	}
+public class CharacterNGramTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
 
-	@Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
-		
-		assertEquals(27, entriesFromIndex.size());
-	}
+    static String FEATURE_NAME = "23423432434";
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
-		assertEquals(1, instances.size());
-		
-		//ly + y*
-		assertEquals(2, instances.get(0).getFeatures().size());
-		
-		List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
-		assertEquals("CharacterNGram_ly", features.get(0).getName());
-		assertEquals("CharacterNGram_yu32", features.get(1).getName());
-	}
+    @Before
+    public void setup()
+    {
+        super.setup();
+        featureClass = CharacterNGram.class;
+        metaCollectorClass = CharacterNGramMC.class;
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/charngram/meta.txt");
-	}
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { CharacterNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				CharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				CharacterNGram.PARAM_NGRAM_USE_TOP_K, 5,
-				CharacterNGram.PARAM_NGRAM_MIN_N, 2, 
-				CharacterNGram.PARAM_NGRAM_MAX_N, 2,
-				CharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-		};
-	}
+        assertEquals(27, entriesFromIndex.size());
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return new Object[] { CharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				CharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				CharacterNGram.PARAM_NGRAM_USE_TOP_K, "2",
-				CharacterNGram.PARAM_NGRAM_MIN_N, "2", 
-				CharacterNGram.PARAM_NGRAM_MAX_N, "2",
-				CharacterNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString()
-		};
-	}
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
+        assertEquals(1, instances.size());
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/charngram/feature.txt");
-	}
+        // ly + y*
+        assertEquals(2, instances.get(0).getFeatures().size());
 
-	 
- 
+        List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
+        assertEquals("CharacterNGram_ly", features.get(0).getName());
+        assertEquals("CharacterNGram_yu32", features.get(1).getName());
+    }
+
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/charngram/meta.txt");
+    }
+
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { CharacterNGramMC.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                CharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 5, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                CharacterNGram.PARAM_NGRAM_MAX_N, 2, CharacterNGramMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
+    }
+
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return new Object[] { CharacterNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                CharacterNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                CharacterNGram.PARAM_NGRAM_USE_TOP_K, "2", CharacterNGram.PARAM_NGRAM_MIN_N, "2",
+                CharacterNGram.PARAM_NGRAM_MAX_N, "2", CharacterNGramMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
+    }
+
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/charngram/feature.txt");
+    }
+
 }

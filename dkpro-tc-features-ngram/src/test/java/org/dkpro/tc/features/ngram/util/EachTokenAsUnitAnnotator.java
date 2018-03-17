@@ -35,8 +35,7 @@ public class EachTokenAsUnitAnnotator
     int tcId = 0;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
 
         List<Token> tokens = new ArrayList<Token>(JCasUtil.select(aJCas, Token.class));

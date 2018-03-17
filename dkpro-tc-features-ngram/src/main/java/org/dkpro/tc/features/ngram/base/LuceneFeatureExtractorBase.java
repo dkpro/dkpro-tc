@@ -45,106 +45,110 @@ public abstract class LuceneFeatureExtractorBase
     public static final String PARAM_SOURCE_LOCATION = ComponentParameters.PARAM_SOURCE_LOCATION;
     @ConfigurationParameter(name = PARAM_SOURCE_LOCATION, mandatory = true)
     protected File luceneDir;
-    
+
     public static final String LUCENE_NGRAM_FIELD = "ngram";
 
-    
     private MinMaxPriorityQueue<TermFreqTuple> topN;
-    private long maxNgramSum=0;
-    
-    protected boolean forceRereadFromIndex = false; //hack for pair-mode
-    
-    private FrequencyDistribution<String> topNGrams=null;
-    
+    private long maxNgramSum = 0;
+
+    protected boolean forceRereadFromIndex = false; // hack for pair-mode
+
+    private FrequencyDistribution<String> topNGrams = null;
+
     @Override
-    protected FrequencyDistribution<String> getTopNgrams()
-        throws ResourceInitializationException
+    protected FrequencyDistribution<String> getTopNgrams() throws ResourceInitializationException
     {
-    	if(topNGrams != null && !forceRereadFromIndex){
-    		return topNGrams;
-    	}
-    	
-    	maxNgramSum = 0;
-    	topN = readIndex();
-    	
-    	topNGrams = new FrequencyDistribution<String>();
-        
+        if (topNGrams != null && !forceRereadFromIndex) {
+            return topNGrams;
+        }
+
+        maxNgramSum = 0;
+        topN = readIndex();
+
+        topNGrams = new FrequencyDistribution<String>();
+
         int size = topN.size();
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             TermFreqTuple tuple = topN.poll();
             long absCount = tuple.getFreq();
             double relFrequency = ((double) absCount) / maxNgramSum;
-            
-            if( relFrequency >= ngramFreqThreshold ) {
+
+            if (relFrequency >= ngramFreqThreshold) {
                 topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
             }
         }
-        
+
         logSelectionProcess(topNGrams.getB());
 
         return topNGrams;
     }
-    
-    private MinMaxPriorityQueue<TermFreqTuple> readIndex() throws ResourceInitializationException {
-		MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN()).create();
 
-		IndexReader reader;
-		try {
-			reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-			Fields fields = MultiFields.getFields(reader);
-			if (fields == null) {
-				IOUtils.closeQuietly(reader);
-				return topN;
-			}
-			Terms terms = fields.terms(getFieldName());
-			if (terms == null) {
-				IOUtils.closeQuietly(reader);
-				return topN;
-			}
-			TermsEnum termsEnum = terms.iterator(null);
-			BytesRef text = null;
-			while ((text = termsEnum.next()) != null) {
-				String term = text.utf8ToString();
-				long freq = termsEnum.totalTermFreq();
-				if (passesScreening(term)) {
-					topN.add(new TermFreqTuple(term, freq));
-					maxNgramSum += freq;
-				}
-			}
-			reader.close();
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-		return topN;
-	}
-        
-    protected void logSelectionProcess(long N) {
-    	getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");		
-	}
+    private MinMaxPriorityQueue<TermFreqTuple> readIndex() throws ResourceInitializationException
+    {
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN())
+                .create();
+
+        IndexReader reader;
+        try {
+            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+            Fields fields = MultiFields.getFields(reader);
+            if (fields == null) {
+                IOUtils.closeQuietly(reader);
+                return topN;
+            }
+            Terms terms = fields.terms(getFieldName());
+            if (terms == null) {
+                IOUtils.closeQuietly(reader);
+                return topN;
+            }
+            TermsEnum termsEnum = terms.iterator(null);
+            BytesRef text = null;
+            while ((text = termsEnum.next()) != null) {
+                String term = text.utf8ToString();
+                long freq = termsEnum.totalTermFreq();
+                if (passesScreening(term)) {
+                    topN.add(new TermFreqTuple(term, freq));
+                    maxNgramSum += freq;
+                }
+            }
+            reader.close();
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+        return topN;
+    }
+
+    protected void logSelectionProcess(long N)
+    {
+        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");
+    }
 
     /**
      * @return The field name that this lucene-based ngram FE uses for storing the ngrams
      */
     @Override
     protected abstract String getFieldName();
-    
+
     /**
      * @return How many of the most frequent ngrams should be returned.
      */
     @Override
     protected abstract int getTopN();
-    
+
     /**
-     * Permits the Pair FE's to use {@link #getTopNgrams()}: can be optionally overridden,
-     * to constrain which ngrams are used as features.  (Pair ngram FE's generate a huge
-     * number of features, that must usually be constrained.)  Without this method, getTopNgrams()
-     * must be overridden in LucenePFEBase with essentially the same method,
-     * but with the constraint option in place, resulting in code duplication.
+     * Permits the Pair FE's to use {@link #getTopNgrams()}: can be optionally overridden, to
+     * constrain which ngrams are used as features. (Pair ngram FE's generate a huge number of
+     * features, that must usually be constrained.) Without this method, getTopNgrams() must be
+     * overridden in LucenePFEBase with essentially the same method, but with the constraint option
+     * in place, resulting in code duplication.
      * 
-     * @param term potential new feature
+     * @param term
+     *            potential new feature
      * @return if term passes screening
      */
-    protected boolean passesScreening(String term){
+    protected boolean passesScreening(String term)
+    {
         return true;
     }
 }

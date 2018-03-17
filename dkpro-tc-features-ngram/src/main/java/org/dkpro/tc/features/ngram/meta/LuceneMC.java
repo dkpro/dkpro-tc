@@ -42,139 +42,154 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
 
-public abstract class LuceneMC extends MetaCollector {
-	public final static String LUCENE_DIR = "lucene";
+public abstract class LuceneMC
+    extends MetaCollector
+{
+    public final static String LUCENE_DIR = "lucene";
 
-	public static final String LUCENE_ID_FIELD = "id";
+    public static final String LUCENE_ID_FIELD = "id";
 
-	public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
-	@ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
-	private File luceneDir;
+    public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
+    @ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
+    private File luceneDir;
 
-	// this is a static singleton as different Lucene-based meta collectors will
-	// use the same writer
-	static IndexWriter indexWriter = null;
-	static AtomicInteger activeWriter = null; //used to known when we can close the index
+    // this is a static singleton as different Lucene-based meta collectors will
+    // use the same writer
+    static IndexWriter indexWriter = null;
+    static AtomicInteger activeWriter = null; // used to known when we can close the index
 
-	protected Document currentDocument;
-	long entryCounter=0;
+    protected Document currentDocument;
+    long entryCounter = 0;
 
-	protected FieldType fieldType;
+    protected FieldType fieldType;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		
-		initializeWriter();
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		initDocument();
+        initializeWriter();
 
-		fieldType = new FieldType();
-		fieldType.setIndexed(true);
-		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
-		fieldType.setStored(true);
-		fieldType.setOmitNorms(true);
-		fieldType.setTokenized(false);
-		fieldType.freeze();
+        initDocument();
 
-		activeWriter.incrementAndGet();
-	}
-	
-	private synchronized void initializeWriter() throws ResourceInitializationException {
-		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
-		config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        fieldType = new FieldType();
+        fieldType.setIndexed(true);
+        fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+        fieldType.setStored(true);
+        fieldType.setOmitNorms(true);
+        fieldType.setTokenized(false);
+        fieldType.freeze();
 
-		if (indexWriter == null) {
-			try {
-				indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
-			} catch (IOException e) {
-				throw new ResourceInitializationException(e);
-			}
-		}
-		
-		if (activeWriter == null) {
-			activeWriter = new AtomicInteger(0);
-		}
-	}
+        activeWriter.incrementAndGet();
+    }
 
-	private void initDocument() {
-		currentDocument = new Document();
-		currentDocument
-				.add(new StringField(LUCENE_ID_FIELD, "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
-	}
+    private synchronized void initializeWriter() throws ResourceInitializationException
+    {
+        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 
-	@Override
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		try {
+        if (indexWriter == null) {
+            try {
+                indexWriter = new IndexWriter(FSDirectory.open(luceneDir), config);
+            }
+            catch (IOException e) {
+                throw new ResourceInitializationException(e);
+            }
+        }
 
-			FrequencyDistribution<String> documentNGrams;
-			documentNGrams = getNgramsFD(jcas);
-			for (String ngram : documentNGrams.getKeys()) {
-				// As a result of discussion, we add a field for each ngram per
-				// doc, not just each ngram type per doc.
-				Field field = new Field(getFieldName(), ngram, fieldType);
-				for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-					currentDocument.add(field);
-					documentSizeControll();
-				}
-			}
+        if (activeWriter == null) {
+            activeWriter = new AtomicInteger(0);
+        }
+    }
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+    private void initDocument()
+    {
+        currentDocument = new Document();
+        currentDocument.add(new StringField(LUCENE_ID_FIELD,
+                "metaCollection" + System.currentTimeMillis(), Field.Store.YES));
+    }
 
-	// We write documents to disk after a thousand entries. This threshold is
-	// arbitrarily set, this decouples the index size from the number of CAS
-	// objects that are being processed. If, for instance, many postings are
-	// processed where each posting is
-	// an own CAS, we write extremely many documents. Likewise, if everything is in
-	// one CAS, we write one fat document which might require unreasonable much
-	// memory. This attempts to keep the index in a constant range of 'costs' that
-	// is independent of the number of actually processed CAS objects.  
-	private void documentSizeControll() throws IOException {
-		entryCounter++;
-		if(entryCounter > 1000) {
-			writeToIndex();
-			indexWriter.commit();
-			entryCounter=0;
-			initDocument();
-		}		
-	}
+    @Override
+    public void process(JCas jcas) throws AnalysisEngineProcessException
+    {
+        try {
 
-	protected void writeToIndex() throws IOException {
-		if (currentDocument == null) {
-			throw new IOException("Lucene document not initialized. Fatal error.");
-		}
-		indexWriter.addDocument(currentDocument);
-	}
+            FrequencyDistribution<String> documentNGrams;
+            documentNGrams = getNgramsFD(jcas);
+            for (String ngram : documentNGrams.getKeys()) {
+                // As a result of discussion, we add a field for each ngram per
+                // doc, not just each ngram type per doc.
+                Field field = new Field(getFieldName(), ngram, fieldType);
+                for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
+                    currentDocument.add(field);
+                    documentSizeControll();
+                }
+            }
 
-	@Override
-	public void collectionProcessComplete() throws AnalysisEngineProcessException {
-		super.collectionProcessComplete();
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-		try {
-			writeToIndex();
-			indexWriter.commit();
-			closeWriter();
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+    // We write documents to disk after a thousand entries. This threshold is
+    // arbitrarily set, this decouples the index size from the number of CAS
+    // objects that are being processed. If, for instance, many postings are
+    // processed where each posting is
+    // an own CAS, we write extremely many documents. Likewise, if everything is in
+    // one CAS, we write one fat document which might require unreasonable much
+    // memory. This attempts to keep the index in a constant range of 'costs' that
+    // is independent of the number of actually processed CAS objects.
+    private void documentSizeControll() throws IOException
+    {
+        entryCounter++;
+        if (entryCounter > 1000) {
+            writeToIndex();
+            indexWriter.commit();
+            entryCounter = 0;
+            initDocument();
+        }
+    }
 
-	private synchronized void closeWriter() throws IOException {
-		int accessingMetaWriters = activeWriter.decrementAndGet();
-		if (accessingMetaWriters == 0) {
-			indexWriter.close();
-			indexWriter = null;
-		}		
-	}
+    protected void writeToIndex() throws IOException
+    {
+        if (currentDocument == null) {
+            throw new IOException("Lucene document not initialized. Fatal error.");
+        }
+        indexWriter.addDocument(currentDocument);
+    }
 
-	protected String getDocumentId(JCas jcas) {
-		return DocumentMetaData.get(jcas).getDocumentId();
-	}
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException
+    {
+        super.collectionProcessComplete();
 
-	protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException;
+        try {
+            writeToIndex();
+            indexWriter.commit();
+            closeWriter();
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	protected abstract String getFieldName();
+    private synchronized void closeWriter() throws IOException
+    {
+        int accessingMetaWriters = activeWriter.decrementAndGet();
+        if (accessingMetaWriters == 0) {
+            indexWriter.close();
+            indexWriter = null;
+        }
+    }
+
+    protected String getDocumentId(JCas jcas)
+    {
+        return DocumentMetaData.get(jcas).getDocumentId();
+    }
+
+    protected abstract FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException;
+
+    protected abstract String getFieldName();
 }

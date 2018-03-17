@@ -41,52 +41,59 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * Extracts the number of sentences in this classification unit
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentenceLengthRatioPerDocument extends MaximumNormalizationExtractorBase {
+public class AvgSentenceLengthRatioPerDocument
+    extends MaximumNormalizationExtractorBase
+{
+    public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
 
-	public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
+    @Override
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+        throws TextClassificationException
+    {
 
-	@Override
-	public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
-			throws TextClassificationException {
+        long maxLen = getMax();
 
-		long maxLen = getMax();
+        double avgLength = 0.0;
 
-		double avgLength=0.0;
-		
-		List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
-		for (Sentence s : sentences) {
-			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-			avgLength += getRatio(tokens.size(), maxLen);
-		}
+        List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
+        for (Sentence s : sentences) {
+            List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+            avgLength += getRatio(tokens.size(), maxLen);
+        }
 
-		avgLength /= sentences.size();
+        avgLength /= sentences.size();
 
-		return new Feature(FEATURE_NAME, avgLength , FeatureType.NUMERIC).asSet();
-	}
+        return new Feature(FEATURE_NAME, avgLength, FeatureType.NUMERIC).asSet();
+    }
 
-	@Override
-	public List<MetaCollectorConfiguration> getMetaCollectorClasses(Map<String, Object> parameterSettings)
-			throws ResourceInitializationException {
+    @Override
+    public List<MetaCollectorConfiguration> getMetaCollectorClasses(
+            Map<String, Object> parameterSettings)
+        throws ResourceInitializationException
+    {
 
-		return Arrays.asList(
-				new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class, parameterSettings)
-						.addStorageMapping(MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-								AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
-								MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
-	}
+        return Arrays.asList(new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class,
+                parameterSettings).addStorageMapping(
+                        MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                        AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
+                        MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
+    }
 
-	@Override
-	protected String getFieldName() {
-		return MaxSentLenOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
-	}
+    @Override
+    protected String getFieldName()
+    {
+        return MaxSentLenOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
+    }
 
-	@Override
-	protected int getTopN() {
-		return 1;
-	}
+    @Override
+    protected int getTopN()
+    {
+        return 1;
+    }
 
-	@Override
-	protected String getFeaturePrefix() {
-		return getClass().getName();
-	}
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return getClass().getName();
+    }
 }

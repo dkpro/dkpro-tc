@@ -28,37 +28,42 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class MaxSentLenOverAllDocumentsMC extends LuceneMC {
+public class MaxSentLenOverAllDocumentsMC
+    extends LuceneMC
+{
 
-	public static final String LUCENE_FIELD = "maximumSentencesLengthOverAllDocuments";
-	
-	@Override
-	protected FrequencyDistribution<String> getNgramsFD(JCas jcas) throws TextClassificationException {
+    public static final String LUCENE_FIELD = "maximumSentencesLengthOverAllDocuments";
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+    @Override
+    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+        throws TextClassificationException
+    {
 
-		for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
-			List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-			StringBuilder sb = new StringBuilder();
-			for (Token t : tokens) {
-				sb.append(t.getCoveredText() + "_");
-			}
+        for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
+            List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
 
-			String key = tokens.size() + "_" + sb.toString().hashCode();
-			if (fd.contains(key)) {
-				// do not add ''same'' sentences multiple times 
-				continue;
-			}
+            StringBuilder sb = new StringBuilder();
+            for (Token t : tokens) {
+                sb.append(t.getCoveredText() + "_");
+            }
 
-			fd.addSample(key, tokens.size());
-		}
+            String key = tokens.size() + "_" + sb.toString().hashCode();
+            if (fd.contains(key)) {
+                // do not add ''same'' sentences multiple times
+                continue;
+            }
 
-		return fd;
-	}
+            fd.addSample(key, tokens.size());
+        }
 
-	@Override
-	protected String getFieldName() {
-		return LUCENE_FIELD + featureExtractorName;
-	}
+        return fd;
+    }
+
+    @Override
+    protected String getFieldName()
+    {
+        return LUCENE_FIELD + featureExtractorName;
+    }
 }

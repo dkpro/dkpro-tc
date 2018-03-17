@@ -61,152 +61,165 @@ import com.google.gson.Gson;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class NgramUnitTest {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+public class NgramUnitTest
+{
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-	private static String EXTRACTOR_NAME = "133";
+    private static String EXTRACTOR_NAME = "133";
 
-	@Test
-	public void testLuceneMetaCollectorOutput() throws Exception {
-		File luceneFolder = folder.newFolder();
+    @Test
+    public void testLuceneMetaCollectorOutput() throws Exception
+    {
+        File luceneFolder = folder.newFolder();
 
-		runMetaCollection(luceneFolder);
-		evaluateMetaCollection(luceneFolder);
+        runMetaCollection(luceneFolder);
+        evaluateMetaCollection(luceneFolder);
 
-		File output = runFeatureExtractor(luceneFolder);
-		evaluateExtractedFeatures(output);
-	}
+        File output = runFeatureExtractor(luceneFolder);
+        evaluateExtractedFeatures(output);
+    }
 
-	private void evaluateExtractedFeatures(File output) throws Exception {
-		Gson gson = new Gson();
-		List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME),"utf-8");
-		List<Instance> instances = new ArrayList<>();
-		for (String l : lines) {
-			instances.add(gson.fromJson(l, Instance.class));
-		}
+    private void evaluateExtractedFeatures(File output) throws Exception
+    {
+        Gson gson = new Gson();
+        List<String> lines = FileUtils.readLines(new File(output, JsonDataWriter.JSON_FILE_NAME),
+                "utf-8");
+        List<Instance> instances = new ArrayList<>();
+        for (String l : lines) {
+            instances.add(gson.fromJson(l, Instance.class));
+        }
 
-		assertEquals(8, instances.size());
-		Iterator<Instance> iterator = instances.iterator();
-		int numFeatValueOne = 0;
-		int numFeatValuesZero = 0;
-		while (iterator.hasNext()) {
-			Instance next = iterator.next();
-			List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
-			assertEquals(1, arrayList.size());
+        assertEquals(8, instances.size());
+        Iterator<Instance> iterator = instances.iterator();
+        int numFeatValueOne = 0;
+        int numFeatValuesZero = 0;
+        while (iterator.hasNext()) {
+            Instance next = iterator.next();
+            List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
+            assertEquals(1, arrayList.size());
 
-			Object value = arrayList.get(0).getValue();
-			if ((double) value == 1.0) {
-				numFeatValueOne++;
-			} else if ((double) value == 0.0) {
-				numFeatValuesZero++;
-			} else {
-				throw new IllegalStateException("Value should either be 1.0 or .0.0 but was [" + value + "]");
-			}
-		}
+            Object value = arrayList.get(0).getValue();
+            if ((double) value == 1.0) {
+                numFeatValueOne++;
+            }
+            else if ((double) value == 0.0) {
+                numFeatValuesZero++;
+            }
+            else {
+                throw new IllegalStateException(
+                        "Value should either be 1.0 or .0.0 but was [" + value + "]");
+            }
+        }
 
-		assertEquals(2, numFeatValueOne);
-		assertEquals(6, numFeatValuesZero);
-	}
+        assertEquals(2, numFeatValueOne);
+        assertEquals(6, numFeatValuesZero);
+    }
 
-	private File runFeatureExtractor(File luceneFolder) throws Exception {
-		File outputPath = folder.newFolder();
+    private File runFeatureExtractor(File luceneFolder) throws Exception
+    {
+        File outputPath = folder.newFolder();
 
-		Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				WordNGram.PARAM_NGRAM_USE_TOP_K, "1", WordNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				WordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString(), WordNGram.PARAM_NGRAM_MIN_N,
-				"1", WordNGram.PARAM_NGRAM_MAX_N, "1", };
+        Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                WordNGram.PARAM_NGRAM_USE_TOP_K, "1", WordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                WordNGram.PARAM_NGRAM_MIN_N, "1", WordNGram.PARAM_NGRAM_MAX_N, "1", };
 
-		ExternalResourceDescription featureExtractor = ExternalResourceFactory
-				.createExternalResourceDescription(WordNGram.class, parameters);
-		List<ExternalResourceDescription> fes = new ArrayList<>();
-		fes.add(featureExtractor);
+        ExternalResourceDescription featureExtractor = ExternalResourceFactory
+                .createExternalResourceDescription(WordNGram.class, parameters);
+        List<ExternalResourceDescription> fes = new ArrayList<>();
+        fes.add(featureExtractor);
 
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt",
-				TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, true);
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt",
+                TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, true);
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
 
-		AnalysisEngineDescription unitAnno = AnalysisEngineFactory
-				.createEngineDescription(EachTokenAsUnitAnnotator.class);
+        AnalysisEngineDescription unitAnno = AnalysisEngineFactory
+                .createEngineDescription(EachTokenAsUnitAnnotator.class);
 
-		AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
-				outputPath.getAbsolutePath(), JsonDataWriter.class.getName(), Constants.LM_SINGLE_LABEL,
-				Constants.FM_UNIT, false, false, false, false, Collections.emptyList(), fes, new String[]{});
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_UNIT, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
 
-		SimplePipeline.runPipeline(reader, segmenter, unitAnno, featExtractorConnector);
+        SimplePipeline.runPipeline(reader, segmenter, unitAnno, featExtractorConnector);
 
-		return outputPath;
-	}
+        return outputPath;
+    }
 
-	private void evaluateMetaCollection(File luceneFolder) throws Exception {
-		Set<String> tokens = getTokensFromIndex(luceneFolder);
-		assertEquals(6, tokens.size());
-		assertTrue(tokens.contains("."));
-		assertTrue(tokens.contains("birds"));
-		assertTrue(tokens.contains("cats"));
-		assertTrue(tokens.contains("chase"));
-		assertTrue(tokens.contains("eats"));
-		assertTrue(tokens.contains("mice"));
+    private void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        Set<String> tokens = getTokensFromIndex(luceneFolder);
+        assertEquals(6, tokens.size());
+        assertTrue(tokens.contains("."));
+        assertTrue(tokens.contains("birds"));
+        assertTrue(tokens.contains("cats"));
+        assertTrue(tokens.contains("chase"));
+        assertTrue(tokens.contains("eats"));
+        assertTrue(tokens.contains("mice"));
 
-		assertEquals(2, getTermFreq(luceneFolder, "cats"));
-		assertEquals(2, getTermFreq(luceneFolder, "."));
+        assertEquals(2, getTermFreq(luceneFolder, "cats"));
+        assertEquals(2, getTermFreq(luceneFolder, "."));
 
-		assertEquals(1, getTermFreq(luceneFolder, "birds"));
-		assertEquals(1, getTermFreq(luceneFolder, "chase"));
-		assertEquals(1, getTermFreq(luceneFolder, "eats"));
-		assertEquals(1, getTermFreq(luceneFolder, "mice"));
-	}
+        assertEquals(1, getTermFreq(luceneFolder, "birds"));
+        assertEquals(1, getTermFreq(luceneFolder, "chase"));
+        assertEquals(1, getTermFreq(luceneFolder, "eats"));
+        assertEquals(1, getTermFreq(luceneFolder, "mice"));
+    }
 
-	private void runMetaCollection(File luceneFolder) throws Exception {
+    private void runMetaCollection(File luceneFolder) throws Exception
+    {
 
-		Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				WordNGram.PARAM_NGRAM_USE_TOP_K, 1, WordNGram.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				WordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString(), WordNGram.PARAM_NGRAM_MIN_N,
-				1, WordNGram.PARAM_NGRAM_MAX_N, 1 };
+        Object[] parameters = new Object[] { WordNGram.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                WordNGram.PARAM_NGRAM_USE_TOP_K, 1, WordNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 1 };
 
-		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt");
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt");
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
 
-		AnalysisEngineDescription metaCollector = AnalysisEngineFactory
-				.createEngineDescription(WordNGramMC.class, parameterList.toArray());
+        AnalysisEngineDescription metaCollector = AnalysisEngineFactory
+                .createEngineDescription(WordNGramMC.class, parameterList.toArray());
 
-		// run meta collector
-		SimplePipeline.runPipeline(reader, segmenter, metaCollector);
-	}
+        // run meta collector
+        SimplePipeline.runPipeline(reader, segmenter, metaCollector);
+    }
 
-	private int getTermFreq(File luceneFolder, String string) throws Exception {
-		@SuppressWarnings("deprecation")
-		IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-		Term term = new Term("ngram" + EXTRACTOR_NAME, string);
-		return (int) idxReader.totalTermFreq(term);
-	}
+    private int getTermFreq(File luceneFolder, String string) throws Exception
+    {
+        @SuppressWarnings("deprecation")
+        IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
+        Term term = new Term("ngram" + EXTRACTOR_NAME, string);
+        return (int) idxReader.totalTermFreq(term);
+    }
 
-	private Set<String> getTokensFromIndex(File luceneFolder) throws Exception {
-		Set<String> token = new HashSet<>();
-		@SuppressWarnings("deprecation")
-		IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
-		Fields fields = MultiFields.getFields(idxReader);
-		for (String field : fields) {
-			if (field.equals("id")) {
-				continue;
-			}
-			Terms terms = fields.terms(field);
-			TermsEnum termsEnum = terms.iterator(null);
-			BytesRef text;
-			while ((text = termsEnum.next()) != null) {
-				token.add(text.utf8ToString());
-			}
-		}
-		return token;
-	}
+    private Set<String> getTokensFromIndex(File luceneFolder) throws Exception
+    {
+        Set<String> token = new HashSet<>();
+        @SuppressWarnings("deprecation")
+        IndexReader idxReader = IndexReader.open(FSDirectory.open(luceneFolder));
+        Fields fields = MultiFields.getFields(idxReader);
+        for (String field : fields) {
+            if (field.equals("id")) {
+                continue;
+            }
+            Terms terms = fields.terms(field);
+            TermsEnum termsEnum = terms.iterator(null);
+            BytesRef text;
+            while ((text = termsEnum.next()) != null) {
+                token.add(text.utf8ToString());
+            }
+        }
+        return token;
+    }
 }

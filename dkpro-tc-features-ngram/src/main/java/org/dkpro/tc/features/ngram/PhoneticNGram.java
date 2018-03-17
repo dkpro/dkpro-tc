@@ -47,37 +47,38 @@ public class PhoneticNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-    
+
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
         Set<Feature> features = new HashSet<Feature>();
-        FrequencyDistribution<String> documentNgrams = PhoneticNGramMC.getDocumentPhoneticNgrams(jcas,
-        		aTarget, ngramMinN, ngramMaxN);
+        FrequencyDistribution<String> documentNgrams = PhoneticNGramMC
+                .getDocumentPhoneticNgrams(jcas, aTarget, ngramMinN, ngramMaxN);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
     }
-    
+
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(PhoneticNGramMC.class,
-                parameterSettings).addStorageMapping(
-                        PhoneticNGramMC.PARAM_TARGET_LOCATION,
-                        PhoneticNGram.PARAM_SOURCE_LOCATION,
-                        PhoneticNGramMC.LUCENE_DIR));
+        return Arrays
+                .asList(new MetaCollectorConfiguration(PhoneticNGramMC.class, parameterSettings)
+                        .addStorageMapping(PhoneticNGramMC.PARAM_TARGET_LOCATION,
+                                PhoneticNGram.PARAM_SOURCE_LOCATION, PhoneticNGramMC.LUCENE_DIR));
     }
 
     @Override

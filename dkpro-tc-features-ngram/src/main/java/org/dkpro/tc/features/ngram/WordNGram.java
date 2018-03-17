@@ -61,10 +61,12 @@ public class WordNGram
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+                features.add(
+                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
             }
             else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true, FeatureType.BOOLEAN));
+                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+                        FeatureType.BOOLEAN));
             }
         }
         return features;
@@ -73,20 +75,18 @@ public class WordNGram
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(
-                new MetaCollectorConfiguration(WordNGramMC.class, parameterSettings)
-                        .addStorageMapping(WordNGramMC.PARAM_TARGET_LOCATION,
-                                WordNGram.PARAM_SOURCE_LOCATION,
-                                WordNGramMC.LUCENE_DIR));
+        return Arrays.asList(new MetaCollectorConfiguration(WordNGramMC.class, parameterSettings)
+                .addStorageMapping(WordNGramMC.PARAM_TARGET_LOCATION,
+                        WordNGram.PARAM_SOURCE_LOCATION, WordNGramMC.LUCENE_DIR));
     }
 
     @Override
     protected void logSelectionProcess(long N)
     {
-        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD [" + range()
-                + "]-GRAMS (" + caseSensitivity() + ")");
+        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD ["
+                + range() + "]-GRAMS (" + caseSensitivity() + ")");
     }
 
     private String range()

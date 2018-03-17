@@ -43,8 +43,7 @@ public class TestReaderSingleLabel
     int jcasId;
 
     @Override
-    public void getNext(CAS aCAS)
-        throws IOException, CollectionException
+    public void getNext(CAS aCAS) throws IOException, CollectionException
     {
         super.getNext(aCAS);
 
@@ -69,8 +68,7 @@ public class TestReaderSingleLabel
     }
 
     @Override
-    public String getTextClassificationOutcome(JCas jcas)
-        throws CollectionException
+    public String getTextClassificationOutcome(JCas jcas) throws CollectionException
     {
         return "test";
     }

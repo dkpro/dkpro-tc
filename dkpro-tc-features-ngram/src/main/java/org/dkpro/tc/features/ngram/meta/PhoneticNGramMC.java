@@ -45,7 +45,6 @@ public class PhoneticNGramMC
 {
     public static final String LUCENE_PHONETIC_NGRAM_FIELD = "phoneticngram";
 
-
     @ConfigurationParameter(name = PhoneticNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
 
@@ -58,8 +57,7 @@ public class PhoneticNGramMC
     {
         TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
                 jcas.getDocumentText().length());
-        return getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN,
-                ngramMaxN);
+        return getDocumentPhoneticNgrams(jcas, fullDoc, ngramMinN, ngramMaxN);
     }
 
     @Override
@@ -67,10 +65,10 @@ public class PhoneticNGramMC
     {
         return LUCENE_PHONETIC_NGRAM_FIELD + featureExtractorName;
     }
-    
+
     public static FrequencyDistribution<String> getDocumentPhoneticNgrams(JCas jcas,
             Annotation target, int minN, int maxN)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         StringEncoder encoder;
         String languageCode = jcas.getDocumentLanguage();

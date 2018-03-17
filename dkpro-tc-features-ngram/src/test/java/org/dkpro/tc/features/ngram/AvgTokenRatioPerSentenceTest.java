@@ -36,85 +36,101 @@ import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
-public class AvgTokenRatioPerSentenceTest extends LuceneMetaCollectionBasedFeatureTestBase {
+public class AvgTokenRatioPerSentenceTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
 
-	private static String EXTRACTOR_NAME = "5646539874431";
+    private static String EXTRACTOR_NAME = "5646539874431";
 
-	@Before
-	public void setup() {
-		super.setup();
+    @Before
+    public void setup()
+    {
+        super.setup();
 
-		featureClass = AvgTokenRatioPerSentence.class;
-		metaCollectorClass = MaxNrOfTokensOverAllSentenceMC.class;
-	}
+        featureClass = AvgTokenRatioPerSentence.class;
+        metaCollectorClass = MaxNrOfTokensOverAllSentenceMC.class;
+    }
 
-	@Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
-		Collections.sort(entries, new Comparator<String>() {
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
+        Collections.sort(entries, new Comparator<String>()
+        {
 
-			@Override
-			public int compare(String o1, String o2) {
-				return Integer.valueOf(o1.split("_")[0]).compareTo(Integer.valueOf(o2.split("_")[0]));
-			}
-		});
-		entries = Lists.reverse(entries);
+            @Override
+            public int compare(String o1, String o2)
+            {
+                return Integer.valueOf(o1.split("_")[0])
+                        .compareTo(Integer.valueOf(o2.split("_")[0]));
+            }
+        });
+        entries = Lists.reverse(entries);
 
-		assertEquals(4, entries.size());
-		assertEquals("15", entries.get(0).split("_")[0]);
-		assertEquals("12", entries.get(1).split("_")[0]);
-		assertEquals("4", entries.get(2).split("_")[0]);
-		assertEquals("4", entries.get(3).split("_")[0]);
-	}
+        assertEquals(4, entries.size());
+        assertEquals("15", entries.get(0).split("_")[0]);
+        assertEquals("12", entries.get(1).split("_")[0]);
+        assertEquals("4", entries.get(2).split("_")[0]);
+        assertEquals("4", entries.get(3).split("_")[0]);
+    }
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
-		Collections.sort(instances, new Comparator<Instance>() {
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
+        Collections.sort(instances, new Comparator<Instance>()
+        {
 
-			@Override
-			public int compare(Instance o1, Instance o2) {
-				Double v1 = (Double) new ArrayList<Feature>(o1.getFeatures()).get(0).getValue();
-				Double v2 = (Double) new ArrayList<Feature>(o2.getFeatures()).get(0).getValue();
-				return v1.compareTo(v2);
-			}
-		});
+            @Override
+            public int compare(Instance o1, Instance o2)
+            {
+                Double v1 = (Double) new ArrayList<Feature>(o1.getFeatures()).get(0).getValue();
+                Double v2 = (Double) new ArrayList<Feature>(o2.getFeatures()).get(0).getValue();
+                return v1.compareTo(v2);
+            }
+        });
 
-		instances = Lists.reverse(instances);
+        instances = Lists.reverse(instances);
 
-		assertEquals(3, instances.size());
+        assertEquals(3, instances.size());
 
-		double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0).getValue());
-		assertEquals(1.0, r, 0.01);
+        double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0)
+                .getValue());
+        assertEquals(1.0, r, 0.01);
 
-		r = (Double) (new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
-		assertEquals(0.8, r, 0.01);
+        r = (Double) (new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
+        assertEquals(0.8, r, 0.01);
 
-		r = (Double) (new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
-		assertEquals(0.266, r, 0.01);
-	}
+        r = (Double) (new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
+        assertEquals(0.266, r, 0.01);
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-				TestReaderSingleLabel.PARAM_LANGUAGE, "en", TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-				"src/test/resources/ngrams/", TestReaderSingleLabel.PARAM_PATTERNS, "text*");
-	}
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
+                TestReaderSingleLabel.PARAM_PATTERNS, "text*");
+    }
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return getMetaReader();
-	}
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
 
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { AvgTokenRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-				AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-				MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
-	}
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { AvgTokenRatioPerSentence.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                AvgTokenRatioPerSentence.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxNrOfTokensOverAllSentenceMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return getMetaCollectorParameters(luceneFolder);
-	}
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return getMetaCollectorParameters(luceneFolder);
+    }
 }

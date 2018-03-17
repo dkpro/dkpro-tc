@@ -31,61 +31,69 @@ import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.junit.Before;
 
-public class PhoneticNGramTest extends LuceneMetaCollectionBasedFeatureTestBase{
+public class PhoneticNGramTest
+    extends LuceneMetaCollectionBasedFeatureTestBase
+{
 
-	String FEATURE_NAME = "23423";
-	
-	
-	
-	@Before
-	public void setup() {
-		super.setup();
-		featureClass = PhoneticNGram.class;
-		metaCollectorClass = PhoneticNGramMC.class;
-	}
-	
-	@Override
-	protected Object[] getMetaCollectorParameters(File luceneFolder) {
-		return new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
-				PhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", PhoneticNGram.PARAM_SOURCE_LOCATION,
-				luceneFolder.toString(), PhoneticNGramMC.PARAM_TARGET_LOCATION,
-				luceneFolder.toString(), };
-	}
+    String FEATURE_NAME = "23423";
 
-	private int getUniqueOutcomes(List<Instance> instances) {
-		Set<String> outcomes = new HashSet<String>();
-		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
-		return outcomes.size();
-	}
+    @Before
+    public void setup()
+    {
+        super.setup();
+        featureClass = PhoneticNGram.class;
+        metaCollectorClass = PhoneticNGramMC.class;
+    }
 
-	@Override
-	protected void evaluateExtractedFeatures(File output) throws Exception {
-		List<Instance> instances = readInstances(output);
+    @Override
+    protected Object[] getMetaCollectorParameters(File luceneFolder)
+    {
+        return new Object[] { PhoneticNGram.PARAM_UNIQUE_EXTRACTOR_NAME, FEATURE_NAME,
+                PhoneticNGram.PARAM_NGRAM_USE_TOP_K, "10", PhoneticNGram.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), PhoneticNGramMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString(), };
+    }
 
-		assertEquals(2, instances.size());
-		assertEquals(1, getUniqueOutcomes(instances));		
-	}
+    private int getUniqueOutcomes(List<Instance> instances)
+    {
+        Set<String> outcomes = new HashSet<String>();
+        instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+        return outcomes.size();
+    }
 
-	@Override
-	protected CollectionReaderDescription getMetaReader() throws Exception {
-		return CollectionReaderFactory.createReaderDescription(
-				TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-				TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
-	}
+    @Override
+    protected void evaluateExtractedFeatures(File output) throws Exception
+    {
+        List<Instance> instances = readInstances(output);
 
-	@Override
-	protected void evaluateMetaCollection(File luceneFolder) throws Exception {
-		//FIXME: Missing meta evaluation
-	}
+        assertEquals(2, instances.size());
+        assertEquals(1, getUniqueOutcomes(instances));
+    }
 
-	@Override
-	protected Object[] getFeatureExtractorParameters(File luceneFolder) {
-		return getMetaCollectorParameters(luceneFolder);
-	}
+    @Override
+    protected CollectionReaderDescription getMetaReader() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
+    }
 
-	@Override
-	protected CollectionReaderDescription getFeatureReader() throws Exception {
-		return getMetaReader();
-	}
+    @Override
+    protected void evaluateMetaCollection(File luceneFolder) throws Exception
+    {
+        // FIXME: Missing meta evaluation
+    }
+
+    @Override
+    protected Object[] getFeatureExtractorParameters(File luceneFolder)
+    {
+        return getMetaCollectorParameters(luceneFolder);
+    }
+
+    @Override
+    protected CollectionReaderDescription getFeatureReader() throws Exception
+    {
+        return getMetaReader();
+    }
 
 }
