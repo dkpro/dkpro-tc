@@ -128,9 +128,9 @@ public class LuceneNGramPFE
     /**
      * This option collects a FrequencyDistribution of ngrams across both documents of all pairs,
      * but when writing features, the view where a particular ngram is found is recorded with the
-     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the
-     * ngrams in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is
-     * seen in any document, view 1 or 2, the document's view is recorded.<br>
+     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K_ALL} value of 500, 400 of the ngrams
+     * in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is seen
+     * in any document, view 1 or 2, the document's view is recorded.<br>
      * E.g., Feature: view2allNG_Dear<br>
      * In order to use this option, {@link #PARAM_USE_VIEWBLIND_NGRAMS_AS_FEATURES} must also be set
      * to true.
@@ -158,13 +158,13 @@ public class LuceneNGramPFE
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramPMetaCollector.class,
-                parameterSettings).addStorageMapping(
-                        LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION,
-                        LuceneNGramPFE.PARAM_SOURCE_LOCATION,
-                        LuceneNGramPMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneNGramPMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneNGramPFE.PARAM_SOURCE_LOCATION,
+                                LuceneNGramPMetaCollector.LUCENE_DIR));
     }
 
     @Override
@@ -182,22 +182,22 @@ public class LuceneNGramPFE
     }
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
-    	FrequencyDistribution<String> view1Ngrams = null;
-    	FrequencyDistribution<String> view2Ngrams = null;
-    	FrequencyDistribution<String> allNgrams = null;
-    	
-    	  TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-          TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-    	
-        view1Ngrams = NGramUtils.getDocumentNgrams(view1, aTarget1, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN1, ngramMaxN1, stopwords, Token.class);
-        view2Ngrams = NGramUtils.getDocumentNgrams(view2, aTarget2, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN2, ngramMaxN2, stopwords, Token.class);
+        FrequencyDistribution<String> view1Ngrams = null;
+        FrequencyDistribution<String> view2Ngrams = null;
+        FrequencyDistribution<String> allNgrams = null;
+
+        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1,
+                TextClassificationTarget.class);
+        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2,
+                TextClassificationTarget.class);
+
+        view1Ngrams = NGramUtils.getDocumentNgrams(view1, aTarget1, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords, Token.class);
+        view2Ngrams = NGramUtils.getDocumentNgrams(view2, aTarget2, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords, Token.class);
         allNgrams = getViewNgrams(view1, view2);
-    	
 
         Set<Feature> features = new HashSet<Feature>();
         if (useView1NgramsAsFeatures) {
@@ -241,8 +241,7 @@ public class LuceneNGramPFE
     }
 
     @Override
-    protected FrequencyDistribution<String> getTopNgrams()
-        throws ResourceInitializationException
+    protected FrequencyDistribution<String> getTopNgrams() throws ResourceInitializationException
     {
         return getTopNgrams(ngramUseTopK, LuceneFeatureExtractorBase.LUCENE_NGRAM_FIELD);
     }
@@ -265,8 +264,8 @@ public class LuceneNGramPFE
 
         FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
 
-        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                .maximumSize(topNgramThreshold).create();
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(topNgramThreshold)
+                .create();
         IndexReader reader;
         try {
             reader = DirectoryReader.open(FSDirectory.open(luceneDir));
@@ -298,9 +297,8 @@ public class LuceneNGramPFE
         return topNGrams;
     }
 
-
-    protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2) 
-    		throws TextClassificationException
+    protected FrequencyDistribution<String> getViewNgrams(JCas view1, JCas view2)
+        throws TextClassificationException
     {
         List<JCas> jcases = new ArrayList<JCas>();
         jcases.add(view1);
@@ -327,23 +325,23 @@ public class LuceneNGramPFE
         return "allNG";
     }
 
-//    protected void setStopwords(Set<String> newStopwords)
-//    {
-//        stopwords = newStopwords;
-//    }
-//
-//    protected void setFilterPartialStopwordMatches(boolean filtering)
-//    {
-//        filterPartialStopwordMatches = filtering;
-//    }
-//
-//    protected void setLowerCase(boolean isLower)
-//    {
-//        ngramLowerCase = isLower;
-//    }
-//
-//    protected void makeTopKSet(FrequencyDistribution<String> topK)
-//    {
-//        topKSet = topK;
-//    }
+    // protected void setStopwords(Set<String> newStopwords)
+    // {
+    // stopwords = newStopwords;
+    // }
+    //
+    // protected void setFilterPartialStopwordMatches(boolean filtering)
+    // {
+    // filterPartialStopwordMatches = filtering;
+    // }
+    //
+    // protected void setLowerCase(boolean isLower)
+    // {
+    // ngramLowerCase = isLower;
+    // }
+    //
+    // protected void makeTopKSet(FrequencyDistribution<String> topK)
+    // {
+    // topKSet = topK;
+    // }
 }

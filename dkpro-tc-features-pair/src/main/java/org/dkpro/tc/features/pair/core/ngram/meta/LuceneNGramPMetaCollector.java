@@ -69,8 +69,7 @@ public class LuceneNGramPMetaCollector
     protected Set<String> stopwords;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -105,7 +104,7 @@ public class LuceneNGramPMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFDView1(JCas view1,
             TextClassificationTarget aTarget)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view1, aTarget,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView1MinN, ngramView1MaxN,
@@ -116,7 +115,7 @@ public class LuceneNGramPMetaCollector
     @Override
     protected FrequencyDistribution<String> getNgramsFDView2(JCas view2,
             TextClassificationTarget aTarget)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         FrequencyDistribution<String> fd = NGramUtils.getDocumentNgrams(view2, aTarget,
                 ngramLowerCase, filterPartialStopwordMatches, ngramView2MinN, ngramView2MaxN,

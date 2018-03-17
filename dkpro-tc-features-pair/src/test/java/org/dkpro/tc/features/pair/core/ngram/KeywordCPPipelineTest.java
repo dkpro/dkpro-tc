@@ -39,23 +39,22 @@ public class KeywordCPPipelineTest
     extends PPipelineTestBase
 {
     @Test
-    public void testComboFeatures_defaults()
-        throws Exception
+    public void testComboFeatures_defaults() throws Exception
     {
         KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
                 LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath };
+                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordCPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
-        assertEquals(test.featureNames.size(), 116); //this number changed historically when ComboUtils.JOINT changed.
+        assertEquals(test.featureNames.size(), 116); // this number changed historically when
+                                                     // ComboUtils.JOINT changed.
         assertTrue(test.featureNames.contains("comboKNG_apricot_ANDapricot"));
         assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot"));
         assertTrue(test.featureNames.contains("comboKNG_apricot_peach_ANDapricot_peach"));
@@ -69,21 +68,18 @@ public class KeywordCPPipelineTest
     }
 
     @Test
-    public void testComboFeatures_size1()
-        throws Exception
+    public void testComboFeatures_size1() throws Exception
     {
         KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
-                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
+        test.parameters = new Object[] { LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordCPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath, LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
         assertEquals(test.featureNames.size(), 24);
@@ -92,21 +88,18 @@ public class KeywordCPPipelineTest
     }
 
     @Test
-    public void testComboFeatures_size3()
-        throws Exception
+    public void testComboFeatures_size3() throws Exception
     {
         KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
-                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
+        test.parameters = new Object[] { LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordCPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath, LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, 6,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 6 };
         test.runPipeline();
         assertTrue(test.featureNames.first().startsWith("comboKNG"));
@@ -118,22 +111,19 @@ public class KeywordCPPipelineTest
     // TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
 
     @Test
-    public void testNonBinaryFeatureValues()
-        throws Exception
+    public void testNonBinaryFeatureValues() throws Exception
     {
         KeywordCPPipelineTest test = new KeywordCPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-        		LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
-        		LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                false, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordCPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath,
-                LuceneKeywordCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO,
-                false, LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2,
+        test.parameters = new Object[] { LuceneKeywordCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                LuceneKeywordCPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, false,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordCPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordCPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath, LuceneKeywordCPFE.PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, false,
+                LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, 2,
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_SYMMETRY_COMBO, true };
         test.runPipeline();
         int four = 0;
@@ -172,29 +162,29 @@ public class KeywordCPPipelineTest
         return "src/test/resources/data/keywordNgramsData.txt";
     }
 
-    
     @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
     {
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(LuceneKeywordCPFE.class, toString(parameterList.toArray()));
+                .createExternalResourceDescription(LuceneKeywordCPFE.class,
+                        toString(parameterList.toArray()));
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                false, false, Collections.emptyList(), fes, new String[]{});
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
     }
 
-    private Object [] toString(Object[] array)
+    private Object[] toString(Object[] array)
     {
         List<Object> out = new ArrayList<>();
-        for(Object o : array){
+        for (Object o : array) {
             out.add(o.toString());
         }
-        
+
         return out.toArray();
     }
 
@@ -203,8 +193,7 @@ public class KeywordCPPipelineTest
         throws ResourceInitializationException
     {
         metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneKeywordCPMetaCollector.class, 
-                parameterList.toArray());
+                LuceneKeywordCPMetaCollector.class, parameterList.toArray());
     }
 
 }

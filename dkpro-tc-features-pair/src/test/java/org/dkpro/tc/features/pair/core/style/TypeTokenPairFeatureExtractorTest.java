@@ -46,8 +46,7 @@ public class TypeTokenPairFeatureExtractorTest
     JCas jcas2;
 
     @Before
-    public void setUp()
-        throws ResourceInitializationException, AnalysisEngineProcessException
+    public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
@@ -85,8 +84,7 @@ public class TypeTokenPairFeatureExtractorTest
     }
 
     @Test
-    public void testExtract()
-        throws TextClassificationException
+    public void testExtract() throws TextClassificationException
     {
         TypeTokenPairFeatureExtractor extractor = new TypeTokenPairFeatureExtractor();
         Set<Feature> features = extractor.extract(jcas1, jcas2);

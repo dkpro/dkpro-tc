@@ -39,8 +39,7 @@ public class BaselinePairFeatureTest
 {
 
     @Test
-    public void extractTest()
-        throws Exception
+    public void extractTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);

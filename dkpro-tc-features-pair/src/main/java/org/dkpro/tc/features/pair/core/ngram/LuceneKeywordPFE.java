@@ -44,11 +44,10 @@ import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 /**
- * Pair keyword ngram feature extractor for
- * {@link org.dkpro.tc.features.ngram.KeywordNGram
- * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the
- * pair, and parameters for each document (view 1's, view 2's) can be set separately, or both
- * documents can be treated together as one extended document. <br>
+ * Pair keyword ngram feature extractor for {@link org.dkpro.tc.features.ngram.KeywordNGram
+ * KeywordNGramDFE} Can be used to extract ngrams from one or both documents in the pair, and
+ * parameters for each document (view 1's, view 2's) can be set separately, or both documents can be
+ * treated together as one extended document. <br>
  * Note that ngram features created by this class are each from a single document, i.e., not
  * combinations of ngrams from the pair of documents.
  */
@@ -91,7 +90,7 @@ public class LuceneKeywordPFE
 
     public static final String PARAM_KEYWORD_NGRAM_USE_TOP_K = "keywordNgramUseTopK";
     @ConfigurationParameter(name = PARAM_KEYWORD_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
-    protected int keywordNgramUseTopK; 
+    protected int keywordNgramUseTopK;
 
     protected Set<String> keywords;
     /**
@@ -139,44 +138,45 @@ public class LuceneKeywordPFE
     public static final String PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES = "useViewBlindKeywordNgramsAsFeatures";
     @ConfigurationParameter(name = PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, mandatory = true)
     protected boolean useViewBlindNgramsAsFeatures;
-    
+
     /**
      * This option collects a FrequencyDistribution of ngrams across both documents of all pairs,
      * but when writing features, the view where a particular ngram is found is recorded with the
-     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K} value of 500, 400 of the
-     * ngrams in the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is
-     * seen in any document, view 1 or 2, the document's view is recorded.<br>
+     * ngram. For example, using a {@code PARAM_NGRAM_USE_TOP_K} value of 500, 400 of the ngrams in
+     * the top 500 might happen to be from View 2's; and whenever an ngram from the 500 is seen in
+     * any document, view 1 or 2, the document's view is recorded.<br>
      * E.g., Feature: view2allNG_Dear<br>
-     * In order to use this option, {@link LuceneKeywordPFE#PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES} must also be set
-     * to true.
+     * In order to use this option,
+     * {@link LuceneKeywordPFE#PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES
+     * PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES} must also be set to true.
      */
     public static final String PARAM_MARK_VIEWBLIND_KEYWORD_NGRAMS_WITH_LOCAL_VIEW = "markViewBlindKeywordNgramsWithLocalView";
     @ConfigurationParameter(name = PARAM_MARK_VIEWBLIND_KEYWORD_NGRAMS_WITH_LOCAL_VIEW, mandatory = false, defaultValue = "false")
     protected boolean markViewBlindNgramsWithLocalView;
 
     // These are only public so the MetaCollector can see them
-  public static final String KEYWORD_NGRAM_FIELD1 = "keywordngram1";
-  public static final String KEYWORD_NGRAM_FIELD2 = "keywordngram2";
-  
+    public static final String KEYWORD_NGRAM_FIELD1 = "keywordngram1";
+    public static final String KEYWORD_NGRAM_FIELD2 = "keywordngram2";
 
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneKeywordPMetaCollector.class,
-                parameterSettings).addStorageMapping(
-                        LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION,
-                        LuceneKeywordPFE.PARAM_SOURCE_LOCATION,
-                        LuceneKeywordPMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneKeywordPMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneKeywordPFE.PARAM_SOURCE_LOCATION,
+                                LuceneKeywordPMetaCollector.LUCENE_DIR));
     }
 
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
     {
-    	//FIXME This is a hack workaround because ngramUseTopK won't set until after super.initialize,
-    	// but super.initialize tries to call getTopNgrams() anyways, which needs ngramUseTopK.
+        // FIXME This is a hack workaround because ngramUseTopK won't set until after
+        // super.initialize,
+        // but super.initialize tries to call getTopNgrams() anyways, which needs ngramUseTopK.
         fieldOfTheMoment = "";
         topNOfTheMoment = 1;
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
@@ -185,11 +185,11 @@ public class LuceneKeywordPFE
         fieldOfTheMoment = KEYWORD_NGRAM_FIELD;
         topNOfTheMoment = ngramUseTopK;
         topKSet = getTopNgrams();
-        
+
         fieldOfTheMoment = KEYWORD_NGRAM_FIELD1;
         topNOfTheMoment = ngramUseTopK1;
         topKSetView1 = getTopNgrams();
-        
+
         fieldOfTheMoment = KEYWORD_NGRAM_FIELD2;
         topNOfTheMoment = ngramUseTopK2;
         topKSetView2 = getTopNgrams();
@@ -205,17 +205,20 @@ public class LuceneKeywordPFE
     }
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
-        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, aTarget1, ngramMinN1, ngramMaxN1,
-                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, aTarget2, ngramMinN2, ngramMaxN2,
-                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1,
+                TextClassificationTarget.class);
+        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2,
+                TextClassificationTarget.class);
+        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(
+                view1, aTarget1, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation,
+                includeCommas, keywords);
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(
+                view2, aTarget2, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation,
+                includeCommas, keywords);
         FrequencyDistribution<String> allNgrams = getViewNgrams(view1, view2);
-        
+
         Set<Feature> features = new HashSet<Feature>();
         if (useView1NgramsAsFeatures) {
             prefix = "keyNG1";
@@ -259,8 +262,9 @@ public class LuceneKeywordPFE
     {
         return topNOfTheMoment;
     }
-    
-    //FIXME This class must be instantiated in NGramFeatureExtractorBase, but can't be anything useful then.
+
+    // FIXME This class must be instantiated in NGramFeatureExtractorBase, but can't be anything
+    // useful then.
     @Override
     protected String getFeaturePrefix()
     {

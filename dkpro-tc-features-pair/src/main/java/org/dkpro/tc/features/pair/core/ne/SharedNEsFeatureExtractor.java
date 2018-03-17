@@ -42,11 +42,10 @@ public class SharedNEsFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
-        return new Feature("SharedNEs", !Collections.disjoint(getNEs(view1),
-                getNEs(view2)), FeatureType.NUMERIC).asSet();
+        return new Feature("SharedNEs", !Collections.disjoint(getNEs(view1), getNEs(view2)),
+                FeatureType.NUMERIC).asSet();
 
     }
 

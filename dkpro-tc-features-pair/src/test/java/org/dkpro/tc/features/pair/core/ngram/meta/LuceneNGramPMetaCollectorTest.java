@@ -54,8 +54,7 @@ public class LuceneNGramPMetaCollectorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void lucenePairNgramMetaCollectorTest()
-        throws Exception
+    public void lucenePairNgramMetaCollectorTest() throws Exception
     {
         File tmpDir = folder.newFolder();
 

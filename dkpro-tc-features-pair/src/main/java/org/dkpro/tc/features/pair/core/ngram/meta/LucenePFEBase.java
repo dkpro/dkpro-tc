@@ -33,7 +33,7 @@ import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public abstract class LucenePFEBase
-	extends LuceneFeatureExtractorBase
+    extends LuceneFeatureExtractorBase
 {
     @ConfigurationParameter(name = NGramFeatureExtractorBase.PARAM_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int kngramUseTopK;
@@ -58,14 +58,15 @@ public abstract class LucenePFEBase
     public static final String PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO = "ngramBinaryFeatureValuesCombos";
     @ConfigurationParameter(name = PARAM_NGRAM_BINARY_FEATURE_VALUES_COMBO, mandatory = false, defaultValue = "true")
     protected boolean ngramBinaryFeatureValuesCombos;
-    
+
     protected FrequencyDistribution<String> topKSetView1;
     protected FrequencyDistribution<String> topKSetView2;
-    
-    //FIXME This is a hack to deal with getTopNgrams() in LuceneFeatureExtractorBase, which can take no args
+
+    // FIXME This is a hack to deal with getTopNgrams() in LuceneFeatureExtractorBase, which can
+    // take no args
     protected String fieldOfTheMoment;
     protected int topNOfTheMoment;
-	
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -76,7 +77,7 @@ public abstract class LucenePFEBase
 
         forceRereadFromIndex = true;
 
-		return true;
+        return true;
     }
 
     protected Set<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,

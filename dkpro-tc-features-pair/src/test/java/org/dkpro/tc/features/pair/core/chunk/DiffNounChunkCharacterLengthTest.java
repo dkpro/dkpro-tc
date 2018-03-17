@@ -41,13 +41,11 @@ import org.dkpro.tc.testing.FeatureTestUtil;
 
 public class DiffNounChunkCharacterLengthTest
 {
-
     private JCas jcas1;
     private JCas jcas2;
 
     @Before
-    public void setUp()
-        throws ResourceInitializationException, AnalysisEngineProcessException
+    public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
@@ -65,8 +63,7 @@ public class DiffNounChunkCharacterLengthTest
     }
 
     @Test
-    public void extractTest1()
-        throws Exception
+    public void extractTest1() throws Exception
     {
         Chunk chunk1 = new Chunk(jcas1, 0, 4);
         chunk1.addToIndexes();
@@ -85,8 +82,7 @@ public class DiffNounChunkCharacterLengthTest
     }
 
     @Test
-    public void extractTest2()
-        throws Exception
+    public void extractTest2() throws Exception
     {
         Chunk chunk1 = new Chunk(jcas1, 0, 4);
         chunk1.addToIndexes();

@@ -39,13 +39,13 @@ public class DiffNounChunkCharacterLength
 {
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
 
         return new Feature("DiffNounPhraseCharacterLength",
-                        getAverageNounPhraseCharacterLength(view1)
-                                - getAverageNounPhraseCharacterLength(view2), FeatureType.NUMERIC).asSet();
+                getAverageNounPhraseCharacterLength(view1)
+                        - getAverageNounPhraseCharacterLength(view2),
+                FeatureType.NUMERIC).asSet();
 
     }
 

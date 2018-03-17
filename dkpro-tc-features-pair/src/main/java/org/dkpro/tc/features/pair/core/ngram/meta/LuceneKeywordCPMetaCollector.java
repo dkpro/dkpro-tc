@@ -35,78 +35,80 @@ import org.dkpro.tc.features.pair.core.ngram.LuceneKeywordPFE;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 public class LuceneKeywordCPMetaCollector
-extends LuceneCPMetaCollectorBase
+    extends LuceneCPMetaCollectorBase
 {
-    
-    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, mandatory = true, defaultValue = "2")
-	protected int ngramMinNCombo;
-    
-    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, mandatory = true, defaultValue = "4")
-	protected int ngramMaxNCombo;
-	    
-	@ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
-	private int ngramMinN1;
-	
-	@ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
-	private int ngramMinN2;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
-	private int ngramMinN;
-	
-	@ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
-	private int ngramMaxN1;
-	
-	@ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
-	private int ngramMaxN2;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
-	private int ngramMaxN;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
-	protected String keywordsFile;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
-	private boolean markSentenceBoundary;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
-	private boolean markSentenceLocation;
-	
-	@ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
-	private boolean includeCommas;
-	
-	private Set<String> keywords;
 
-@Override
-public void initialize(UimaContext context)
-    throws ResourceInitializationException
-{
-    super.initialize(context);
-    
-    try {
-        keywords = FeatureUtil.getStopwords(keywordsFile, true);
-    }
-    catch (IOException e) {
-        throw new ResourceInitializationException(e);
-    }
-}
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N_COMBO, mandatory = true, defaultValue = "2")
+    protected int ngramMinNCombo;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N_COMBO, mandatory = true, defaultValue = "4")
+    protected int ngramMaxNCombo;
+
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, mandatory = true, defaultValue = "1")
+    private int ngramMinN1;
+
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, mandatory = true, defaultValue = "1")
+    private int ngramMinN2;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
+    private int ngramMinN;
+
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, mandatory = true, defaultValue = "3")
+    private int ngramMaxN1;
+
+    @ConfigurationParameter(name = LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW2, mandatory = true, defaultValue = "3")
+    private int ngramMaxN2;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, mandatory = true, defaultValue = "3")
+    private int ngramMaxN;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE, mandatory = true)
+    protected String keywordsFile;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_BOUNDARY, mandatory = false, defaultValue = "true")
+    private boolean markSentenceBoundary;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MARK_SENTENCE_LOCATION, mandatory = false, defaultValue = "false")
+    private boolean markSentenceLocation;
+
+    @ConfigurationParameter(name = LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, mandatory = false, defaultValue = "false")
+    private boolean includeCommas;
+
+    private Set<String> keywords;
 
     @Override
-    protected int getNgramMinNCombo(){
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
+
+        try {
+            keywords = FeatureUtil.getStopwords(keywordsFile, true);
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
+
+    @Override
+    protected int getNgramMinNCombo()
+    {
         return ngramMinNCombo;
     }
+
     @Override
-    protected int getNgramMaxNCombo(){
+    protected int getNgramMaxNCombo()
+    {
         return ngramMaxNCombo;
     }
-    
+
     @Override
     protected FrequencyDistribution<String> getNgramsFD(List<JCas> jcases)
         throws TextClassificationException
     {
-        return KeywordNGramUtils.getMultipleViewKeywordNgrams(
-                jcases, ngramMinN, ngramMaxN, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+        return KeywordNGramUtils.getMultipleViewKeywordNgrams(jcases, ngramMinN, ngramMaxN,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
-    
+
     /**
      * This is an artifact to be merged with {@code getNgramsFD(List<JCas> jcases)} when pair FEs
      * are ready.
@@ -117,41 +119,47 @@ public void initialize(UimaContext context)
     {
         return null;
     }
-    
+
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1, TextClassificationTarget aTarget)
+    protected FrequencyDistribution<String> getNgramsFDView1(JCas view1,
+            TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view1, aTarget, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+        return KeywordNGramUtils.getDocumentKeywordNgrams(view1, aTarget, ngramMinN1, ngramMaxN1,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
-    
+
     @Override
-    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2, TextClassificationTarget aTarget)
+    protected FrequencyDistribution<String> getNgramsFDView2(JCas view2,
+            TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        return KeywordNGramUtils.getDocumentKeywordNgrams(
-                view2, aTarget, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
+        return KeywordNGramUtils.getDocumentKeywordNgrams(view2, aTarget, ngramMinN2, ngramMaxN2,
+                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
     }
-    
+
     @Override
     protected String getFieldName()
     {
         return LuceneKeywordCPFE.KEYWORD_NGRAM_FIELD;
     }
+
     @Override
     protected String getFieldNameView1()
     {
         return LuceneKeywordPFE.KEYWORD_NGRAM_FIELD1;
     }
+
     @Override
     protected String getFieldNameView2()
     {
         return LuceneKeywordPFE.KEYWORD_NGRAM_FIELD2;
     }
+
     @Override
-    protected String getFieldNameCombo(){
-    	return LuceneKeywordCPFE.KEYWORD_NGRAM_FIELD_COMBO;
+    protected String getFieldNameCombo()
+    {
+        return LuceneKeywordCPFE.KEYWORD_NGRAM_FIELD_COMBO;
     }
 
 }

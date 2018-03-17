@@ -38,13 +38,11 @@ public class KeywordPPipelineTest
     extends PPipelineTestBase
 {
     @Test
-    public void testSize1Features()
-        throws Exception
+    public void testSize1Features() throws Exception
     {
         KeywordPPipelineTest test = new KeywordPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { LuceneKeywordPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 1,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 1,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 1,
@@ -53,11 +51,11 @@ public class KeywordPPipelineTest
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, 1,
                 LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
-                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                true, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath};
+                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 16);
         assertTrue(test.featureNames.contains("keyNG1_peach"));
@@ -67,13 +65,11 @@ public class KeywordPPipelineTest
     }
 
     @Test
-    public void testSize3Features()
-        throws Exception
+    public void testSize3Features() throws Exception
     {
         KeywordPPipelineTest test = new KeywordPPipelineTest();
         test.initialize();
-        test.parameters = new Object[] {
-                LuceneKeywordPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { LuceneKeywordPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW1, 3,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MAX_N_VIEW1, 3,
                 LuceneKeywordPFE.PARAM_KEYWORD_NGRAM_MIN_N_VIEW2, 3,
@@ -82,11 +78,11 @@ public class KeywordPPipelineTest
                 LuceneKeywordCPFE.PARAM_KEYWORD_NGRAM_MAX_N, 3,
                 LuceneKeywordPFE.PARAM_USE_VIEW1_KEYWORD_NGRAMS_AS_FEATURES, true,
                 LuceneKeywordPFE.PARAM_USE_VIEW2_KEYWORD_NGRAMS_AS_FEATURES, true,
-                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES,
-                true, LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
-                "src/test/resources/data/keywordlist.txt",
-                LuceneKeywordPFE.PARAM_SOURCE_LOCATION, test.lucenePath,
-                LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath };
+                LuceneKeywordPFE.PARAM_USE_VIEWBLIND_KEYWORD_NGRAMS_AS_FEATURES, true,
+                LuceneKeywordCPFE.PARAM_NGRAM_KEYWORDS_FILE,
+                "src/test/resources/data/keywordlist.txt", LuceneKeywordPFE.PARAM_SOURCE_LOCATION,
+                test.lucenePath, LuceneKeywordPMetaCollector.PARAM_TARGET_LOCATION,
+                test.lucenePath };
         test.runPipeline();
         assertEquals(test.featureNames.size(), 12);
         assertTrue(test.featureNames.contains("keyNG1_peach_nectarine_SB"));
@@ -105,23 +101,24 @@ public class KeywordPPipelineTest
         throws ResourceInitializationException
     {
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(LuceneKeywordPFE.class, toString(parameterList.toArray()));
+                .createExternalResourceDescription(LuceneKeywordPFE.class,
+                        toString(parameterList.toArray()));
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                false, false, Collections.emptyList(), fes, new String[]{});
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
     }
 
-    private Object [] toString(Object[] array)
+    private Object[] toString(Object[] array)
     {
         List<Object> out = new ArrayList<>();
-        for(Object o : array){
+        for (Object o : array) {
             out.add(o.toString());
         }
-        
+
         return out.toArray();
     }
 

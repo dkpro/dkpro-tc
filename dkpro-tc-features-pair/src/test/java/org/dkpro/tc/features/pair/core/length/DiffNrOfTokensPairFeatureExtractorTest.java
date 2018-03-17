@@ -47,8 +47,7 @@ public class DiffNrOfTokensPairFeatureExtractorTest
         throws ResourceInitializationException, AnalysisEngineProcessException,
         TextClassificationException
     {
-        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class
-                );
+        AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas1 = engine.newJCas();

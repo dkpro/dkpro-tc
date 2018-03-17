@@ -36,8 +36,7 @@ public class AlwaysZeroPairFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
         return new Feature("BaselineFeature", 0, FeatureType.NUMERIC).asSet();
     }

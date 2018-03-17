@@ -44,15 +44,16 @@ public class SharedNounChunks
     protected boolean normalizeWithFirst;
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
 
         if (normalizeWithFirst) {
-            return new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2), FeatureType.NUMERIC).asSet();
+            return new Feature("SharedNounChunkView1", getSharedNounChunksCount(view1, view2),
+                    FeatureType.NUMERIC).asSet();
         }
         else {
-            return new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1), FeatureType.NUMERIC).asSet();
+            return new Feature("SharedNounChunkView2", getSharedNounChunksCount(view2, view1),
+                    FeatureType.NUMERIC).asSet();
         }
 
     }

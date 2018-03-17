@@ -49,15 +49,13 @@ public class SharedNounChunksTest
     extends PPipelineTestBase
 
 {
-
     private JCas jcas1;
     private JCas jcas2;
 
     int jcasId;
 
     @Before
-    public void setUp()
-        throws ResourceInitializationException, AnalysisEngineProcessException
+    public void setUp() throws ResourceInitializationException, AnalysisEngineProcessException
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
@@ -80,8 +78,7 @@ public class SharedNounChunksTest
     }
 
     @Test
-    public void testExtract1()
-        throws Exception
+    public void testExtract1() throws Exception
     {
 
         SharedNounChunksTest test = new SharedNounChunksTest();
@@ -96,8 +93,7 @@ public class SharedNounChunksTest
     }
 
     @Test
-    public void testExtract2()
-        throws Exception
+    public void testExtract2() throws Exception
     {
         SharedNounChunksTest test = new SharedNounChunksTest();
         test.initialize();
@@ -122,8 +118,8 @@ public class SharedNounChunksTest
 
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                false, false, Collections.emptyList(), fes, new String[]{});
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
     }
 
     private Object[] toString(Object[] array)

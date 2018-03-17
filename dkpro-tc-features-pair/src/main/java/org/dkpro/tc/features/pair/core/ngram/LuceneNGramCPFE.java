@@ -112,37 +112,38 @@ public class LuceneNGramCPFE
         topKSetCombo = getTopNgramsCombo(ngramUseTopKCombo, LUCENE_NGRAM_FIELDCOMBO);
         return true;
     }
-    
+
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(LuceneNGramPMetaCollector.class,
-                parameterSettings).addStorageMapping(
-                        LuceneNGramCPMetaCollector.PARAM_TARGET_LOCATION,
-                        LuceneNGramCPFE.PARAM_SOURCE_LOCATION,
-                        LuceneNGramCPMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(LuceneNGramPMetaCollector.class, parameterSettings)
+                        .addStorageMapping(LuceneNGramCPMetaCollector.PARAM_TARGET_LOCATION,
+                                LuceneNGramCPFE.PARAM_SOURCE_LOCATION,
+                                LuceneNGramCPMetaCollector.LUCENE_DIR));
     }
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
-    	FrequencyDistribution<String> view1Ngrams = null;
-    	FrequencyDistribution<String> view2Ngrams = null;
-    	
-    	  TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-          TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-    	
-        view1Ngrams = NGramUtils.getDocumentNgrams(view1, aTarget1,ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN1, ngramMaxN1, stopwords, Token.class);
-        view2Ngrams = NGramUtils.getDocumentNgrams(view2, aTarget2, ngramLowerCase, filterPartialStopwordMatches,
-                ngramMinN2, ngramMaxN2, stopwords, Token.class);
+        FrequencyDistribution<String> view1Ngrams = null;
+        FrequencyDistribution<String> view2Ngrams = null;
 
-        FrequencyDistribution<String> documentComboNgrams = ComboUtils
-                .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
-                        ngramUseSymmetricalCombos);
+        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1,
+                TextClassificationTarget.class);
+        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2,
+                TextClassificationTarget.class);
+
+        view1Ngrams = NGramUtils.getDocumentNgrams(view1, aTarget1, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN1, ngramMaxN1, stopwords, Token.class);
+        view2Ngrams = NGramUtils.getDocumentNgrams(view2, aTarget2, ngramLowerCase,
+                filterPartialStopwordMatches, ngramMinN2, ngramMaxN2, stopwords, Token.class);
+
+        FrequencyDistribution<String> documentComboNgrams = ComboUtils.getCombinedNgrams(
+                view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
+                ngramUseSymmetricalCombos);
 
         Set<Feature> features = new HashSet<Feature>();
         prefix = "comboNG";
@@ -152,54 +153,51 @@ public class LuceneNGramCPFE
     }
 
     private FrequencyDistribution<String> getTopNgramsCombo(int topNgramThreshold, String fieldName)
-            throws ResourceInitializationException
-        {
+        throws ResourceInitializationException
+    {
 
-            FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
+        FrequencyDistribution<String> topNGrams = new FrequencyDistribution<String>();
 
-            MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue
-                    .maximumSize(topNgramThreshold).create();
-            IndexReader reader;
-            try {
-                reader = DirectoryReader.open(FSDirectory.open(luceneDir));
-                Fields fields = MultiFields.getFields(reader);
-                if (fields != null) {
-                    Terms terms = fields.terms(fieldName);
-                    if (terms != null) {
-                        TermsEnum termsEnum = terms.iterator(null);
-                        BytesRef text = null;
-                        while ((text = termsEnum.next()) != null) {
-                            String term = text.utf8ToString();
-                            long freq = termsEnum.totalTermFreq();
-                            //add conditions here, like ngram1 is in most freq ngrams1...
-                            String combo1 = term.split(ComboUtils.JOINT)[0];
-                            String combo2 = term.split(ComboUtils.JOINT)[1];
-                            int combinedSize = combo1.split("_").length
-                                  + combo2.split("_").length;
-                            if(topKSetView1.contains(combo1) 
-                            		&& topKSet.contains(combo1) 
-                            		&& topKSetView2.contains(combo2) 
-                            		&& topKSet.contains(combo2)
-                            		&& combinedSize <= ngramMaxNCombo
-                                    && combinedSize >= ngramMinNCombo){
-                            	//print out here for testing
-                            	topN.add(new TermFreqTuple(term, freq));
-                            }
+        MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(topNgramThreshold)
+                .create();
+        IndexReader reader;
+        try {
+            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+            Fields fields = MultiFields.getFields(reader);
+            if (fields != null) {
+                Terms terms = fields.terms(fieldName);
+                if (terms != null) {
+                    TermsEnum termsEnum = terms.iterator(null);
+                    BytesRef text = null;
+                    while ((text = termsEnum.next()) != null) {
+                        String term = text.utf8ToString();
+                        long freq = termsEnum.totalTermFreq();
+                        // add conditions here, like ngram1 is in most freq ngrams1...
+                        String combo1 = term.split(ComboUtils.JOINT)[0];
+                        String combo2 = term.split(ComboUtils.JOINT)[1];
+                        int combinedSize = combo1.split("_").length + combo2.split("_").length;
+                        if (topKSetView1.contains(combo1) && topKSet.contains(combo1)
+                                && topKSetView2.contains(combo2) && topKSet.contains(combo2)
+                                && combinedSize <= ngramMaxNCombo
+                                && combinedSize >= ngramMinNCombo) {
+                            // print out here for testing
+                            topN.add(new TermFreqTuple(term, freq));
                         }
                     }
                 }
             }
-            catch (Exception e) {
-                throw new ResourceInitializationException(e);
-            }
-
-            int size = topN.size();
-            for (int i = 0; i < size; i++) {
-                TermFreqTuple tuple = topN.poll();
-                // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
-                topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
-            }
-
-            return topNGrams;
         }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+
+        int size = topN.size();
+        for (int i = 0; i < size; i++) {
+            TermFreqTuple tuple = topN.poll();
+            // System.out.println(tuple.getTerm() + " - " + tuple.getFreq());
+            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
+        }
+
+        return topNGrams;
+    }
 }

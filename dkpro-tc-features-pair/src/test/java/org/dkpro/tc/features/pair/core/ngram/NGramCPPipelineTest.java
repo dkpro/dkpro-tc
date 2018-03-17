@@ -40,8 +40,7 @@ public class NGramCPPipelineTest
     extends PPipelineTestBase
 {
     @Test
-    public void testComboFeatures_defaults()
-        throws Exception
+    public void testComboFeatures_defaults() throws Exception
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
@@ -66,8 +65,7 @@ public class NGramCPPipelineTest
     }
 
     @Test
-    public void testComboFeatures_size1()
-        throws Exception
+    public void testComboFeatures_size1() throws Exception
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
@@ -85,8 +83,7 @@ public class NGramCPPipelineTest
     }
 
     @Test
-    public void testComboFeatures_size3()
-        throws Exception
+    public void testComboFeatures_size3() throws Exception
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
@@ -106,8 +103,7 @@ public class NGramCPPipelineTest
     // TODO: Write a symmetry test. Note that features will be the same. Needs different dataset.
 
     @Test
-    public void testNonBinaryFeatureValues()
-        throws Exception
+    public void testNonBinaryFeatureValues() throws Exception
     {
         NGramCPPipelineTest test = new NGramCPPipelineTest();
         test.initialize();
@@ -146,23 +142,24 @@ public class NGramCPPipelineTest
         throws ResourceInitializationException
     {
         ExternalResourceDescription featureExtractor = ExternalResourceFactory
-                .createExternalResourceDescription(LuceneNGramCPFE.class, toString(parameterList.toArray()));
+                .createExternalResourceDescription(LuceneNGramCPFE.class,
+                        toString(parameterList.toArray()));
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false,
-                false, false, Collections.emptyList(), fes, new String[]{});
+                Constants.LM_SINGLE_LABEL, Constants.FM_PAIR, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
     }
-    
-    private Object [] toString(Object[] array)
+
+    private Object[] toString(Object[] array)
     {
         List<Object> out = new ArrayList<>();
-        for(Object o : array){
+        for (Object o : array) {
             out.add(o.toString());
         }
-        
+
         return out.toArray();
     }
 

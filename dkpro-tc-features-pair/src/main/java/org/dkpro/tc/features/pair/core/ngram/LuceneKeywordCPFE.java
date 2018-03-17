@@ -88,13 +88,13 @@ public class LuceneKeywordCPFE
     public static final String KEYWORD_NGRAM_FIELD_COMBO = "ngramKeywordCombo";
 
     protected FrequencyDistribution<String> topKSetCombo;
-    
+
     private boolean useNgramScreening;
 
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         return Arrays.asList(new MetaCollectorConfiguration(LuceneKeywordCPMetaCollector.class,
                 parameterSettings).addStorageMapping(
@@ -102,7 +102,7 @@ public class LuceneKeywordCPFE
                         LuceneKeywordCPFE.PARAM_SOURCE_LOCATION,
                         LuceneKeywordCPMetaCollector.LUCENE_DIR));
     }
-    
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -115,24 +115,27 @@ public class LuceneKeywordCPFE
         fieldOfTheMoment = KEYWORD_NGRAM_FIELD_COMBO;
         topNOfTheMoment = ngramUseTopKCombo;
         topKSetCombo = getTopNgrams();
-        
+
         return true;
     }
-    
-    @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
-    {
-        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-    	FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view1, aTarget1, ngramMinN1, ngramMaxN1,
-                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
-        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(view2, aTarget2, ngramMinN2, ngramMaxN2,
-                markSentenceBoundary, markSentenceLocation, includeCommas, keywords);
 
-        FrequencyDistribution<String> documentComboNgrams = ComboUtils
-                .getCombinedNgrams(view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
-                        ngramUseSymmetricalCombos);
+    @Override
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
+    {
+        TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1,
+                TextClassificationTarget.class);
+        TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2,
+                TextClassificationTarget.class);
+        FrequencyDistribution<String> view1Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(
+                view1, aTarget1, ngramMinN1, ngramMaxN1, markSentenceBoundary, markSentenceLocation,
+                includeCommas, keywords);
+        FrequencyDistribution<String> view2Ngrams = KeywordNGramUtils.getDocumentKeywordNgrams(
+                view2, aTarget2, ngramMinN2, ngramMaxN2, markSentenceBoundary, markSentenceLocation,
+                includeCommas, keywords);
+
+        FrequencyDistribution<String> documentComboNgrams = ComboUtils.getCombinedNgrams(
+                view1Ngrams, view2Ngrams, ngramMinNCombo, ngramMaxNCombo,
+                ngramUseSymmetricalCombos);
 
         prefix = "comboKNG";
         Set<Feature> features = new HashSet<Feature>();
@@ -141,21 +144,18 @@ public class LuceneKeywordCPFE
     }
 
     @Override
-    protected boolean passesScreening(String term){
-        if(useNgramScreening){
+    protected boolean passesScreening(String term)
+    {
+        if (useNgramScreening) {
             String combo1 = term.split(ComboUtils.JOINT)[0];
             String combo2 = term.split(ComboUtils.JOINT)[1];
-            int combinedSize = combo1.split("_").length
-                  + combo2.split("_").length;
-            if(topKSetView1.contains(combo1) 
-            		&& topKSet.contains(combo1) 
-            		&& topKSetView2.contains(combo2) 
-            		&& topKSet.contains(combo2)
-            		&& combinedSize <= ngramMaxNCombo
-                    && combinedSize >= ngramMinNCombo){
-            	return true;
+            int combinedSize = combo1.split("_").length + combo2.split("_").length;
+            if (topKSetView1.contains(combo1) && topKSet.contains(combo1)
+                    && topKSetView2.contains(combo2) && topKSet.contains(combo2)
+                    && combinedSize <= ngramMaxNCombo && combinedSize >= ngramMinNCombo) {
+                return true;
             }
-            else{
+            else {
                 return false;
             }
         }

@@ -39,11 +39,11 @@ public class DiffNrOfSentencesPairFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
         return new Feature("DiffNrOfSentences",
-                        JCasUtil.select(view1, Sentence.class).size() -
-                                JCasUtil.select(view2, Sentence.class).size(), FeatureType.NUMERIC).asSet();
+                JCasUtil.select(view1, Sentence.class).size()
+                        - JCasUtil.select(view2, Sentence.class).size(),
+                FeatureType.NUMERIC).asSet();
     }
 }

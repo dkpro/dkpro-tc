@@ -55,21 +55,20 @@ public class LuceneNGramCPMetaCollectorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void combinedNgramPairMetaCollectorTest()
-        throws Exception
+    public void combinedNgramPairMetaCollectorTest() throws Exception
     {
         File tmpDir = folder.newFolder();
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestPairReader.class,
-                TestPairReader.PARAM_INPUT_FILE, "src/test/resources/data/textpairs.txt"
-                );
+                TestPairReader.class, TestPairReader.PARAM_INPUT_FILE,
+                "src/test/resources/data/textpairs.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
-        
-        AnalysisEngineDescription doc = AnalysisEngineFactory
-                .createEngineDescription(DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+
+        AnalysisEngineDescription doc = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_PAIR);
 
         AggregateBuilder builder = new AggregateBuilder();
         builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
@@ -78,16 +77,13 @@ public class LuceneNGramCPMetaCollectorTest
         builder.add(doc, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
         AnalysisEngineDescription metaCollector = AnalysisEngineFactory.createEngineDescription(
-                LuceneNGramCPMetaCollector.class,
-                LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-                LuceneNGramCPFE.PARAM_SOURCE_LOCATION, tmpDir,
-                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, tmpDir
-                );
+                LuceneNGramCPMetaCollector.class, LuceneNGramCPFE.PARAM_UNIQUE_EXTRACTOR_NAME,
+                "123", LuceneNGramCPFE.PARAM_SOURCE_LOCATION, tmpDir,
+                LuceneNGramPMetaCollector.PARAM_TARGET_LOCATION, tmpDir);
 
         // test fails if for-loop removed
         for (@SuppressWarnings("unused")
-        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(),
-                metaCollector)) {
+        JCas jcas : new JCasIterable(reader, builder.createAggregateDescription(), metaCollector)) {
             // System.out.println(jcas.getDocumentText().length());
         }
 

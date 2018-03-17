@@ -39,11 +39,9 @@ public class DiffNrOfTokensPairFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
-        return new Feature("DiffNrOfTokens",
-                        JCasUtil.select(view1, Token.class).size()
-                                - JCasUtil.select(view2, Token.class).size(), FeatureType.NUMERIC).asSet();
+        return new Feature("DiffNrOfTokens", JCasUtil.select(view1, Token.class).size()
+                - JCasUtil.select(view2, Token.class).size(), FeatureType.NUMERIC).asSet();
     }
 }
