@@ -28,16 +28,15 @@ import org.junit.Assert;
 public class FeatureTestUtil
 {
 
-
     /**
      * Shortcut for JUnit assert that test whether a feature has the correct name and value
      * 
      * @param expectedName
-     * 			expected
+     *            expected
      * @param expectedValue
-     * 			actual
+     *            actual
      * @param actualFeature
-     * 			feature
+     *            feature
      */
     public static void assertFeature(String expectedName, Object expectedValue,
             Feature actualFeature)
@@ -48,16 +47,17 @@ public class FeatureTestUtil
     }
 
     /**
-     * Shortcut for JUnit assert that test whether a feature has the correct name and double value (compared using the epsilon)
+     * Shortcut for JUnit assert that test whether a feature has the correct name and double value
+     * (compared using the epsilon)
      * 
      * @param expectedName
-     * 			expected
+     *            expected
      * @param expectedValue
-     * 			actual
+     *            actual
      * @param actualFeature
-     * 			feature
+     *            feature
      * @param epsilon
-     * 			epsilon
+     *            epsilon
      */
     public static void assertFeature(String expectedName, double expectedValue,
             Feature actualFeature, double epsilon)
@@ -66,52 +66,51 @@ public class FeatureTestUtil
         Assert.assertEquals(expectedName, actualFeature.getName());
         Assert.assertEquals(expectedValue, (Double) actualFeature.getValue(), epsilon);
     }
-    
+
     /**
      * 
      * @param expectedName
-     * 			expected
+     *            expected
      * @param expectedValue
-     * 			actual
+     *            actual
      * @param features
-     * 			feature
+     *            feature
      * @param epsilon
-     * 			epsilon
+     *            epsilon
      */
     public static void assertFeatures(String expectedName, double expectedValue,
             Set<Feature> features, double epsilon)
     {
         Assert.assertNotNull(features);
-    	boolean found = false;
-    	for (Feature f : features) {
-    		if (f.getName().equals(expectedName)) {
-    			found = true;
-                Assert.assertEquals(expectedValue, (Double) f.getValue(), epsilon);	
+        boolean found = false;
+        for (Feature f : features) {
+            if (f.getName().equals(expectedName)) {
+                found = true;
+                Assert.assertEquals(expectedValue, (Double) f.getValue(), epsilon);
             }
-    	}
-    	Assert.assertTrue(found);
+        }
+        Assert.assertTrue(found);
     }
-    
+
     /**
      * 
      * @param expectedName
-     * 			expected
+     *            expected
      * @param expectedValue
-     * 			actual
+     *            actual
      * @param features
-     * 			features
+     *            features
      */
-    public static void assertFeatures(String expectedName, int expectedValue,
-            Set<Feature> features)
+    public static void assertFeatures(String expectedName, int expectedValue, Set<Feature> features)
     {
         Assert.assertNotNull(features);
-    	boolean found = false;
-    	for (Feature f : features) {
-    		if (f.getName().equals(expectedName)) {
-    			found = true;
-                Assert.assertEquals(expectedValue, (int) f.getValue());	
+        boolean found = false;
+        for (Feature f : features) {
+            if (f.getName().equals(expectedName)) {
+                found = true;
+                Assert.assertEquals(expectedValue, (int) f.getValue());
             }
-    	}
-    	Assert.assertTrue(found);
+        }
+        Assert.assertTrue(found);
     }
 }

@@ -56,10 +56,9 @@ public class TestPairReader
     private int fileOffset;
 
     int jcasid;
-    
+
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -72,13 +71,13 @@ public class TestPairReader
                 String parts[] = line.split("\t");
 
                 if (parts.length != 2) {
-                    throw new ResourceInitializationException(new Throwable("Wrong file format: "
-                            + line));
+                    throw new ResourceInitializationException(
+                            new Throwable("Wrong file format: " + line));
                 }
 
                 texts1.add(parts[0]);
                 texts2.add(parts[1]);
-            }      
+            }
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);
@@ -86,18 +85,16 @@ public class TestPairReader
     }
 
     @Override
-    public boolean hasNext()
-        throws IOException, CollectionException
+    public boolean hasNext() throws IOException, CollectionException
     {
         return fileOffset < texts1.size();
     }
 
     @Override
-    public void getNext(JCas jcas)
-        throws IOException, CollectionException
+    public void getNext(JCas jcas) throws IOException, CollectionException
     {
         super.getNext(jcas);
-        
+
         JCasId id = new JCasId(jcas);
         id.setId(jcasid++);
         id.addToIndexes();
@@ -132,53 +129,63 @@ public class TestPairReader
         return outcomes;
     }
 
-	@Override
-	public String getCollectionId1() throws TextClassificationException {
+    @Override
+    public String getCollectionId1() throws TextClassificationException
+    {
         return inputFile.getParent();
-	}
+    }
 
-	@Override
-	public String getCollectionId2() throws TextClassificationException {
+    @Override
+    public String getCollectionId2() throws TextClassificationException
+    {
         return inputFile.getParent();
-	}
+    }
 
-	@Override
-	public String getDocumentId1() throws TextClassificationException {
+    @Override
+    public String getDocumentId1() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getDocumentId2() throws TextClassificationException {
+    @Override
+    public String getDocumentId2() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getTitle1() throws TextClassificationException {
+    @Override
+    public String getTitle1() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getTitle2() throws TextClassificationException {
+    @Override
+    public String getTitle2() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getLanguage1() throws TextClassificationException {
-		return "en";
-	}
+    @Override
+    public String getLanguage1() throws TextClassificationException
+    {
+        return "en";
+    }
 
-	@Override
-	public String getLanguage2() throws TextClassificationException {
-		return "en";
-	}
+    @Override
+    public String getLanguage2() throws TextClassificationException
+    {
+        return "en";
+    }
 
-	@Override
-	public String getText1() throws TextClassificationException {
+    @Override
+    public String getText1() throws TextClassificationException
+    {
         return texts1.get(fileOffset);
-	}
+    }
 
-	@Override
-	public String getText2() throws TextClassificationException {
+    @Override
+    public String getText2() throws TextClassificationException
+    {
         return texts2.get(fileOffset);
-	}
+    }
 }
