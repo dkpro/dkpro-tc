@@ -34,63 +34,74 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  */
-public class CrfSuiteBaselineRandomIdReport extends CrfSuiteOutcomeIDReport {
-	private Random random = new Random(42);
-	private List<String> pool = new ArrayList<>();
+public class CrfSuiteBaselineRandomIdReport
+    extends CrfSuiteOutcomeIDReport
+{
+    private Random random = new Random(42);
+    private List<String> pool = new ArrayList<>();
 
-	public CrfSuiteBaselineRandomIdReport() {
-		// requried by groovy
-	}
-	
-	@Override
-	public void execute() throws Exception{
-		
-		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
-		if(isRegression){
-			return;
-		}
-		
-		super.execute();
-	}
+    public CrfSuiteBaselineRandomIdReport()
+    {
+        // requried by groovy
+    }
 
-	@Override
-	protected File getTargetFile() {
-		return getContext().getFile(BASELINE_RANDOM_ID_OUTCOME_KEY, AccessMode.READWRITE);
-	}
+    @Override
+    public void execute() throws Exception
+    {
 
-	@Override
-	protected void prepareBaseline() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		buildPool(file);
-	}
+        boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE)
+                .equals(LM_REGRESSION);
+        if (isRegression) {
+            return;
+        }
 
-	@Override
-	protected String getPrediction(Map<String, Integer> map, String s) {
-		return "" + random.nextInt(pool.size() - 1);
-	}
+        super.execute();
+    }
 
-	private void buildPool(File file) throws Exception {
+    @Override
+    protected File getTargetFile()
+    {
+        return getContext().getFile(BASELINE_RANDOM_ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+    @Override
+    protected void prepareBaseline() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        buildPool(file);
+    }
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty()) {
-					continue;
-				}
+    @Override
+    protected String getPrediction(Map<String, Integer> map, String s)
+    {
+        return "" + random.nextInt(pool.size() - 1);
+    }
 
-				String[] split = line.split("\t");
-				if (!pool.contains(split[0])) {
-					pool.add(split[0]);
-				}
-			}
+    private void buildPool(File file) throws Exception
+    {
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
-		Collections.sort(pool);
-	}
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                String[] split = line.split("\t");
+                if (!pool.contains(split[0])) {
+                    pool.add(split[0]);
+                }
+            }
+
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+        Collections.sort(pool);
+    }
 }

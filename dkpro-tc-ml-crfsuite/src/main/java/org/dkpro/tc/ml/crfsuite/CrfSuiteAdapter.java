@@ -62,14 +62,16 @@ public class CrfSuiteAdapter
     {
         return CrfSuiteOutcomeIDReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass()
+    {
         return CrfSuiteBaselineMajorityClassIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass()
+    {
         return CrfSuiteBaselineRandomIdReport.class;
     }
 
@@ -214,7 +216,7 @@ public class CrfSuiteAdapter
      * </pre>
      */
     public static final String ALGORITHM_AVERAGED_PERCEPTRON = "ap";
-    
+
     /**
      * Maximize the logarithm of the likelihood of the training data with L2 regularization term(s)
      * using Stochastic Gradient Descent (SGD) with batch size 1. This algorithm usually approaches
@@ -222,45 +224,45 @@ public class CrfSuiteAdapter
      * 
      * Parameters (provided each individually by [-p] switch):
      * 
-     <pre>
+     * <pre>
         float feature.minfreq = 0.000000;
         The minimum frequency of features.
-
+    
         int feature.possible_states = 0;
         Force to generate possible state features.
-
+    
         int feature.possible_transitions = 0;
         Force to generate possible transition features.
-
+    
         float c2 = 1.000000;
         Coefficient for L2 regularization.
-
+    
         int max_iterations = 1000;
         The maximum number of iterations (epochs) for SGD optimization.
-
+    
         int period = 10;
         The duration of iterations to test the stopping criterion.
-
+    
         float delta = 0.000001;
         The threshold for the stopping criterion; an optimization process stops when
         the improvement of the log likelihood over the last ${period} iterations is no
         greater than this threshold.
-
+    
         float calibration.eta = 0.100000;
         The initial value of learning rate (eta) used for calibration.
-
+    
         float calibration.rate = 2.000000;
         The rate of increase/decrease of learning rate for calibration.
-
+    
         int calibration.samples = 1000;
         The number of instances used for calibration.
-
+    
         int calibration.candidates = 10;
         The number of candidates of learning rate.
-
+    
         int calibration.max_trials = 20;
         The maximum number of trials of learning rates for calibration.
-        </pre>
+     * </pre>
      */
     public static final String ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT = "l2sgd";
 
@@ -269,9 +271,10 @@ public class CrfSuiteAdapter
     {
         return true;
     }
-    
+
     @Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }

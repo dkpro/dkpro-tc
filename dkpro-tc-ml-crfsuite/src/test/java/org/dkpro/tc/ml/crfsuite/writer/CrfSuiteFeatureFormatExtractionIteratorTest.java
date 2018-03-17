@@ -42,15 +42,13 @@ public class CrfSuiteFeatureFormatExtractionIteratorTest
     File outputDirectory;
 
     @Before
-    public void setUp()
-        throws Exception
+    public void setUp() throws Exception
     {
         buildFeatures();
         outputDirectory = folder.newFolder();
     }
 
-    private void buildFeatures()
-        throws Exception
+    private void buildFeatures() throws Exception
     {
         fs = new ArrayList<>();
 
@@ -94,11 +92,11 @@ public class CrfSuiteFeatureFormatExtractionIteratorTest
     }
 
     @Test
-    public void sequenceIteratorTest()
-        throws Exception
+    public void sequenceIteratorTest() throws Exception
     {
 
-        CrfSuiteFeatureFormatExtractionIterator iterator = new CrfSuiteFeatureFormatExtractionIterator(fs);
+        CrfSuiteFeatureFormatExtractionIterator iterator = new CrfSuiteFeatureFormatExtractionIterator(
+                fs);
 
         List<String> output = new ArrayList<String>();
         while (iterator.hasNext()) {
@@ -106,12 +104,16 @@ public class CrfSuiteFeatureFormatExtractionIteratorTest
             output.add(next.toString());
         }
         assertEquals(2, output.size());
-        assertEquals("1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
-                + "2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta" + "\n"
-                + "3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__" + "\n", output.get(0));
+        assertEquals(
+                "1\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
+                        + "2\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta" + "\n"
+                        + "3\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__EOS__" + "\n",
+                output.get(0));
 
-        assertEquals("4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
-                + "4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__" + "\n", output.get(1));
+        assertEquals(
+                "4\tfeature1=1.0\tfeature2=0.0\tfeature3=Water\t__BOS__" + "\n"
+                        + "4\tfeature1=0.5\tfeature2=0.5\tfeature3=Fanta\t__EOS__" + "\n",
+                output.get(1));
 
     }
 

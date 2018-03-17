@@ -40,136 +40,158 @@ import org.dkpro.tc.core.io.DataWriter;
 
 import com.google.gson.Gson;
 
-public class CrfSuiteDataWriter implements DataWriter {
-	CrfSuiteFeatureFormatExtractionIterator iterator;
-	File outputDirectory;
-	boolean useSparse;
-	String learningMode;
-	boolean applyWeigthing;
-	private BufferedWriter bw = null;
-	private Gson gson = new Gson();
-	private File classifierFormatOutputFile;
+public class CrfSuiteDataWriter
+    implements DataWriter
+{
+    CrfSuiteFeatureFormatExtractionIterator iterator;
+    File outputDirectory;
+    boolean useSparse;
+    String learningMode;
+    boolean applyWeigthing;
+    private BufferedWriter bw = null;
+    private Gson gson = new Gson();
+    private File classifierFormatOutputFile;
 
-	@Override
-	public void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
-		try {
-			initGeneric();
+    @Override
+    public void writeGenericFormat(Collection<Instance> instances)
+        throws AnalysisEngineProcessException
+    {
+        try {
+            initGeneric();
 
-			// bulk-write - in sequence mode this keeps the instances together
-			// that
-			// belong to the same sequence!
-			Instance[] array = instances.toArray(new Instance[0]);
-			bw.write(gson.toJson(array) + "\n");
+            // bulk-write - in sequence mode this keeps the instances together
+            // that
+            // belong to the same sequence!
+            Instance[] array = instances.toArray(new Instance[0]);
+            bw.write(gson.toJson(array) + "\n");
 
-			bw.close();
-			bw = null;
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+            bw.close();
+            bw = null;
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	private void initGeneric() throws IOException {
-		if (bw != null) {
-			return;
-		}
-		bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
+    private void initGeneric() throws IOException
+    {
+        if (bw != null) {
+            return;
+        }
+        bw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(
+                                new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
+                        "utf-8"));
 
-	}
+    }
 
-	@Override
-	public void transformFromGeneric() throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+    @Override
+    public void transformFromGeneric() throws Exception
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
+                "utf-8"));
 
-		BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile), "utf-8"));
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile), "utf-8"));
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			Instance[] instance = gson.fromJson(line, Instance[].class);
-			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            Instance[] instance = gson.fromJson(line, Instance[].class);
+            List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
 
-			Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(ins);
+            Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
+                    ins);
 
-			while (sequenceIterator.hasNext()) {
-				String features = sequenceIterator.next().toString();
-				writer.write(features);
-				writer.write("\n");
-			}
+            while (sequenceIterator.hasNext()) {
+                String features = sequenceIterator.next().toString();
+                writer.write(features);
+                writer.write("\n");
+            }
 
-		}
+        }
 
-		reader.close();
-		writer.close();
-	}
+        reader.close();
+        writer.close();
+    }
 
-	@Override
-	public void writeClassifierFormat(Collection<Instance> instances) throws AnalysisEngineProcessException {
-		try {
-			initClassifierFormat();
+    @Override
+    public void writeClassifierFormat(Collection<Instance> instances)
+        throws AnalysisEngineProcessException
+    {
+        try {
+            initClassifierFormat();
 
-			Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
-					new ArrayList<Instance>(instances));
+            Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
+                    new ArrayList<Instance>(instances));
 
-			while (sequenceIterator.hasNext()) {
-				String features = sequenceIterator.next().toString();
-				bw.write(features);
-				bw.write("\n");
-			}
+            while (sequenceIterator.hasNext()) {
+                String features = sequenceIterator.next().toString();
+                bw.write(features);
+                bw.write("\n");
+            }
 
-			bw.close();
-			bw = null;
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+            bw.close();
+            bw = null;
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	private void initClassifierFormat() throws Exception {
-		if (bw != null) {
-			return;
-		}
+    private void initClassifierFormat() throws Exception
+    {
+        if (bw != null) {
+            return;
+        }
 
-		bw = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+        bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
 
-	}
+    }
 
-	@Override
-	public void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
-			String[] outcomes) throws Exception {
-		this.outputDirectory = outputDirectory;
-		this.useSparse = useSparse;
-		this.learningMode = learningMode;
-		this.applyWeigthing = applyWeighting;
+    @Override
+    public void init(File outputDirectory, boolean useSparse, String learningMode,
+            boolean applyWeighting, String[] outcomes)
+        throws Exception
+    {
+        this.outputDirectory = outputDirectory;
+        this.useSparse = useSparse;
+        this.learningMode = learningMode;
+        this.applyWeigthing = applyWeighting;
 
-		classifierFormatOutputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        classifierFormatOutputFile = new File(outputDirectory,
+                Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-		// Caution: DKPro Lab imports (aka copies!) the data of the train task
-		// as test task. We use
-		// appending mode for streaming. We might errornously append the old
-		// training file with
-		// testing data!
-		// Force delete the old training file to make sure we start with a
-		// clean, empty file
-		if (classifierFormatOutputFile.exists()) {
-			FileUtils.forceDelete(classifierFormatOutputFile);
-		}
-	}
+        // Caution: DKPro Lab imports (aka copies!) the data of the train task
+        // as test task. We use
+        // appending mode for streaming. We might errornously append the old
+        // training file with
+        // testing data!
+        // Force delete the old training file to make sure we start with a
+        // clean, empty file
+        if (classifierFormatOutputFile.exists()) {
+            FileUtils.forceDelete(classifierFormatOutputFile);
+        }
+    }
 
-	@Override
-	public boolean canStream() {
-		return true;
-	}
+    @Override
+    public boolean canStream()
+    {
+        return true;
+    }
 
-	@Override
-	public String getGenericFileName() {
-		return Constants.GENERIC_FEATURE_FILE;
-	}
+    @Override
+    public String getGenericFileName()
+    {
+        return Constants.GENERIC_FEATURE_FILE;
+    }
 
-	@Override
-	public void close() throws Exception {
+    @Override
+    public void close() throws Exception
+    {
 
-	}
+    }
 
 }

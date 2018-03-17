@@ -24,8 +24,8 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 
 /**
- * Takes instances and returns the string representation of a sequence 
- * that can be provided as-is to CrfSuite
+ * Takes instances and returns the string representation of a sequence that can be provided as-is to
+ * CrfSuite
  */
 public class CrfSuiteFeatureFormatExtractionIterator
     implements Iterator<StringBuilder>
@@ -116,8 +116,7 @@ public class CrfSuiteFeatureFormatExtractionIterator
         return "" + jcasId + "_" + sequenceId;
     }
 
-    private void appendEOS(StringBuilder sb)
-        throws Exception
+    private void appendEOS(StringBuilder sb) throws Exception
     {
         sb.append("\t");
         sb.append("__EOS__");

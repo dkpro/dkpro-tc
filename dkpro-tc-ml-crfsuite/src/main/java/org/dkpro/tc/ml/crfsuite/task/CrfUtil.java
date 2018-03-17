@@ -27,8 +27,7 @@ public class CrfUtil
 
     public static String getAlgorithm(List<Object> objArgs)
     {
-    	
-    	List<String> classificationArguments =  objArgs2StringArgs(objArgs);
+        List<String> classificationArguments = objArgs2StringArgs(objArgs);
 
         if (classificationArguments != null) {
             for (int i = 0; i < classificationArguments.size(); i++) {
@@ -58,16 +57,17 @@ public class CrfUtil
         return CrfSuiteAdapter.ALGORITHM_LBFGS;
     }
 
-	public static List<String> objArgs2StringArgs(List<Object> objArgs) {
-		List<String> classificationArguments = new ArrayList<>();
-		for (int i = 1; i < objArgs.size(); i++) {
-			classificationArguments.add((String) objArgs.get(i));
-		}
+    public static List<String> objArgs2StringArgs(List<Object> objArgs)
+    {
+        List<String> classificationArguments = new ArrayList<>();
+        for (int i = 1; i < objArgs.size(); i++) {
+            classificationArguments.add((String) objArgs.get(i));
+        }
 
-		return classificationArguments;
-	}
+        return classificationArguments;
+    }
 
-	private static boolean isValidAlgoName(String string)
+    private static boolean isValidAlgoName(String string)
     {
         return string.equals(CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR)
                 || string.equals(CrfSuiteAdapter.ALGORITHM_AVERAGED_PERCEPTRON)
@@ -75,13 +75,12 @@ public class CrfUtil
                 || string.equals(CrfSuiteAdapter.ALGORITHM_LBFGS);
     }
 
-    public static List<String> getAlgorithmConfigurationParameter(
-            List<Object> objArgs)
+    public static List<String> getAlgorithmConfigurationParameter(List<Object> objArgs)
     {
         if (objArgs == null) {
             return new ArrayList<>();
         }
-        
+
         List<String> classificationArguments = objArgs2StringArgs(objArgs);
 
         List<String> parameter = new ArrayList<>();

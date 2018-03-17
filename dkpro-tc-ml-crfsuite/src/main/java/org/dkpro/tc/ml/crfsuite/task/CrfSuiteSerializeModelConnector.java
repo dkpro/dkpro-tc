@@ -31,70 +31,82 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 
-public class CrfSuiteSerializeModelConnector extends ModelSerializationTask implements Constants {
+public class CrfSuiteSerializeModelConnector
+    extends ModelSerializationTask
+    implements Constants
+{
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<Object> classificationArguments;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> classificationArguments;
 
-	boolean trainModel = true;
+    boolean trainModel = true;
 
-	private String algoName;
+    private String algoName;
 
-	private List<String> algoParameters;
+    private List<String> algoParameters;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
 
-		if (trainModel) {
-			processParameters(classificationArguments);
-			trainAndStoreModel(aContext);
-		} else {
-			copyAlreadyTrainedModel(aContext);
-		}
+        if (trainModel) {
+            processParameters(classificationArguments);
+            trainAndStoreModel(aContext);
+        }
+        else {
+            copyAlreadyTrainedModel(aContext);
+        }
 
-		writeModelConfiguration(aContext);
-	}
+        writeModelConfiguration(aContext);
+    }
 
-	private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception {
-		File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
+    private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception
+    {
+        File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
 
-		FileInputStream fis = null;
-		FileOutputStream fos = null;
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
 
-		try {
-			fis = new FileInputStream(file);
-			fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
-			IOUtils.copy(fis, fos);
-		} finally {
-			IOUtils.closeQuietly(fis);
-			IOUtils.closeQuietly(fos);
-		}
-	}
+        try {
+            fis = new FileInputStream(file);
+            fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));
+            IOUtils.copy(fis, fos);
+        }
+        finally {
+            IOUtils.closeQuietly(fis);
+            IOUtils.closeQuietly(fos);
+        }
+    }
 
-	private void trainAndStoreModel(TaskContext aContext) throws Exception {
-		File model = new File(outputFolder, MODEL_CLASSIFIER);
-		
-		File executable = CrfSuiteTestTask.getExecutable();
-		File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
-		
-		List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(executable, model, train, algoName,
-				algoParameters);
+    private void trainAndStoreModel(TaskContext aContext) throws Exception
+    {
+        File model = new File(outputFolder, MODEL_CLASSIFIER);
 
-		Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
-		process.waitFor();
-	}
+        File executable = CrfSuiteTestTask.getExecutable();
+        File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext,
+                executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-	private void processParameters(List<Object> classificationArguments) throws Exception {
-		algoName = CrfUtil.getAlgorithm(classificationArguments);
-		algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
-	}
+        List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(executable, model, train,
+                algoName, algoParameters);
 
-	public void trainModel(boolean b) {
-		trainModel = b;
-	}
+        Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
+        process.waitFor();
+    }
 
-	@Override
-	protected void writeAdapter() throws Exception {
-		writeModelAdapterInformation(outputFolder, CrfSuiteAdapter.class.getName());
-	}
+    private void processParameters(List<Object> classificationArguments) throws Exception
+    {
+        algoName = CrfUtil.getAlgorithm(classificationArguments);
+        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+    }
+
+    public void trainModel(boolean b)
+    {
+        trainModel = b;
+    }
+
+    @Override
+    protected void writeAdapter() throws Exception
+    {
+        writeModelAdapterInformation(outputFolder, CrfSuiteAdapter.class.getName());
+    }
 }

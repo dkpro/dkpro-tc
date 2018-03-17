@@ -37,60 +37,69 @@ public class CrfSuiteBaselineMajorityClassIdReport
 {
     private String majorityClass;
 
-	public CrfSuiteBaselineMajorityClassIdReport(){
-        //requried by groovy
+    public CrfSuiteBaselineMajorityClassIdReport()
+    {
+        // requried by groovy
     }
-	
-	@Override
-	public void execute() throws Exception{
-		
-		boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
-		if(isRegression){
-			return;
-		}
-		
-		super.execute();
-	}
 
     @Override
-    protected File getTargetFile() {
-    	return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
-	}
-    
+    public void execute() throws Exception
+    {
+
+        boolean isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE)
+                .equals(LM_REGRESSION);
+        if (isRegression) {
+            return;
+        }
+
+        super.execute();
+    }
+
     @Override
-    protected void prepareBaseline() throws Exception {
-    	File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		determineMajorityClass(file);
-	}
+    protected File getTargetFile()
+    {
+        return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
 
-	@Override
-	  protected String getPrediction(Map<String,Integer> map, String s) {
-		return map.get(majorityClass).toString();
-	}
+    @Override
+    protected void prepareBaseline() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        determineMajorityClass(file);
+    }
 
-	private void determineMajorityClass(File file) throws Exception {
+    @Override
+    protected String getPrediction(Map<String, Integer> map, String s)
+    {
+        return map.get(majorityClass).toString();
+    }
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+    private void determineMajorityClass(File file) throws Exception
+    {
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty()) {
-					continue;
-				}
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-				String[] split = line.split("\t");
-				fd.addSample(split[0], 1);
-			}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    continue;
+                }
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
+                String[] split = line.split("\t");
+                fd.addSample(split[0], 1);
+            }
 
-		majorityClass = fd.getSampleWithMaxFreq();
-	}
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        majorityClass = fd.getSampleWithMaxFreq();
+    }
 }

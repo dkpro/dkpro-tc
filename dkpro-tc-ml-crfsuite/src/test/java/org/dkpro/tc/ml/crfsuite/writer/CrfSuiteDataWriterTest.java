@@ -45,9 +45,9 @@ public class CrfSuiteDataWriterTest
     File outputDirectory;
     List<Instance> instances;
     List<String> outcomes;
+
     @Before
-    public void setUp()
-        throws Exception
+    public void setUp() throws Exception
     {
         outputDirectory = folder.newFolder();
         writer = new CrfSuiteDataWriter();
@@ -63,8 +63,7 @@ public class CrfSuiteDataWriterTest
         prepareFeatures();
     }
 
-    private void prepareFeatures()
-        throws Exception
+    private void prepareFeatures() throws Exception
     {
         List<Feature> features1 = new ArrayList<Feature>();
         features1.add(new Feature("feature1", 1.0, FeatureType.NUMERIC));
@@ -101,8 +100,7 @@ public class CrfSuiteDataWriterTest
     }
 
     @Test
-    public void dataWriterTest()
-        throws Exception
+    public void dataWriterTest() throws Exception
     {
         writeFeaturesWithDataWriter();
         List<String> fileContent = readData();
@@ -118,8 +116,7 @@ public class CrfSuiteDataWriterTest
 
     }
 
-    private List<String> readData()
-        throws Exception
+    private List<String> readData() throws Exception
     {
         File outputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
         BufferedReader br = new BufferedReader(new FileReader(outputFile));
@@ -133,10 +130,10 @@ public class CrfSuiteDataWriterTest
         return lines;
     }
 
-    private void writeFeaturesWithDataWriter()
-        throws Exception
+    private void writeFeaturesWithDataWriter() throws Exception
     {
-        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false, outcomes.toArray(new String[0]));
+        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false,
+                outcomes.toArray(new String[0]));
         writer.writeClassifierFormat(instances);
     }
 }

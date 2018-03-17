@@ -50,17 +50,17 @@ public class CrfSuiteOutcomeIDReport
     private static final String ID_CONSTANT_VALUE = ID_FEATURE_NAME + "=";
 
     private static final String THRESHOLD_DUMMY_CONSTANT = "-1";
-    
-    public CrfSuiteOutcomeIDReport(){
-        //requried by groovy
+
+    public CrfSuiteOutcomeIDReport()
+    {
+        // requried by groovy
     }
 
     @Override
-    public void execute()
-        throws Exception
+    public void execute() throws Exception
     {
-    	prepareBaseline();
-    	
+        prepareBaseline();
+
         List<String> labelGoldVsActual = getGoldAndPredictions();
 
         Map<String, Integer> mapping = createMappingLabel2Number();
@@ -72,8 +72,8 @@ public class CrfSuiteOutcomeIDReport
         // add "#labels' line with all labels
         StringBuilder sb = new StringBuilder();
         sb.append("labels");
-        for(Entry<String,Integer> e : mapping.entrySet()){
-        	sb.append(" " + e.getValue() + "=" + URLEncoder.encode(e.getKey(), "UTF-8"));
+        for (Entry<String, Integer> e : mapping.entrySet()) {
+            sb.append(" " + e.getValue() + "=" + URLEncoder.encode(e.getKey(), "UTF-8"));
         }
 
         File id2o = getTargetFile();
@@ -82,30 +82,32 @@ public class CrfSuiteOutcomeIDReport
                 + "THRESHOLD" + "\n" + "#" + sb.toString();
 
         OutputStreamWriter osw = null;
-		try {
-			osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-			prop.store(osw, header);
-		} finally {
-			IOUtils.closeQuietly(osw);
-		}
+        try {
+            osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+            prop.store(osw, header);
+        }
+        finally {
+            IOUtils.closeQuietly(osw);
+        }
     }
 
-    protected void prepareBaseline() throws Exception {
-    	//overwritten by baseline reports
-	}
-
-	protected File getTargetFile() {
-    	return getContext().getFile(ID_OUTCOME_KEY, AccessMode.READWRITE);
-	}
-
-	private Map<String, Integer> createMappingLabel2Number() throws Exception
+    protected void prepareBaseline() throws Exception
     {
-		File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY,
-                AccessMode.READONLY);
-		File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
-		List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
-		
-		outcomes.add("(null)"); //Crfsuite might output this additional "label";
+        // overwritten by baseline reports
+    }
+
+    protected File getTargetFile()
+    {
+        return getContext().getFile(ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
+
+    private Map<String, Integer> createMappingLabel2Number() throws Exception
+    {
+        File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+        File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+
+        outcomes.add("(null)"); // Crfsuite might output this additional "label";
 
         Map<String, Integer> map = new HashMap<String, Integer>();
         int i = 0;
@@ -120,21 +122,20 @@ public class CrfSuiteOutcomeIDReport
         return map;
     }
 
-	private List<String> getTestData()
-        throws Exception
+    private List<String> getTestData() throws Exception
     {
         File storage = getContext().getFolder(CrfSuiteTestTask.TEST_TASK_INPUT_KEY_TEST_DATA,
                 AccessMode.READONLY);
 
-        File testFile = new File(storage.getAbsolutePath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        File testFile = new File(
+                storage.getAbsolutePath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
         List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
 
         return readLines;
     }
 
-    private List<String> getGoldAndPredictions()
-        throws Exception
+    private List<String> getGoldAndPredictions() throws Exception
     {
         File predictionFile = getContext().getFile(FILENAME_PREDICTIONS, AccessMode.READONLY);
         List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
@@ -142,9 +143,9 @@ public class CrfSuiteOutcomeIDReport
         return readLines;
     }
 
-    protected Properties generateProperties(Map<String, Integer> aMapping,
-            List<String> predictions, List<String> testFeatures)
-                throws Exception
+    protected Properties generateProperties(Map<String, Integer> aMapping, List<String> predictions,
+            List<String> testFeatures)
+        throws Exception
     {
         Properties p = new SortedKeyProperties();
 
@@ -160,10 +161,10 @@ public class CrfSuiteOutcomeIDReport
             String id = extractTCId(featureEntry);
             String[] idsplit = id.split("_");
             // make ids sortable by enforcing zero-prefixing
-			String zeroPaddedId = String.format("%04d_%04d_%04d%s", Integer.valueOf(idsplit[0]),
-					Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]),
-					idsplit.length > 3 ? "_" + idsplit[3] : "");
-			int numGold = aMapping.get(split[0]);
+            String zeroPaddedId = String.format("%04d_%04d_%04d%s", Integer.valueOf(idsplit[0]),
+                    Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]),
+                    idsplit.length > 3 ? "_" + idsplit[3] : "");
+            int numGold = aMapping.get(split[0]);
             String numPred = getPrediction(aMapping, split[1]);
             p.setProperty(zeroPaddedId,
                     numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
@@ -172,12 +173,13 @@ public class CrfSuiteOutcomeIDReport
         return p;
     }
 
-    protected String getPrediction(Map<String,Integer> map, String s) {
-    	//overwritten by baseline report
-		return map.get(s).toString();
-	}
+    protected String getPrediction(Map<String, Integer> map, String s)
+    {
+        // overwritten by baseline report
+        return map.get(s).toString();
+    }
 
-	private static String extractTCId(String line)
+    private static String extractTCId(String line)
     {
         int begin = line.indexOf(ID_CONSTANT_VALUE);
         int end = line.indexOf("\t", begin + ID_CONSTANT_VALUE.length());

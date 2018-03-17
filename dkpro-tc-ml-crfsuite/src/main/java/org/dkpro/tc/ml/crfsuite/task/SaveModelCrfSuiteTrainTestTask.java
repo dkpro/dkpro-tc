@@ -28,7 +28,6 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 
 /**
  * Train-Test setup
- * 
  */
 public class SaveModelCrfSuiteTrainTestTask
     extends ExperimentTrainTest
@@ -44,10 +43,10 @@ public class SaveModelCrfSuiteTrainTestTask
     /**
      * Preconfigured train-test setup that also stores the trained classifier.
      */
-    public SaveModelCrfSuiteTrainTestTask(String aExperimentName,  File outputFolder)
-            throws TextClassificationException
+    public SaveModelCrfSuiteTrainTestTask(String aExperimentName, File outputFolder)
+        throws TextClassificationException
     {
-    	super(aExperimentName);
+        super(aExperimentName);
         setOutputFolder(outputFolder);
     }
 
@@ -58,8 +57,8 @@ public class SaveModelCrfSuiteTrainTestTask
      */
     protected void init()
     {
-       super.init();
-        
+        super.init();
+
         // store the model
         saveModelTask = new CrfSuiteSerializeModelConnector();
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
@@ -67,14 +66,15 @@ public class SaveModelCrfSuiteTrainTestTask
         saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         saveModelTask.setOutputFolder(outputFolder);
-        
+
         saveModelTask.addImport(testTask, Constants.MODEL_CLASSIFIER);
         saveModelTask.trainModel(false);
 
         addTask(saveModelTask);
     }
-    
-    public void setOutputFolder(File outputFolder) {
+
+    public void setOutputFolder(File outputFolder)
+    {
         this.outputFolder = outputFolder;
     }
 }

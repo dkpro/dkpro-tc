@@ -44,7 +44,7 @@ public class LabelSubstitutor
 
     public static String undoLabelReplacement(String label)
     {
-        switch(label){
+        switch (label) {
         case COLON_SUBSTITUTE:
             return COLON;
         }
