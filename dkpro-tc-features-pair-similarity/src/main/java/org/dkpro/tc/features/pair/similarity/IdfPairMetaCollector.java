@@ -52,16 +52,14 @@ public class IdfPairMetaCollector<T extends Annotation>
     private Set<String> stopwords;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
         stopwords = new HashSet<String>();
     }
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
         JCas view1;
         JCas view2;
@@ -96,8 +94,8 @@ public class IdfPairMetaCollector<T extends Annotation>
 
         for (String ngram : documentNGrams.getKeys()) {
             for (int i = 0; i < documentNGrams.getCount(ngram); i++) {
-            	Field field = new Field(getFieldName(), ngram, fieldType);
-            	currentDocument.add(field);
+                Field field = new Field(getFieldName(), ngram, fieldType);
+                currentDocument.add(field);
             }
         }
 
@@ -115,7 +113,7 @@ public class IdfPairMetaCollector<T extends Annotation>
     {
         TextClassificationTarget aTarget = JCasUtil.selectSingle(jcas,
                 TextClassificationTarget.class);
-        
+
         FrequencyDistribution<String> toReturn = NGramUtils.getDocumentNgrams(jcas, aTarget, true,
                 false, 1, 1, stopwords, ngramAnnotationType);
         return toReturn;

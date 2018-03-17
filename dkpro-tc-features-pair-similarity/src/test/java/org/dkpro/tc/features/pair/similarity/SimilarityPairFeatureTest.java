@@ -52,8 +52,7 @@ public class SimilarityPairFeatureTest
     private static final String VIEW2 = "view2";
 
     @Test
-    public void similarityPairFeatureTest()
-        throws Exception
+    public void similarityPairFeatureTest() throws Exception
     {
         ExternalResourceDescription gstResource = ExternalResourceFactory
                 .createExternalResourceDescription(GreedyStringTilingMeasureResource.class,
@@ -74,11 +73,11 @@ public class SimilarityPairFeatureTest
         tb.buildTokens(view2, "Test is this .");
 
         engine.process(jcas);
-        
+
         SimilarityPairFeatureExtractor extractor = FeatureUtil.createResource(
-        		SimilarityPairFeatureExtractor.class,
-        		SimilarityPairFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-        		SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
+                SimilarityPairFeatureExtractor.class,
+                SimilarityPairFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                SimilarityPairFeatureExtractor.PARAM_SEGMENT_FEATURE_PATH, Token.class.getName(),
                 SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE, gstResource);
 
         Set<Feature> features = extractor.extract(jcas.getView(VIEW1), jcas.getView(VIEW2));

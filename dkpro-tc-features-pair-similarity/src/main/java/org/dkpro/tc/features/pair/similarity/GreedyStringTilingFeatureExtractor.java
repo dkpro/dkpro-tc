@@ -40,15 +40,15 @@ public class GreedyStringTilingFeatureExtractor
     protected GreedyStringTiling measure = new GreedyStringTiling(3);
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
 
         try {
             double similarity = measure.getSimilarity(view1.getDocumentText(),
                     view2.getDocumentText());
 
-            return new Feature("Similarity" + measure.getName(), similarity, FeatureType.NUMERIC).asSet();
+            return new Feature("Similarity" + measure.getName(), similarity, FeatureType.NUMERIC)
+                    .asSet();
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);

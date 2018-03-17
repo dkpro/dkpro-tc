@@ -43,12 +43,13 @@ import dkpro.similarity.algorithms.api.SimilarityException;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
 
 /**
- * Extracts the document pair similarity using {@link dkpro.similarity.algorithms.lexical.string.CosineSimilarity
- * CosineSimilarity} (tokens) measure.
- * Please be aware this Cosine Similarity API has a history of bugginess.
+ * Extracts the document pair similarity using
+ * {@link dkpro.similarity.algorithms.lexical.string.CosineSimilarity CosineSimilarity} (tokens)
+ * measure. Please be aware this Cosine Similarity API has a history of bugginess.
  */
 public class CosineFeatureExtractor<T extends Annotation>
-    extends LuceneFeatureExtractorBase // FeatureExtractorResource_ImplBase -> NGramFeatureExtractorBase -> LuceneFeatureExtractorBase
+    extends LuceneFeatureExtractorBase // FeatureExtractorResource_ImplBase ->
+                                       // NGramFeatureExtractorBase -> LuceneFeatureExtractorBase
     implements PairFeatureExtractor
 {
     /**
@@ -57,42 +58,45 @@ public class CosineFeatureExtractor<T extends Annotation>
     public static final String PARAM_WEIGHTING_MODE_TF = "weightingModeTf";
     @ConfigurationParameter(name = PARAM_WEIGHTING_MODE_TF, mandatory = false)
     private CosineSimilarity.WeightingModeTf weightingModeTf;
-    
+
     public static final String PARAM_WEIGHTING_MODE_IDF = "weightingModeIdf";
     @ConfigurationParameter(name = PARAM_WEIGHTING_MODE_IDF, mandatory = false)
     private CosineSimilarity.WeightingModeIdf weightingModeIdf;
-    
+
     /**
      * L1 is Manhattan norm; L2 is euclidean norm.
      * 
-     * @see <a href="http://en.wikipedia.org/wiki/Norm_(mathematics)#Taxicab_norm_or_Manhattan_norm">Manhattan norm (Wikipedia)</a>
-     * @see <a href="http://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">Euclidean Norm (Wikipedia)</a>
+     * @see <a href=
+     *      "http://en.wikipedia.org/wiki/Norm_(mathematics)#Taxicab_norm_or_Manhattan_norm">Manhattan
+     *      norm (Wikipedia)</a>
+     * @see <a href="http://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">Euclidean Norm
+     *      (Wikipedia)</a>
      */
     public static final String PARAM_NORMALIZATION_MODE = "normalizationMode";
     @ConfigurationParameter(name = PARAM_NORMALIZATION_MODE, mandatory = false)
     private CosineSimilarity.NormalizationMode normalizationMode;
-    
+
     /**
-     * This is the annotation type of the ngrams: usually Token.class, but possibly 
-     * Lemma.class or Stem.class,etc.
+     * This is the annotation type of the ngrams: usually Token.class, but possibly Lemma.class or
+     * Stem.class,etc.
      */
     public static final String PARAM_NGRAM_ANNO_TYPE = "ngramAnnotationType";
     @ConfigurationParameter(name = PARAM_NGRAM_ANNO_TYPE, mandatory = false, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     private Class<T> ngramAnnotationType;
 
     private CosineSimilarity measure;
-    
+
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
-        return Arrays.asList(new MetaCollectorConfiguration(IdfPairMetaCollector.class,
-                parameterSettings).addStorageMapping(
-                        IdfPairMetaCollector.PARAM_TARGET_LOCATION,
-                        CosineFeatureExtractor.PARAM_SOURCE_LOCATION,
-                        IdfPairMetaCollector.LUCENE_DIR));
+        return Arrays.asList(
+                new MetaCollectorConfiguration(IdfPairMetaCollector.class, parameterSettings)
+                        .addStorageMapping(IdfPairMetaCollector.PARAM_TARGET_LOCATION,
+                                CosineFeatureExtractor.PARAM_SOURCE_LOCATION,
+                                IdfPairMetaCollector.LUCENE_DIR));
     }
-    
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -100,77 +104,80 @@ public class CosineFeatureExtractor<T extends Annotation>
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-        
-        if(weightingModeTf == null){
-        	weightingModeTf = CosineSimilarity.WeightingModeTf.FREQUENCY_LOGPLUSONE;
+
+        if (weightingModeTf == null) {
+            weightingModeTf = CosineSimilarity.WeightingModeTf.FREQUENCY_LOGPLUSONE;
         }
-        if(weightingModeIdf == null){
-        	weightingModeIdf = CosineSimilarity.WeightingModeIdf.PASSTHROUGH;
+        if (weightingModeIdf == null) {
+            weightingModeIdf = CosineSimilarity.WeightingModeIdf.PASSTHROUGH;
         }
-        if(normalizationMode == null){
-        	normalizationMode = CosineSimilarity.NormalizationMode.L2;
+        if (normalizationMode == null) {
+            normalizationMode = CosineSimilarity.NormalizationMode.L2;
         }
-        
-        
-        measure = new CosineSimilarity(weightingModeTf, 
-        		weightingModeIdf,
-        		normalizationMode, 
-				fdToMap(topKSet)); //DF counts
+
+        measure = new CosineSimilarity(weightingModeTf, weightingModeIdf, normalizationMode,
+                fdToMap(topKSet)); // DF counts
         return true;
     }
+
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
         try {
-            
-            TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1, TextClassificationTarget.class);
-            TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2, TextClassificationTarget.class);
-            
-        	//Note: getSimilarity(String, String) is *not* a convenience 
-        	// method for getSimilarity(Collection<String>, Collection<String>).
-            Set<String> text1 = NGramUtils.getDocumentNgrams(
-                    view1, aTarget1, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
-            Set<String> text2 = NGramUtils.getDocumentNgrams(
-                    view2, aTarget2, true, false, 1, 1, stopwords, ngramAnnotationType).getKeys();
-            
-            double similarity = measure.getSimilarity(text1,
-                  text2);
 
-            
+            TextClassificationTarget aTarget1 = JCasUtil.selectSingle(view1,
+                    TextClassificationTarget.class);
+            TextClassificationTarget aTarget2 = JCasUtil.selectSingle(view2,
+                    TextClassificationTarget.class);
+
+            // Note: getSimilarity(String, String) is *not* a convenience
+            // method for getSimilarity(Collection<String>, Collection<String>).
+            Set<String> text1 = NGramUtils.getDocumentNgrams(view1, aTarget1, true, false, 1, 1,
+                    stopwords, ngramAnnotationType).getKeys();
+            Set<String> text2 = NGramUtils.getDocumentNgrams(view2, aTarget2, true, false, 1, 1,
+                    stopwords, ngramAnnotationType).getKeys();
+
+            double similarity = measure.getSimilarity(text1, text2);
+
             // Temporary fix for DKPro Similarity Issue 30
-            if (Double.isNaN(similarity)){
-            	similarity = 0.0;
+            if (Double.isNaN(similarity)) {
+                similarity = 0.0;
             }
-            
-            return new Feature("Similarity" + measure.getName(), similarity, FeatureType.NUMERIC).asSet();
+
+            return new Feature("Similarity" + measure.getName(), similarity, FeatureType.NUMERIC)
+                    .asSet();
         }
         catch (SimilarityException e) {
             throw new TextClassificationException(e);
         }
     }
-	@Override
-	protected String getFieldName()
-	{
-		return LuceneFeatureExtractorBase.LUCENE_NGRAM_FIELD;
-	}
-	@Override
-	protected int getTopN()
-	{
-		return 50000; // we want them all
-	}
-	@Override
-	protected String getFeaturePrefix()
-	{
-		return null; //CosSim is a numeric feature, no prefix
-	}
-    private static Map<String, Double> fdToMap(FrequencyDistribution<String> fD){
-    	Map<String, Double> map = new HashMap<String, Double>();
-    	for(String token: fD.getKeys()){
-    		map.put(token, new Double(1.0 / fD.getCount(token)));
-//    		map.put(token, new Double(fD.getCount(token)));
-    	}
-    	return map;
-    	
+
+    @Override
+    protected String getFieldName()
+    {
+        return LuceneFeatureExtractorBase.LUCENE_NGRAM_FIELD;
+    }
+
+    @Override
+    protected int getTopN()
+    {
+        return 50000; // we want them all
+    }
+
+    @Override
+    protected String getFeaturePrefix()
+    {
+        return null; // CosSim is a numeric feature, no prefix
+    }
+
+    private static Map<String, Double> fdToMap(FrequencyDistribution<String> fD)
+    {
+        Map<String, Double> map = new HashMap<String, Double>();
+        for (String token : fD.getKeys()) {
+            map.put(token, new Double(1.0 / fD.getCount(token)));
+            // map.put(token, new Double(fD.getCount(token)));
+        }
+        return map;
+
     }
 }

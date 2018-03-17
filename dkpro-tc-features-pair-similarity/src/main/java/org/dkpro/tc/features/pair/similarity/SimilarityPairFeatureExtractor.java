@@ -43,7 +43,8 @@ public class SimilarityPairFeatureExtractor
     implements PairFeatureExtractor
 {
     /**
-     * Feature path specifying the document segments (tokens, lemmas, sentences) that the measure should use for computing similarity
+     * Feature path specifying the document segments (tokens, lemmas, sentences) that the measure
+     * should use for computing similarity
      */
     public static final String PARAM_SEGMENT_FEATURE_PATH = "segmentFeaturePath";
     @ConfigurationParameter(name = PARAM_SEGMENT_FEATURE_PATH, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
@@ -57,8 +58,7 @@ public class SimilarityPairFeatureExtractor
     private TextSimilarityResourceBase textSimilarityResource;
 
     @Override
-    public Set<Feature> extract(JCas view1, JCas view2)
-        throws TextClassificationException
+    public Set<Feature> extract(JCas view1, JCas view2) throws TextClassificationException
     {
         try {
             double similarity;
@@ -68,22 +68,20 @@ public class SimilarityPairFeatureExtractor
                         view2.getDocumentText());
                 break;
             case jcas:
-                similarity = ((JCasTextSimilarityMeasure) textSimilarityResource).getSimilarity(
-                        view1, view2);
+                similarity = ((JCasTextSimilarityMeasure) textSimilarityResource)
+                        .getSimilarity(view1, view2);
                 break;
             default:
                 List<String> f1 = getItems(view1);
                 List<String> f2 = getItems(view2);
 
                 // Remove "_" tokens
-                for (int i = f1.size() - 1; i >= 0; i--)
-                {
+                for (int i = f1.size() - 1; i >= 0; i--) {
                     if (f1.get(i) == null || f1.get(i).equals("_")) {
                         f1.remove(i);
                     }
                 }
-                for (int i = f2.size() - 1; i >= 0; i--)
-                {
+                for (int i = f2.size() - 1; i >= 0; i--) {
                     if (f2.get(i) == null || f2.get(i).equals("_")) {
                         f2.remove(i);
                     }
@@ -92,7 +90,8 @@ public class SimilarityPairFeatureExtractor
                 similarity = textSimilarityResource.getSimilarity(f1, f2);
             }
 
-            return new Feature("Similarity" + textSimilarityResource.getName(), similarity, FeatureType.NUMERIC).asSet();
+            return new Feature("Similarity" + textSimilarityResource.getName(), similarity,
+                    FeatureType.NUMERIC).asSet();
         }
         catch (FeaturePathException e) {
             throw new TextClassificationException(e);
@@ -103,14 +102,12 @@ public class SimilarityPairFeatureExtractor
 
     }
 
-    private List<String> getItems(JCas view)
-        throws FeaturePathException
+    private List<String> getItems(JCas view) throws FeaturePathException
     {
         List<String> items = new ArrayList<String>();
 
         for (Map.Entry<AnnotationFS, String> entry : FeaturePathFactory.select(view.getCas(),
-                segmentFeaturePath))
-        {
+                segmentFeaturePath)) {
             items.add(entry.getValue());
         }
 

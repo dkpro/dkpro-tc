@@ -51,104 +51,117 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public abstract class PPipelineTestBase {
-	@ClassRule
-	public static TemporaryFolder folder = new TemporaryFolder();
+public abstract class PPipelineTestBase
+{
+    @ClassRule
+    public static TemporaryFolder folder = new TemporaryFolder();
 
-	protected List<Instance> instanceList;
-	protected List<List<String>> outcomeList;
-	protected TreeSet<String> featureNames;
+    protected List<Instance> instanceList;
+    protected List<List<String>> outcomeList;
+    protected TreeSet<String> featureNames;
 
-	protected File lucenePath;
-	protected File outputPath;
-	protected Object[] parameters;
-	protected AnalysisEngineDescription metaCollector;
-	protected AnalysisEngineDescription featExtractorConnector;
+    protected File lucenePath;
+    protected File outputPath;
+    protected Object[] parameters;
+    protected AnalysisEngineDescription metaCollector;
+    protected AnalysisEngineDescription featExtractorConnector;
 
-	protected void initialize() throws Exception {
-		lucenePath = folder.newFolder();
-		outputPath = folder.newFolder();
+    protected void initialize() throws Exception
+    {
+        lucenePath = folder.newFolder();
+        outputPath = folder.newFolder();
 
-		instanceList = new ArrayList<Instance>();
-		outcomeList = new ArrayList<List<String>>();
-	}
+        instanceList = new ArrayList<Instance>();
+        outcomeList = new ArrayList<List<String>>();
+    }
 
-	protected String setTestPairsLocation() {
-		return "src/test/resources/data/textpairs.txt";
-	}
+    protected String setTestPairsLocation()
+    {
+        return "src/test/resources/data/textpairs.txt";
+    }
 
-	protected void runPipeline() throws Exception {
-		List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
+    protected void runPipeline() throws Exception
+    {
+        List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(TestPairReader.class,
-				TestPairReader.PARAM_INPUT_FILE, setTestPairsLocation());
+        CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
+                TestPairReader.class, TestPairReader.PARAM_INPUT_FILE, setTestPairsLocation());
 
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory
-				.createEngineDescription(BreakIteratorSegmenter.class);
-		AnalysisEngineDescription stemmer = AnalysisEngineFactory.createEngineDescription(SnowballStemmer.class);
-		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(MorphaLemmatizer.class);
-		AnalysisEngineDescription posTagger = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
-		AnalysisEngineDescription pairAnno = AnalysisEngineFactory.createEngineDescription(DocumentModeAnnotator.class,
-				DocumentModeAnnotator.PARAM_FEATURE_MODE, Constants.FM_PAIR);
+        AnalysisEngineDescription segmenter = AnalysisEngineFactory
+                .createEngineDescription(BreakIteratorSegmenter.class);
+        AnalysisEngineDescription stemmer = AnalysisEngineFactory
+                .createEngineDescription(SnowballStemmer.class);
+        AnalysisEngineDescription lemmatizer = AnalysisEngineFactory
+                .createEngineDescription(MorphaLemmatizer.class);
+        AnalysisEngineDescription posTagger = AnalysisEngineFactory
+                .createEngineDescription(OpenNlpPosTagger.class);
+        AnalysisEngineDescription pairAnno = AnalysisEngineFactory.createEngineDescription(
+                DocumentModeAnnotator.class, DocumentModeAnnotator.PARAM_FEATURE_MODE,
+                Constants.FM_PAIR);
 
-		AggregateBuilder builder = new AggregateBuilder();
-		builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
-		builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
-		builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_ONE);
-		builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_TWO);
-		builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_ONE);
-		builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_TWO);
-		builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_ONE);
-		builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_TWO);
-		builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_ONE);
-		builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        AggregateBuilder builder = new AggregateBuilder();
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(segmenter, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(pairAnno, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(stemmer, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(lemmatizer, Constants.INITIAL_VIEW, Constants.PART_TWO);
+        builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_ONE);
+        builder.add(posTagger, Constants.INITIAL_VIEW, Constants.PART_TWO);
 
-		getMetaCollector(parameterList);
+        getMetaCollector(parameterList);
 
-		getFeatureExtractorCollector(parameterList);
+        getFeatureExtractorCollector(parameterList);
 
-		// run meta collector
-		SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), metaCollector);
+        // run meta collector
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), metaCollector);
 
-		// run FE(s)
-		SimplePipeline.runPipeline(reader, builder.createAggregateDescription(), featExtractorConnector);
+        // run FE(s)
+        SimplePipeline.runPipeline(reader, builder.createAggregateDescription(),
+                featExtractorConnector);
 
-		Gson gson = new Gson();
+        Gson gson = new Gson();
 
-		List<String> lines = FileUtils.readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
-		for (String l : lines) {
-			instanceList.add(gson.fromJson(l, Instance.class));
-		}
+        List<String> lines = FileUtils
+                .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
+        for (String l : lines) {
+            instanceList.add(gson.fromJson(l, Instance.class));
+        }
 
-		assertEquals(1, lines.size());
-		assertEquals(1, getUniqueOutcomes(instanceList).size());
+        assertEquals(1, lines.size());
+        assertEquals(1, getUniqueOutcomes(instanceList).size());
 
-		featureNames = getFeatureNames(instanceList);
+        featureNames = getFeatureNames(instanceList);
 
-		for (int i = 0; i < instanceList.size(); i++) {
-			outcomeList.add(instanceList.get(i).getOutcomes());
-		}
-	}
+        for (int i = 0; i < instanceList.size(); i++) {
+            outcomeList.add(instanceList.get(i).getOutcomes());
+        }
+    }
 
-	private TreeSet<String> getFeatureNames(List<Instance> instanceList) {
-		TreeSet<String> s = new TreeSet<>();
-		for (Instance i : instanceList) {
-			for (Feature f : i.getFeatures()) {
-				s.add(f.getName());
-			}
-		}
+    private TreeSet<String> getFeatureNames(List<Instance> instanceList)
+    {
+        TreeSet<String> s = new TreeSet<>();
+        for (Instance i : instanceList) {
+            for (Feature f : i.getFeatures()) {
+                s.add(f.getName());
+            }
+        }
 
-		return s;
-	}
+        return s;
+    }
 
-	private static Set<String> getUniqueOutcomes(List<Instance> instances) {
-		Set<String> outcomes = new HashSet<String>();
-		instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
-		return outcomes;
-	}
+    private static Set<String> getUniqueOutcomes(List<Instance> instances)
+    {
+        Set<String> outcomes = new HashSet<String>();
+        instances.forEach(x -> outcomes.addAll(x.getOutcomes()));
+        return outcomes;
+    }
 
-	protected abstract void getFeatureExtractorCollector(List<Object> parameterList)
-			throws ResourceInitializationException;
+    protected abstract void getFeatureExtractorCollector(List<Object> parameterList)
+        throws ResourceInitializationException;
 
-	protected abstract void getMetaCollector(List<Object> parameterList) throws ResourceInitializationException;
+    protected abstract void getMetaCollector(List<Object> parameterList)
+        throws ResourceInitializationException;
 }

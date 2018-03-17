@@ -29,30 +29,29 @@ import org.junit.Test;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.features.pair.similarity.GreedyStringTilingFeatureExtractor;
 
+public class GreedyStringTilingFeatureExtractorTest
+{
+    @Test
+    public void greedyStringTilingFeatureExtractorTest() throws Exception
+    {
 
-public class GreedyStringTilingFeatureExtractorTest {
-	@Test
-	public void greedyStringTilingFeatureExtractorTest() 
-	        throws Exception {
-	            
         AnalysisEngine engine = createEngine(NoOpAnnotator.class);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("1234567890");
         engine.process(jcas);
-        
+
         JCas jcas2 = engine.newJCas();
         jcas2.setDocumentLanguage("en");
         jcas2.setDocumentText("12345");
         engine.process(jcas2);
-       
 
         GreedyStringTilingFeatureExtractor extractor = new GreedyStringTilingFeatureExtractor();
-        
+
         Set<Feature> features1 = extractor.extract(jcas, jcas2);
         assertEquals(1, features1.size());
         Feature f1 = features1.iterator().next();
         assertEquals(f1.getValue(), 0.5);
-	}
+    }
 }

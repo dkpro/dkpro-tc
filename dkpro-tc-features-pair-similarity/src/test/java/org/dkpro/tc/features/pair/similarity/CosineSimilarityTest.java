@@ -37,12 +37,14 @@ import org.junit.Test;
 public class CosineSimilarityTest
     extends PPipelineTestBase
 {
-	private static final double epsilon = 0.0001;
+    private static final double epsilon = 0.0001;
+
     /**
-     * Tests TFIDF Cosine Similarity with TF weight FREQUENCY_LOGPLUSONE, 
-     * IDF weight PASSTHROUGH, and normalization mode L2. <br />
+     * Tests TFIDF Cosine Similarity with TF weight FREQUENCY_LOGPLUSONE, IDF weight PASSTHROUGH,
+     * and normalization mode L2. <br />
      * 
-     * Answer 0.2 for Tokens confirmed by following equation 15.2, pg 541, in Manning and Schuetze. <br />
+     * Answer 0.2 for Tokens confirmed by following equation 15.2, pg 541, in Manning and Schuetze.
+     * <br />
      * Vector1 = 1,.5,0,1,.5,0 <br />
      * Vector2 = 0,.5,1,0,.5,1 <br />
      * Sum of vector products (svp) = (1x0)+(.5x.5)+(0x1)+(1x0)+(.5x.5)+(0x1) =.5 <br />
@@ -53,86 +55,80 @@ public class CosineSimilarityTest
      * @throws Exception
      */
     @Test
-    public void testCosSimDefaultTfIdf()
-        throws Exception
+    public void testCosSimDefaultTfIdf() throws Exception
     {
-    	CosineSimilarityTest test = new CosineSimilarityTest();
+        CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
-        test.parameters = new Object[] { 
-                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
-                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
-        		};
+                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(), };
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
         assertEquals(test.featureNames.size(), 1);
-        
-        for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals(0.2, (double)feat.getValue(), epsilon);
-//        	System.out.println("CosSim score: " + (double)feat.getValue());
-        }
-    }
-    @Test
-    public void testCosSimWithStems()
-        throws Exception
-    {
-    	CosineSimilarityTest test = new CosineSimilarityTest();
-        test.initialize();
-        test.parameters = new Object[] { 
-                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
-        		CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
-        		IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
-        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem"
-        		};
-        test.runPipeline();
-        assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
-        assertEquals(test.featureNames.size(), 1);
-        
-        for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+
+        for (Feature feat : test.instanceList.get(0).getFeatures()) {
+            assertEquals(0.2, (double) feat.getValue(), epsilon);
+            // System.out.println("CosSim score: " + (double)feat.getValue());
         }
     }
 
     @Test
-    public void testCosSimWithLemmas()
-        throws Exception
+    public void testCosSimWithStems() throws Exception
     {
-    	CosineSimilarityTest test = new CosineSimilarityTest();
+        CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
-        test.parameters = new Object[] { 
-                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
                 IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
-        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma"
-        		};
+                CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE,
+                "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Stem" };
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
         assertEquals(test.featureNames.size(), 1);
-        
-        for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+
+        for (Feature feat : test.instanceList.get(0).getFeatures()) {
+            assertEquals(0.2, (double) feat.getValue(), epsilon);
         }
     }
+
     @Test
-    public void testCosSimWithPosTags()
-        throws Exception
+    public void testCosSimWithLemmas() throws Exception
     {
-    	CosineSimilarityTest test = new CosineSimilarityTest();
+        CosineSimilarityTest test = new CosineSimilarityTest();
         test.initialize();
-        test.parameters = new Object[] { 
-                CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+        test.parameters = new Object[] { CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
                 CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
                 IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
-        		CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE, "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-        		};
+                CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE,
+                "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma" };
         test.runPipeline();
         assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
         assertEquals(test.featureNames.size(), 1);
-        
-        for(Feature feat: test.instanceList.get(0).getFeatures()){
-        	assertEquals(0.2, (double)feat.getValue(), epsilon);
+
+        for (Feature feat : test.instanceList.get(0).getFeatures()) {
+            assertEquals(0.2, (double) feat.getValue(), epsilon);
         }
     }
+
+    @Test
+    public void testCosSimWithPosTags() throws Exception
+    {
+        CosineSimilarityTest test = new CosineSimilarityTest();
+        test.initialize();
+        test.parameters = new Object[] { CosineFeatureExtractor.PARAM_UNIQUE_EXTRACTOR_NAME, "123",
+                CosineFeatureExtractor.PARAM_SOURCE_LOCATION, test.lucenePath.toString(),
+                IdfPairMetaCollector.PARAM_TARGET_LOCATION, test.lucenePath.toString(),
+                CosineFeatureExtractor.PARAM_NGRAM_ANNO_TYPE,
+                "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" };
+        test.runPipeline();
+        assertTrue(test.featureNames.first().equals("SimilarityCosineSimilarity"));
+        assertEquals(test.featureNames.size(), 1);
+
+        for (Feature feat : test.instanceList.get(0).getFeatures()) {
+            assertEquals(0.2, (double) feat.getValue(), epsilon);
+        }
+    }
+
     @Override
     protected void getFeatureExtractorCollector(List<Object> parameterList)
         throws ResourceInitializationException
@@ -141,20 +137,19 @@ public class CosineSimilarityTest
                 .createExternalResourceDescription(CosineFeatureExtractor.class, parameters);
         List<ExternalResourceDescription> fes = new ArrayList<>();
         fes.add(featureExtractor);
-        
+
         featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
                 outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
-                Constants.LM_REGRESSION, Constants.FM_PAIR, 
-                false, false, false,false, Collections.emptyList(), fes, new String[0]);
-        
+                Constants.LM_REGRESSION, Constants.FM_PAIR, false, false, false, false,
+                Collections.emptyList(), fes, new String[0]);
+
     }
+
     @Override
-	protected void getMetaCollector(List<Object> parameterList)
-			throws ResourceInitializationException
-		{
-			metaCollector = AnalysisEngineFactory.createEngineDescription(
-					IdfPairMetaCollector.class,
-	                parameterList.toArray()
-	        );
-		}
+    protected void getMetaCollector(List<Object> parameterList)
+        throws ResourceInitializationException
+    {
+        metaCollector = AnalysisEngineFactory.createEngineDescription(IdfPairMetaCollector.class,
+                parameterList.toArray());
+    }
 }
