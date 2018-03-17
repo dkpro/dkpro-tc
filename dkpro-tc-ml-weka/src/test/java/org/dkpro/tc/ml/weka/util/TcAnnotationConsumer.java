@@ -28,12 +28,16 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 /**
  * Prints outcome annotations to the console.
  */
-public class TcAnnotationConsumer extends JCasAnnotator_ImplBase {
+public class TcAnnotationConsumer
+    extends JCasAnnotator_ImplBase
+{
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		for(TextClassificationOutcome outcome : JCasUtil.select(aJCas, TextClassificationOutcome.class)){
-			System.out.println(outcome.getOutcome());
-		}
-	}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        for (TextClassificationOutcome outcome : JCasUtil.select(aJCas,
+                TextClassificationOutcome.class)) {
+            System.out.println(outcome.getOutcome());
+        }
+    }
 }

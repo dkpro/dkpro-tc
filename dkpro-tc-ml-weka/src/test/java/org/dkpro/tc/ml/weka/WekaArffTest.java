@@ -37,8 +37,7 @@ public class WekaArffTest
      * @param args
      * @throws Exception
      */
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         File train = new File("src/main/resources/arff/manyInstances/train.arff.gz");
         File test = new File("src/main/resources/arff/manyInstances/test.arff.gz");
@@ -47,7 +46,7 @@ public class WekaArffTest
         Instances testData = WekaUtils.getInstances(test, false);
 
         Classifier cl = new NaiveBayes();
-        
+
         // no problems until here
         Evaluation eval = new Evaluation(trainData);
         eval.evaluateModel(cl, testData);

@@ -51,8 +51,7 @@ public class WekaResultsTest
     Instances regressionTrainData;
 
     @Before
-    public void initialize()
-        throws IOException
+    public void initialize() throws IOException
     {
 
         File singleLabelTestFile;
@@ -88,8 +87,7 @@ public class WekaResultsTest
     }
 
     @Test
-    public void testWekaResultsRegression()
-        throws Exception
+    public void testWekaResultsRegression() throws Exception
     {
         SMOreg cl = new SMOreg();
         Instances trainData = WekaUtils.removeInstanceId(regressionTrainData, false);
@@ -100,8 +98,7 @@ public class WekaResultsTest
     }
 
     @Test
-    public void testWekaResultsSingleLabel()
-        throws Exception
+    public void testWekaResultsSingleLabel() throws Exception
     {
         SMO cl = new SMO();
         Instances testData = WekaUtils.makeOutcomeClassesCompatible(singleLabelTrainData,
@@ -114,8 +111,7 @@ public class WekaResultsTest
     }
 
     @Test
-    public void testWekaResultsMultiLabel()
-        throws Exception
+    public void testWekaResultsMultiLabel() throws Exception
     {
         BR cl = new BR();
         cl.setOptions(new String[] { "-W", J48.class.getName() });
@@ -126,7 +122,7 @@ public class WekaResultsTest
         cl.buildClassifier(trainData);
         Result eval = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, "0.2");
         assertEquals(16.0, eval.L, 0.01);
-        assertEquals(0.0, (Double)Result.getStats(eval, "1").get("Exact match"), 0.01);
+        assertEquals(0.0, (Double) Result.getStats(eval, "1").get("Exact match"), 0.01);
     }
 
 }

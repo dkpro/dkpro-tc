@@ -38,8 +38,7 @@ public class WekaUtilTest
 {
 
     @Test
-    public void instanceToArffTest()
-        throws Exception
+    public void instanceToArffTest() throws Exception
     {
 
         Instance i1 = new Instance();
@@ -79,8 +78,7 @@ public class WekaUtilTest
     }
 
     @Test
-    public void instanceToArffTest_multiLabel()
-        throws Exception
+    public void instanceToArffTest_multiLabel() throws Exception
     {
         Instance i1 = new Instance();
         i1.addFeature(new Feature("feature1", 2, FeatureType.NUMERIC));
@@ -119,8 +117,7 @@ public class WekaUtilTest
     }
 
     @Test
-    public void tcInstanceToWekaInstanceRegressionTest()
-        throws Exception
+    public void tcInstanceToWekaInstanceRegressionTest() throws Exception
     {
 
         Instance i1 = new Instance();
@@ -139,7 +136,7 @@ public class WekaUtilTest
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_1", "val_2" })));
         attributes.add(new Attribute("feature1"));
         attributes.add(new Attribute("outcome"));
-        
+
         Instances trainingData = new Instances("test", attributes, 0);
 
         weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
@@ -157,8 +154,7 @@ public class WekaUtilTest
     }
 
     @Test
-    public void tcInstanceToWekaInstanceTest()
-        throws Exception
+    public void tcInstanceToWekaInstanceTest() throws Exception
     {
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
@@ -178,7 +174,7 @@ public class WekaUtilTest
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_1", "val_2" })));
         attributes.add(new Attribute("feature1"));
         attributes.add(new Attribute("outcome", outcomeValues));
-        
+
         Instances trainingData = new Instances("test", attributes, 0);
 
         weka.core.Instance wekaInstance1 = WekaUtils.tcInstanceToWekaInstance(i1, trainingData,
@@ -196,8 +192,7 @@ public class WekaUtilTest
     }
 
     @Test
-    public void tcInstanceToMekaInstanceTest()
-        throws Exception
+    public void tcInstanceToMekaInstanceTest() throws Exception
     {
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
@@ -237,8 +232,7 @@ public class WekaUtilTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tcInstanceToWekaInstanceFailTest()
-        throws Exception
+    public void tcInstanceToWekaInstanceFailTest() throws Exception
     {
         List<String> outcomeValues = Arrays.asList(new String[] { "outc_1", "outc_2", "outc_3" });
 
@@ -251,7 +245,7 @@ public class WekaUtilTest
         attributes.add(new Attribute("feature2"));
         attributes.add(new Attribute("feature4", Arrays.asList(new String[] { "val_4", "val_2" })));
         attributes.add(new Attribute("outcome", outcomeValues));
-        
+
         Instances trainingData = new Instances("test", attributes, 0);
 
         @SuppressWarnings("unused")
@@ -263,17 +257,18 @@ public class WekaUtilTest
     {
         VALUE_1, VALUE_2, VALUE_3
     }
-    
+
     @Test
-    public void makeOutcomeClassesCompatibleTest()
-        throws Exception
+    public void makeOutcomeClassesCompatibleTest() throws Exception
     {
-    	Instances train = WekaUtils.getInstances(new File("src/test/resources/utils/train.arff"), false);
-    	Instances test = WekaUtils.getInstances(new File("src/test/resources/utils/test.arff"), false);
-    	
-    	Instances testCompatible = WekaUtils.makeOutcomeClassesCompatible(train, test, false);
-    	
-    	System.out.println(WekaUtils.getClassLabels(testCompatible, false));
-    	assertEquals(2, WekaUtils.getClassLabels(testCompatible, false).size());
+        Instances train = WekaUtils.getInstances(new File("src/test/resources/utils/train.arff"),
+                false);
+        Instances test = WekaUtils.getInstances(new File("src/test/resources/utils/test.arff"),
+                false);
+
+        Instances testCompatible = WekaUtils.makeOutcomeClassesCompatible(train, test, false);
+
+        System.out.println(WekaUtils.getClassLabels(testCompatible, false));
+        assertEquals(2, WekaUtils.getClassLabels(testCompatible, false).size());
     }
 }
