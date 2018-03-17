@@ -205,71 +205,84 @@ public class XgboostAdapter
     implements TcShallowLearningAdapter
 {
 
-    public static TcShallowLearningAdapter getInstance() {
+    public static TcShallowLearningAdapter getInstance()
+    {
         return new XgboostAdapter();
     }
 
-    public static String getOutcomeMappingFilename() {
+    public static String getOutcomeMappingFilename()
+    {
         return "outcome-mapping.txt";
     }
-    
-	public static String getFeatureNameMappingFilename() {
-		return "feature-name-mapping.txt";
-	}
 
-    public static String getFeatureNames() {
+    public static String getFeatureNameMappingFilename()
+    {
+        return "feature-name-mapping.txt";
+    }
+
+    public static String getFeatureNames()
+    {
         return "featurenames.txt";
     }
 
     @Override
-    public ExecutableTaskBase getTestTask() {
+    public ExecutableTaskBase getTestTask()
+    {
         return new XgboostTestTask();
     }
 
     @Override
-    public Class<? extends ReportBase> getOutcomeIdReportClass() {
+    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    {
         return LibsvmDataFormatOutcomeIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineMajorityClassIdReport.class;
     }
-    
+
     @Override
-    public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass()
+    {
         return LibsvmDataFormatBaselineRandomIdReport.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds) {
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
+    {
         return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass() {
+    public Class<? extends DataWriter> getDataWriterClass()
+    {
         return LibsvmDataFormatWriter.class;
     }
 
     @Override
-    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
+    {
         return XgboostLoadModelConnector.class;
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask() {
-    		return XgboostSerializeModelConnector.class;
+    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    {
+        return XgboostSerializeModelConnector.class;
     }
-    
+
     @Override
-	public boolean useSparseFeatures() {
-		return true;
-	}
-    
+    public boolean useSparseFeatures()
+    {
+        return true;
+    }
+
     @Override
-    public String toString() {
-    		return getClass().getSimpleName();
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 }
-
