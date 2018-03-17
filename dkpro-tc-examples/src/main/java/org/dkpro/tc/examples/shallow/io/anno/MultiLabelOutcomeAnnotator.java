@@ -57,8 +57,7 @@ public class MultiLabelOutcomeAnnotator
     private Map<String, List<String>> goldLabelMap;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -76,7 +75,7 @@ public class MultiLabelOutcomeAnnotator
                 String fileId = parts[0].split("/")[1];
 
                 List<String> labels = new ArrayList<String>();
-                for (int i=1; i<parts.length; i++) {
+                for (int i = 1; i < parts.length; i++) {
                     labels.add(parts[i]);
                 }
 
@@ -92,8 +91,7 @@ public class MultiLabelOutcomeAnnotator
     }
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
         try {
             for (String outcomeValue : getTextClassificationOutcomes(jcas)) {
@@ -107,16 +105,16 @@ public class MultiLabelOutcomeAnnotator
         }
     }
 
-    public Set<String> getTextClassificationOutcomes(JCas jcas)
-        throws CollectionException
+    public Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException
     {
         Set<String> outcomes = new HashSet<String>();
-    
+
         DocumentMetaData dmd = DocumentMetaData.get(jcas);
         String titleWithoutExtension = FilenameUtils.removeExtension(dmd.getDocumentTitle());
 
         if (!goldLabelMap.containsKey(titleWithoutExtension)) {
-            throw new CollectionException(new Throwable("No gold label for document: " + dmd.getDocumentTitle()));
+            throw new CollectionException(
+                    new Throwable("No gold label for document: " + dmd.getDocumentTitle()));
         }
 
         for (String label : goldLabelMap.get(titleWithoutExtension)) {

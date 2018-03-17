@@ -66,7 +66,8 @@ import weka.classifiers.bayes.NaiveBayes;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
+public class WekaSaveAndLoadModelDocumentSingleLabelTest
+    extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
@@ -79,7 +80,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
     @Before
     public void setup() throws Exception
     {
-    	super.setup();
+        super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
     }
 
@@ -89,9 +90,8 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
-                FolderwiseDataReader.PARAM_LANGUAGE, "en",
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                documentTrainFolder, FolderwiseDataReader.PARAM_LANGUAGE, "en",
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -99,10 +99,11 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
-                TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
+                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -112,8 +113,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
     }
 
     @Test
-    public void documentRoundTripWekaSingleLabel()
-        throws Exception
+    public void documentRoundTripWekaSingleLabel() throws Exception
     {
 
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
@@ -152,7 +152,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
     }
 
     private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder)
-                throws Exception
+        throws Exception
     {
         ExperimentSaveModel batch;
         batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
@@ -163,8 +163,7 @@ public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperCl
         Lab.getInstance().run(batch);
     }
 
-    private static void documentLoadModelSingleLabel(File modelFolder)
-        throws Exception
+    private static void documentLoadModelSingleLabel(File modelFolder) throws Exception
     {
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);

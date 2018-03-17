@@ -31,42 +31,45 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing any
- * exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class XgboostRegressionTest extends TestCaseSuperClass {
-	XgboostRegression javaExperiment;
-	ParameterSpace pSpace;
+public class XgboostRegressionTest
+    extends TestCaseSuperClass
+{
+    XgboostRegression javaExperiment;
+    ParameterSpace pSpace;
 
-	@Before
-	public void setup() throws Exception {
-		super.setup();
+    @Before
+    public void setup() throws Exception
+    {
+        super.setup();
 
-		javaExperiment = new XgboostRegression();
-		pSpace = XgboostRegression.getParameterSpace();
-	}
+        javaExperiment = new XgboostRegression();
+        pSpace = XgboostRegression.getParameterSpace();
+    }
 
-	@Test
-	public void testJavaTrainTest() throws Exception {
-		javaExperiment.runTrainTest(pSpace);
+    @Test
+    public void testJavaTrainTest() throws Exception
+    {
+        javaExperiment.runTrainTest(pSpace);
 
-		assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+        assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
-		List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-		assertEquals(53, lines.size());
+        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                "utf-8");
+        assertEquals(53, lines.size());
 
-		// line-wise compare
-		assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-		assertEquals("#labels ", lines.get(1));
-		assertTrue(lines.get(3).matches("0=[0-9\\.]+;1;-1"));
-		assertTrue(lines.get(4).matches("1=[0-9\\.]+;1;-1"));
-		assertTrue(lines.get(5).matches("10=[0-9\\.]+;7;-1"));
-		assertTrue(lines.get(6).matches("11=[0-9\\.]+;3;-1"));
-		assertTrue(lines.get(7).matches("12=[0-9\\.]+;2;-1"));
-		assertTrue(lines.get(8).matches("13=[0-9\\.]+;2;-1"));
-		assertTrue(lines.get(9).matches("14=[0-9\\.]+;2;-1"));
-		assertTrue(lines.get(10).matches("15=[0-9\\.]+;1;-1"));
-	}
+        // line-wise compare
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals("#labels ", lines.get(1));
+        assertTrue(lines.get(3).matches("0=[0-9\\.]+;1;-1"));
+        assertTrue(lines.get(4).matches("1=[0-9\\.]+;1;-1"));
+        assertTrue(lines.get(5).matches("10=[0-9\\.]+;7;-1"));
+        assertTrue(lines.get(6).matches("11=[0-9\\.]+;3;-1"));
+        assertTrue(lines.get(7).matches("12=[0-9\\.]+;2;-1"));
+        assertTrue(lines.get(8).matches("13=[0-9\\.]+;2;-1"));
+        assertTrue(lines.get(9).matches("14=[0-9\\.]+;2;-1"));
+        assertTrue(lines.get(10).matches("15=[0-9\\.]+;1;-1"));
+    }
 
-	 
 }

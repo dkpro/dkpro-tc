@@ -50,7 +50,7 @@ public class Dl4jDocumentUserCode
     @Override
     public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
             File embedding, int seed, int maximumLength, double threshold, File prediction)
-                throws Exception
+        throws Exception
     {
 
         int batchSize = 50; // Number of examples in each minibatch
@@ -59,15 +59,14 @@ public class Dl4jDocumentUserCode
         // DataSetIterators for training and testing respectively
         // Using AsyncDataSetIterator to do data loading in a separate thread; this may improve
         // performance vs. waiting for data to load
-		@SuppressWarnings("deprecation")
-		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
+        @SuppressWarnings("deprecation")
+        WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
 
         NewsIterator iTrain = new NewsIterator.Builder().dataDirectory(trainVec.getParent())
                 .wordVectors(wordVectors).batchSize(batchSize).build();
 
         NewsIterator iTest = new NewsIterator.Builder().dataDirectory(testVec.getParent())
                 .wordVectors(wordVectors).batchSize(batchSize).build();
-
 
         int inputNeurons = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length; // 100
                                                                                                  // in
@@ -82,8 +81,8 @@ public class Dl4jDocumentUserCode
                 .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
                 .gradientNormalizationThreshold(1.0).learningRate(0.0018).list()
                 .layer(0,
-                        new GravesLSTM.Builder().nIn(inputNeurons).nOut(200).activation(Activation.SOFTSIGN)
-                                .build())
+                        new GravesLSTM.Builder().nIn(inputNeurons).nOut(200)
+                                .activation(Activation.SOFTSIGN).build())
                 .layer(1,
                         new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
                                 .lossFunction(LossFunctions.LossFunction.MCXENT).nIn(200)
@@ -107,7 +106,7 @@ public class Dl4jDocumentUserCode
         while (iTest.hasNext()) {
             DataSet t = iTest.next();
             @SuppressWarnings("deprecation")
-			INDArray features = t.getFeatureMatrix();
+            INDArray features = t.getFeatureMatrix();
             INDArray lables = t.getLabels();
             // System.out.println("labels : " + lables);
             INDArray outMask = t.getLabelsMaskArray();

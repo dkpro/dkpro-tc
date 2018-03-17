@@ -47,69 +47,79 @@ import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class XgboostDocumentPlain implements Constants {
-	public static final String LANGUAGE_CODE = "en";
+public class XgboostDocumentPlain
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
 
-	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
-	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+    public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+    public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
 
-		DemoUtils.setDkproHome("target/");
+        DemoUtils.setDkproHome("target/");
 
-		ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace();
 
-		XgboostDocumentPlain experiment = new XgboostDocumentPlain();
-		experiment.runTrainTest(pSpace);
-	}
+        XgboostDocumentPlain experiment = new XgboostDocumentPlain();
+        experiment.runTrainTest(pSpace);
+    }
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		// train/test will use both, while cross-validation will only use the
-		// train part
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        // train/test will use both, while cross-validation will only use the
+        // train part
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE, FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-		dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE, FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-		dimReaders.put(DIM_READER_TEST, readerTest);
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet("DummyFeatureSet", TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-						TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 20,
-								WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet("DummyFeatureSet",
+                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                20, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                                3)));
 
-		@SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
+        @SuppressWarnings("unchecked")
+        Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-				dimFeatureSets, dimClassArgs);
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArgs);
 
-		return pSpace;
-	}
+        return pSpace;
+    }
 
-	// ##### TRAIN-TEST #####
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+    // ##### TRAIN-TEST #####
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
 
-		ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostDocumentTest");
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		experiment.addReport(BatchTrainTestReport.class);
-		experiment.addReport(new ContextMemoryReport());
+        ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostDocumentTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(new ContextMemoryReport());
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(BreakIteratorSegmenter.class);
-	}
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
+    }
 }

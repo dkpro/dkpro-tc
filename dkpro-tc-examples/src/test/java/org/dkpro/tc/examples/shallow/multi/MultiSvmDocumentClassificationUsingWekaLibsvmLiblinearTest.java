@@ -36,121 +36,140 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing any
- * exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest extends TestCaseSuperClass {
-	MultiSvmUsingWekaLibsvmLiblinear javaExperiment;
-	ParameterSpace pSpace;
+public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
+    extends TestCaseSuperClass
+{
+    MultiSvmUsingWekaLibsvmLiblinear javaExperiment;
+    ParameterSpace pSpace;
 
-	@Before
-	public void setup() throws Exception {
-		super.setup();
+    @Before
+    public void setup() throws Exception
+    {
+        super.setup();
 
-		javaExperiment = new MultiSvmUsingWekaLibsvmLiblinear();
-		pSpace = MultiSvmUsingWekaLibsvmLiblinear.getParameterSpace();
-	}
+        javaExperiment = new MultiSvmUsingWekaLibsvmLiblinear();
+        pSpace = MultiSvmUsingWekaLibsvmLiblinear.getParameterSpace();
+    }
 
-	@Test
-	public void testJavaTrainTest() throws Exception {
-		javaExperiment.runTrainTest(pSpace);
+    @Test
+    public void testJavaTrainTest() throws Exception
+    {
+        javaExperiment.runTrainTest(pSpace);
 
-		assertEquals(getSumOfExpectedTasksForTrainTest().intValue(), ContextMemoryReport.allIds.size());
-		assertEquals(getSumOfMachineLearningAdapterTasks().intValue(), ContextMemoryReport.id2outcomeFiles.size());
+        assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
+                ContextMemoryReport.allIds.size());
+        assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
+                ContextMemoryReport.id2outcomeFiles.size());
 
-		assertEquals(0.5, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
-		assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-		assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
-	}
-	
-	@Test
-	public void testCrossValidation() throws Exception{
-		javaExperiment.runCrossValidation(pSpace);
-		
-		assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(), ContextMemoryReport.allIds.size());
-		
-		assertEquals(0.625, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
-		assertEquals(0.75, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
-		assertEquals(0.8, getAccuracyCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
-	}
+        assertEquals(0.5, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
+    }
 
-	private Integer getSumOfExpectedTasksForCrossValidation() {
-		
-		Integer sum=0;
-		
-		sum += 1; // 1 x Init
-		sum += 4; // 2 x FeatExtract Train/Test
-		sum += 2; // 2 x Meta
-		sum += 1; // 1 x Outcome
-		sum += 4; // 2 x Facade + 2x ML Adapter
-		sum += 1; // 1 x Crossvalidation
+    @Test
+    public void testCrossValidation() throws Exception
+    {
+        javaExperiment.runCrossValidation(pSpace);
 
-		sum *= 3; // 3 adapter in the setup
-		
-		return sum;
-	}
+        assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
+                ContextMemoryReport.allIds.size());
 
-	private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception {
+        assertEquals(0.625, getAccuracyCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
+        assertEquals(0.75, getAccuracyCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
+        assertEquals(0.8, getAccuracyCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
+    }
 
-		for (File f : id2outcomeFiles) {
-			if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
+    private Integer getSumOfExpectedTasksForCrossValidation()
+    {
 
-				EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(f);
-				Accuracy<String> acc = new Accuracy<>(data);
-				return acc.getResult();
-			}
-		}
+        Integer sum = 0;
 
-		return -1;
-	}
-	
-	private double getAccuracyCrossValidation(List<File> id2outcomeFiles, String simpleName) throws Exception {
+        sum += 1; // 1 x Init
+        sum += 4; // 2 x FeatExtract Train/Test
+        sum += 2; // 2 x Meta
+        sum += 1; // 1 x Outcome
+        sum += 4; // 2 x Facade + 2x ML Adapter
+        sum += 1; // 1 x Crossvalidation
 
-		for (File f : id2outcomeFiles) {
-			
-			List<String> lines = FileUtils.readLines(new File(f.getParentFile(), "DISCRIMINATORS.txt"), "utf-8");
-			String classArgs="";
-			for(String s : lines){
-				if (s.contains(Constants.DIM_CLASSIFICATION_ARGS)){
-					classArgs = s;
-					break;
-				}
-			}
-			
-			if (classArgs.toLowerCase().contains(simpleName.toLowerCase())) {
+        sum *= 3; // 3 adapter in the setup
 
-				EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(f);
-				Accuracy<String> acc = new Accuracy<>(data);
-				return acc.getResult();
-			}
-		}
+        return sum;
+    }
 
-		return -1;
-	}
+    private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
+    {
 
-	private Integer getSumOfMachineLearningAdapterTasks() {
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
 
-		Integer sum = 0;
+                EvaluationData<String> data = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                Accuracy<String> acc = new Accuracy<>(data);
+                return acc.getResult();
+            }
+        }
 
-		sum += 1; // Weka
-		sum += 1; // Libsvm
-		sum += 1; // Liblinear
+        return -1;
+    }
 
-		return sum;
-	}
+    private double getAccuracyCrossValidation(List<File> id2outcomeFiles, String simpleName)
+        throws Exception
+    {
 
-	private Integer getSumOfExpectedTasksForTrainTest() {
+        for (File f : id2outcomeFiles) {
 
-		Integer sum = 0;
+            List<String> lines = FileUtils
+                    .readLines(new File(f.getParentFile(), "DISCRIMINATORS.txt"), "utf-8");
+            String classArgs = "";
+            for (String s : lines) {
+                if (s.contains(Constants.DIM_CLASSIFICATION_ARGS)) {
+                    classArgs = s;
+                    break;
+                }
+            }
 
-		sum += 2; // 2 x Init
-		sum += 2; // 2 x FeatExtract
-		sum += 1; // 1 x Meta
-		sum += 1; // 1 x Outcome
-		sum += 2; // 1 x Facade + 1x ML Adapter
+            if (classArgs.toLowerCase().contains(simpleName.toLowerCase())) {
 
-		sum *= 3; // 3 adapter in setup
+                EvaluationData<String> data = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                Accuracy<String> acc = new Accuracy<>(data);
+                return acc.getResult();
+            }
+        }
 
-		return sum;
-	}
+        return -1;
+    }
+
+    private Integer getSumOfMachineLearningAdapterTasks()
+    {
+
+        Integer sum = 0;
+
+        sum += 1; // Weka
+        sum += 1; // Libsvm
+        sum += 1; // Liblinear
+
+        return sum;
+    }
+
+    private Integer getSumOfExpectedTasksForTrainTest()
+    {
+
+        Integer sum = 0;
+
+        sum += 2; // 2 x Init
+        sum += 2; // 2 x FeatExtract
+        sum += 1; // 1 x Meta
+        sum += 1; // 1 x Outcome
+        sum += 2; // 1 x Facade + 1x ML Adapter
+
+        sum *= 3; // 3 adapter in setup
+
+        return sum;
+    }
 }

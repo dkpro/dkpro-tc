@@ -60,9 +60,10 @@ import org.nd4j.linalg.util.ArrayUtil;
  * @author Richard Eckart de Castilho
  * @see <a href="https://gist.github.com/treo/f5a346d53f89566b51bf88a9a42c67c7">Original source</a>
  */
-public class BinaryWordVectorSerializer {
+public class BinaryWordVectorSerializer
+{
     public static final String UNK = "-=*>UNKNOWN TOKEN<*=-";
-    
+
     // private static final Logger log = LoggerFactory.getLogger(BinaryWordVectorSerializer.class);
 
     public static void convertWordVectorsToBinary(WordVectors wv, Path binaryTarget)
@@ -70,17 +71,16 @@ public class BinaryWordVectorSerializer {
     {
         convertWordVectorsToBinary(wv, false, Locale.US, binaryTarget);
     }
-    
+
     @SuppressWarnings("unchecked")
-	public static void verify(WordVectors wv, Path binaryTarget)
-        throws IOException
+    public static void verify(WordVectors wv, Path binaryTarget) throws IOException
     {
         BinaryVectorizer vec = BinaryVectorizer.load(binaryTarget);
 
         if (vec.contains(UNK)) {
             System.out.printf("Unknown word is contained in vocabulary!%n");
         }
-        
+
         float[] gen1 = makeUnk(wv.lookupTable().layerSize()).data().asFloat();
         float[] gen2 = makeUnk(wv.lookupTable().layerSize()).data().asFloat();
         float[] stored = vec.vectorize(UNK);
@@ -92,17 +92,17 @@ public class BinaryWordVectorSerializer {
         if (!Arrays.equals(gen1, stored)) {
             System.out.printf("Vectors differ for unknown word%n");
         }
-        
+
         for (String word : (Collection<String>) wv.vocab().words()) {
             float[] orig = ArrayUtil.toFloats(wv.getWordVector(word));
             float[] conv = vec.vectorize(word);
-            
+
             if (!Arrays.equals(orig, conv)) {
                 System.out.printf("Vectors differ for word [%s]%n", word);
             }
         }
     }
-    
+
     /**
      * Create a stable random vector for the unknown word.
      */
@@ -110,10 +110,10 @@ public class BinaryWordVectorSerializer {
     {
         return Nd4j.rand(1, aSize, 12345).subi(0.5).divi(aSize);
     }
-    
+
     public static void convertWordVectorsToBinary(WordVectors wv, boolean aCaseless, Locale aLocale,
             Path binaryTarget)
-                throws IOException
+        throws IOException
     {
         // Prepare header
         Header header = new Header();
@@ -122,17 +122,17 @@ public class BinaryWordVectorSerializer {
         header.vectorLength = wv.lookupTable().layerSize();
         header.caseless = aCaseless;
         header.locale = aLocale.toString();
-        
-        try (DataOutputStream output = new DataOutputStream(new BufferedOutputStream(
-                new FileOutputStream(binaryTarget.toFile())))) {
+
+        try (DataOutputStream output = new DataOutputStream(
+                new BufferedOutputStream(new FileOutputStream(binaryTarget.toFile())))) {
             header.write(output);
-            
+
             System.out.println("Sorting data...");
             @SuppressWarnings("unchecked")
-			String[] words = (String[]) wv.vocab().words()
+            String[] words = (String[]) wv.vocab().words()
                     .toArray(new String[wv.vocab().words().size()]);
             Arrays.sort(words);
-            
+
             System.out.println("Writing strings...");
             for (String word : words) {
                 output.writeUTF(word);
@@ -162,59 +162,58 @@ public class BinaryWordVectorSerializer {
     public static class Header
     {
         private static final String MAGIC = "dl4jw2v";
-        
+
         private int version = 1;
-        
+
         private int wordCount;
         private int vectorLength;
-        
+
         private boolean caseless;
-        
+
         private String locale;
-        
-        public static Header read(DataInput aInput)
-            throws IOException
+
+        public static Header read(DataInput aInput) throws IOException
         {
             byte[] magicBytes = new byte[MAGIC.length()];
             aInput.readFully(magicBytes);
 
             if (!MAGIC.equals(new String(magicBytes, StandardCharsets.US_ASCII))) {
-                throw new IOException("The file you provided is either not a DL4J binary word vectors file or corrupted.");
+                throw new IOException(
+                        "The file you provided is either not a DL4J binary word vectors file or corrupted.");
             }
-            
+
             Header header = new Header();
-            
+
             header.version = aInput.readByte();
             if (1 != header.version) {
                 throw new IOException("Not supported file format version.");
             }
-            
+
             header.wordCount = aInput.readInt();
             header.vectorLength = aInput.readInt();
 
             header.caseless = aInput.readBoolean();
-            
+
             header.locale = aInput.readUTF();
-            
+
             return header;
         }
-        
-        public void write(OutputStream aOutput)
-            throws IOException
+
+        public void write(OutputStream aOutput) throws IOException
         {
             DataOutputStream out = new DataOutputStream(aOutput);
-            
+
             // Magic String to make file recognition easier
-            out.write(MAGIC.getBytes(StandardCharsets.US_ASCII)); 
+            out.write(MAGIC.getBytes(StandardCharsets.US_ASCII));
             out.writeByte(version);
-            
+
             out.writeInt(wordCount);
             out.writeInt(vectorLength);
-            
+
             out.writeBoolean(caseless);
-            
+
             out.writeUTF(locale);
-            
+
             out.flush();
         }
     }
@@ -222,24 +221,24 @@ public class BinaryWordVectorSerializer {
     public static class BinaryVectorizer
     {
         private final Header header;
-        
+
         public final String[] words;
         private final FloatBuffer[] parts;
         private final int maxVectorsPerPartition;
-        
+
         private Locale locale;
-        
+
         private float[] unk;
 
         BinaryVectorizer(Header aHeader, RandomAccessFile file, String[] aWords,
                 long vectorStartOffset, float[] aUnk)
-                    throws IOException
+            throws IOException
         {
             header = aHeader;
             words = aWords;
-            
+
             unk = aUnk;
-            
+
             locale = Locale.forLanguageTag(header.locale);
 
             // Integers can address up to 2 GB (Integer.MAX_VALUE) - to handle large embeddings
@@ -257,7 +256,8 @@ public class BinaryWordVectorSerializer {
                 long start = vectorStartOffset + ((long) i * maxPartitionSizeBytes);
                 long length = maxPartitionSizeBytes;
                 if (i == neededPartitions - 1) {
-                    length = (aWords.length % maxVectorsPerPartition) * header.vectorLength * Float.BYTES;
+                    length = (aWords.length % maxVectorsPerPartition) * header.vectorLength
+                            * Float.BYTES;
                 }
                 parts[i] = channel.map(FileChannel.MapMode.READ_ONLY, start, length)
                         .asFloatBuffer();
@@ -268,32 +268,31 @@ public class BinaryWordVectorSerializer {
         {
             return header.vectorLength;
         }
-        
+
         public boolean contains(String aWord)
         {
             String word = aWord;
             if (header.caseless) {
                 word = word.toLowerCase(locale);
             }
-            
+
             return Arrays.binarySearch(words, word) >= 0;
         }
-        
-        public float[] vectorize(String aWord)
-            throws IOException
+
+        public float[] vectorize(String aWord) throws IOException
         {
             String word = aWord;
             if (header.caseless) {
                 word = word.toLowerCase(locale);
             }
-            
+
             int vectorIdx = Arrays.binarySearch(words, word);
-            
+
             // Word not found
             if (vectorIdx < 0) {
                 return unk;
             }
-            
+
             // Locate the buffer from which to read the vevtor
             int partitionIdx = vectorIdx / maxVectorsPerPartition;
             FloatBuffer part = this.parts[partitionIdx];
@@ -309,8 +308,7 @@ public class BinaryWordVectorSerializer {
             return vector;
         }
 
-        public static BinaryVectorizer load(Path vectorsDir)
-            throws IOException
+        public static BinaryVectorizer load(Path vectorsDir) throws IOException
         {
             RandomAccessFile file = new RandomAccessFile(vectorsDir.toFile(), "rw");
 
@@ -332,7 +330,7 @@ public class BinaryWordVectorSerializer {
             for (int i = 0; i < unk.length; i++) {
                 unk[i] = byteBuffer.getFloat(i * Float.BYTES);
             }
-            
+
             // Rest of the file is mmapped
             long offset = file.getFilePointer();
             return new BinaryVectorizer(header, file, words, offset, unk);

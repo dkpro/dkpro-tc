@@ -30,64 +30,71 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 
 /**
- * This is a slightly ugly solution for recording the DKPro Lab output folder of
- * an experiment to read result files in JUnit tests
+ * This is a slightly ugly solution for recording the DKPro Lab output folder of an experiment to
+ * read result files in JUnit tests
  */
-public class ContextMemoryReport extends TcBatchReportBase {
+public class ContextMemoryReport
+    extends TcBatchReportBase
+{
 
-	public static List<File> id2outcomeFiles = new ArrayList<>();
-	public static List<File> crossValidationCombinedIdFiles = new ArrayList<>();
-	public static List<String> allIds = new ArrayList<String>();
+    public static List<File> id2outcomeFiles = new ArrayList<>();
+    public static List<File> crossValidationCombinedIdFiles = new ArrayList<>();
+    public static List<String> allIds = new ArrayList<String>();
 
-	@Override
-	public void execute() throws Exception {
-		
-		id2outcomeFiles = new ArrayList<>();
-		crossValidationCombinedIdFiles = new ArrayList<>();
-		allIds = new ArrayList<String>();
+    @Override
+    public void execute() throws Exception
+    {
 
-		StorageService storageService = getContext().getStorageService();
+        id2outcomeFiles = new ArrayList<>();
+        crossValidationCombinedIdFiles = new ArrayList<>();
+        allIds = new ArrayList<String>();
 
-		Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
-		allIds.addAll(collectTasks(taskIds));
-		for (String id : taskIds) {
-			processFacadeId(storageService, id);
-			processMachineLearningAdapterId(storageService, id);
-			processCrossValidationId(storageService, id);
-		}
-	}
+        StorageService storageService = getContext().getStorageService();
 
-	private void processFacadeId(StorageService storageService, String id) throws Exception {
-		if (!TcTaskTypeUtil.isFacadeTask(storageService, id)) {
-			return;
-		}
+        Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
+        allIds.addAll(collectTasks(taskIds));
+        for (String id : taskIds) {
+            processFacadeId(storageService, id);
+            processMachineLearningAdapterId(storageService, id);
+            processCrossValidationId(storageService, id);
+        }
+    }
 
-		Set<String> collectSubtasks = collectSubtasks(id);
-		for (String subid : collectSubtasks) {
-			processMachineLearningAdapterId(storageService, subid);
-		}
-	}
+    private void processFacadeId(StorageService storageService, String id) throws Exception
+    {
+        if (!TcTaskTypeUtil.isFacadeTask(storageService, id)) {
+            return;
+        }
 
-	private void processCrossValidationId(StorageService storageService, String id) throws Exception {
-		if (!TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
-			return;
-		}
+        Set<String> collectSubtasks = collectSubtasks(id);
+        for (String subid : collectSubtasks) {
+            processMachineLearningAdapterId(storageService, subid);
+        }
+    }
 
-		File f = storageService.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
-		id2outcomeFiles.add(f);
-		crossValidationCombinedIdFiles.add(f);
-		
-		Set<String> collectSubtasks = collectSubtasks(id);
-		for (String subid : collectSubtasks) {
-			processMachineLearningAdapterId(storageService, subid);
-		}
-	}
+    private void processCrossValidationId(StorageService storageService, String id) throws Exception
+    {
+        if (!TcTaskTypeUtil.isCrossValidationTask(storageService, id)) {
+            return;
+        }
 
-	private void processMachineLearningAdapterId(StorageService storageService, String id) throws IOException {
-		if (!TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
-			return;
-		}
-		id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
-	}
+        File f = storageService.locateKey(id, Constants.FILE_COMBINED_ID_OUTCOME_KEY);
+        id2outcomeFiles.add(f);
+        crossValidationCombinedIdFiles.add(f);
+
+        Set<String> collectSubtasks = collectSubtasks(id);
+        for (String subid : collectSubtasks) {
+            processMachineLearningAdapterId(storageService, subid);
+        }
+    }
+
+    private void processMachineLearningAdapterId(StorageService storageService, String id)
+        throws IOException
+    {
+        if (!TcTaskTypeUtil.isMachineLearningAdapterTask(storageService, id)) {
+            return;
+        }
+        id2outcomeFiles.add(storageService.locateKey(id, Constants.ID_OUTCOME_KEY));
+    }
 
 }

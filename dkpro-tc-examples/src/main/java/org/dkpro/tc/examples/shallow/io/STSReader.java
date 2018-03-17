@@ -67,8 +67,7 @@ public class STSReader
     private int fileOffset;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -82,8 +81,8 @@ public class STSReader
                 String parts[] = line.split("\t");
 
                 if (parts.length != 2) {
-                    throw new ResourceInitializationException(new Throwable("Wrong file format: "
-                            + line));
+                    throw new ResourceInitializationException(
+                            new Throwable("Wrong file format: " + line));
                 }
 
                 texts1.add(parts[0]);
@@ -101,8 +100,8 @@ public class STSReader
             }
 
             if (texts1.size() != golds.size()) {
-                throw new ResourceInitializationException(new Throwable(
-                        "Size of text list does not match size of gold list."));
+                throw new ResourceInitializationException(
+                        new Throwable("Size of text list does not match size of gold list."));
             }
         }
         catch (IOException e) {
@@ -111,15 +110,13 @@ public class STSReader
     }
 
     @Override
-    public boolean hasNext()
-        throws IOException, CollectionException
+    public boolean hasNext() throws IOException, CollectionException
     {
         return fileOffset < texts1.size();
     }
 
     @Override
-    public void getNext(JCas jcas)
-        throws IOException, CollectionException
+    public void getNext(JCas jcas) throws IOException, CollectionException
     {
         super.getNext(jcas);
         jcas.setDocumentText("");
@@ -143,60 +140,70 @@ public class STSReader
     {
         return new Progress[] { new ProgressImpl(fileOffset, texts1.size(), Progress.ENTITIES) };
     }
- 
+
     @Override
     public String getTextClassificationOutcome(JCas jcas)
     {
         return golds.get(fileOffset).toString();
     }
 
-	@Override
-	public String getCollectionId1() throws TextClassificationException {
+    @Override
+    public String getCollectionId1() throws TextClassificationException
+    {
         return inputFile.getParent();
-	}
+    }
 
-	@Override
-	public String getCollectionId2() throws TextClassificationException {
+    @Override
+    public String getCollectionId2() throws TextClassificationException
+    {
         return inputFile.getParent();
-	}
+    }
 
-	@Override
-	public String getDocumentId1() throws TextClassificationException {
+    @Override
+    public String getDocumentId1() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getDocumentId2() throws TextClassificationException {
+    @Override
+    public String getDocumentId2() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getTitle1() throws TextClassificationException {
+    @Override
+    public String getTitle1() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getTitle2() throws TextClassificationException {
+    @Override
+    public String getTitle2() throws TextClassificationException
+    {
         return inputFile.getName() + "-" + fileOffset;
-	}
+    }
 
-	@Override
-	public String getLanguage1() throws TextClassificationException {
-		return "en";
-	}
+    @Override
+    public String getLanguage1() throws TextClassificationException
+    {
+        return "en";
+    }
 
-	@Override
-	public String getLanguage2() throws TextClassificationException {
-		return "en";
-	}
+    @Override
+    public String getLanguage2() throws TextClassificationException
+    {
+        return "en";
+    }
 
-	@Override
-	public String getText1() throws TextClassificationException {
-		return texts1.get(fileOffset);
-	}
+    @Override
+    public String getText1() throws TextClassificationException
+    {
+        return texts1.get(fileOffset);
+    }
 
-	@Override
-	public String getText2() throws TextClassificationException {
-		return texts2.get(fileOffset);
-	}
+    @Override
+    public String getText2() throws TextClassificationException
+    {
+        return texts2.get(fileOffset);
+    }
 }

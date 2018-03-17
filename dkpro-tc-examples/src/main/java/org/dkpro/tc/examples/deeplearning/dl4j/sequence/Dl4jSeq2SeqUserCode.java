@@ -59,164 +59,184 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.primitives.Pair;
 
-public class Dl4jSeq2SeqUserCode implements TcDeepLearning4jUser {
+public class Dl4jSeq2SeqUserCode
+    implements TcDeepLearning4jUser
+{
 
-	Vectorize vectorize = new Vectorize();
+    Vectorize vectorize = new Vectorize();
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void run(File trainVec, File trainOutcome, File testVec, File testOutcome, File embedding, int seed, int maximumLength, double threshold, File prediction)
-			throws Exception {
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
+            File embedding, int seed, int maximumLength, double threshold, File prediction)
+        throws Exception
+    {
 
-		vectorize = new Vectorize(getOutcomes(trainOutcome, testOutcome));
+        vectorize = new Vectorize(getOutcomes(trainOutcome, testOutcome));
 
-		int featuresSize = getEmbeddingsSize(embedding);
-		int maxTagsetSize = getNumberOfOutcomes(trainOutcome, testOutcome);
-		int batchSize = 1;
-		int epochs = 2;
-		int iterations = 1;
-		double learningRate = 0.1;
+        int featuresSize = getEmbeddingsSize(embedding);
+        int maxTagsetSize = getNumberOfOutcomes(trainOutcome, testOutcome);
+        int batchSize = 1;
+        int epochs = 2;
+        int iterations = 1;
+        double learningRate = 0.1;
 
-		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
-				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(iterations).seed(12345l)
-				.updater(Updater.SGD).regularization(true).l2(1e-5).weightInit(WeightInit.RELU)
-				.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-				.gradientNormalizationThreshold(1.0).learningRate(learningRate).list()
-				.layer(0, new GravesLSTM.Builder().activation(Activation.TANH).nIn(featuresSize).nOut(200).build())
-				.layer(1,
-						new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
-								.lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD).nIn(200).nOut(maxTagsetSize).build())
-				.pretrain(false).backprop(true).build();
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .iterations(iterations).seed(12345l).updater(Updater.SGD).regularization(true)
+                .l2(1e-5).weightInit(WeightInit.RELU)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0).learningRate(learningRate).list()
+                .layer(0,
+                        new GravesLSTM.Builder().activation(Activation.TANH).nIn(featuresSize)
+                                .nOut(200).build())
+                .layer(1,
+                        new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
+                                .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                                .nIn(200).nOut(maxTagsetSize).build())
+                .pretrain(false).backprop(true).build();
 
-		int maxLen = getLongestSentence(trainVec, testVec);
+        int maxLen = getLongestSentence(trainVec, testVec);
 
-		List<DataSet> trainDataSet = new ArrayList<DataSet>(
-				toDataSet(trainVec, trainOutcome, maxLen, maxTagsetSize, embedding));
-		MultiLayerNetwork mln = new MultiLayerNetwork(conf);
-		mln.init();
-		mln.setListeners(new ScoreIterationListener(1));
+        List<DataSet> trainDataSet = new ArrayList<DataSet>(
+                toDataSet(trainVec, trainOutcome, maxLen, maxTagsetSize, embedding));
+        MultiLayerNetwork mln = new MultiLayerNetwork(conf);
+        mln.init();
+        mln.setListeners(new ScoreIterationListener(1));
 
-		for (int i = 0; i < epochs; i++) {
-			System.out.println("Epoche " + (i + 1));
-			Collections.shuffle(trainDataSet);
-			DataSetIterator train = new ListDataSetIterator(trainDataSet, batchSize);
-			mln.fit(train);
-		}
+        for (int i = 0; i < epochs; i++) {
+            System.out.println("Epoche " + (i + 1));
+            Collections.shuffle(trainDataSet);
+            DataSetIterator train = new ListDataSetIterator(trainDataSet, batchSize);
+            mln.fit(train);
+        }
 
-		List<DataSet> testDataSet = new ArrayList<DataSet>(
-				toDataSet(testVec, testOutcome, maxLen, maxTagsetSize, embedding));
-		DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
-		StringBuilder sb = new StringBuilder();
-		sb.append("#Gold\tPrediction" + "\n");
-		// Run evaluation. This is on 25k reviews, so can take some time
-		while (iTest.hasNext()) {
-			DataSet t = iTest.next();
-			INDArray features = t.getFeatureMatrix();
-			INDArray lables = t.getLabels();
-			// System.out.println("labels : " + lables);
-			INDArray outMask = t.getLabelsMaskArray();
-			INDArray predicted = mln.output(features, false);
-			// System.out.println("predicted : " + predicted);
-			eval(lables, predicted, outMask, sb);
-		}
-		iTest.reset();
+        List<DataSet> testDataSet = new ArrayList<DataSet>(
+                toDataSet(testVec, testOutcome, maxLen, maxTagsetSize, embedding));
+        DataSetIterator iTest = new ListDataSetIterator(testDataSet, batchSize);
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Gold\tPrediction" + "\n");
+        // Run evaluation. This is on 25k reviews, so can take some time
+        while (iTest.hasNext()) {
+            DataSet t = iTest.next();
+            INDArray features = t.getFeatureMatrix();
+            INDArray lables = t.getLabels();
+            // System.out.println("labels : " + lables);
+            INDArray outMask = t.getLabelsMaskArray();
+            INDArray predicted = mln.output(features, false);
+            // System.out.println("predicted : " + predicted);
+            eval(lables, predicted, outMask, sb);
+        }
+        iTest.reset();
 
-		FileUtils.writeStringToFile(prediction, sb.toString(), "utf-8");
-	}
+        FileUtils.writeStringToFile(prediction, sb.toString(), "utf-8");
+    }
 
-	private String[] getOutcomes(File trainOutcome, File testOutcome) throws IOException {
+    private String[] getOutcomes(File trainOutcome, File testOutcome) throws IOException
+    {
 
-		List<String> trainOutcomes = FileUtils.readLines(trainOutcome, "utf-8");
-		List<String> testOutcomes = FileUtils.readLines(testOutcome, "utf-8");
+        List<String> trainOutcomes = FileUtils.readLines(trainOutcome, "utf-8");
+        List<String> testOutcomes = FileUtils.readLines(testOutcome, "utf-8");
 
-		Set<String> s = new HashSet<>();
-		trainOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
-		testOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
+        Set<String> s = new HashSet<>();
+        trainOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
+        testOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
 
-		return s.toArray(new String[0]);
-	}
+        return s.toArray(new String[0]);
+    }
 
-	private int getLongestSentence(File trainVec, File testVec) throws IOException {
-		List<String> trainSent = FileUtils.readLines(trainVec, "utf-8");
-		List<String> testSent = FileUtils.readLines(testVec, "utf-8");
+    private int getLongestSentence(File trainVec, File testVec) throws IOException
+    {
+        List<String> trainSent = FileUtils.readLines(trainVec, "utf-8");
+        List<String> testSent = FileUtils.readLines(testVec, "utf-8");
 
-		int maxTrain = trainSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
-		int maxTest = testSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
-		return Math.max(maxTrain, maxTest);
-	}
+        int maxTrain = trainSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
+        int maxTest = testSent.stream().mapToInt(s -> s.split(" ").length).max().getAsInt();
+        return Math.max(maxTrain, maxTest);
+    }
 
-	private void eval(INDArray labels, INDArray p, INDArray outMask, StringBuilder sb) {
-		Pair<INDArray, INDArray> pair = EvaluationUtils.extractNonMaskedTimeSteps(labels, p, outMask);
+    private void eval(INDArray labels, INDArray p, INDArray outMask, StringBuilder sb)
+    {
+        Pair<INDArray, INDArray> pair = EvaluationUtils.extractNonMaskedTimeSteps(labels, p,
+                outMask);
 
-		INDArray realOutcomes = pair.getFirst();
-		INDArray guesses = pair.getSecond();
+        INDArray realOutcomes = pair.getFirst();
+        INDArray guesses = pair.getSecond();
 
-		// Length of real labels must be same as length of predicted labels
-		if (realOutcomes.length() != guesses.length())
-			throw new IllegalArgumentException("Unable to evaluate. Outcome matrices not same length");
+        // Length of real labels must be same as length of predicted labels
+        if (realOutcomes.length() != guesses.length())
+            throw new IllegalArgumentException(
+                    "Unable to evaluate. Outcome matrices not same length");
 
-		INDArray guessIndex = Nd4j.argMax(guesses, 1);
-		INDArray realOutcomeIndex = Nd4j.argMax(realOutcomes, 1);
+        INDArray guessIndex = Nd4j.argMax(guesses, 1);
+        INDArray realOutcomeIndex = Nd4j.argMax(realOutcomes, 1);
 
-		int nExamples = guessIndex.length();
-		for (int i = 0; i < nExamples; i++) {
-			int actual = (int) realOutcomeIndex.getDouble(i);
-			int predicted = (int) guessIndex.getDouble(i);
-			sb.append(vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted] + "\n");
-		}
-	}
+        int nExamples = guessIndex.length();
+        for (int i = 0; i < nExamples; i++) {
+            int actual = (int) realOutcomeIndex.getDouble(i);
+            int predicted = (int) guessIndex.getDouble(i);
+            sb.append(
+                    vectorize.getTagset()[actual] + "\t" + vectorize.getTagset()[predicted] + "\n");
+        }
+    }
 
-	private int getNumberOfOutcomes(File trainOutcome, File testOutcome) throws IOException {
-		Set<String> outcomes = new HashSet<>();
-		List<String> lines = FileUtils.readLines(trainOutcome, "utf-8");
-		lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+    private int getNumberOfOutcomes(File trainOutcome, File testOutcome) throws IOException
+    {
+        Set<String> outcomes = new HashSet<>();
+        List<String> lines = FileUtils.readLines(trainOutcome, "utf-8");
+        lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
 
-		lines = FileUtils.readLines(testOutcome, "utf-8");
-		lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+        lines = FileUtils.readLines(testOutcome, "utf-8");
+        lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
 
-		return outcomes.size();
-	}
+        return outcomes.size();
+    }
 
-	private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen, int numOutcomes, File embedding)
-			throws IOException {
+    private Collection<DataSet> toDataSet(File trainVec, File trainOutcome, int maxLen,
+            int numOutcomes, File embedding)
+        throws IOException
+    {
 
-		List<String> sentences = FileUtils.readLines(trainVec, "utf-8");
-		List<String> outcomes = FileUtils.readLines(trainOutcome, "utf-8");
+        List<String> sentences = FileUtils.readLines(trainVec, "utf-8");
+        List<String> outcomes = FileUtils.readLines(trainOutcome, "utf-8");
 
-		@SuppressWarnings("deprecation")
-		WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
-		File f = File.createTempFile("embedding", ".emb");
-		BinaryWordVectorSerializer.convertWordVectorsToBinary(wordVectors, f.toPath());
-		BinaryVectorizer bw = BinaryVectorizer.load(f.toPath());
-		List<DataSet> data = new ArrayList<>();
+        @SuppressWarnings("deprecation")
+        WordVectors wordVectors = WordVectorSerializer.loadTxtVectors(embedding);
+        File f = File.createTempFile("embedding", ".emb");
+        BinaryWordVectorSerializer.convertWordVectorsToBinary(wordVectors, f.toPath());
+        BinaryVectorizer bw = BinaryVectorizer.load(f.toPath());
+        List<DataSet> data = new ArrayList<>();
 
-		for (int i = 0; i < sentences.size(); i++) {
-			// each sent/label pairing is in an own data set
-			List<String> singleSent = Arrays.asList(sentences.get(i));
-			List<String> singleOutcome = Arrays.asList(outcomes.get(i));
-			data.add(vectorize.vectorize(transformToList(singleSent), transformToList(singleOutcome), bw, maxLen,
-					numOutcomes, true));
-		}
+        for (int i = 0; i < sentences.size(); i++) {
+            // each sent/label pairing is in an own data set
+            List<String> singleSent = Arrays.asList(sentences.get(i));
+            List<String> singleOutcome = Arrays.asList(outcomes.get(i));
+            data.add(vectorize.vectorize(transformToList(singleSent),
+                    transformToList(singleOutcome), bw, maxLen, numOutcomes, true));
+        }
 
-		return data;
-	}
+        return data;
+    }
 
-	private List<List<String>> transformToList(List<String> sentences) {
+    private List<List<String>> transformToList(List<String> sentences)
+    {
 
-		List<List<String>> out = new ArrayList<>();
+        List<List<String>> out = new ArrayList<>();
 
-		for (String s : sentences) {
-			out.add(asList(s.split(" ")));
-		}
+        for (String s : sentences) {
+            out.add(asList(s.split(" ")));
+        }
 
-		return out;
-	}
+        return out;
+    }
 
-	private int getEmbeddingsSize(File embedding) throws Exception {
+    private int getEmbeddingsSize(File embedding) throws Exception
+    {
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(embedding), "utf-8"));
-		String readLine = br.readLine();
-		br.close();
-		return readLine.split(" ").length - 1;
-	}
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(embedding), "utf-8"));
+        String readLine = br.readLine();
+        br.close();
+        return readLine.split(" ").length - 1;
+    }
 }

@@ -31,38 +31,38 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class XgboostUnitTest extends TestCaseSuperClass
+public class XgboostUnitTest
+    extends TestCaseSuperClass
 {
-	XgboostUnit javaExperiment;
+    XgboostUnit javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new XgboostUnit();
         pSpace = XgboostUnit.getParameterSpace();
     }
 
-    
     @Test
-    public void testTrainTest()
-        throws Exception
+    public void testTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
-        
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
+
+        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                "utf-8");
         assertEquals(197, lines.size());
-        
-        //line-wise compare
+
+        // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-        assertEquals("#labels 0=ABX 1=AP 2=AT 3=BEDZ 4=BEN 5=BER 6=CC 7=CS 8=DOD 9=DT 10=DTS 11=HV 12=HVD 13=IN 14=JJ 15=JJT 16=MD 17=NN 18=NNS 19=NP 20=NPg 21=PPO 22=PPS 23=QL 24=RB 25=TO 26=VB 27=VBD 28=VBG 29=VBN 30=WDT 31=pct", lines.get(1));
-        //line 2 is a time-stamp
+        assertEquals(
+                "#labels 0=ABX 1=AP 2=AT 3=BEDZ 4=BEN 5=BER 6=CC 7=CS 8=DOD 9=DT 10=DTS 11=HV 12=HVD 13=IN 14=JJ 15=JJT 16=MD 17=NN 18=NNS 19=NP 20=NPg 21=PPO 22=PPS 23=QL 24=RB 25=TO 26=VB 27=VBD 28=VBG 29=VBN 30=WDT 31=pct",
+                lines.get(1));
+        // line 2 is a time-stamp
         assertTrue(lines.get(3).matches("0=[0-9]+;31;-1"));
         assertTrue(lines.get(4).matches("1=[0-9]+;2;-1"));
         assertTrue(lines.get(5).matches("10=[0-9]+;17;-1"));

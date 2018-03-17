@@ -35,65 +35,74 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing any
- * exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class CRFSuiteBrownPosDemoTest  extends TestCaseSuperClass {
-	CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
+public class CRFSuiteBrownPosDemoTest
+    extends TestCaseSuperClass
+{
+    CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
 
-	@Before
-	public void setup() throws Exception {
-		super.setup();
-		javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
-	}
+    @Before
+    public void setup() throws Exception
+    {
+        super.setup();
+        javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void runTrainTestNoFilter() throws Exception {
-		// Random parameters for demonstration!
-        //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-				Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
+    @SuppressWarnings("unchecked")
+    @Test
+    public void runTrainTestNoFilter() throws Exception
+    {
+        // Random parameters for demonstration!
+        // Number of iterations is set to an extreme low value (remove --> default: 100 iterations,
+        // or set accordingly)
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5" }));
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
 
-		javaExperiment.runTrainTest(pSpace);
-		
-		assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+        javaExperiment.runTrainTest(pSpace);
 
-		List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-		assertEquals(34, lines.size());
-		
-		assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-		assertEquals("#labels 0=NN 1=JJ 2=NP 3=DTS 4=BEDZ 5=HV 6=PPO 7=DT 8=NNS 9=PPS 10=JJT 11=ABX 12=MD 13=DOD 14=VBD 15=VBG 16=QL 32=%28null%29 17=pct 18=CC 19=VBN 20=NPg 21=IN 22=WDT 23=BEN 24=VB 25=BER 26=AP 27=RB 28=CS 29=AT 30=HVD 31=TO", lines.get(1));
-		// 2nd line time stamp
-		
-		// Crfsuite results are sensitive to some extend to the platform, to
-		// account for this sensitivity we check only that the "prediction"
-		// field is filled with any number but do not test for a specific value
-		assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;29;-1"));
-		assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
-		assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;17;-1"));
-		assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;22;-1"));
-		assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;2;-1"));
+        assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
-	}
+        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                "utf-8");
+        assertEquals(34, lines.size());
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void runTrainTestFilter() throws Exception {
-		// Random parameters for demonstration!
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals(
+                "#labels 0=NN 1=JJ 2=NP 3=DTS 4=BEDZ 5=HV 6=PPO 7=DT 8=NNS 9=PPS 10=JJT 11=ABX 12=MD 13=DOD 14=VBD 15=VBG 16=QL 32=%28null%29 17=pct 18=CC 19=VBN 20=NPg 21=IN 22=WDT 23=BEN 24=VB 25=BER 26=AP 27=RB 28=CS 29=AT 30=HVD 31=TO",
+                lines.get(1));
+        // 2nd line time stamp
 
-		Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
-				asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
+        // Crfsuite results are sensitive to some extend to the platform, to
+        // account for this sensitivity we check only that the "prediction"
+        // field is filled with any number but do not test for a specific value
+        assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;29;-1"));
+        assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
+        assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;17;-1"));
+        assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;22;-1"));
+        assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;2;-1"));
 
-		ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(Constants.FM_SEQUENCE,
-				Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
+    }
 
-		javaExperiment.runTrainTest(pSpace);
-		
-		
-	}
+    @SuppressWarnings("unchecked")
+    @Test
+    public void runTrainTestFilter() throws Exception
+    {
+        // Random parameters for demonstration!
+        Dimension<List<Object>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+
+        Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
+                asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
+
+        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
+
+        javaExperiment.runTrainTest(pSpace);
+
+    }
 }

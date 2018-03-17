@@ -27,30 +27,34 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
-public class KerasCrossValidation extends PythonLocator {
-	@Test
-	public void runTest() throws Exception {
+public class KerasCrossValidation
+    extends PythonLocator
+{
+    @Test
+    public void runTest() throws Exception
+    {
 
-		DemoUtils.setDkproHome(KerasDocumentCrossValidation.class.getSimpleName());
+        DemoUtils.setDkproHome(KerasDocumentCrossValidation.class.getSimpleName());
 
-		boolean testConditon = true;
-		String python3 = null;
-		try {
-			python3 = getEnvironment();
-		} catch (Exception e) {
-			System.err.println("Failed to locate Python with Keras - will skip this test case");
-			testConditon = false;
-		}
+        boolean testConditon = true;
+        String python3 = null;
+        try {
+            python3 = getEnvironment();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to locate Python with Keras - will skip this test case");
+            testConditon = false;
+        }
 
-		if (testConditon) {
-			ParameterSpace ps = KerasDocumentCrossValidation.getParameterSpace(python3);
-			KerasDocumentCrossValidation.runCrossValidation(ps);
+        if (testConditon) {
+            ParameterSpace ps = KerasDocumentCrossValidation.getParameterSpace(python3);
+            KerasDocumentCrossValidation.runCrossValidation(ps);
 
-			//The comined file in the CV folder + 2 single files in the per-fold folder
-			assertEquals(3, ContextMemoryReport.id2outcomeFiles.size());
-			assertTrue(ContextMemoryReport.id2outcomeFiles.get(0).exists());
-			assertTrue(ContextMemoryReport.id2outcomeFiles.get(1).exists());
-			assertTrue(ContextMemoryReport.id2outcomeFiles.get(2).exists());
-		}
-	}
+            // The comined file in the CV folder + 2 single files in the per-fold folder
+            assertEquals(3, ContextMemoryReport.id2outcomeFiles.size());
+            assertTrue(ContextMemoryReport.id2outcomeFiles.get(0).exists());
+            assertTrue(ContextMemoryReport.id2outcomeFiles.get(1).exists());
+            assertTrue(ContextMemoryReport.id2outcomeFiles.get(2).exists());
+        }
+    }
 }

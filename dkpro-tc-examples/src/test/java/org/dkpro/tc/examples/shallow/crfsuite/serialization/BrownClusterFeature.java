@@ -97,16 +97,15 @@ public class BrownClusterFeature
 
     private Feature getFeature(String bitCode, int i)
     {
-        if(bitCode == null || bitCode.isEmpty()){
-            return new Feature("brown_" + i , NOT_SET, true, FeatureType.STRING);
+        if (bitCode == null || bitCode.isEmpty()) {
+            return new Feature("brown_" + i, NOT_SET, true, FeatureType.STRING);
         }
-        
-        String value = bitCode.length() >= i ? bitCode.substring(0, i) : NOT_SET; 
-        return new Feature("brown_" + i , value, value.equals(NOT_SET), FeatureType.STRING);
+
+        String value = bitCode.length() >= i ? bitCode.substring(0, i) : NOT_SET;
+        return new Feature("brown_" + i, value, value.equals(NOT_SET), FeatureType.STRING);
     }
 
-    private void init()
-        throws TextClassificationException
+    private void init() throws TextClassificationException
     {
 
         if (map != null) {
@@ -129,8 +128,7 @@ public class BrownClusterFeature
         }
     }
 
-    private BufferedReader openFile()
-        throws Exception
+    private BufferedReader openFile() throws Exception
     {
         InputStreamReader isr = null;
         if (inputFile.getAbsolutePath().endsWith(".gz")) {

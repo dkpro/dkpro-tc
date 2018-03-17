@@ -30,42 +30,46 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
-public class KerasRegressionWassaTest extends PythonLocator {
-	@Test
-	public void runTest() throws Exception {
+public class KerasRegressionWassaTest
+    extends PythonLocator
+{
+    @Test
+    public void runTest() throws Exception
+    {
+        DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-		DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
+        boolean testConditon = true;
+        String python3 = null;
+        try {
+            python3 = getEnvironment();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to locate Python with Keras - will skip this test case");
+            testConditon = false;
+        }
 
-		boolean testConditon = true;
-		String python3 = null;
-		try {
-			python3 = getEnvironment();
-		} catch (Exception e) {
-			System.err.println("Failed to locate Python with Keras - will skip this test case");
-			testConditon = false;
-		}
+        if (testConditon) {
+            ParameterSpace ps = KerasRegressionWassa.getParameterSpace(python3);
+            KerasRegressionWassa.runTrainTest(ps);
 
-		if (testConditon) {
-			ParameterSpace ps = KerasRegressionWassa.getParameterSpace(python3);
-			KerasRegressionWassa.runTrainTest(ps);
-			
-			assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+            assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
-			List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-			assertEquals(87, lines.size());
+            List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                    "utf-8");
+            assertEquals(87, lines.size());
 
-			// line-wise compare
-			assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-			assertEquals("#labels ", lines.get(1));
-			assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
-			assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
-			assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
-			assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
-			assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
-			assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
-			assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
-			assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
+            // line-wise compare
+            assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+            assertEquals("#labels ", lines.get(1));
+            assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
+            assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
+            assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
+            assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
+            assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
+            assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
+            assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
+            assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
 
-		}
-	}
+        }
+    }
 }

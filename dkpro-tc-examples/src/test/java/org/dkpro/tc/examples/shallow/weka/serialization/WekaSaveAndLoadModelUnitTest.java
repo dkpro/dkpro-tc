@@ -67,7 +67,8 @@ import weka.classifiers.functions.SMO;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
+public class WekaSaveAndLoadModelUnitTest
+    extends TestCaseSuperClass
     implements Constants
 {
     static String unitTrainFolder = "src/main/resources/data/brown_tei/";
@@ -78,13 +79,12 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
     @Before
     public void setup() throws Exception
     {
-    	super.setup();
+        super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelUnitTest.class.getSimpleName());
     }
 
     @Test
-    public void unitRoundTripWeka()
-        throws Exception
+    public void unitRoundTripWeka() throws Exception
     {
 
         DemoUtils.setDkproHome(WekaSaveAndLoadModelUnitTest.class.getSimpleName());
@@ -121,8 +121,7 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
         modelFolder.deleteOnExit();
     }
 
-    private void unitExecuteSaveModel(ParameterSpace pSpace, File modelFolder)
-        throws Exception
+    private void unitExecuteSaveModel(ParameterSpace pSpace, File modelFolder) throws Exception
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(createEngineDescription(WekaUnitAnnotator.class));
@@ -131,8 +130,7 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
         Lab.getInstance().run(batch);
     }
 
-    private static ParameterSpace unitGetParameterSpace()
-        throws ResourceInitializationException
+    private static ParameterSpace unitGetParameterSpace() throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
@@ -157,8 +155,7 @@ public class WekaSaveAndLoadModelUnitTest extends TestCaseSuperClass
         return pSpace;
     }
 
-    private static void unitLoadModel(File modelFolder)
-        throws Exception
+    private static void unitLoadModel(File modelFolder) throws Exception
     {
         CollectionReader reader = CollectionReaderFactory.createReader(TeiReader.class,
                 TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en",

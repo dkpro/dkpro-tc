@@ -57,7 +57,6 @@ import weka.classifiers.trees.RandomForest;
  * This demo is to show-case a somewhat more complex experiment setup for a single-label experiment,
  * including parameter sweeping (6 different combinations), (Weka) classifier configuration, and
  * Feature Selection.
- * 
  */
 public class WekaComplexConfigurationSingleDemo
     implements Constants
@@ -67,8 +66,7 @@ public class WekaComplexConfigurationSingleDemo
     private static final String LANGUAGE_CODE = "en";
     private static final String EXPERIMENT_NAME = "TwentyNewsgroupsComplex";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -83,23 +81,20 @@ public class WekaComplexConfigurationSingleDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, CORPUS_FILEPATH_TRAIN,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                CORPUS_FILEPATH_TRAIN, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, COPRUS_FILEPATH_TEST,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                COPRUS_FILEPATH_TEST, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
@@ -112,18 +107,16 @@ public class WekaComplexConfigurationSingleDemo
                 // "-I": number of trees
                 asList(new Object[] { new WekaAdapter(), RandomForest.class.getName(), "-I", "5" }),
                 // "W": base classifier
-                asList(new Object[] { new WekaAdapter(), Bagging.class.getName(), "-I", "2", "-W", J48.class.getName(),
-                        "--", "-C", "0.5", "-M", "2" }));
+                asList(new Object[] { new WekaAdapter(), Bagging.class.getName(), "-I", "2", "-W",
+                        J48.class.getName(), "--", "-C", "0.5", "-M", "2" }));
 
         // We configure 2 sets of feature extractors, one consisting of 3 extractors, and one with
         // only 1
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
-                        TcFeatureFactory.create(WordNGram.class,
-                                WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                                WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-                                3)),
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
+                TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
+                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
+                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)),
                 new TcFeatureSet(TcFeatureFactory.create(WordNGram.class,
                         WordNGram.PARAM_NGRAM_USE_TOP_K, 50, WordNGram.PARAM_NGRAM_MIN_N, 1,
                         WordNGram.PARAM_NGRAM_MAX_N, 3)));
@@ -146,8 +139,7 @@ public class WekaComplexConfigurationSingleDemo
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
         ExperimentTrainTest experiment = new ExperimentTrainTest(EXPERIMENT_NAME);
         experiment.setPreprocessing(getPreprocessing());
@@ -158,8 +150,7 @@ public class WekaComplexConfigurationSingleDemo
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class,
                 BreakIteratorSegmenter.PARAM_LANGUAGE, LANGUAGE_CODE));

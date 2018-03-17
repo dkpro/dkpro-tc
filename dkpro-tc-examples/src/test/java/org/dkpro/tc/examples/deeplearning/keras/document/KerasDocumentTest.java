@@ -30,43 +30,47 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
-public class KerasDocumentTest extends PythonLocator {
-	@Test
-	public void runTest() throws Exception {
+public class KerasDocumentTest
+    extends PythonLocator
+{
+    @Test
+    public void runTest() throws Exception
+    {
 
-		DemoUtils.setDkproHome(KerasDocumentTrainTest.class.getSimpleName());
+        DemoUtils.setDkproHome(KerasDocumentTrainTest.class.getSimpleName());
 
-		boolean testConditon = true;
-		String python3 = null;
-		try {
-			python3 = getEnvironment();
-		} catch (Exception e) {
-			System.err.println("Failed to locate Python with Keras - will skip this test case");
-			testConditon = false;
-		}
-		
-		if (testConditon) {
-			ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
-			KerasDocumentTrainTest.runTrainTest(ps);
+        boolean testConditon = true;
+        String python3 = null;
+        try {
+            python3 = getEnvironment();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to locate Python with Keras - will skip this test case");
+            testConditon = false;
+        }
 
-			assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+        if (testConditon) {
+            ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
+            KerasDocumentTrainTest.runTrainTest(ps);
 
-			List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-			assertEquals(11, lines.size());
+            assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
-			// line-wise compare
-			assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-			assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
-			assertTrue(lines.get(3).matches(".*alt.atheism/53068.txt=[0-9]+;0;-1"));
-			assertTrue(lines.get(4).matches(".*alt.atheism/53257.txt=[0-9]+;0;-1"));
-			assertTrue(lines.get(5).matches(".*alt.atheism/53260.txt=[0-9]+;0;-1"));
-			assertTrue(lines.get(6).matches(".*alt.atheism/53261.txt=[0-9]+;0;-1"));
-			assertTrue(lines.get(7).matches(".*comp.graphics/38758.txt=[0-9]+;1;-1"));
-			assertTrue(lines.get(8).matches(".*comp.graphics/38761.txt=[0-9]+;1;-1"));
-			assertTrue(lines.get(9).matches(".*comp.graphics/38762.txt=[0-9]+;1;-1"));
-			assertTrue(lines.get(10).matches(".*comp.graphics/38763.txt=[0-9]+;1;-1"));
+            List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                    "utf-8");
+            assertEquals(11, lines.size());
 
-			
-		}
-	}
+            // line-wise compare
+            assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+            assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
+            assertTrue(lines.get(3).matches(".*alt.atheism/53068.txt=[0-9]+;0;-1"));
+            assertTrue(lines.get(4).matches(".*alt.atheism/53257.txt=[0-9]+;0;-1"));
+            assertTrue(lines.get(5).matches(".*alt.atheism/53260.txt=[0-9]+;0;-1"));
+            assertTrue(lines.get(6).matches(".*alt.atheism/53261.txt=[0-9]+;0;-1"));
+            assertTrue(lines.get(7).matches(".*comp.graphics/38758.txt=[0-9]+;1;-1"));
+            assertTrue(lines.get(8).matches(".*comp.graphics/38761.txt=[0-9]+;1;-1"));
+            assertTrue(lines.get(9).matches(".*comp.graphics/38762.txt=[0-9]+;1;-1"));
+            assertTrue(lines.get(10).matches(".*comp.graphics/38763.txt=[0-9]+;1;-1"));
+
+        }
+    }
 }

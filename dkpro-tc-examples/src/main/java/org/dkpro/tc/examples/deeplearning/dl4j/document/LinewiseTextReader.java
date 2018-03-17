@@ -19,7 +19,6 @@
 
 package org.dkpro.tc.examples.deeplearning.dl4j.document;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -80,12 +79,11 @@ public class LinewiseTextReader
     private int instanceId = 1;
 
     private String nextLine = null;
-    
+
     List<String> names = new ArrayList<>();
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -109,8 +107,7 @@ public class LinewiseTextReader
         }
     }
 
-    public void getNext(JCas aJCas)
-        throws IOException, CollectionException
+    public void getNext(JCas aJCas) throws IOException, CollectionException
     {
         DocumentMetaData md = new DocumentMetaData(aJCas);
         md.setDocumentTitle("");
@@ -119,7 +116,7 @@ public class LinewiseTextReader
         md.addToIndexes();
 
         String[] split = nextLine.split("\t");
-        String documentText=split[1];
+        String documentText = split[1];
         String label = split[0];
 
         documentText = checkUnescapeHtml(documentText);
@@ -165,8 +162,7 @@ public class LinewiseTextReader
         }
     }
 
-    public boolean hasNext()
-        throws IOException, CollectionException
+    public boolean hasNext() throws IOException, CollectionException
     {
         BufferedReader br = getBufferedReader();
 
@@ -177,8 +173,7 @@ public class LinewiseTextReader
 
     }
 
-    private boolean closeReaderOpenNext()
-        throws CollectionException, IOException
+    private boolean closeReaderOpenNext() throws CollectionException, IOException
     {
         bfs.get(currentReader).close();
 

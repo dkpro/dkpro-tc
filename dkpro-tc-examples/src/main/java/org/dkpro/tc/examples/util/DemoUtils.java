@@ -21,7 +21,8 @@ package org.dkpro.tc.examples.util;
 import java.io.File;
 import java.util.Map;
 
-public class DemoUtils {
+public class DemoUtils
+{
 
     /**
      * Set the DKPRO_HOME environment variable to some folder in "target". This is mainly used to
@@ -38,25 +39,26 @@ public class DemoUtils {
      *            better avoid spaces)
      * @return True if DKPRO_HOME was correctly set and false if nothing was done.
      */
-    public static boolean setDkproHome(String experimentName) {
-    	String dkproHome = "DKPRO_HOME";
-    	Map<String, String> env = System.getenv();
-    	if (!env.containsKey(dkproHome)) {
-    		System.out.println("DKPRO_HOME not set.");
-    		
-        	File folder = new File("target/results/" + experimentName);
-        	folder.mkdirs();
-        	
-        	System.setProperty(dkproHome, folder.getPath());
-        	System.out.println("Setting DKPRO_HOME to: " + folder.getPath());
-        	
-        	return true;
-    	}
-    	else {
-    		System.out.println("DKPRO_HOME already set to: " + env.get(dkproHome));
-    		System.out.println("Keeping those settings.");
-    		
-    		return false;
-    	}
+    public static boolean setDkproHome(String experimentName)
+    {
+        String dkproHome = "DKPRO_HOME";
+        Map<String, String> env = System.getenv();
+        if (!env.containsKey(dkproHome)) {
+            System.out.println("DKPRO_HOME not set.");
+
+            File folder = new File("target/results/" + experimentName);
+            folder.mkdirs();
+
+            System.setProperty(dkproHome, folder.getPath());
+            System.out.println("Setting DKPRO_HOME to: " + folder.getPath());
+
+            return true;
+        }
+        else {
+            System.out.println("DKPRO_HOME already set to: " + env.get(dkproHome));
+            System.out.println("Keeping those settings.");
+
+            return false;
+        }
     }
 }

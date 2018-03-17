@@ -67,7 +67,8 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass
+public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
+    extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twitter/train";
@@ -80,7 +81,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
     @Before
     public void setup() throws Exception
     {
-    	super.setup();
+        super.setup();
         DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
     }
 
@@ -90,9 +91,8 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
-                FolderwiseDataReader.PARAM_LANGUAGE, "en",
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                documentTrainFolder, FolderwiseDataReader.PARAM_LANGUAGE, "en",
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -101,9 +101,10 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class), TcFeatureFactory.create(
-                        WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                                3)));
 
         ParameterSpace pSpace;
         if (useClassificationArguments) {
@@ -113,21 +114,21 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
                     dimFeatureSets);
         }
         else {
-        	
-        	  @SuppressWarnings("unchecked")
-              Dimension<List<Object>> dimClassArguments = Dimension
-                      .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter()));
-        	
+
+            @SuppressWarnings("unchecked")
+            Dimension<List<Object>> dimClassArguments = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                    Arrays.asList(new LibsvmAdapter()));
+
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArguments);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                    dimClassArguments);
         }
         return pSpace;
     }
 
     @Test
-    public void documentRoundTripTest()
-        throws Exception
+    public void documentRoundTripTest() throws Exception
     {
 
         DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
@@ -184,7 +185,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
     private static void documentLoadAndUseModel(File modelFolder,
             boolean evaluateWithClassificationArgs)
-                throws Exception
+        throws Exception
     {
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
@@ -227,8 +228,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
     }
 
     @Test
-    public void unitRoundTripTest()
-        throws Exception
+    public void unitRoundTripTest() throws Exception
     {
 
         DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
@@ -261,9 +261,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-                                  TcFeatureFactory.create(CharacterNGram.class)
-                                  )
-                );
+                        TcFeatureFactory.create(CharacterNGram.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -273,8 +271,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuper
         return pSpace;
     }
 
-    private static void unitLoadAndUseModel(File modelFolder)
-        throws Exception
+    private static void unitLoadAndUseModel(File modelFolder) throws Exception
     {
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),

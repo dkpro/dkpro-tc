@@ -54,7 +54,6 @@ import weka.classifiers.bayes.NaiveBayes;
  * This is an example for POS tagging as unit classification. Each POS is treated as a
  * classification unit, but unlike sequence tagging the decision for each POS is taken
  * independently. This will usually give worse results, so this is only to showcase the concept.
- * 
  */
 public class WekaBrownUnitPosDemo
     implements Constants
@@ -66,8 +65,7 @@ public class WekaBrownUnitPosDemo
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -80,11 +78,11 @@ public class WekaBrownUnitPosDemo
     }
 
     // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    protected void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
 
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV", NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownPosDemoCV",
+                NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -94,8 +92,7 @@ public class WekaBrownUnitPosDemo
     }
 
     // ##### Train Test #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("BrownPosDemoCV");
@@ -109,8 +106,7 @@ public class WekaBrownUnitPosDemo
         Lab.getInstance().run(batch);
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -135,9 +131,9 @@ public class WekaBrownUnitPosDemo
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                new TcFeatureSet(
-                		TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-                        TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(CharacterNGram.class,
+                                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -146,8 +142,7 @@ public class WekaBrownUnitPosDemo
         return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(createEngineDescription(NoOpAnnotator.class));
     }

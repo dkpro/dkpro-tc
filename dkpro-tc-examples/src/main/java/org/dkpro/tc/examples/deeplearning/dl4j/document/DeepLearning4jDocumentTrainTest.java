@@ -48,8 +48,7 @@ public class DeepLearning4jDocumentTrainTest
     public static final String corpusFilePathTrain = "src/main/resources/data/LabelledNews/train";
     public static final String corpusFilePathTest = "src/main/resources/data/LabelledNews/test";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
@@ -61,32 +60,28 @@ public class DeepLearning4jDocumentTrainTest
         experiment.runTrainTest(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class,
-                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                LinewiseTextReader.class, LinewiseTextReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class,
-                LinewiseTextReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                LinewiseTextReader.class, LinewiseTextReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        new Dl4jDocumentUserCode()),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jDocumentUserCode()),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
@@ -96,11 +91,10 @@ public class DeepLearning4jDocumentTrainTest
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DeepLearning",
-                Deeplearning4jAdapter.class);
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "DeepLearning", Deeplearning4jAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchRuntimeReport.class);
@@ -111,8 +105,7 @@ public class DeepLearning4jDocumentTrainTest
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(BreakIteratorSegmenter.class);
     }

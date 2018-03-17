@@ -28,30 +28,34 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 
 /**
- * This is a dummy annotator that takes the predicted classification outcomes
- * and creates POS annotations from the predicted values. This annotator is not
- * intended for productive use but can be adapted accordingly.
+ * This is a dummy annotator that takes the predicted classification outcomes and creates POS
+ * annotations from the predicted values. This annotator is not intended for productive use but can
+ * be adapted accordingly.
  */
-public class ConversionAnnotator extends JCasAnnotator_ImplBase {
-	
-	public static final String PARAM_SUFFIX = "pointlessParameterToTestParameterPassing";
-	@ConfigurationParameter(name = PARAM_SUFFIX, mandatory = false)
-	private String suffix;
+public class ConversionAnnotator
+    extends JCasAnnotator_ImplBase
+{
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    public static final String PARAM_SUFFIX = "pointlessParameterToTestParameterPassing";
+    @ConfigurationParameter(name = PARAM_SUFFIX, mandatory = false)
+    private String suffix;
 
-		for (TextClassificationOutcome o : JCasUtil.select(aJCas, TextClassificationOutcome.class)) {
-			POS p = new POS(aJCas, o.getBegin(), o.getEnd());
-			
-			String val = o.getOutcome();
-			if(suffix != null && !suffix.isEmpty()) {
-				val += suffix;
-			}
-			p.setPosValue(val);
-			p.addToIndexes();
-		}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
 
-	}
+        for (TextClassificationOutcome o : JCasUtil.select(aJCas,
+                TextClassificationOutcome.class)) {
+            POS p = new POS(aJCas, o.getBegin(), o.getEnd());
+
+            String val = o.getOutcome();
+            if (suffix != null && !suffix.isEmpty()) {
+                val += suffix;
+            }
+            p.setPosValue(val);
+            p.addToIndexes();
+        }
+
+    }
 
 }

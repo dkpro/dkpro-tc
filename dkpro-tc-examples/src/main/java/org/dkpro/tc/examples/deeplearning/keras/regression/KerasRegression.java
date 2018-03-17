@@ -46,8 +46,7 @@ public class KerasRegression
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
@@ -65,46 +64,41 @@ public class KerasRegression
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinewiseTextOutcomeReader.class, 
-				LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
-				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", 
-				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt",
+                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-        		LinewiseTextOutcomeReader.class, 
-				LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, 
-				LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_test.txt", 
-				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_test.txt",
+                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        pythonPath),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, pythonPath),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
                         "src/main/resources/kerasCode/regression/essay.py"),
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt")
-                );
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
         return pSpace;
     }
 
-    public static void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    public static void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
 
-        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation("KerasRegressionCrossValidation",
-                KerasAdapter.class, 2);
+        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
+                "KerasRegressionCrossValidation", KerasAdapter.class, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(ContextMemoryReport.class);

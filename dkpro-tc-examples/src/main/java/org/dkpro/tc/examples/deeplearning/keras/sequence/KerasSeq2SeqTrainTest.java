@@ -52,15 +52,13 @@ public class KerasSeq2SeqTrainTest
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         ParameterSpace pSpace = getParameterSpace();
         KerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
     }
 
-    public static ParameterSpace getParameterSpace()
-                throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -70,7 +68,7 @@ public class KerasSeq2SeqTrainTest
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
         dimReaders.put(DIM_READER_TRAIN, train);
 
-        //Careful - we need at least 2 sequences in the testing file otherwise things will crash
+        // Careful - we need at least 2 sequences in the testing file otherwise things will crash
         CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
@@ -84,8 +82,7 @@ public class KerasSeq2SeqTrainTest
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/seq/posTaggingLstm.py")
-                );
+                        "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
 
         return pSpace;
     }
@@ -96,21 +93,20 @@ public class KerasSeq2SeqTrainTest
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public static void runTrainTest(ParameterSpace pSpace, File dkproHome)
-        throws Exception
+    public static void runTrainTest(ParameterSpace pSpace, File dkproHome) throws Exception
     {
-        
+
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
         // instructions first :)
-//        if(dkproHome == null){
-//        	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
-//        }else{
-            System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
-//        }
-        
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasSeq2Seq",
-                KerasAdapter.class);
+        // if(dkproHome == null){
+        // DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
+        // }else{
+        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop/");
+        // }
+
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "KerasSeq2Seq", KerasAdapter.class);
         experiment.setParameterSpace(pSpace);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

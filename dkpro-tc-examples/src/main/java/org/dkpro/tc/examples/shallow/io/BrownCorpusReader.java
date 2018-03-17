@@ -44,20 +44,19 @@ public class BrownCorpusReader
     extends TeiReader
     implements TCReaderSequence
 {
-    
+
     /**
      * Whether coarse-grained or fine-grained POS tags should be used.
      */
     public static final String PARAM_USE_COARSE_GRAINED = "useCoarseGrained";
-    @ConfigurationParameter(name = PARAM_USE_COARSE_GRAINED, mandatory = true, defaultValue="false")
+    @ConfigurationParameter(name = PARAM_USE_COARSE_GRAINED, mandatory = true, defaultValue = "false")
     protected boolean useCoarseGrained;
 
     @Override
-    public void getNext(CAS cas)
-        throws IOException, CollectionException
+    public void getNext(CAS cas) throws IOException, CollectionException
     {
         super.getNext(cas);
-        
+
         JCas jcas;
         try {
             jcas = cas.getJCas();
@@ -65,34 +64,38 @@ public class BrownCorpusReader
         catch (CASException e) {
             throw new CollectionException(e);
         }
-        
+
         for (Sentence sentence : JCasUtil.select(jcas, Sentence.class)) {
-            TextClassificationSequence sequence = new TextClassificationSequence(jcas, sentence.getBegin(), sentence.getEnd());
+            TextClassificationSequence sequence = new TextClassificationSequence(jcas,
+                    sentence.getBegin(), sentence.getEnd());
             sequence.addToIndexes();
-            
+
             for (Token token : JCasUtil.selectCovered(jcas, Token.class, sentence)) {
-                TextClassificationTarget unit = new TextClassificationTarget(jcas, token.getBegin(), token.getEnd());
-                // will add the token content as a suffix to the ID of this unit 
+                TextClassificationTarget unit = new TextClassificationTarget(jcas, token.getBegin(),
+                        token.getEnd());
+                // will add the token content as a suffix to the ID of this unit
                 unit.setSuffix(token.getCoveredText());
                 unit.addToIndexes();
-                
-                TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, token.getBegin(), token.getEnd());
+
+                TextClassificationOutcome outcome = new TextClassificationOutcome(jcas,
+                        token.getBegin(), token.getEnd());
                 outcome.setOutcome(getTextClassificationOutcome(jcas, unit));
                 outcome.addToIndexes();
             }
         }
     }
-    
+
     @Override
     public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
         throws CollectionException
     {
         List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, unit);
         if (posList.size() != 1) {
-            throw new CollectionException(new Throwable("Could not get unique POS annotation to be used as TC outome."));
+            throw new CollectionException(
+                    new Throwable("Could not get unique POS annotation to be used as TC outome."));
         }
-        
-        String outcome = "";     
+
+        String outcome = "";
         if (useCoarseGrained) {
             outcome = posList.get(0).getClass().getSimpleName();
         }

@@ -37,22 +37,21 @@ public class WekaUnitAnnotator
     int tcId = 0;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         Collection<Token> tokens = JCasUtil.select(aJCas, Token.class);
 
         for (Token token : tokens) {
-                TextClassificationTarget unit = new TextClassificationTarget(aJCas, token.getBegin(),
-                        token.getEnd());
-                unit.setId(tcId++);
-                unit.setSuffix(token.getCoveredText());
-                unit.addToIndexes();
+            TextClassificationTarget unit = new TextClassificationTarget(aJCas, token.getBegin(),
+                    token.getEnd());
+            unit.setId(tcId++);
+            unit.setSuffix(token.getCoveredText());
+            unit.addToIndexes();
 
-                TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
-                        token.getBegin(), token.getEnd());
-                outcome.setOutcome(getTextClassificationOutcome(aJCas, unit));
-                outcome.addToIndexes();
+            TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
+                    token.getBegin(), token.getEnd());
+            outcome.setOutcome(getTextClassificationOutcome(aJCas, unit));
+            outcome.addToIndexes();
         }
     }
 

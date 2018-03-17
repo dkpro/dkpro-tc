@@ -61,8 +61,7 @@ public class XgboostUnit
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -75,8 +74,7 @@ public class XgboostUnit
     }
 
     // ##### Train Test #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest experiment = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo");
@@ -89,36 +87,33 @@ public class XgboostUnit
         Lab.getInstance().run(experiment);
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS,
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS,
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
                 new String[] { "*.xml", "*.xml.gz" });
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension
-				.create(Constants.DIM_FEATURE_SET,
-						new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
-								TcFeatureFactory.create(CharacterNGram.class,
-										CharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
-										CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
+                        TcFeatureFactory.create(CharacterNGram.class,
+                                CharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
+                                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -127,8 +122,7 @@ public class XgboostUnit
         return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(UnitOutcomeAnnotator.class);
     }

@@ -54,60 +54,56 @@ public class SvmHmmBrownPosDemo
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
     private static final int NUM_FOLDS = 3;
 
-    public static Map<String, Object> getDimReaders()
-        throws ResourceInitializationException
+    public static Map<String, Object> getDimReaders() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> results = new HashMap<>();
 
-            CollectionReaderDescription readerTrain = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
 
-            CollectionReaderDescription readerTest = CollectionReaderFactory
-                    .createReaderDescription(BrownCorpusReader.class,
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_LANGUAGE, "en",
-                            BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                            BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
 
-            results.put(Constants.DIM_READER_TRAIN, readerTrain);
-            results.put(Constants.DIM_READER_TEST, readerTest);
+        results.put(Constants.DIM_READER_TRAIN, readerTrain);
+        results.put(Constants.DIM_READER_TEST, readerTest);
 
         return results;
     }
 
-    public static ParameterSpace getParameterSpace()
-                throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = getDimReaders();
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                Constants.DIM_FEATURE_SET,
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class,
                                 CharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
                                 CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 CharacterNGram.PARAM_NGRAM_MAX_N, 3)));
-        
+
         @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                dimFeatureSets, dimClassificationArgs);
+                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets,
+                dimClassificationArgs);
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,
             Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
-                throws Exception
+        throws Exception
     {
-        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask", NUM_FOLDS);
+        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
+                NUM_FOLDS);
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         batch.addReport(BatchCrossValidationReport.class);
@@ -116,8 +112,7 @@ public class SvmHmmBrownPosDemo
         Lab.getInstance().run(batch);
     }
 
-    public void runTrainTest(ParameterSpace pSpace)
-                throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
         ExperimentTrainTest experiment = new ExperimentTrainTest("BrownTrainTestBatchTask");
         experiment.setParameterSpace(pSpace);
@@ -129,8 +124,7 @@ public class SvmHmmBrownPosDemo
         Lab.getInstance().run(experiment);
     }
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         DemoUtils.setDkproHome(SvmHmmBrownPosDemo.class.getSimpleName());

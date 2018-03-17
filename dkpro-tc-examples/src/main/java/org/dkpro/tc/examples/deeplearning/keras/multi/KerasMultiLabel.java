@@ -48,8 +48,7 @@ public class KerasMultiLabel
     static String documentTestFolderReuters = "src/main/resources/data/reuters/test";
     static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
@@ -61,8 +60,7 @@ public class KerasMultiLabel
         experiment.runTrainTest(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
@@ -93,19 +91,17 @@ public class KerasMultiLabel
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt")
-                );
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
         return pSpace;
     }
 
     // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    protected void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasTrainTestMultiLabel",
-                KerasAdapter.class);
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "KerasTrainTestMultiLabel", KerasAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -114,8 +110,7 @@ public class KerasMultiLabel
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(BreakIteratorSegmenter.class);
     }

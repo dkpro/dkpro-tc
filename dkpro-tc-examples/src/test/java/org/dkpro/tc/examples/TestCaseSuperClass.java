@@ -20,18 +20,20 @@ package org.dkpro.tc.examples;
 
 import org.junit.Before;
 
-public class TestCaseSuperClass {
-	
+public class TestCaseSuperClass
+{
 
-	public final static String HOME = "target/results";
+    public final static String HOME = "target/results";
 
-	@Before
-	public void setup() throws Exception {
-		/*
-		 * Sets the logging, configuraiton files are found under src/test/* to
-		 * increase verbosity for debugging
-		 */
-//		System.setProperty("org.apache.uima.logger.class", "org.apache.uima.util.impl.Log4jLogger_impl");
-		System.setProperty("DKPRO_HOME", HOME);
-	}
+    @Before
+    public void setup() throws Exception
+    {
+        /*
+         * Sets the logging, configuraiton files are found under src/test/* to increase verbosity
+         * for debugging
+         */
+        System.setProperty("org.apache.uima.logger.class",
+                "org.apache.uima.util.impl.Log4jLogger_impl");
+        System.setProperty("DKPRO_HOME", HOME);
+    }
 }

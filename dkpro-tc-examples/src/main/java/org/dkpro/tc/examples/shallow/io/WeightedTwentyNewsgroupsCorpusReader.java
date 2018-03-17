@@ -44,15 +44,14 @@ public class WeightedTwentyNewsgroupsCorpusReader
 {
     public static final String PARAM_WEIGHT_FILE_LOCATION = "weightFileLocation";
     @ConfigurationParameter(name = PARAM_WEIGHT_FILE_LOCATION, mandatory = true)
-    protected String weightFile;	
-	
+    protected String weightFile;
+
     private static final char SEPARATOR_CHAR = '=';
-    
+
     HashMap<String, String> weights;
-	
+
     @Override
-    public String getTextClassificationOutcome(JCas jcas)
-            throws CollectionException
+    public String getTextClassificationOutcome(JCas jcas) throws CollectionException
     {
         try {
             String uriString = DocumentMetaData.get(jcas).getDocumentUri();
@@ -63,40 +62,42 @@ public class WeightedTwentyNewsgroupsCorpusReader
         }
     }
 
-    //This is the important method to override. If not defined, all weights are one.
-	@Override
-	public double getTextClassificationOutcomeWeight(JCas jcas)
-			throws CollectionException {
-		
-	   //read a user-provided file with weights and assign the weight to each instance based on its ID
-		double doubleWeight = 0;
-		
-		try {
-			doubleWeight = Double.parseDouble(weights.get((DocumentMetaData.get(jcas).getDocumentId().split("/")[1]).split("\\.")[0]));
+    // This is the important method to override. If not defined, all weights are one.
+    @Override
+    public double getTextClassificationOutcomeWeight(JCas jcas) throws CollectionException
+    {
+
+        // read a user-provided file with weights and assign the weight to each instance based on
+        // its ID
+        double doubleWeight = 0;
+
+        try {
+            doubleWeight = Double.parseDouble(weights.get(
+                    (DocumentMetaData.get(jcas).getDocumentId().split("/")[1]).split("\\.")[0]));
         }
         catch (NumberFormatException e) {
             throw new CollectionException(e);
-		}			
-		return doubleWeight;
-	}
-	
+        }
+        return doubleWeight;
+    }
+
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
-    	super.initialize(context);
-    	List<String> lines = new ArrayList<String>();
+        super.initialize(context);
+        List<String> lines = new ArrayList<String>();
         try {
-			lines = FileUtils.readLines(new File(weightFile), "utf-8");
-		} catch (IOException e) {
+            lines = FileUtils.readLines(new File(weightFile), "utf-8");
+        }
+        catch (IOException e) {
             throw new ResourceInitializationException(e);
-		}
+        }
         weights = new HashMap<String, String>();
 
         for (String l : lines) {
             String[] splitted = l.split(String.valueOf(SEPARATOR_CHAR));
-        		if (splitted.length==2) 
-        			weights.put(splitted[0], splitted[1]);
-        	}
+            if (splitted.length == 2)
+                weights.put(splitted[0], splitted[1]);
         }
+    }
 }

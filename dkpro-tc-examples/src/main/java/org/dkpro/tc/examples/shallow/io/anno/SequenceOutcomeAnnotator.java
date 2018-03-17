@@ -38,8 +38,7 @@ public class SequenceOutcomeAnnotator
     int tcId = 0;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         for (Sentence sent : JCasUtil.select(aJCas, Sentence.class)) {
             TextClassificationSequence sequence = new TextClassificationSequence(aJCas,

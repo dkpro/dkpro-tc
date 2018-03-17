@@ -46,73 +46,80 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DeepLearningDl4jSeq2SeqTrainTest implements Constants {
-	public static final String LANGUAGE_CODE = "en";
+public class DeepLearningDl4jSeq2SeqTrainTest
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
     public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
-	
-	public static void main(String[] args) throws Exception {
 
-		// This is used to ensure that the required DKPRO_HOME environment
-		// variable is set.
-		// Ensures that people can run the experiments even if they haven't read
-		// the setup
-		// instructions first :)
-		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+    public static void main(String[] args) throws Exception
+    {
 
-		ParameterSpace pSpace = getParameterSpace();
+        // This is used to ensure that the required DKPRO_HOME environment
+        // variable is set.
+        // Ensures that people can run the experiments even if they haven't read
+        // the setup
+        // instructions first :)
+        // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
+        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		DeepLearningDl4jSeq2SeqTrainTest experiment = new DeepLearningDl4jSeq2SeqTrainTest();
-		experiment.runTrainTest(pSpace, null);
-	}
+        ParameterSpace pSpace = getParameterSpace();
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+        DeepLearningDl4jSeq2SeqTrainTest experiment = new DeepLearningDl4jSeq2SeqTrainTest();
+        experiment.runTrainTest(pSpace, null);
+    }
 
-		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, "*.xml");
-		dimReaders.put(DIM_READER_TRAIN, train);
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				TeiReader.PARAM_PATTERNS, "*.xml");
-		dimReaders.put(DIM_READER_TEST, test);
+        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "*.xml");
+        dimReaders.put(DIM_READER_TRAIN, train);
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"src/test/resources/wordvector/glove.6B.50d_250.txt"),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
-				Dimension.create(DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING, true),
-				Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jSeq2SeqUserCode()));
+        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, TeiReader.PARAM_PATTERNS, "*.xml");
+        dimReaders.put(DIM_READER_TEST, test);
 
-		return pSpace;
-	}
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
+                Dimension.create(DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING,
+                        true),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jSeq2SeqUserCode()));
 
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(SequenceOutcomeAnnotator.class);
-	}
+        return pSpace;
+    }
 
-	public void runTrainTest(ParameterSpace pSpace, ReportBase r) throws Exception {
-		
-		DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
-		
-		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("dl4jSeq2Seq", Deeplearning4jAdapter.class);
-		experiment.setParameterSpace(pSpace);
-		experiment.setPreprocessing(getPreprocessing());
-		if(r != null){
-		    experiment.addReport(r);
-		}
-		experiment.addReport(new BatchTrainTestReport());
-		experiment.addReport(ContextMemoryReport.class);
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    {
+        return createEngineDescription(SequenceOutcomeAnnotator.class);
+    }
 
-		Lab.getInstance().run(experiment);
-	}
+    public void runTrainTest(ParameterSpace pSpace, ReportBase r) throws Exception
+    {
+
+        DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
+
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "dl4jSeq2Seq", Deeplearning4jAdapter.class);
+        experiment.setParameterSpace(pSpace);
+        experiment.setPreprocessing(getPreprocessing());
+        if (r != null) {
+            experiment.addReport(r);
+        }
+        experiment.addReport(new BatchTrainTestReport());
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
+        Lab.getInstance().run(experiment);
+    }
 }

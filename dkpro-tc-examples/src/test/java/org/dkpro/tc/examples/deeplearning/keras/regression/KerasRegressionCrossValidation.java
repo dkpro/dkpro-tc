@@ -30,30 +30,34 @@ import org.junit.Test;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
-public class KerasRegressionCrossValidation extends PythonLocator {
-	@Test
-	public void runTest() throws Exception {
+public class KerasRegressionCrossValidation
+    extends PythonLocator
+{
+    @Test
+    public void runTest() throws Exception
+    {
 
-		DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
+        DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-		boolean testConditon = true;
-		String python3 = null;
-		try {
-			python3 = getEnvironment();
-		} catch (Exception e) {
-			System.err.println("Failed to locate Python with Keras - will skip this test case");
-			testConditon = false;
-		}
+        boolean testConditon = true;
+        String python3 = null;
+        try {
+            python3 = getEnvironment();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to locate Python with Keras - will skip this test case");
+            testConditon = false;
+        }
 
-		if (testConditon) {
-			ParameterSpace ps = KerasRegression.getParameterSpace(python3);
-			KerasRegression.runCrossValidation(ps);
+        if (testConditon) {
+            ParameterSpace ps = KerasRegression.getParameterSpace(python3);
+            KerasRegression.runCrossValidation(ps);
 
-			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.crossValidationCombinedIdFiles.get(0));
-			SpearmanCorrelation spear = new SpearmanCorrelation(data);
-			
-			
-			assertTrue(spear.getResult() < 0.0);
-		}
-	}
+            EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(
+                    ContextMemoryReport.crossValidationCombinedIdFiles.get(0));
+            SpearmanCorrelation spear = new SpearmanCorrelation(data);
+
+            assertTrue(spear.getResult() < 0.0);
+        }
+    }
 }

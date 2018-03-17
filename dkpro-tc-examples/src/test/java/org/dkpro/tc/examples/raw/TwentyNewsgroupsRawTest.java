@@ -23,15 +23,14 @@ import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class TwentyNewsgroupsRawTest extends TestCaseSuperClass
+public class TwentyNewsgroupsRawTest
+    extends TestCaseSuperClass
 {
 
     @Test
-    public void testJavaTrainTest()
-        throws Exception
+    public void testJavaTrainTest() throws Exception
     {
         TwentyNewsgroupsRaw.main(null);
     }

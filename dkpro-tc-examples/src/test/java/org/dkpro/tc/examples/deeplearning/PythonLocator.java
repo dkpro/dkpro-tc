@@ -27,39 +27,43 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 
-public class PythonLocator extends TestCaseSuperClass {
+public class PythonLocator
+    extends TestCaseSuperClass
+{
 
-	public static String getEnvironment() throws Exception {
+    public static String getEnvironment() throws Exception
+    {
 
-		for (String pathCandidate : new String[] { "/usr/local/bin/python3", "/usr/bin/python3" }) {
-			List<String> command = new ArrayList<>();
-			command.add(pathCandidate);
-			command.add("-c");
-			command.add("import keras");
+        for (String pathCandidate : new String[] { "/usr/local/bin/python3", "/usr/bin/python3" }) {
+            List<String> command = new ArrayList<>();
+            command.add(pathCandidate);
+            command.add("-c");
+            command.add("import keras");
 
-			ProcessBuilder pb = new ProcessBuilder(command).command(command);
-			Process start = pb.start();
-			start.waitFor();
+            ProcessBuilder pb = new ProcessBuilder(command).command(command);
+            Process start = pb.start();
+            start.waitFor();
 
-			InputStream inputStream = start.getInputStream();
-			List<String> output = new ArrayList<>();
-			BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-			String l = null;
-			while ((l = r.readLine()) != null) {
-				output.add(l);
-			}
-			r.close();
+            InputStream inputStream = start.getInputStream();
+            List<String> output = new ArrayList<>();
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+            String l = null;
+            while ((l = r.readLine()) != null) {
+                output.add(l);
+            }
+            r.close();
 
-			boolean keras = output.isEmpty();
+            boolean keras = output.isEmpty();
 
-			if (keras) {
-				LogFactory.getLog(PythonLocator.class.getName()).info("Use Python at [" + pathCandidate + "]");
-				return pathCandidate;
-			}
-		}
+            if (keras) {
+                LogFactory.getLog(PythonLocator.class.getName())
+                        .info("Use Python at [" + pathCandidate + "]");
+                return pathCandidate;
+            }
+        }
 
-		return null;
+        return null;
 
-	}
+    }
 
 }

@@ -25,8 +25,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 public interface Feature
 {
 
-    INDArray apply(String aWord)
-        throws IOException;
+    INDArray apply(String aWord) throws IOException;
 
     int size();
 

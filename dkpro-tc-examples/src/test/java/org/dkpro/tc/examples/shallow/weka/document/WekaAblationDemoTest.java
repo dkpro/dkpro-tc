@@ -24,27 +24,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaAblationDemoTest extends TestCaseSuperClass
+public class WekaAblationDemoTest
+    extends TestCaseSuperClass
 {
     WekaAblationDemo javaExperiment;
     ParameterSpace pSpace;
-    
+
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new WekaAblationDemo();
         pSpace = WekaAblationDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
+    public void testJavaCrossValidation() throws Exception
     {
         javaExperiment.runCrossValidation(pSpace);
     }

@@ -66,7 +66,8 @@ import weka.classifiers.functions.SMOreg;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperClass
+public class WekaSaveAndLoadModelDocumentPairRegression
+    extends TestCaseSuperClass
     implements Constants
 {
     static String pairTrainFiles = "src/main/resources/data/sts2012/STS.input.MSRpar.txt";
@@ -78,13 +79,12 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
     @Before
     public void setup() throws Exception
     {
-    	super.setup();
+        super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentPairRegression.class.getSimpleName());
     }
 
     @Test
-    public void pairRoundTripWekaRegression()
-        throws Exception
+    public void pairRoundTripWekaRegression() throws Exception
     {
 
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentPairRegression.class.getSimpleName());
@@ -122,8 +122,7 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
         modelFolder.deleteOnExit();
     }
 
-    private static void pairWriteModel(ParameterSpace paramSpace, File modelFolder)
-        throws Exception
+    private static void pairWriteModel(ParameterSpace paramSpace, File modelFolder) throws Exception
     {
         ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
         batch.setPreprocessing(
@@ -133,8 +132,7 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
         Lab.getInstance().run(batch);
     }
 
-    private static ParameterSpace pairGetParameterSpace()
-        throws ResourceInitializationException
+    private static ParameterSpace pairGetParameterSpace() throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
@@ -148,10 +146,9 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
                 Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
 
-
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
-        
+
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
                 Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);
@@ -159,8 +156,7 @@ public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperCla
         return pSpace;
     }
 
-    private static void pairLoadModelRegression(File modelFolder)
-        throws Exception
+    private static void pairLoadModelRegression(File modelFolder) throws Exception
     {
         CollectionReader reader = CollectionReaderFactory.createReader(STSReader.class,
                 STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,

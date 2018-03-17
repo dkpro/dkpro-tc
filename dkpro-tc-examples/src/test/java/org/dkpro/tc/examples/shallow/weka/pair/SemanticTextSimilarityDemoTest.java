@@ -34,42 +34,43 @@ import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import weka.core.SerializationHelper;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class SemanticTextSimilarityDemoTest extends TestCaseSuperClass
+public class SemanticTextSimilarityDemoTest
+    extends TestCaseSuperClass
 {
     ParameterSpace pSpace;
     SemanticTextSimilarityDemo experiment;
-    
+
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         experiment = new SemanticTextSimilarityDemo();
         pSpace = SemanticTextSimilarityDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
+    public void testJavaCrossValidation() throws Exception
     {
         experiment.runCrossValidation(pSpace);
     }
-    
+
     @Test
-    public void testTrainTest() throws Exception{
+    public void testTrainTest() throws Exception
+    {
         experiment.runTrainTest(pSpace);
-        
-        //weka offers to calculate this value too - we take weka as "reference" value 
+
+        // weka offers to calculate this value too - we take weka as "reference" value
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
-                .read(new File(ContextMemoryReport.id2outcomeFiles.get(0).getParent() + "/" +WekaTestTask.evaluationBin).getAbsolutePath());
+                .read(new File(ContextMemoryReport.id2outcomeFiles.get(0).getParent() + "/"
+                        + WekaTestTask.evaluationBin).getAbsolutePath());
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
-        
-        MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
-        
+
+        MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter
+                .convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
+
         assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.1);
     }
 }

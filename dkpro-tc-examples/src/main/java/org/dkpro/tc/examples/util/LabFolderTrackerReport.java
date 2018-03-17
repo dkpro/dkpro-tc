@@ -32,35 +32,33 @@ import org.dkpro.tc.core.task.deep.VectorizationTask;
 public class LabFolderTrackerReport
     extends BatchReportBase
 {
- 
-    public String preparationTask=null;
+
+    public String preparationTask = null;
     public String vectorizationTaskTrain = null;
     public String vectorizationTaskTest = null;
-    public String embeddingTask=null;
-    
+    public String embeddingTask = null;
 
     @Override
-    public void execute()
-        throws Exception
+    public void execute() throws Exception
     {
-        
+
         StorageService ss = getContext().getStorageService();
         for (TaskContextMetadata subcontext : getSubtasks()) {
-            
+
             String type = subcontext.getType();
-            if(type.contains(VectorizationTask.class.getName()) && type.contains("-Train-")){
-                vectorizationTaskTrain = ss.locateKey(subcontext.getId(), "").getAbsolutePath(); 
+            if (type.contains(VectorizationTask.class.getName()) && type.contains("-Train-")) {
+                vectorizationTaskTrain = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
                 System.err.println(vectorizationTaskTrain);
             }
-            if(type.contains(VectorizationTask.class.getName()) && type.contains("-Test-")){
+            if (type.contains(VectorizationTask.class.getName()) && type.contains("-Test-")) {
                 vectorizationTaskTest = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
                 System.err.println(vectorizationTaskTest);
             }
-            if(type.contains(PreparationTask.class.getName())){
+            if (type.contains(PreparationTask.class.getName())) {
                 preparationTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
                 System.err.println(preparationTask);
             }
-            if(type.contains(EmbeddingTask.class.getName())){
+            if (type.contains(EmbeddingTask.class.getName())) {
                 embeddingTask = ss.locateKey(subcontext.getId(), "").getAbsolutePath();
                 System.err.println(embeddingTask);
             }

@@ -25,27 +25,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaTwentyNewsgroupsInstanceWeightingDemoTest extends TestCaseSuperClass
+public class WekaTwentyNewsgroupsInstanceWeightingDemoTest
+    extends TestCaseSuperClass
 {
     WekaTwentyNewsgroupsInstanceWeightingDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
         javaExperiment = new WekaTwentyNewsgroupsInstanceWeightingDemo();
         pSpace = WekaTwentyNewsgroupsInstanceWeightingDemo.getParameterSpace();
-    
+
     }
 
     @Test
-    public void testJavaTrainTest()
-        throws Exception
+    public void testJavaTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
     }

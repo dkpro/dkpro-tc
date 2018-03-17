@@ -47,66 +47,77 @@ import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class XgboostRegression implements Constants {
+public class XgboostRegression
+    implements Constants
+{
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
+        DemoUtils.setDkproHome(XgboostRegression.class.getSimpleName());
 
-		DemoUtils.setDkproHome(XgboostRegression.class.getSimpleName());
+        ParameterSpace pSpace = getParameterSpace();
 
-		ParameterSpace pSpace = getParameterSpace();
+        XgboostRegression experiment = new XgboostRegression();
+        experiment.runTrainTest(pSpace);
+    }
 
-		XgboostRegression experiment = new XgboostRegression();
-		experiment.runTrainTest(pSpace);
-	}
+    @SuppressWarnings("unchecked")
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        // train/test will use both, while cross-validation will only use the train part
+        // The reader is also responsible for setting the labels/outcome on all
+        // documents/instances it creates.
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-	@SuppressWarnings("unchecked")
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		// train/test will use both, while cross-validation will only use the train part
-		// The reader is also responsible for setting the labels/outcome on all
-		// documents/instances it creates.
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt",
+                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
-		dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/test/essay_test.txt",
+                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
-		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/test/essay_test.txt", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
-		dimReaders.put(DIM_READER_TEST, readerTest);
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                Arrays.asList(
+                        new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" }));
 
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" }));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
+                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class)));
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
-						TcFeatureFactory.create(AvgTokenRatioPerDocument.class)));
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
+                dimClassificationArgs);
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-				dimFeatureSets, dimClassificationArgs);
+        return pSpace;
+    }
 
-		return pSpace;
-	}
+    // ##### TRAIN-TEST #####
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
+        ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostRegression");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(BatchRuntimeReport.class);
 
-	// ##### TRAIN-TEST #####
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
-		ExperimentTrainTest experiment = new ExperimentTrainTest("XgboostRegression");
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.addReport(BatchTrainTestReport.class);
-		experiment.addReport(ContextMemoryReport.class);
-		experiment.addReport(BatchRuntimeReport.class);
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
-
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(BreakIteratorSegmenter.class);
-	}
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
+    }
 }

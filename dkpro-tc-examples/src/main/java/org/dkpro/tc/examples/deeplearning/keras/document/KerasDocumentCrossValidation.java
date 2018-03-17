@@ -40,63 +40,71 @@ import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class KerasDocumentCrossValidation implements Constants {
-	public static final String LANGUAGE_CODE = "en";
+public class KerasDocumentCrossValidation
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
 
-	public static final String corpusFilePath = "src/main/resources/data/twentynewsgroups/bydate-train";
+    public static final String corpusFilePath = "src/main/resources/data/twentynewsgroups/bydate-train";
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
 
-		// DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
-		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
+        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-		KerasDocumentCrossValidation.runCrossValidation(pSpace);
-	}
+        KerasDocumentCrossValidation.runCrossValidation(pSpace);
+    }
 
-	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		// train/test will use both, while cross-validation will only use the
-		// train part
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+    public static ParameterSpace getParameterSpace(String python3)
+        throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        // train/test will use both, while cross-validation will only use the
+        // train part
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
-				corpusFilePath, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-				FolderwiseDataReader.PARAM_PATTERNS, "**/*.txt");
-		dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePath, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "**/*.txt");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, "/usr/local/bin/python3"),
-				Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-						"src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
-				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-				Dimension.create(
-						DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS, "src/test/resources/wordvector/glove.6B.50d_250.txt")
-				);
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
+                        "/usr/local/bin/python3"),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
+                        "src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
-		return pSpace;
-	}
+        return pSpace;
+    }
 
-	// ##### TRAIN-TEST #####
-	public static void runCrossValidation(ParameterSpace pSpace) throws Exception {
+    // ##### TRAIN-TEST #####
+    public static void runCrossValidation(ParameterSpace pSpace) throws Exception
+    {
 
-		DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation("KerasCrossValidation",
-				KerasAdapter.class, 2);
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.addReport(ContextMemoryReport.class);
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
+                "KerasCrossValidation", KerasAdapter.class, 2);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(BreakIteratorSegmenter.class);
-	}
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
+    }
 }

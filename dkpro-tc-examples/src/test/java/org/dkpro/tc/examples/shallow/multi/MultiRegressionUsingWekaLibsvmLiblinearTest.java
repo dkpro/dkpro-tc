@@ -41,143 +41,163 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 
 /**
- * This test just ensures that the experiment runs without throwing any
- * exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiRegressionUsingWekaLibsvmLiblinearTest extends TestCaseSuperClass {
-	MultiRegressionWekaLibsvmLiblinear javaExperiment;
-	ParameterSpace pSpace;
+public class MultiRegressionUsingWekaLibsvmLiblinearTest
+    extends TestCaseSuperClass
+{
+    MultiRegressionWekaLibsvmLiblinear javaExperiment;
+    ParameterSpace pSpace;
 
-	@Before
-	public void setup() throws Exception {
-		super.setup();
+    @Before
+    public void setup() throws Exception
+    {
+        super.setup();
 
-		javaExperiment = new MultiRegressionWekaLibsvmLiblinear();
-		pSpace = MultiRegressionWekaLibsvmLiblinear.getParameterSpace();
-	}
+        javaExperiment = new MultiRegressionWekaLibsvmLiblinear();
+        pSpace = MultiRegressionWekaLibsvmLiblinear.getParameterSpace();
+    }
 
-	@Test
-	public void testJavaTrainTest() throws Exception {
-		javaExperiment.runTrainTest(pSpace);
+    @Test
+    public void testJavaTrainTest() throws Exception
+    {
+        javaExperiment.runTrainTest(pSpace);
 
-		assertEquals(getSumOfExpectedTasksForTrainTest().intValue(), ContextMemoryReport.allIds.size());
-		assertEquals(getSumOfMachineLearningAdapterTasks().intValue(), ContextMemoryReport.id2outcomeFiles.size());
+        assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
+                ContextMemoryReport.allIds.size());
+        assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
+                ContextMemoryReport.id2outcomeFiles.size());
 
-		assertEquals(0.5, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
-		assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-		assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.2);
-	}
+        assertEquals(0.5, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
+                0.2);
+    }
 
-	@Test
-	public void testCrossValidation() throws Exception {
-		javaExperiment.runCrossValidation(pSpace);
+    @Test
+    public void testCrossValidation() throws Exception
+    {
+        javaExperiment.runCrossValidation(pSpace);
 
-		assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(), ContextMemoryReport.allIds.size());
-		assertTrue(combinedId2OutcomeReportsAreDissimilar(ContextMemoryReport.crossValidationCombinedIdFiles));
+        assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
+                ContextMemoryReport.allIds.size());
+        assertTrue(combinedId2OutcomeReportsAreDissimilar(
+                ContextMemoryReport.crossValidationCombinedIdFiles));
 
-		// Larger variance is acceptable, i.e. Windows, OSX and Linux compute slightly different values 
-		assertEquals(1.4,
-				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
-		assertEquals(1.3,
-				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"),
-				0.3);
-		assertEquals(4.1,
-				getMeanSquaredErrorCrossValidation(ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"),
-				0.3);
-	}
+        // Larger variance is acceptable, i.e. Windows, OSX and Linux compute slightly different
+        // values
+        assertEquals(1.4, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
+        assertEquals(1.3, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
+        assertEquals(4.1, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
+    }
 
-	private boolean combinedId2OutcomeReportsAreDissimilar(List<File> crossValidationTaskIds) throws IOException {
+    private boolean combinedId2OutcomeReportsAreDissimilar(List<File> crossValidationTaskIds)
+        throws IOException
+    {
 
-		Set<String> idset = new HashSet<>();
+        Set<String> idset = new HashSet<>();
 
-		for (File f : crossValidationTaskIds) {
-			String idfile = FileUtils.readFileToString(f, "utf-8");
-			if (idset.contains(idfile)) {
-				return false;
-			}
-			idset.add(idfile);
-		}
+        for (File f : crossValidationTaskIds) {
+            String idfile = FileUtils.readFileToString(f, "utf-8");
+            if (idset.contains(idfile)) {
+                return false;
+            }
+            idset.add(idfile);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private Integer getSumOfExpectedTasksForCrossValidation() {
+    private Integer getSumOfExpectedTasksForCrossValidation()
+    {
 
-		Integer sum = 0;
+        Integer sum = 0;
 
-		sum += 1; // 1 x Init
-		sum += 4; // 2 x FeatExtract Train/Test
-		sum += 2; // 2 x Meta
-		sum += 1; // 1 x Outcome
-		sum += 4; // 2 x Facade + 2x ML Adapter
-		sum += 1; // 1 x Crossvalidation
+        sum += 1; // 1 x Init
+        sum += 4; // 2 x FeatExtract Train/Test
+        sum += 2; // 2 x Meta
+        sum += 1; // 1 x Outcome
+        sum += 4; // 2 x Facade + 2x ML Adapter
+        sum += 1; // 1 x Crossvalidation
 
-		sum *= 3; // 3 adapter in the setup
+        sum *= 3; // 3 adapter in the setup
 
-		return sum;
-	}
+        return sum;
+    }
 
-	private double getMeanSquaredError(List<File> id2outcomeFiles, String simpleName) throws Exception {
+    private double getMeanSquaredError(List<File> id2outcomeFiles, String simpleName)
+        throws Exception
+    {
 
-		for (File f : id2outcomeFiles) {
-			if (f.getAbsolutePath().contains(simpleName + "TestTask-")) {
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().contains(simpleName + "TestTask-")) {
 
-				EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(f);
-				MeanSquaredError mse = new MeanSquaredError(data);
-				return mse.getResult();
-			}
-		}
+                EvaluationData<Double> data = Tc2LtlabEvalConverter
+                        .convertRegressionModeId2Outcome(f);
+                MeanSquaredError mse = new MeanSquaredError(data);
+                return mse.getResult();
+            }
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	private double getMeanSquaredErrorCrossValidation(List<File> id2outcomeFiles, String simpleName) throws Exception {
+    private double getMeanSquaredErrorCrossValidation(List<File> id2outcomeFiles, String simpleName)
+        throws Exception
+    {
 
-		for (File f : id2outcomeFiles) {
+        for (File f : id2outcomeFiles) {
 
-			List<String> lines = FileUtils.readLines(new File(f.getParentFile(), "DISCRIMINATORS.txt"), "utf-8");
-			String classArgs = "";
-			for (String s : lines) {
-				if (s.contains(Constants.DIM_CLASSIFICATION_ARGS)) {
-					classArgs = s;
-					break;
-				}
-			}
+            List<String> lines = FileUtils
+                    .readLines(new File(f.getParentFile(), "DISCRIMINATORS.txt"), "utf-8");
+            String classArgs = "";
+            for (String s : lines) {
+                if (s.contains(Constants.DIM_CLASSIFICATION_ARGS)) {
+                    classArgs = s;
+                    break;
+                }
+            }
 
-			if (classArgs.toLowerCase().contains(simpleName.toLowerCase())) {
+            if (classArgs.toLowerCase().contains(simpleName.toLowerCase())) {
 
-				EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(f);
-				MeanSquaredError mse = new MeanSquaredError(data);
-				return mse.getResult();
-			}
-		}
+                EvaluationData<Double> data = Tc2LtlabEvalConverter
+                        .convertRegressionModeId2Outcome(f);
+                MeanSquaredError mse = new MeanSquaredError(data);
+                return mse.getResult();
+            }
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	private Integer getSumOfMachineLearningAdapterTasks() {
+    private Integer getSumOfMachineLearningAdapterTasks()
+    {
 
-		Integer sum = 0;
+        Integer sum = 0;
 
-		sum += 1; // Weka
-		sum += 1; // Libsvm
-		sum += 1; // Liblinear
+        sum += 1; // Weka
+        sum += 1; // Libsvm
+        sum += 1; // Liblinear
 
-		return sum;
-	}
+        return sum;
+    }
 
-	private Integer getSumOfExpectedTasksForTrainTest() {
+    private Integer getSumOfExpectedTasksForTrainTest()
+    {
 
-		Integer sum = 0;
+        Integer sum = 0;
 
-		sum += 2; // 2 x Init
-		sum += 2; // 2 x FeatExtract
-		sum += 1; // 1 x Meta
-		sum += 1; // 1 x Outcome
-		sum += 2; // 1 x Facade + 1x ML Adapter
+        sum += 2; // 2 x Init
+        sum += 2; // 2 x FeatExtract
+        sum += 1; // 1 x Meta
+        sum += 1; // 1 x Outcome
+        sum += 2; // 1 x Facade + 1x ML Adapter
 
-		sum *= 3; // 3 adapter in setup
+        sum *= 3; // 3 adapter in setup
 
-		return sum;
-	}
+        return sum;
+    }
 }

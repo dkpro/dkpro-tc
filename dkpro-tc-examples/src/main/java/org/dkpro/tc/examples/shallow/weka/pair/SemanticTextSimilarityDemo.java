@@ -69,8 +69,7 @@ public class SemanticTextSimilarityDemo
     public static final String inputFileTest = "src/main/resources/data/sts2012/STS.input.MSRvid.txt";
     public static final String goldFileTest = "src/main/resources/data/sts2012/STS.gs.MSRvid.txt";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
@@ -85,8 +84,7 @@ public class SemanticTextSimilarityDemo
         experiment.runTrainTest(getParameterSpace());
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -106,9 +104,8 @@ public class SemanticTextSimilarityDemo
                 Constants.DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
+                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),
@@ -119,10 +116,10 @@ public class SemanticTextSimilarityDemo
     }
 
     // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    public void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionExampleCV", NUM_FOLDS);
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionExampleCV",
+                NUM_FOLDS);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -134,8 +131,7 @@ public class SemanticTextSimilarityDemo
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionExampleTrainTest");

@@ -35,58 +35,64 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing any
- * exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class LiblinearDocumentPlainTest extends TestCaseSuperClass {
-	LiblinearDocumentPlain javaExperiment;
-	ParameterSpace pSpace;
+public class LiblinearDocumentPlainTest
+    extends TestCaseSuperClass
+{
+    LiblinearDocumentPlain javaExperiment;
+    ParameterSpace pSpace;
 
-	@Before
-	public void setup() throws Exception {
-		super.setup();
+    @Before
+    public void setup() throws Exception
+    {
+        super.setup();
 
-		javaExperiment = new LiblinearDocumentPlain();
-		pSpace = LiblinearDocumentPlain.getParameterSpace();
-	}
+        javaExperiment = new LiblinearDocumentPlain();
+        pSpace = LiblinearDocumentPlain.getParameterSpace();
+    }
 
-	@Test
-	public void testJavaTrainTest() throws Exception {
-		javaExperiment.runTrainTest(pSpace);
-		assertEquals(0.75, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.01);
+    @Test
+    public void testJavaTrainTest() throws Exception
+    {
+        javaExperiment.runTrainTest(pSpace);
+        assertEquals(0.75, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.01);
 
-		assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+        assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
-		List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
-		assertEquals(11, lines.size());
+        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+                "utf-8");
+        assertEquals(11, lines.size());
 
-		// line-wise compare
-		assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-		assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
-		// line 2 is a time-stamp
-		assertEquals("alt.atheism/53068.txt=1;0;-1", lines.get(3));
-		assertEquals("alt.atheism/53257.txt=0;0;-1", lines.get(4));
-		assertEquals("alt.atheism/53260.txt=0;0;-1", lines.get(5));
-		assertEquals("alt.atheism/53261.txt=0;0;-1", lines.get(6));
-		assertEquals("comp.graphics/38758.txt=0;1;-1", lines.get(7));
-		assertEquals("comp.graphics/38761.txt=1;1;-1", lines.get(8));
-		assertEquals("comp.graphics/38762.txt=1;1;-1", lines.get(9));
-		assertEquals("comp.graphics/38763.txt=1;1;-1", lines.get(10));
-		
-	}
+        // line-wise compare
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
+        // line 2 is a time-stamp
+        assertEquals("alt.atheism/53068.txt=1;0;-1", lines.get(3));
+        assertEquals("alt.atheism/53257.txt=0;0;-1", lines.get(4));
+        assertEquals("alt.atheism/53260.txt=0;0;-1", lines.get(5));
+        assertEquals("alt.atheism/53261.txt=0;0;-1", lines.get(6));
+        assertEquals("comp.graphics/38758.txt=0;1;-1", lines.get(7));
+        assertEquals("comp.graphics/38761.txt=1;1;-1", lines.get(8));
+        assertEquals("comp.graphics/38762.txt=1;1;-1", lines.get(9));
+        assertEquals("comp.graphics/38763.txt=1;1;-1", lines.get(10));
 
-	private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception {
+    }
 
-		for (File f : id2outcomeFiles) {
-			if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
+    private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
+    {
 
-				EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(f);
-				Accuracy<String> acc = new Accuracy<>(data);
-				return acc.getResult();
-			}
-		}
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
 
-		return -1;
-	}
+                EvaluationData<String> data = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                Accuracy<String> acc = new Accuracy<>(data);
+                return acc.getResult();
+            }
+        }
+
+        return -1;
+    }
 
 }

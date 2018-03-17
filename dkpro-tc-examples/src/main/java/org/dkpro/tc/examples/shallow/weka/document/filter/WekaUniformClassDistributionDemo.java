@@ -69,8 +69,7 @@ public class WekaUniformClassDistributionDemo
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
@@ -88,24 +87,21 @@ public class WekaUniformClassDistributionDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
@@ -113,9 +109,10 @@ public class WekaUniformClassDistributionDemo
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class), TcFeatureFactory.create(
-                        WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3)));
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                                3)));
 
         Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
                 Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));
@@ -129,8 +126,7 @@ public class WekaUniformClassDistributionDemo
     }
 
     // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    public void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentCrossValidation experiment = new ExperimentCrossValidation(
@@ -145,8 +141,7 @@ public class WekaUniformClassDistributionDemo
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest experiment = new ExperimentTrainTest("UniformClassDistFeatureFilterTT");
@@ -158,8 +153,7 @@ public class WekaUniformClassDistributionDemo
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
 
         return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class),

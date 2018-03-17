@@ -38,29 +38,33 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class TcAnnotatorTest {
+public class TcAnnotatorTest
+{
 
-	@Test
-	public void testAnnotator() throws UIMAException{
-		
-		JCas aJCas = JCasFactory.createJCas();
-		aJCas.setDocumentText("This article attempts to provide a general introduction to atheism.");
-		
-		AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
-		segmenter.process(aJCas);
-		
-		String [] converter = new String [] {ConversionAnnotator.class.getName(), ConversionAnnotator.PARAM_SUFFIX, "-X"};
-		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-				TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-				TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName(), 
-				TcAnnotator.PARAM_TC_MODEL_LOCATION, "src/test/resources/TcAnnotatorTestModelDummy", 
-				TcAnnotator.PARAM_CONVERTION_ANNOTATOR, converter,
-				TcAnnotator.PARAM_RETAIN_TARGETS, false);
-		tcAnno.process(aJCas);
-		
-		
-		assertEquals(0, JCasUtil.select(aJCas, TextClassificationTarget.class).size());
-		assertEquals(11, JCasUtil.select(aJCas, POS.class).size());
-		assertTrue(new ArrayList<POS>(JCasUtil.select(aJCas, POS.class)).get(0).getPosValue().endsWith("-X"));
-	}
+    @Test
+    public void testAnnotator() throws UIMAException
+    {
+
+        JCas aJCas = JCasFactory.createJCas();
+        aJCas.setDocumentText(
+                "This article attempts to provide a general introduction to atheism.");
+
+        AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+        segmenter.process(aJCas);
+
+        String[] converter = new String[] { ConversionAnnotator.class.getName(),
+                ConversionAnnotator.PARAM_SUFFIX, "-X" };
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
+                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName(),
+                TcAnnotator.PARAM_TC_MODEL_LOCATION, "src/test/resources/TcAnnotatorTestModelDummy",
+                TcAnnotator.PARAM_CONVERTION_ANNOTATOR, converter, TcAnnotator.PARAM_RETAIN_TARGETS,
+                false);
+        tcAnno.process(aJCas);
+
+        assertEquals(0, JCasUtil.select(aJCas, TextClassificationTarget.class).size());
+        assertEquals(11, JCasUtil.select(aJCas, POS.class).size());
+        assertTrue(new ArrayList<POS>(JCasUtil.select(aJCas, POS.class)).get(0).getPosValue()
+                .endsWith("-X"));
+    }
 }

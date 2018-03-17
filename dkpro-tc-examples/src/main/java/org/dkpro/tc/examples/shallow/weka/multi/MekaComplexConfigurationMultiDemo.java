@@ -71,8 +71,7 @@ public class MekaComplexConfigurationMultiDemo
     /*
      * Starts the experiment.
      */
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
@@ -88,8 +87,7 @@ public class MekaComplexConfigurationMultiDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = new HashMap<String, Object>();
@@ -112,22 +110,21 @@ public class MekaComplexConfigurationMultiDemo
         // configuration.
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 // Config1: "-W" is used to set a base classifer
-                asList(new Object[] { new MekaAdapter(), BR.class.getName(), "-W", NaiveBayes.class.getName() }),
+                asList(new Object[] { new MekaAdapter(), BR.class.getName(), "-W",
+                        NaiveBayes.class.getName() }),
                 // Config2: "-P" sets the downsampling ratio
                 asList(new Object[] { new MekaAdapter(), CCq.class.getName(), "-P", "0.9" }),
                 // Config3: "-B": buffer size, "-S": max. num. of combs.
-                asList(new Object[] { new MekaAdapter(), PSUpdateable.class.getName(), "-B", "900", "-S", "9" }));
+                asList(new Object[] { new MekaAdapter(), PSUpdateable.class.getName(), "-B", "900",
+                        "-S", "9" }));
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet(
-                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class), 
-                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 600,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, 
-                        WordNGram.PARAM_NGRAM_MAX_N, 3)
-                        ));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                600, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                                3)));
 
         // multi-label feature selection (Mulan specific options), reduces the feature set to 10
         Map<String, Object> dimFeatureSelection = new HashMap<String, Object>();
@@ -149,8 +146,7 @@ public class MekaComplexConfigurationMultiDemo
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
         ExperimentTrainTest experiment = new ExperimentTrainTest(EXPERIMENT_NAME + "-TrainTest");
         experiment.setPreprocessing(getPreprocessing());
@@ -162,8 +158,7 @@ public class MekaComplexConfigurationMultiDemo
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
 
         return createEngineDescription(createEngineDescription(OpenNlpSegmenter.class,

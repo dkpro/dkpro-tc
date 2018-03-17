@@ -41,61 +41,71 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class DynetDocumentTrainTest implements Constants {
-	public static final String LANGUAGE_CODE = "en";
+public class DynetDocumentTrainTest
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
 
-	public static final String corpusFilePathTrain = "src/main/resources/data/langId/train";
-	public static final String corpusFilePathTest = "src/main/resources/data/langId/test";
-	
-	public static void main(String[] args) throws Exception {
+    public static final String corpusFilePathTrain = "src/main/resources/data/langId/train";
+    public static final String corpusFilePathTest = "src/main/resources/data/langId/test";
 
-		// This is used to ensure that the required DKPRO_HOME environment
-		// variable is set.
-		// Ensures that people can run the experiments even if they haven't read
-		// the setup
-		// instructions first :)
-		// DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+    public static void main(String[] args) throws Exception
+    {
 
-		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
+        // This is used to ensure that the required DKPRO_HOME environment
+        // variable is set.
+        // Ensures that people can run the experiments even if they haven't read
+        // the setup
+        // instructions first :)
+        // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
+        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		DynetDocumentTrainTest.runTrainTest(pSpace);
-	}
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+        DynetDocumentTrainTest.runTrainTest(pSpace);
+    }
 
-		CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(LinewiseTextOutcomeReader.class,
-				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en", LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
-		dimReaders.put(DIM_READER_TRAIN, train);
+    public static ParameterSpace getParameterSpace(String python3)
+        throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		// Careful - we need at least 2 sequences in the testing file otherwise
-		// things will crash
-		CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(LinewiseTextOutcomeReader.class,
-				LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en", LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
-		dimReaders.put(DIM_READER_TEST, test);
+        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+        dimReaders.put(DIM_READER_TRAIN, train);
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-				Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
-				Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true), 
-				Dimension
-						.create(DeepLearningConstants.DIM_USER_CODE, "src/main/resources/dynetCode/dynetLangId.py"));
+        // Careful - we need at least 2 sequences in the testing file otherwise
+        // things will crash
+        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+        dimReaders.put(DIM_READER_TEST, test);
 
-		return pSpace;
-	}
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
+                Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
+                        "src/main/resources/dynetCode/dynetLangId.py"));
 
-	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
-		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("DynetDocument", DynetAdapter.class);
-		experiment.setParameterSpace(pSpace);
-		experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		experiment.addReport(ContextMemoryReport.class);
-		Lab.getInstance().run(experiment);
-	}
+        return pSpace;
+    }
+
+    public static void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "DynetDocument", DynetAdapter.class);
+        experiment.setParameterSpace(pSpace);
+        experiment.setPreprocessing(
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(ContextMemoryReport.class);
+        Lab.getInstance().run(experiment);
+    }
 }

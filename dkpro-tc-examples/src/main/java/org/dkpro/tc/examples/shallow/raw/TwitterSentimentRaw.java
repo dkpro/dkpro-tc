@@ -46,8 +46,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
  */
 public class TwitterSentimentRaw
 {
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         String corpusFilePathTrain = "src/main/resources/data/twitter/train/*/*.txt";
         String outputPath = "target/ts_raw_output/";
@@ -56,8 +55,8 @@ public class TwitterSentimentRaw
         runPipeline(
                 // Reader
                 createReaderDescription(FolderwiseDataReader.class,
-                		FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                		FolderwiseDataReader.PARAM_LANGUAGE, "en"),
+                        FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        FolderwiseDataReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),
@@ -65,15 +64,16 @@ public class TwitterSentimentRaw
                         "en", ArktweetPosTagger.PARAM_VARIANT, "default"),
                 // Feature extraction
                 createEngineDescription(ExtractFeaturesConnector.class,
-                		ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-                		ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
-                		ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
-                		ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
+                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+                        ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
+                        ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
+                        ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
                         ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[] {},
                         ExtractFeaturesConnector.PARAM_IS_TESTING, false,
                         ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, false,
-                        ExtractFeaturesConnector.PARAM_OUTCOMES, new String [] {"emotional", "neutral"},
+                        ExtractFeaturesConnector.PARAM_OUTCOMES,
+                        new String[] { "emotional", "neutral" },
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
                         asList(createExternalResourceDescription(EmoticonRatio.class,
                                 EmoticonRatio.PARAM_UNIQUE_EXTRACTOR_NAME, "123"),

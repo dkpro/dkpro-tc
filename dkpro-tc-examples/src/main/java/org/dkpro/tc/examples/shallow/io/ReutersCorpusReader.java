@@ -63,8 +63,7 @@ public class ReutersCorpusReader
     private Map<String, List<String>> goldLabelMap;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -82,7 +81,7 @@ public class ReutersCorpusReader
                 String fileId = parts[0].split("/")[1];
 
                 List<String> labels = new ArrayList<String>();
-                for (int i=1; i<parts.length; i++) {
+                for (int i = 1; i < parts.length; i++) {
                     labels.add(parts[i]);
                 }
 
@@ -98,8 +97,7 @@ public class ReutersCorpusReader
     }
 
     @Override
-    public void getNext(CAS aCAS)
-        throws IOException, CollectionException
+    public void getNext(CAS aCAS) throws IOException, CollectionException
     {
         super.getNext(aCAS);
 
@@ -119,16 +117,16 @@ public class ReutersCorpusReader
     }
 
     @Override
-    public Set<String> getTextClassificationOutcomes(JCas jcas)
-        throws CollectionException
+    public Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException
     {
         Set<String> outcomes = new HashSet<String>();
-    
+
         DocumentMetaData dmd = DocumentMetaData.get(jcas);
         String titleWithoutExtension = FilenameUtils.removeExtension(dmd.getDocumentTitle());
 
         if (!goldLabelMap.containsKey(titleWithoutExtension)) {
-            throw new CollectionException(new Throwable("No gold label for document: " + dmd.getDocumentTitle()));
+            throw new CollectionException(
+                    new Throwable("No gold label for document: " + dmd.getDocumentTitle()));
         }
 
         for (String label : goldLabelMap.get(titleWithoutExtension)) {

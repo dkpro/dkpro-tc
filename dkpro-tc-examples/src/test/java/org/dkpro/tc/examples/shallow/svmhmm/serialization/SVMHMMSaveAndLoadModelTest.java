@@ -63,7 +63,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
+public class SVMHMMSaveAndLoadModelTest
+    extends TestCaseSuperClass
     implements Constants
 {
 
@@ -77,8 +78,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
     }
 
     @Test
-    public void saveModel()
-        throws Exception
+    public void saveModel() throws Exception
     {
         File modelFolder = folder.newFolder();
         ParameterSpace pSpace = getParameterSpace();
@@ -116,8 +116,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
 
     }
 
-    private ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    private ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         DemoUtils.setDkproHome(this.getClass().getName());
 
@@ -134,24 +133,25 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS, "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
-                TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
-        
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
+                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+
         @SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] { new SvmHmmAdapter() }));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
+                Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new SvmHmmAdapter() }));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets,
+                dimClassificationArgs);
         return pSpace;
     }
 
     @Test
-    public void loadModel()
-        throws Exception
+    public void loadModel() throws Exception
     {
         // create a model
         File modelFolder = folder.newFolder();
@@ -174,7 +174,7 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
 
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
-        
+
         Set<String> possibleOutcome = new HashSet<>();
         possibleOutcome.add("NN");
         possibleOutcome.add("AT");
@@ -189,10 +189,10 @@ public class SVMHMMSaveAndLoadModelTest extends TestCaseSuperClass
         possibleOutcome.add("VB");
         possibleOutcome.add("RB");
         possibleOutcome.add("NNS");
-        
+
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
-        for(TextClassificationOutcome o: outcomes){
-        	System.out.println(o.getOutcome());
+        for (TextClassificationOutcome o : outcomes) {
+            System.out.println(o.getOutcome());
             assertTrue(possibleOutcome.contains(o.getOutcome()));
         }
 

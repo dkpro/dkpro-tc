@@ -49,8 +49,7 @@ public class KerasDocumentTrainTest
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
@@ -69,16 +68,14 @@ public class KerasDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                FolderwiseDataReader.PARAM_PATTERNS,  "*/*.txt");
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class,
-                FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
@@ -92,19 +89,17 @@ public class KerasDocumentTrainTest
                 Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt")
-                );
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
         return pSpace;
     }
 
     // ##### TRAIN-TEST #####
-    protected static void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    protected static void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest("KerasTrainTest",
-                KerasAdapter.class);
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "KerasTrainTest", KerasAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);

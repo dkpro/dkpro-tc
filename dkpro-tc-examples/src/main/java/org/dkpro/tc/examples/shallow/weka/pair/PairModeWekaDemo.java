@@ -64,8 +64,7 @@ public class PairModeWekaDemo
     public static final String listFilePathTrain = "src/main/resources/data/twentynewsgroups/pairs/pairslist.train";
     public static final String listFilePathTest = "src/main/resources/data/twentynewsgroups/pairs/pairslist.test";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -80,8 +79,7 @@ public class PairModeWekaDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
@@ -100,21 +98,18 @@ public class PairModeWekaDemo
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
+                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);
 
         return pSpace;
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");

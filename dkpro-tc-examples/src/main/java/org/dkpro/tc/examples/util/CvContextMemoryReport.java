@@ -36,65 +36,66 @@ import org.dkpro.tc.ml.report.TcBatchReportBase;
 public class CvContextMemoryReport
     extends TcBatchReportBase
 {
-	public static List<String> mlaAdapters;
+    public static List<String> mlaAdapters;
 
     @Override
-    public void execute()
-        throws Exception
+    public void execute() throws Exception
     {
-    	mlaAdapters = getContextIdOfMachineLearningAdapter();
+        mlaAdapters = getContextIdOfMachineLearningAdapter();
     }
-    
+
     /**
-	 * Retrieves the context ids of all machine learning adapter folders that
-	 * have been created in this cross-validation run. Behavior undefined if
-	 * this method is called in a train test setup
-	 * 
-	 * @return a list of context ids of the machine learning adapter folders
-	 * @throws Exception
-	 *             in case read operations fail
-	 */
-	public List<String> getContextIdOfMachineLearningAdapter() throws Exception {
+     * Retrieves the context ids of all machine learning adapter folders that have been created in
+     * this cross-validation run. Behavior undefined if this method is called in a train test setup
+     * 
+     * @return a list of context ids of the machine learning adapter folders
+     * @throws Exception
+     *             in case read operations fail
+     */
+    public List<String> getContextIdOfMachineLearningAdapter() throws Exception
+    {
 
-		File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
-		List<String> foldersOfSingleRuns = getSubTasks(cvTaskAttributeFile);
+        File cvTaskAttributeFile = getContext().getFile(Task.ATTRIBUTES_KEY, AccessMode.READONLY);
+        List<String> foldersOfSingleRuns = getSubTasks(cvTaskAttributeFile);
 
-		List<String> mlaContextIdsOfCvRun = new ArrayList<>();
-		for (String f : foldersOfSingleRuns) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), f)) {
-				mlaContextIdsOfCvRun.add(f);
-			}
-		}
+        List<String> mlaContextIdsOfCvRun = new ArrayList<>();
+        for (String f : foldersOfSingleRuns) {
+            if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), f)) {
+                mlaContextIdsOfCvRun.add(f);
+            }
+        }
 
-		return mlaContextIdsOfCvRun;
-	}
+        return mlaContextIdsOfCvRun;
+    }
 
-	private List<String> getSubTasks(File attributesTXT) throws Exception {
-		List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+    private List<String> getSubTasks(File attributesTXT) throws Exception
+    {
+        List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
 
-		int idx = 0;
-		for (String line : readLines) {
-			if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
-				break;
-			}
-			idx++;
-		}
-		String line = readLines.get(idx);
-		int start = line.indexOf("[") + 1;
-		int end = line.indexOf("]");
-		String subTasks = line.substring(start, end);
+        int idx = 0;
+        for (String line : readLines) {
+            if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
+                break;
+            }
+            idx++;
+        }
+        String line = readLines.get(idx);
+        int start = line.indexOf("[") + 1;
+        int end = line.indexOf("]");
+        String subTasks = line.substring(start, end);
 
-		String[] tasks = subTasks.split(",");
+        String[] tasks = subTasks.split(",");
 
-		List<String> results = new ArrayList<>();
+        List<String> results = new ArrayList<>();
 
-		for (String task : tasks) {
-			if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), task.trim())) {
-				results.add(task.trim());
-			}
-		}
+        for (String task : tasks) {
+            if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(),
+                    task.trim())) {
+                results.add(task.trim());
+            }
+        }
 
-		return results;
-	}
+        return results;
+    }
 
 }

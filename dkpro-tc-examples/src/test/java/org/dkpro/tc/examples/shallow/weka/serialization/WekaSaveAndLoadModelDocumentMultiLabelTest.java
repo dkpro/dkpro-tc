@@ -67,7 +67,8 @@ import weka.classifiers.trees.RandomForest;
  * as well as all learning models (single-label, multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperClass
+public class WekaSaveAndLoadModelDocumentMultiLabelTest
+    extends TestCaseSuperClass
     implements Constants
 {
     static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
@@ -80,7 +81,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
     @Before
     public void setup() throws Exception
     {
-    	super.setup();
+        super.setup();
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentMultiLabelTest.class.getSimpleName());
     }
 
@@ -98,13 +99,14 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S", "RAkEL2", "-W",
-                        RandomForest.class.getName() }));
+                Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S",
+                        "RAkEL2", "-W", RandomForest.class.getName() }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
-                TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
+                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
@@ -114,8 +116,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
     }
 
     @Test
-    public void documentRoundTripWekaMultiLabel()
-        throws Exception
+    public void documentRoundTripWekaMultiLabel() throws Exception
     {
 
         DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentMultiLabelTest.class.getSimpleName());
@@ -155,19 +156,17 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest extends TestCaseSuperCla
 
     private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder,
             boolean singlelabel)
-                throws Exception
+        throws Exception
     {
         ExperimentSaveModel batch;
         batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(
-                createEngineDescription(BreakIteratorSegmenter.class));
+        batch.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
         batch.setParameterSpace(paramSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         Lab.getInstance().run(batch);
     }
 
-    private static void documentLoadModelMultiLabel(File modelFolder)
-        throws Exception
+    private static void documentLoadModelMultiLabel(File modelFolder) throws Exception
     {
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);

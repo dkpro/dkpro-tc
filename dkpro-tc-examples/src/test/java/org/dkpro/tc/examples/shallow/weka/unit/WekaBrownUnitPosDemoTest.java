@@ -31,33 +31,32 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaBrownUnitPosDemoTest extends TestCaseSuperClass
+public class WekaBrownUnitPosDemoTest
+    extends TestCaseSuperClass
 {
     WekaBrownUnitPosDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new WekaBrownUnitPosDemo();
         pSpace = WekaBrownUnitPosDemo.getParameterSpace();
     }
 
     @Test
-    public void testTrainTest()
-        throws Exception
+    public void testTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
- 
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
+
+        EvaluationData<String> data = Tc2LtlabEvalConverter
+                .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         Accuracy<String> acc = new Accuracy<String>(data);
-        
+
         assertEquals(0.744, acc.getResult(), 0.0001);
     }
 }

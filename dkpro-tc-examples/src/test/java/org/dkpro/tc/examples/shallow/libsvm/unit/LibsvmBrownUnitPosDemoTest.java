@@ -31,44 +31,41 @@ import org.junit.Test;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class LibsvmBrownUnitPosDemoTest extends TestCaseSuperClass
+public class LibsvmBrownUnitPosDemoTest
+    extends TestCaseSuperClass
 {
     LibsvmBrownUnitPosDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new LibsvmBrownUnitPosDemo();
         pSpace = LibsvmBrownUnitPosDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
+    public void testJavaCrossValidation() throws Exception
     {
         javaExperiment.runCrossValidation(pSpace);
-        
-		Accuracy<String> accuracy = new Accuracy<>(
-				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
 
-		assertEquals(0.39175257, accuracy.getResult(), 0.09);
+        Accuracy<String> accuracy = new Accuracy<>(Tc2LtlabEvalConverter
+                .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
+
+        assertEquals(0.39175257, accuracy.getResult(), 0.09);
     }
-    
+
     @Test
-    public void testTrainTest()
-        throws Exception
+    public void testTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
-        
-		Accuracy<String> accuracy = new Accuracy<>(
-				Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
+
+        Accuracy<String> accuracy = new Accuracy<>(Tc2LtlabEvalConverter
+                .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
 
         assertEquals(0.8092783505154639, accuracy.getResult(), 0.0001);
     }

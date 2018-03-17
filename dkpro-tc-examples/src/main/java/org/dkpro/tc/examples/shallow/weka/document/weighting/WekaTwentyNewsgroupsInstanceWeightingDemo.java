@@ -83,8 +83,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
     public static final String weightsFile = "/arbitraryWeights.txt";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
 
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
@@ -103,8 +102,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
     }
 
     @SuppressWarnings("unchecked")
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the train part
@@ -133,20 +131,17 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(
-                DIM_FEATURE_SET,
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerSentence.class),
                         TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-                        TcFeatureFactory.create(WordNGram.class,
-                                WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
-                                WordNGram.PARAM_NGRAM_MIN_N, 2, WordNGram.PARAM_NGRAM_MAX_N,
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                50, WordNGram.PARAM_NGRAM_MIN_N, 2, WordNGram.PARAM_NGRAM_MAX_N,
                                 3)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs, 
-                Dimension.create(DIM_APPLY_INSTANCE_WEIGHTING, true)
+                dimClassificationArgs, Dimension.create(DIM_APPLY_INSTANCE_WEIGHTING, true)
         // This last dimension is crucial for this demo
         );
 
@@ -154,8 +149,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
         ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
@@ -168,13 +162,13 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         // Run
         Lab.getInstance().run(experiment);
     }
-    
+
     // ##### TRAIN-TEST #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    protected void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
 
-    	ExperimentCrossValidation experiment = new ExperimentCrossValidation("TwentyNewsgroupsTrainTest", 2);
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation(
+                "TwentyNewsgroupsTrainTest", 2);
         // each outcome label
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
@@ -184,11 +178,9 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
 
-        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)
-                );
+        return createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class));
     }
 }

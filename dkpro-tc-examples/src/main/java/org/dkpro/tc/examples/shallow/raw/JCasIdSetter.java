@@ -31,8 +31,7 @@ public class JCasIdSetter
     int jcasId;
 
     @Override
-    public void process(JCas arg0)
-        throws AnalysisEngineProcessException
+    public void process(JCas arg0) throws AnalysisEngineProcessException
     {
         boolean exists = JCasUtil.exists(arg0, JCasId.class);
         if (!exists) {

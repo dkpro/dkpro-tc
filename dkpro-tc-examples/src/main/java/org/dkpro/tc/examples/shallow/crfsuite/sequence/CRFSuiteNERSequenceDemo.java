@@ -64,8 +64,7 @@ public class CRFSuiteNERSequenceDemo
 
     public static File outputFolder = null;
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         // Suppress mallet logging output
         System.setProperty("java.util.logging.config.file",
@@ -79,15 +78,15 @@ public class CRFSuiteNERSequenceDemo
         DemoUtils.setDkproHome(CRFSuiteNERSequenceDemo.class.getSimpleName());
 
         CRFSuiteNERSequenceDemo demo = new CRFSuiteNERSequenceDemo();
-//        demo.runCrossValidation(getParameterSpace());
+        // demo.runCrossValidation(getParameterSpace());
         demo.runTrainTest(getParameterSpace());
     }
 
     // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace)
-        throws Exception
+    protected void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV", NUM_FOLDS);
+        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
+                NUM_FOLDS);
         batch.setPreprocessing(getPreprocessing());
         batch.setParameterSpace(pSpace);
         batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
@@ -98,10 +97,10 @@ public class CRFSuiteNERSequenceDemo
     }
 
     // ##### Train Test #####
-    public void runTrainTest(ParameterSpace pSpace)
-        throws Exception
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
-        ExperimentTrainTest experiment = new ExperimentTrainTest("NamedEntitySequenceDemoTrainTest");
+        ExperimentTrainTest experiment = new ExperimentTrainTest(
+                "NamedEntitySequenceDemoTrainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchTrainTestReport.class);
@@ -112,8 +111,7 @@ public class CRFSuiteNERSequenceDemo
         Lab.getInstance().run(experiment);
     }
 
-    public static ParameterSpace getParameterSpace()
-        throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
@@ -135,11 +133,13 @@ public class CRFSuiteNERSequenceDemo
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
         dimReaders.put(DIM_READER_TEST, readerTest);
-        
-        //Number of iterations is set to an extreme low value (remove --> default: 100 iterations, or set accordingly)
+
+        // Number of iterations is set to an extreme low value (remove --> default: 100 iterations,
+        // or set accordingly)
         @SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				asList(new Object[] {new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5"}));
+        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
+                asList(new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "-p",
+                        "max_iterations=5" }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
@@ -147,13 +147,13 @@ public class CRFSuiteNERSequenceDemo
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets,
+                dimClassificationArgs);
 
         return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing()
-        throws ResourceInitializationException
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(NoOpAnnotator.class);
     }

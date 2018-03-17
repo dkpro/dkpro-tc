@@ -39,11 +39,10 @@ public abstract class SingleLabelReaderBase
 {
 
     @Override
-    public void getNext(CAS aCAS)
-        throws IOException, CollectionException
+    public void getNext(CAS aCAS) throws IOException, CollectionException
     {
         super.getNext(aCAS);
-        
+
         JCas jcas;
         try {
             jcas = aCAS.getJCas();
@@ -56,10 +55,9 @@ public abstract class SingleLabelReaderBase
         outcome.setOutcome(getTextClassificationOutcome(jcas));
         outcome.setWeight(getTextClassificationOutcomeWeight(jcas));
         outcome.addToIndexes();
-        
+
         new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length()).addToIndexes();
     }
-
 
     /**
      * This methods adds a (default) weight to instances. Readers which assign specific weights to
@@ -68,11 +66,12 @@ public abstract class SingleLabelReaderBase
      * @param jcas
      *            the JCas to add the annotation to
      * @return a double between zero and one
-     * @throws CollectionException if an error occurs
+     * @throws CollectionException
+     *             if an error occurs
      */
-	public double getTextClassificationOutcomeWeight(JCas jcas)
-			throws CollectionException {
-		return 1.0;
-	}
-    
+    public double getTextClassificationOutcomeWeight(JCas jcas) throws CollectionException
+    {
+        return 1.0;
+    }
+
 }

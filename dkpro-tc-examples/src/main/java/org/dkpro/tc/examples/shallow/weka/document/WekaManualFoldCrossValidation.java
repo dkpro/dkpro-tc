@@ -51,17 +51,14 @@ public class WekaManualFoldCrossValidation
     public static final int NUM_FOLDS = 2;
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
-
         WekaManualFoldCrossValidation demo = new WekaManualFoldCrossValidation();
         demo.runCrossValidation(getParameterSpace(true), NUM_FOLDS);
     }
 
     // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace, int folds)
-        throws Exception
+    public void runCrossValidation(ParameterSpace pSpace, int folds) throws Exception
     {
         // This is used to ensure that the required DKPRO_HOME environment variable is set.
         // Ensures that people can run the experiments even if they haven't read the setup
@@ -85,24 +82,24 @@ public class WekaManualFoldCrossValidation
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory
-                .createReaderDescription(BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE,
-                        "de", BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                        BrownCorpusReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "de",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
                 Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
-						CharacterNGram.PARAM_NGRAM_MAX_N, 3, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 750)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class,
+                        CharacterNGram.PARAM_NGRAM_MIN_N, 2, CharacterNGram.PARAM_NGRAM_MAX_N, 3,
+                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 750)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets,
-                dimClassificationArgs,
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs,
                 /*
                  * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used
                  * as is to make folds

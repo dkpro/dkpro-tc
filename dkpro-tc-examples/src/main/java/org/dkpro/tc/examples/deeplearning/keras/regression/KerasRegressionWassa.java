@@ -41,69 +41,80 @@ import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class KerasRegressionWassa implements Constants {
-	public static final String LANGUAGE_CODE = "en";
+public class KerasRegressionWassa
+    implements Constants
+{
+    public static final String LANGUAGE_CODE = "en";
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
 
-		// DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
-		System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
+        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
-		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-		KerasRegressionWassa.runTrainTest(pSpace);
-	}
+        KerasRegressionWassa.runTrainTest(pSpace);
+    }
 
-	public static ParameterSpace getParameterSpace(String python3) throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		// train/test will use both, while cross-validation will only use the
-		// train part
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+    public static ParameterSpace getParameterSpace(String python3)
+        throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        // train/test will use both, while cross-validation will only use the
+        // train part
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/wassa2017/train/", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
-		dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/wassa2017/train/",
+                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
+                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt",
+                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/wassa2017/dev/", LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-				LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt", LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-				LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
-		dimReaders.put(DIM_READER_TEST, readerTest);
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/wassa2017/dev/", LinewiseTextOutcomeReader.PARAM_LANGUAGE,
+                "en", LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt",
+                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
+                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-				Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
-				Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
-				Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-						"src/main/resources/kerasCode/regression/wassa.py"),
-				Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 50),
-				Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-				Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-						"src/test/resources/wordvector/glove.6B.50d_250.txt"));
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
+                        "src/main/resources/kerasCode/regression/wassa.py"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 50),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
 
-		return pSpace;
-	}
+        return pSpace;
+    }
 
-	// ##### TRAIN-TEST #####
-	public static void runTrainTest(ParameterSpace pSpace) throws Exception {
+    // ##### TRAIN-TEST #####
+    public static void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
 
-		DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
-				"KerasRegressionWassa2017AngerTrainTest", KerasAdapter.class);
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.addReport(ContextMemoryReport.class);
-		experiment.addReport(new BatchTrainTestReport());
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "KerasRegressionWassa2017AngerTrainTest", KerasAdapter.class);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(new BatchTrainTestReport());
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-	protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(BreakIteratorSegmenter.class);
-	}
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
+    }
 }

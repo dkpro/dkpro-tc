@@ -25,27 +25,26 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  * 
  */
-public class MekaWekaComplexConfigurationMultiDemoTest extends TestCaseSuperClass
+public class MekaWekaComplexConfigurationMultiDemoTest
+    extends TestCaseSuperClass
 {
     MekaComplexConfigurationMultiDemo javaExperiment;
     ParameterSpace pSpace;
-    
+
     @Before
     public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new MekaComplexConfigurationMultiDemo();
         pSpace = MekaComplexConfigurationMultiDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaTrainTest()
-        throws Exception
+    public void testJavaTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
     }

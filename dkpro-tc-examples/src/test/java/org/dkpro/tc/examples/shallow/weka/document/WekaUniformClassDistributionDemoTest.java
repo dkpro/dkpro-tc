@@ -25,34 +25,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaUniformClassDistributionDemoTest extends TestCaseSuperClass
+public class WekaUniformClassDistributionDemoTest
+    extends TestCaseSuperClass
 {
     WekaUniformClassDistributionDemo javaExperiment;
     ParameterSpace pSpace;
-    
+
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new WekaUniformClassDistributionDemo();
         pSpace = WekaUniformClassDistributionDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaTrainTest()
-        throws Exception
+    public void testJavaTrainTest() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
     }
 
     @Test
-    public void testJavaCrossValidation()
-        throws Exception
+    public void testJavaCrossValidation() throws Exception
     {
         javaExperiment.runCrossValidation(pSpace);
     }

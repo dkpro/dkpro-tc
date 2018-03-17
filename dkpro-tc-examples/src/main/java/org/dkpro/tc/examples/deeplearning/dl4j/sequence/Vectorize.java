@@ -46,7 +46,7 @@ public class Vectorize
     {
         // Nothing to do
     }
-    
+
     /*
      * Use for tagging - pre-load tagset! Mind that order of tags must be exactly as produced during
      * training.
@@ -54,24 +54,25 @@ public class Vectorize
     public Vectorize(String[] aTagset)
     {
         this();
-        
+
         for (int i = 0; i < aTagset.length; i++) {
             tagset.put(aTagset[i], i);
         }
     }
-    
-    public DataSet vectorize(List<List<String>> sentences, List<List<String>> sentLabels, BinaryVectorizer wordVectors,
-            int truncateLength, int maxTagsetSize, boolean includeLabels)
-                throws IOException
+
+    public DataSet vectorize(List<List<String>> sentences, List<List<String>> sentLabels,
+            BinaryVectorizer wordVectors, int truncateLength, int maxTagsetSize,
+            boolean includeLabels)
+        throws IOException
     {
         // Feature extractors
         List<Feature> featureGenerators = new ArrayList<>();
         featureGenerators.add(new EmbeddingsFeature(wordVectors));
         // featureGenerators.add(new ShapeFeature());
-     
+
         // Get size of feature vector
         int featureVectorSize = featureGenerators.stream().mapToInt(f -> f.size()).sum();
-        
+
         // If longest sentence exceeds 'truncateLength': only take the first 'truncateLength' words
         int maxSentLength = sentences.stream().mapToInt(tokens -> tokens.size()).max().getAsInt();
         if (maxSentLength > truncateLength) {
@@ -98,8 +99,8 @@ public class Vectorize
                 // Look up embedding
                 String token = tokens.get(t);
                 INDArray embedding = Nd4j.create(wordVectors.vectorize(token));
-                features.put(new INDArrayIndex[]{ point(s), all(), point(t) }, embedding);
-                
+                features.put(new INDArrayIndex[] { point(s), all(), point(t) }, embedding);
+
                 // Word is present (not padding) -> 1.0 in features mask
                 featuresMask.putScalar(new int[] { s, t }, 1.0);
 
@@ -108,8 +109,8 @@ public class Vectorize
                 if (!tagset.containsKey(tag)) {
                     tagset.put(tag, tagset.size());
                 }
-                
-                // Add POS label 
+
+                // Add POS label
                 labels.putScalar(s, tagset.getInt(tag), t, 1.0);
                 labelsMask.putScalar(new int[] { s, t }, 1.0);
             }
@@ -117,7 +118,7 @@ public class Vectorize
 
         return new DataSet(features, labels, featuresMask, labelsMask);
     }
-    
+
     public String[] getTagset()
     {
         return tagset.keySet().toArray(new String[tagset.size()]);

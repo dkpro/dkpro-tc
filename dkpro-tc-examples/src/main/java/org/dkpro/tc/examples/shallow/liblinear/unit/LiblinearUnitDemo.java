@@ -49,93 +49,103 @@ import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
- * This is an example for POS tagging as unit classification. Each POS is
- * treated as a classification unit, but unlike sequence tagging the decision
- * for each POS is taken independently. This will usually give worse results, so
- * this is only to showcase the concept.
+ * This is an example for POS tagging as unit classification. Each POS is treated as a
+ * classification unit, but unlike sequence tagging the decision for each POS is taken
+ * independently. This will usually give worse results, so this is only to showcase the concept.
  * 
  */
-public class LiblinearUnitDemo implements Constants {
+public class LiblinearUnitDemo
+    implements Constants
+{
 
-	public static final String LANGUAGE_CODE = "en";
+    public static final String LANGUAGE_CODE = "en";
 
-	public static final int NUM_FOLDS = 2;
+    public static final int NUM_FOLDS = 2;
 
-	public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-	public static void main(String[] args) throws Exception {
-		// This is used to ensure that the required DKPRO_HOME environment
-		// variable is set.
-		// Ensures that people can run the experiments even if they haven't read
-		// the setup
-		// instructions first :)
-		// Don't use this in real experiments! Read the documentation and set
-		// DKPRO_HOME as
-		// explained there.
-		DemoUtils.setDkproHome(LiblinearUnitDemo.class.getSimpleName());
+    public static void main(String[] args) throws Exception
+    {
+        // This is used to ensure that the required DKPRO_HOME environment
+        // variable is set.
+        // Ensures that people can run the experiments even if they haven't read
+        // the setup
+        // instructions first :)
+        // Don't use this in real experiments! Read the documentation and set
+        // DKPRO_HOME as
+        // explained there.
+        DemoUtils.setDkproHome(LiblinearUnitDemo.class.getSimpleName());
 
-		new LiblinearUnitDemo().runTrainTest(getParameterSpace());
-		// new
-		// LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
-	}
+        new LiblinearUnitDemo().runTrainTest(getParameterSpace());
+        // new
+        // LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
+    }
 
-	// ##### CV #####
-	public void runCrossValidation(ParameterSpace pSpace) throws Exception {
+    // ##### CV #####
+    public void runCrossValidation(ParameterSpace pSpace) throws Exception
+    {
 
-		ExperimentCrossValidation experiment = new ExperimentCrossValidation("BrownPosDemoCV", NUM_FOLDS);
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("BrownPosDemoCV",
+                NUM_FOLDS);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-	// ##### Train Test #####
-	public void runTrainTest(ParameterSpace pSpace) throws Exception {
+    // ##### Train Test #####
+    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    {
 
-		ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
-		experiment.setPreprocessing(getPreprocessing());
-		experiment.setParameterSpace(pSpace);
-		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-		experiment.addReport(ContextMemoryReport.class);
+        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(ContextMemoryReport.class);
 
-		// Run
-		Lab.getInstance().run(experiment);
-	}
+        // Run
+        Lab.getInstance().run(experiment);
+    }
 
-	public static ParameterSpace getParameterSpace() throws ResourceInitializationException {
-		// configure training and test data reader dimension
-		Map<String, Object> dimReaders = new HashMap<String, Object>();
+    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    {
+        // configure training and test data reader dimension
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
+                new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
 
-		dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(TeiReader.class,
-				TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-				TeiReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
+                new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
 
-		dimReaders.put(DIM_READER_TEST, readerTest);
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-				TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
-				TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
+                        TcFeatureFactory.create(CharacterNGram.class,
+                                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
-		@SuppressWarnings("unchecked")
-		Dimension<List<Object>> dimClassificationArgs = Dimension.create(Constants.DIM_CLASSIFICATION_ARGS,
-				Arrays.asList(new LiblinearAdapter()));
+        @SuppressWarnings("unchecked")
+        Dimension<List<Object>> dimClassificationArgs = Dimension
+                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_UNIT),
-				dimFeatureSets, dimClassificationArgs);
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
 
-		return pSpace;
-	}
+        return pSpace;
+    }
 
-	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
-		return createEngineDescription(UnitOutcomeAnnotator.class);
-	}
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    {
+        return createEngineDescription(UnitOutcomeAnnotator.class);
+    }
 }

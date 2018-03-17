@@ -29,15 +29,13 @@ public class EmbeddingsFeature
 {
     private BinaryVectorizer wordVectors;
 
-    public EmbeddingsFeature(BinaryVectorizer aWordVectors)
-        throws IOException
+    public EmbeddingsFeature(BinaryVectorizer aWordVectors) throws IOException
     {
         wordVectors = aWordVectors;
     }
 
     @Override
-    public INDArray apply(String aWord)
-        throws IOException
+    public INDArray apply(String aWord) throws IOException
     {
         return Nd4j.create(wordVectors.vectorize(aWord));
     }

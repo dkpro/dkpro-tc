@@ -44,30 +44,26 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
  */
 public class TwentyNewsgroupsRaw
 {
-    public static void main(String[] args)
-        throws Exception
+    public static void main(String[] args) throws Exception
     {
         String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train/*/*.txt";
         String outputPath = "target/tn_raw_output";
         new File(outputPath).mkdirs();
-        
-        
+
         runPipeline(
                 // Reader
                 createReaderDescription(FolderwiseDataReader.class,
-                		FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                		FolderwiseDataReader.PARAM_LANGUAGE, "en"),
+                        FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                        FolderwiseDataReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
                 createEngineDescription(JCasIdSetter.class),
                 createEngineDescription(BreakIteratorSegmenter.class),
                 createEngineDescription(OpenNlpPosTagger.class),
                 // Feature extraction
                 createEngineDescription(ExtractFeaturesConnector.class,
-                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY,
-                        "target/tn_raw_output",
-                        ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS,
-                        WekaDataWriter.class, ExtractFeaturesConnector.PARAM_LEARNING_MODE,
-                        Constants.LM_SINGLE_LABEL,
+                        ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, "target/tn_raw_output",
+                        ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, WekaDataWriter.class,
+                        ExtractFeaturesConnector.PARAM_LEARNING_MODE, Constants.LM_SINGLE_LABEL,
                         ExtractFeaturesConnector.PARAM_FEATURE_MODE, Constants.FM_DOCUMENT,
                         ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
                         ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, new String[] {},
@@ -77,6 +73,6 @@ public class TwentyNewsgroupsRaw
                         new String[] { "alt.atheism", "comp.graphics" },
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
                         asList(createExternalResourceDescription(InitialCharacterUpperCase.class,
-                        		InitialCharacterUpperCase.PARAM_UNIQUE_EXTRACTOR_NAME, "123"))));
+                                InitialCharacterUpperCase.PARAM_UNIQUE_EXTRACTOR_NAME, "123"))));
     }
 }

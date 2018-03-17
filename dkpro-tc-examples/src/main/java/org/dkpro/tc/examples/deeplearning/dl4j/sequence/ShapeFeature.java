@@ -28,8 +28,7 @@ public class ShapeFeature
     public static final int CASE = 0;
 
     @Override
-    public INDArray apply(String aWord)
-        throws IOException
+    public INDArray apply(String aWord) throws IOException
     {
         INDArray vector = Nd4j.zeros(1);
         if (aWord.length() > 0) {

@@ -32,31 +32,32 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * This test just ensures that the experiment runs without throwing
- * any exception.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class CRFSuiteNERSequenceDemoTest extends TestCaseSuperClass
+public class CRFSuiteNERSequenceDemoTest
+    extends TestCaseSuperClass
 {
     CRFSuiteNERSequenceDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
-    public void setup()
-        throws Exception
+    public void setup() throws Exception
     {
         super.setup();
-        
+
         javaExperiment = new CRFSuiteNERSequenceDemo();
         pSpace = CRFSuiteNERSequenceDemo.getParameterSpace();
     }
 
     @Test
-    public void testTrainTestWithResults() throws Exception{
+    public void testTrainTestWithResults() throws Exception
+    {
         javaExperiment.runTrainTest(pSpace);
-        
-        EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
+
+        EvaluationData<String> data = Tc2LtlabEvalConverter
+                .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
         Accuracy<String> acc = new Accuracy<String>(data);
-        
+
         assertEquals(0.95833, acc.getResult(), 0.0001);
     }
 }

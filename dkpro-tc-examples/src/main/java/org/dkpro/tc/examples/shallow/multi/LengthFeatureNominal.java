@@ -42,21 +42,21 @@ public class LengthFeatureNominal
     implements FeatureExtractor
 {
     public static final String FEATURE_NAME = "NominalLengthFeature";
-    
-    
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
-    	
-    	Collection<Token> tokens = JCasUtil.select(jcas, Token.class);
-    	if(tokens.size() > 150){
-    		return new Feature(FEATURE_NAME, LengthEnum.LONG, FeatureType.NOMINAL).asSet();
-    	}else if(tokens.size() > 100){
-    		return new Feature(FEATURE_NAME, LengthEnum.MIDDLE, FeatureType.NOMINAL).asSet();
-    	}else{
-    		return new Feature(FEATURE_NAME, LengthEnum.SHORT, FeatureType.NOMINAL).asSet();
-    	}
+
+        Collection<Token> tokens = JCasUtil.select(jcas, Token.class);
+        if (tokens.size() > 150) {
+            return new Feature(FEATURE_NAME, LengthEnum.LONG, FeatureType.NOMINAL).asSet();
+        }
+        else if (tokens.size() > 100) {
+            return new Feature(FEATURE_NAME, LengthEnum.MIDDLE, FeatureType.NOMINAL).asSet();
+        }
+        else {
+            return new Feature(FEATURE_NAME, LengthEnum.SHORT, FeatureType.NOMINAL).asSet();
+        }
     }
 }
