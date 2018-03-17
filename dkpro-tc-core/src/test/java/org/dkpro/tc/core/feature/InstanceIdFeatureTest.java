@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
-
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.junit.Assert.assertEquals;
 
@@ -29,37 +28,31 @@ import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
+public class InstanceIdFeatureTest
+{
+    @Test
+    public void instanceIdFeatureTest() throws Exception
+    {
 
+        AnalysisEngine engine = createEngine(NoOpAnnotator.class);
 
-public class InstanceIdFeatureTest {
-		@Test
-		public void instanceIdFeatureTest() 
-		        throws Exception {
-		            
-			AnalysisEngine engine = createEngine(NoOpAnnotator.class);
+        JCas jcas = engine.newJCas();
+        jcas.setDocumentLanguage("en");
+        engine.process(jcas);
 
-	        JCas jcas = engine.newJCas();
-	        jcas.setDocumentLanguage("en");
-	        engine.process(jcas);
-	        
-	        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 1);
-	        unit1.setId(0);
-	        unit1.addToIndexes();
+        TextClassificationTarget unit1 = new TextClassificationTarget(jcas, 0, 1);
+        unit1.setId(0);
+        unit1.addToIndexes();
 
-	        JCasId id = new JCasId(jcas);
-	        id.setId(123);
-	        id.addToIndexes();
-	        
-	        Feature feature = InstanceIdFeature.retrieve(jcas, unit1);
-	        Feature feature2 = InstanceIdFeature.retrieve(jcas);
-	        Feature feature3= InstanceIdFeature.retrieve(jcas, unit1, 5);
-	        assertEquals(feature.getValue(),"123_0");
-	        assertEquals(feature2.getValue(), "123");
-	        assertEquals(feature3.getValue(), "123_5_0");   
-			}
-		}        
-	        
-	       
-	   
-		
-		
+        JCasId id = new JCasId(jcas);
+        id.setId(123);
+        id.addToIndexes();
+
+        Feature feature = InstanceIdFeature.retrieve(jcas, unit1);
+        Feature feature2 = InstanceIdFeature.retrieve(jcas);
+        Feature feature3 = InstanceIdFeature.retrieve(jcas, unit1, 5);
+        assertEquals(feature.getValue(), "123_0");
+        assertEquals(feature2.getValue(), "123");
+        assertEquals(feature3.getValue(), "123_5_0");
+    }
+}

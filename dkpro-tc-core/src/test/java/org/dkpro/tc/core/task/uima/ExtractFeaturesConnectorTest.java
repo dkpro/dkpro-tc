@@ -57,8 +57,7 @@ public class ExtractFeaturesConnectorTest
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void extractFeaturesConnectorSingleLabelTest()
-        throws Exception
+    public void extractFeaturesConnectorSingleLabelTest() throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -92,8 +91,8 @@ public class ExtractFeaturesConnectorTest
 
         Gson gson = new Gson();
 
-        System.out.println(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
+        System.out.println(FileUtils
+                .readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
 
         List<String> lines = FileUtils
                 .readLines(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8");
@@ -109,8 +108,7 @@ public class ExtractFeaturesConnectorTest
     }
 
     @Test
-    public void extractFeaturesConnectorMultiLabelTest()
-        throws Exception
+    public void extractFeaturesConnectorMultiLabelTest() throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -157,8 +155,7 @@ public class ExtractFeaturesConnectorTest
     }
 
     @Test
-    public void extractFeaturesConnectorRegressionTest()
-        throws Exception
+    public void extractFeaturesConnectorRegressionTest() throws Exception
     {
 
         File outputPath = folder.newFolder();
@@ -204,8 +201,8 @@ public class ExtractFeaturesConnectorTest
         assertEquals(1, getUniqueOutcomes(instances));
         assertEquals("0.45", instances.get(0).getOutcome());
 
-        System.out.println(
-                FileUtils.readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
+        System.out.println(FileUtils
+                .readFileToString(new File(outputPath, JsonDataWriter.JSON_FILE_NAME), "utf-8"));
     }
 
     private int getUniqueOutcomes(List<Instance> instances)

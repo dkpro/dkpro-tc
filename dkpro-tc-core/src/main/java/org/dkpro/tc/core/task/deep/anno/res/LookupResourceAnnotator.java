@@ -28,9 +28,9 @@ public abstract class LookupResourceAnnotator
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
     public static final String PARAM_DICTIONARY_PATH = "dictionaryPath";
     @ConfigurationParameter(name = PARAM_DICTIONARY_PATH, mandatory = true)
     protected String dictionaryPath;
 
- }
+}

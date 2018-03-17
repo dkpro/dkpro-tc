@@ -21,85 +21,94 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 
 public interface PairReader
 {
-
     /**
      * ID of the collection the first document was sampled from
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * 
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      * @return id as string
      */
     String getCollectionId1() throws TextClassificationException;
-   
+
     /**
      * ID of the collection the second document was sampled from
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * 
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      * @return id as string
      */
-    String getCollectionId2() throws TextClassificationException;  
+    String getCollectionId2() throws TextClassificationException;
 
     /**
      * ID of the first document
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * 
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      * @return id as string
      */
     String getDocumentId1() throws TextClassificationException;
-    
+
     /**
      * ID of the second document
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * 
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      * @return id as string
      */
     String getDocumentId2() throws TextClassificationException;
 
     /**
      * Title of the first document
-     * @throws TextClassificationException 
-     * 		excpetion in case of error
+     * 
+     * @throws TextClassificationException
+     *             excpetion in case of error
      * @return string value
-     * 			
+     * 
      */
     String getTitle1() throws TextClassificationException;
-    
+
     /**
      * Title of the second document
+     * 
      * @return title as string
-     * @throws TextClassificationException 
-     * 		excpetion in case of error
+     * @throws TextClassificationException
+     *             excpetion in case of error
      */
     String getTitle2() throws TextClassificationException;
 
     /**
      * Language of the first document
+     * 
      * @return title as string
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      */
     String getLanguage1() throws TextClassificationException;
-    
+
     /**
      * Language of the second document
+     * 
      * @return title as string
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      */
     String getLanguage2() throws TextClassificationException;
 
     /**
      * The text of the first document in the pair
+     * 
      * @return text
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      */
     String getText1() throws TextClassificationException;
-    
+
     /**
      * The text of the second document in the pair
+     * 
      * @return text
-     * @throws org.dkpro.tc.api.exception.TextClassificationException 
-     * 		excpetion in case of error
+     * @throws org.dkpro.tc.api.exception.TextClassificationException
+     *             excpetion in case of error
      */
     String getText2() throws TextClassificationException;
 

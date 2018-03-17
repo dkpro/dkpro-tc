@@ -39,7 +39,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * 
  */
 public class ValidityCheckConnector
-    extends JCasAnnotator_ImplBase implements ConnectorConstants
+    extends JCasAnnotator_ImplBase
+    implements ConnectorConstants
 {
 
     /**
@@ -66,16 +67,14 @@ public class ValidityCheckConnector
     private int learningModeI;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
         firstCall = true;
     }
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
         // make sure this class is only called once per pipeline
         if (firstCall) {
@@ -150,7 +149,7 @@ public class ValidityCheckConnector
         if (bipartitionThreshold == null) {
             throw new AnalysisEngineProcessException(new TextClassificationException(
                     "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
-        }        
+        }
     }
 
     private boolean isMultiLabel()
@@ -175,11 +174,10 @@ public class ValidityCheckConnector
                             + Constants.PART_ONE + " and " + Constants.PART_TWO
                             + ". Please use a reader that inhereits from "
                             + Constants.class.getName()));
-        }        
+        }
     }
 
-    private void verifyPairMode(String[] featureExtractors)
-        throws Exception
+    private void verifyPairMode(String[] featureExtractors) throws Exception
     {
         for (String featExt : featureExtractors) {
             FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
@@ -191,7 +189,7 @@ public class ValidityCheckConnector
 
     private void checkIfIsPairFeatureExtractor(String featExt,
             FeatureExtractorResource_ImplBase featExtC)
-                throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         if (!(featExtC instanceof PairFeatureExtractor)) {
             throw new AnalysisEngineProcessException(new TextClassificationException(
@@ -199,8 +197,7 @@ public class ValidityCheckConnector
         }
     }
 
-    private void verifyNonPairFeatureExtractors(String[] featureExtractors)
-        throws Exception
+    private void verifyNonPairFeatureExtractors(String[] featureExtractors) throws Exception
     {
         for (String featExt : featureExtractors) {
             FeatureExtractorResource_ImplBase featExtC = (FeatureExtractorResource_ImplBase) Class
@@ -212,7 +209,7 @@ public class ValidityCheckConnector
 
     private void implementsFeatureExtractorInterface(String featExt,
             FeatureExtractorResource_ImplBase featExtC)
-                throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         if (!(featExtC instanceof FeatureExtractor)) {
             throw new AnalysisEngineProcessException(new TextClassificationException(
@@ -222,7 +219,7 @@ public class ValidityCheckConnector
 
     private void checkErrorConditionImplementsConflictingFeatureExtractorInterfaces(String featExt,
             FeatureExtractorResource_ImplBase featExtC)
-                throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         if (featExtC instanceof FeatureExtractor && featExtC instanceof PairFeatureExtractor) {
             throw new AnalysisEngineProcessException(new TextClassificationException(

@@ -26,49 +26,58 @@ import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
-public class DKProTcShallowSerializationTask extends DefaultBatchTask implements Constants {
+public class DKProTcShallowSerializationTask
+    extends DefaultBatchTask
+    implements Constants
+{
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	protected List<Object> classArgs;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    protected List<Object> classArgs;
 
-	private ExtractFeaturesTask featuresTrainTask;
+    private ExtractFeaturesTask featuresTrainTask;
 
-	private OutcomeCollectionTask collectionTask;
+    private OutcomeCollectionTask collectionTask;
 
-	private MetaInfoTask metaInfoTask;
+    private MetaInfoTask metaInfoTask;
 
-	private File outputFolder;
+    private File outputFolder;
 
-	public DKProTcShallowSerializationTask(MetaInfoTask metaInfoTask, ExtractFeaturesTask featuresTrainTask, 
-			OutcomeCollectionTask collectionTask, File outputFolder) {
-				this.metaInfoTask = metaInfoTask;
-				this.featuresTrainTask = featuresTrainTask;
-				this.collectionTask = collectionTask;
-				this.outputFolder = outputFolder;
-	}
+    public DKProTcShallowSerializationTask(MetaInfoTask metaInfoTask,
+            ExtractFeaturesTask featuresTrainTask, OutcomeCollectionTask collectionTask,
+            File outputFolder)
+    {
+        this.metaInfoTask = metaInfoTask;
+        this.featuresTrainTask = featuresTrainTask;
+        this.collectionTask = collectionTask;
+        this.outputFolder = outputFolder;
+    }
 
-	@Override
-	public void initialize(TaskContext aContext){
-		
-		super.initialize(aContext);
-		
-		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
-		ModelSerializationTask serializationTask;
-		try {
-			serializationTask = adapter.getSaveModelTask().newInstance();
-		} catch (Exception e) {
-			throw new UnsupportedOperationException("Error when instantiating model serialization task");
-		}
-		
-		serializationTask.addImport(metaInfoTask, MetaInfoTask.META_KEY);
-		serializationTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-				Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-		serializationTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
-		serializationTask.setOutputFolder(outputFolder);
-		
-		String[] split = getType().split("-");
-		serializationTask.setType(serializationTask.getClass().getName() + "-" + split[1]);
-		this.addTask(serializationTask);
-		
-	} 
+    @Override
+    public void initialize(TaskContext aContext)
+    {
+
+        super.initialize(aContext);
+
+        TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
+        ModelSerializationTask serializationTask;
+        try {
+            serializationTask = adapter.getSaveModelTask().newInstance();
+        }
+        catch (Exception e) {
+            throw new UnsupportedOperationException(
+                    "Error when instantiating model serialization task");
+        }
+
+        serializationTask.addImport(metaInfoTask, MetaInfoTask.META_KEY);
+        serializationTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        serializationTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+                Constants.OUTCOMES_INPUT_KEY);
+        serializationTask.setOutputFolder(outputFolder);
+
+        String[] split = getType().split("-");
+        serializationTask.setType(serializationTask.getClass().getName() + "-" + split[1]);
+        this.addTask(serializationTask);
+
+    }
 }

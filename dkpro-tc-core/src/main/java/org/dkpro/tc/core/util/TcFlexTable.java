@@ -80,7 +80,7 @@ public class TcFlexTable<V>
      * If a cell contains no value, this value is returned when asking for the cell value.
      * 
      * @param aDefaultValue
-     * 			the default value
+     *            the default value
      */
     public void setDefaultValue(V aDefaultValue)
     {
@@ -101,7 +101,7 @@ public class TcFlexTable<V>
     {
         formatString = aFormatString;
     }
-    
+
     public Locale getLocale()
     {
         return locale;
@@ -112,7 +112,7 @@ public class TcFlexTable<V>
      * writers.
      * 
      * @param aLocale
-     * 		locale object
+     *            locale object
      */
     public void setLocale(Locale aLocale)
     {
@@ -192,7 +192,7 @@ public class TcFlexTable<V>
      * render all columns, disable this.
      * 
      * @param aCompact
-     * 		use compact mode or not
+     *            use compact mode or not
      */
     public void setCompact(boolean aCompact)
     {
@@ -209,7 +209,7 @@ public class TcFlexTable<V>
      * in the order they were added to the table, disable this.
      * 
      * @param aWriteSorted
-     * 		sort rows
+     *            sort rows
      */
     public void setSortRows(boolean aWriteSorted)
     {
@@ -267,17 +267,17 @@ public class TcFlexTable<V>
     public String getValueAsString(String aRowId, String aColId)
     {
         V value = getValue(aRowId, aColId);
-        
-        //suppress the full reader description text
-        if(isReaderDescription(value)){
-        	int start = value.toString().indexOf("implementationName");
-        	int end = value.toString().indexOf("\n", start);
-        	if(start < 0|| end <0 || end >= start){
-        		return "";
-        	}
-        	return value.toString().substring(start, end);
+
+        // suppress the full reader description text
+        if (isReaderDescription(value)) {
+            int start = value.toString().indexOf("implementationName");
+            int end = value.toString().indexOf("\n", start);
+            if (start < 0 || end < 0 || end >= start) {
+                return "";
+            }
+            return value.toString().substring(start, end);
         }
-        
+
         if (formatString != null) {
             return String.format(locale, formatString, value);
         }
@@ -286,35 +286,37 @@ public class TcFlexTable<V>
         }
     }
 
-    private boolean isReaderDescription(V value) {
-    	if(value == null){
-    		return false;
-    	}
-    	
-		return value.toString().startsWith("org.apache.uima.collection.impl.CollectionReaderDescription_impl:");
-	}
+    private boolean isReaderDescription(V value)
+    {
+        if (value == null) {
+            return false;
+        }
 
-	public StreamWriter getTextWriter()
+        return value.toString()
+                .startsWith("org.apache.uima.collection.impl.CollectionReaderDescription_impl:");
+    }
+
+    public StreamWriter getTextWriter()
     {
         return new StreamWriter()
         {
             @Override
-            public void write(OutputStream aStream)
-                throws Exception
+            public void write(OutputStream aStream) throws Exception
             {
                 String[] colIds = TcFlexTable.this.compact ? getCompactColumnIds(false)
                         : getColumnIds();
-                
+
                 // Obtain the width of the columns based on their content and headers
                 // col 0 is reserved here for the rowId width
-                int colWidths[] = new int[colIds.length+1];
+                int colWidths[] = new int[colIds.length + 1];
                 for (String rowId : getRowIds()) {
                     colWidths[0] = Math.max(colWidths[0], rowId.length());
                 }
                 for (int i = 1; i < colWidths.length; i++) {
-                    colWidths[i] = Math.max(colWidths[i], colIds[i-1].length());
+                    colWidths[i] = Math.max(colWidths[i], colIds[i - 1].length());
                     for (String rowId : getRowIds()) {
-                        colWidths[i] = Math.max(colWidths[i], getValueAsString(rowId, colIds[i-1]).length());
+                        colWidths[i] = Math.max(colWidths[i],
+                                getValueAsString(rowId, colIds[i - 1]).length());
                     }
                 }
 
@@ -329,7 +331,7 @@ public class TcFlexTable<V>
                 separator.append("-+");
 
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
-                
+
                 // Render header column
                 writer.println(separator);
                 writer.print("| ");
@@ -337,11 +339,11 @@ public class TcFlexTable<V>
                 for (int i = 0; i < colIds.length; i++) {
                     writer.print(" | ");
                     // Remember: colWidth[0] is the rowId width!
-                    writer.print(StringUtils.center(colIds[i], colWidths[i+1]));
+                    writer.print(StringUtils.center(colIds[i], colWidths[i + 1]));
                 }
                 writer.println(" |");
                 writer.println(separator);
-                
+
                 // Render body
                 for (String rowId : getRowIds()) {
                     writer.print("| ");
@@ -359,13 +361,13 @@ public class TcFlexTable<V>
                     }
                     writer.println(" |");
                 }
-                
+
                 // Closing separator
                 writer.println(separator);
-             
+
                 writer.flush();
             }
-            
+
             private boolean isDouble(String val)
             {
                 try {
@@ -379,7 +381,7 @@ public class TcFlexTable<V>
             }
         };
     }
-    
+
     public StreamWriter getTWikiWriter()
     {
         return new StreamWriter()
@@ -387,8 +389,7 @@ public class TcFlexTable<V>
             protected PrintWriter writer;
 
             @Override
-            public void write(OutputStream aStream)
-                throws Exception
+            public void write(OutputStream aStream) throws Exception
             {
                 writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
 
@@ -450,8 +451,7 @@ public class TcFlexTable<V>
     /**
      * Returns a LaTeX writer to write the FlexTable to a Latex file. (without rounding any figures)
      * 
-     * @return StreamWriter
-     * 			the stream writer
+     * @return StreamWriter the stream writer
      */
     public StreamWriter getLatexWriter()
     {
@@ -468,8 +468,8 @@ public class TcFlexTable<V>
      * @param decimalPlacesForPercentages
      *            How many decimal places should percentage values have; if set to -1, the values
      *            won't be rounded.
-     *            
-     * @return a stream writer           
+     * 
+     * @return a stream writer
      */
     public StreamWriter getLatexWriter(final int decimalPlacesForDouble,
             final int decimalPlacesForPercentages)
@@ -477,8 +477,7 @@ public class TcFlexTable<V>
         return new StreamWriter()
         {
             @Override
-            public void write(OutputStream aStream)
-                throws Exception
+            public void write(OutputStream aStream) throws Exception
             {
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(aStream, "UTF-8"));
                 writer.print("\\begin{tabular}");
@@ -550,7 +549,7 @@ public class TcFlexTable<V>
             {
                 double d = Double.parseDouble(val);
 
-                int temp = (int) (d * Math.pow(10, decimalPlaces));  
+                int temp = (int) (d * Math.pow(10, decimalPlaces));
                 Double newD = (temp) / Math.pow(10, decimalPlaces);
 
                 return newD.toString();
@@ -559,7 +558,7 @@ public class TcFlexTable<V>
             private boolean isDouble(String val)
             {
                 try {
-                    Double.parseDouble(val); 
+                    Double.parseDouble(val);
                 }
                 catch (NumberFormatException ex) {
                     return false;
@@ -614,8 +613,7 @@ public class TcFlexTable<V>
         return new StreamWriter()
         {
             @Override
-            public void write(OutputStream aStream)
-                throws Exception
+            public void write(OutputStream aStream) throws Exception
             {
                 String[] colIds = getColumnIds();
 
@@ -652,13 +650,13 @@ public class TcFlexTable<V>
         return new StreamReader()
         {
             @Override
-            public void read(InputStream aStream)
-                throws IOException
+            public void read(InputStream aStream) throws IOException
             {
                 try {
                     CSVReader reader = new CSVReader(new InputStreamReader(aStream, "UTF-8"));
                     String[] headers = reader.readNext();
-                    Method converter = TcFlexTable.this.dataClass.getMethod("valueOf", String.class);
+                    Method converter = TcFlexTable.this.dataClass.getMethod("valueOf",
+                            String.class);
 
                     String[] data;
                     while ((data = reader.readNext()) != null) {
@@ -676,9 +674,10 @@ public class TcFlexTable<V>
                     throw e;
                 }
                 catch (NoSuchMethodException e) {
-					throw new IOException("Data class "+TcFlexTable.this.dataClass.getName()+" does not have a "+
-							"public static Object valueOf(String) method - unable unmarshall the "+
-							"data.");
+                    throw new IOException("Data class " + TcFlexTable.this.dataClass.getName()
+                            + " does not have a "
+                            + "public static Object valueOf(String) method - unable unmarshall the "
+                            + "data.");
                 }
                 catch (Exception e) {
                     throw new IOException(e);
@@ -692,8 +691,7 @@ public class TcFlexTable<V>
         return new StreamWriter()
         {
             @Override
-            public void write(OutputStream aStream)
-                throws Exception
+            public void write(OutputStream aStream) throws Exception
             {
                 String[] colIds = TcFlexTable.this.compact ? getCompactColumnIds(false)
                         : getColumnIds();

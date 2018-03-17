@@ -35,9 +35,10 @@ import org.dkpro.tc.core.Constants;
  * train/test the outcomes and merge them here to ensure that we know all outcomes in our data.
  */
 public class OutcomeCollectionTask
-    extends ExecutableTaskBase implements Constants
+    extends ExecutableTaskBase
+    implements Constants
 {
-    
+
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
 
@@ -47,8 +48,7 @@ public class OutcomeCollectionTask
     public static final String OUTPUT_KEY = "output";
 
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void execute(TaskContext aContext) throws Exception
     {
         Set<String> outcomes = new HashSet<>();
 
@@ -71,7 +71,7 @@ public class OutcomeCollectionTask
     private boolean isTrainTest(TaskContext aContext)
     {
         File testOutputLocation = null;
-        testOutputLocation  = aContext.getFolder(InitTask.OUTPUT_KEY_TEST, AccessMode.READONLY);
+        testOutputLocation = aContext.getFolder(InitTask.OUTPUT_KEY_TEST, AccessMode.READONLY);
         File testOutcomes = new File(testOutputLocation, Constants.FILENAME_OUTCOMES);
         return testOutcomes.exists();
     }

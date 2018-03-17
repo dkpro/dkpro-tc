@@ -31,8 +31,7 @@ public class JsonInstanceIterator
     BufferedReader reader;
     String line = null;
 
-    public JsonInstanceIterator(File file)
-        throws Exception
+    public JsonInstanceIterator(File file) throws Exception
     {
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
     }
@@ -57,10 +56,10 @@ public class JsonInstanceIterator
     @Override
     public String next()
     {
-    		if(line == null) {
-    			throw new NoSuchElementException();
-    		}
-    	
+        if (line == null) {
+            throw new NoSuchElementException();
+        }
+
         return line;
     }
 

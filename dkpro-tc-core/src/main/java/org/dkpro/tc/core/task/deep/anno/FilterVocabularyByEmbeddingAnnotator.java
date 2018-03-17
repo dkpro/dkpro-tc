@@ -51,8 +51,7 @@ public class FilterVocabularyByEmbeddingAnnotator
     int droppedVocabulary = 0;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -77,8 +76,7 @@ public class FilterVocabularyByEmbeddingAnnotator
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         if (embedding == null) {
             return;

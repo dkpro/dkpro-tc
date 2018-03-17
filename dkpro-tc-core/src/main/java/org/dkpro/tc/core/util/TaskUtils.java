@@ -30,43 +30,49 @@ import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
 
 /**
- * Utility methods needed in classification tasks (loading instances,
- * serialization of classifiers etc).
+ * Utility methods needed in classification tasks (loading instances, serialization of classifiers
+ * etc).
  */
-public class TaskUtils {
+public class TaskUtils
+{
 
-	public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath, String dataWriter,
-			String learningMode, String featureMode, boolean useSparseFeatures, boolean addInstanceId,
-			 boolean isTesting, boolean applyWeighting, List<String> filters,
-			List<ExternalResourceDescription> extractorResources, String [] outcomes) throws ResourceInitializationException {
-		List<Object> parameters = new ArrayList<>();
-		parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, addInstanceId,
-				ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
-				ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
-				ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
-				ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(new String[0]),
-				ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
-				ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
-				ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
-				ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures,
-				ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
-				ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes));
+    public static AnalysisEngineDescription getFeatureExtractorConnector(String outputPath,
+            String dataWriter, String learningMode, String featureMode, boolean useSparseFeatures,
+            boolean addInstanceId, boolean isTesting, boolean applyWeighting, List<String> filters,
+            List<ExternalResourceDescription> extractorResources, String[] outcomes)
+        throws ResourceInitializationException
+    {
+        List<Object> parameters = new ArrayList<>();
+        parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID,
+                addInstanceId, ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPath,
+                ExtractFeaturesConnector.PARAM_APPLY_WEIGHTING, applyWeighting,
+                ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS, dataWriter,
+                ExtractFeaturesConnector.PARAM_FEATURE_FILTERS, filters.toArray(new String[0]),
+                ExtractFeaturesConnector.PARAM_FEATURE_MODE, featureMode,
+                ExtractFeaturesConnector.PARAM_LEARNING_MODE, learningMode,
+                ExtractFeaturesConnector.PARAM_IS_TESTING, isTesting,
+                ExtractFeaturesConnector.PARAM_USE_SPARSE_FEATURES, useSparseFeatures,
+                ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS, extractorResources,
+                ExtractFeaturesConnector.PARAM_OUTCOMES, outcomes));
 
-		return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
-				parameters.toArray());
+        return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
+                parameters.toArray());
 
-	}
+    }
 
-	public static TcShallowLearningAdapter getAdapter(List<Object> classificationArguments) throws ResourceInitializationException{
-		
-		if(classificationArguments == null || classificationArguments.isEmpty()){
-			throw new ResourceInitializationException(new IllegalArgumentException(
-					"The classifcation arguments are empty or missing; The first element in the dimension ["
-							+ Constants.DIM_CLASSIFICATION_ARGS
-							+ "] has to be an instance of the machine learning adapter!"));
-		}
-		TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classificationArguments.get(0);
-		
-		return adapter;
-	}
+    public static TcShallowLearningAdapter getAdapter(List<Object> classificationArguments)
+        throws ResourceInitializationException
+    {
+
+        if (classificationArguments == null || classificationArguments.isEmpty()) {
+            throw new ResourceInitializationException(new IllegalArgumentException(
+                    "The classifcation arguments are empty or missing; The first element in the dimension ["
+                            + Constants.DIM_CLASSIFICATION_ARGS
+                            + "] has to be an instance of the machine learning adapter!"));
+        }
+        TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classificationArguments
+                .get(0);
+
+        return adapter;
+    }
 }

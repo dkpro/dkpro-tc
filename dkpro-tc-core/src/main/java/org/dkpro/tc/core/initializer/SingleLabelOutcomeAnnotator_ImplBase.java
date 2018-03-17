@@ -27,15 +27,14 @@ public abstract class SingleLabelOutcomeAnnotator_ImplBase
     extends JCasAnnotator_ImplBase
     implements SingleLabelOutcomeAnnotator
 {
-	/**
-	 * @param jcas
-	 * 		the jcas object
-	 * @throws AnalysisEngineProcessException
-	 * 		exception in case of error
-	 */
+    /**
+     * @param jcas
+     *            the jcas object
+     * @throws AnalysisEngineProcessException
+     *             exception in case of error
+     */
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
         TextClassificationOutcome outcome = new TextClassificationOutcome(jcas);
         outcome.setOutcome(getTextClassificationOutcome(jcas));
@@ -51,7 +50,7 @@ public abstract class SingleLabelOutcomeAnnotator_ImplBase
      *            the JCas to add the annotation to
      * @return a double between zero and one
      * @throws AnalysisEngineProcessException
-     * 			exception in case of errors
+     *             exception in case of errors
      */
     public double getTextClassificationOutcomeWeight(JCas jcas)
         throws AnalysisEngineProcessException

@@ -18,8 +18,7 @@
 package org.dkpro.tc.core.task.uima;
 
 /**
- * Defines names of parameters.
- * Names that are defined in more than one task should be defined here
+ * Defines names of parameters. Names that are defined in more than one task should be defined here
  */
 public interface ConnectorConstants
 {
@@ -32,12 +31,12 @@ public interface ConnectorConstants
      * Array of outcomes
      */
     String PARAM_OUTCOMES = "occurringOutcomes";
-    
+
     /**
      * Array of feature filters to be used
      */
     String PARAM_FEATURE_FILTERS = "featureFilters";
-    
+
     /**
      * The data writer class to be used for writing features
      */
@@ -52,31 +51,30 @@ public interface ConnectorConstants
      * The feature mode, e.g. document, pair, unit, or sequence
      */
     String PARAM_FEATURE_MODE = "featureMode";
-    
+
     /**
      * In case of multi-labeling, the threshold used to create bipartitions from rankings
      */
     String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
 
     /**
-     * Whether we are extracting for training or testing. May e.g. have consequences when applying filters.
+     * Whether we are extracting for training or testing. May e.g. have consequences when applying
+     * filters.
      */
     String PARAM_IS_TESTING = "isTesting";
     /**
-     * Whether to turn on instance weighting.  If true, user should override addweight 
-     * in the reader.
+     * Whether to turn on instance weighting. If true, user should override addweight in the reader.
      */
     String PARAM_APPLY_WEIGHTING = "applyWeights";
-    
+
     /**
      * If a sparse feature representation shall be used
      */
-    String PARAM_USE_SPARSE_FEATURES= "useSparseFeatures";
-    
+    String PARAM_USE_SPARSE_FEATURES = "useSparseFeatures";
+
     /**
      * If a sparse feature representation shall be used
      */
     String PARAM_REQUIRED_TYPES = "requiredTypes";
-
 
 }

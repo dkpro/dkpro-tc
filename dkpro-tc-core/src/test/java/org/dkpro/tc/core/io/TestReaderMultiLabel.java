@@ -37,11 +37,10 @@ public class TestReaderMultiLabel
     extends TextReader
     implements TCReaderMultiLabel
 {
-    int jcasId=0;
+    int jcasId = 0;
 
     @Override
-    public void getNext(CAS aCAS)
-        throws IOException, CollectionException
+    public void getNext(CAS aCAS) throws IOException, CollectionException
     {
         super.getNext(aCAS);
 
@@ -64,10 +63,9 @@ public class TestReaderMultiLabel
     }
 
     @Override
-    public Set<String> getTextClassificationOutcomes(JCas jcas)
-        throws CollectionException
+    public Set<String> getTextClassificationOutcomes(JCas jcas) throws CollectionException
     {
-        return new HashSet<String>(Arrays.asList(new String[] { "test_outcome1", "test_outcome2",
-                "test_outcome3" }));
+        return new HashSet<String>(
+                Arrays.asList(new String[] { "test_outcome1", "test_outcome2", "test_outcome3" }));
     }
 }

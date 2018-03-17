@@ -52,30 +52,30 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
  * Initialization of the TC pipeline 1) checks the validity of the setup 2) runs the preprocessing
  * 3) runs the outcome/unit annotator 4) runs additional validity checks that check the outcome/unit
  * setup
- * 
  */
 public class InitTask
-    extends UimaTaskBase implements Constants
+    extends UimaTaskBase
+    implements Constants
 {
 
     @Discriminator(name = DIM_READER_TRAIN)
     protected CollectionReaderDescription readerTrain;
-    
+
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    
+
     @Discriminator(name = DIM_LEARNING_MODE)
     protected String learningMode;
-    
+
     @Discriminator(name = DIM_FEATURE_MODE)
     protected String featureMode;
-    
+
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
     protected String threshold;
-    
+
     @Discriminator(name = DIM_FEATURE_SET)
     protected TcFeatureSet featureExtractors;
-    
+
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     protected List<Object> classArgs;
 
@@ -93,7 +93,7 @@ public class InitTask
      * the task
      */
     public static final String OUTPUT_KEY_TEST = "preprocessorOutputTest";
-    
+
     private List<String> operativeViews;
 
     @Override
@@ -135,7 +135,8 @@ public class InitTask
         // special connector that just checks whether there are no instances and outputs a
         // meaningful error message then
         // should be added before preprocessing
-        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(PreprocessConnector.class);
+        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(
+                PreprocessConnector.class);
 
         // check whether we are dealing with pair classification and if so, add PART_ONE and
         // PART_TWO views
@@ -160,21 +161,21 @@ public class InitTask
                 // assign each CAS an unique id
                 createEngineDescription(AssignIdConnector.class),
 
-        // tc pre validity check
-                getPreValidityCheckEngine(), 
-                emptyProblemChecker,
+                // tc pre validity check
+                getPreValidityCheckEngine(), emptyProblemChecker,
 
-        // user preprocessing
+                // user preprocessing
                 preprocessing,
 
-        // tc post validity check
+                // tc post validity check
                 getPostValidityCheckEngine(),
-                
-		// collects the outcomes
-				createEngineDescription(OutcomeCollector.class, OutcomeCollector.PARAM_TARGET_FOLDER,
-						aContext.getFolder(output, AccessMode.READWRITE)),                
 
-        // write CAS to HDD
+                // collects the outcomes
+                createEngineDescription(OutcomeCollector.class,
+                        OutcomeCollector.PARAM_TARGET_FOLDER,
+                        aContext.getFolder(output, AccessMode.READWRITE)),
+
+                // write CAS to HDD
                 xmiWriter);
     }
 
@@ -186,8 +187,7 @@ public class InitTask
             throw new ResourceInitializationException(new TextClassificationException(
                     "No feature extractors have been added to the experiment."));
         }
-        
-        
+
         TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
 
         List<Object> parameters = new ArrayList<Object>();
@@ -206,8 +206,7 @@ public class InitTask
         return createEngineDescription(ValidityCheckConnector.class, parameters.toArray());
     }
 
-    private Object getFeatureExtractorNames(
-            List<TcFeature> featureExtractors)
+    private Object getFeatureExtractorNames(List<TcFeature> featureExtractors)
     {
         String[] featureExtractorNames = new String[featureExtractors.size()];
 

@@ -37,9 +37,8 @@ public interface TcDeepLearningAdapter
     String EMBEDDING_FOLDER = "embeddingFolder";
 
     String VECTORIZIATION_TRAIN_OUTPUT = "vectorizationTrainFolder";
-    
-	String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
 
+    String VECTORIZIATION_TEST_OUTPUT = "vectorizationTestFolder";
 
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
@@ -54,21 +53,20 @@ public interface TcDeepLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     ReportBase getOutcomeIdReportClass();
-    
+
     /**
-	 * This report is added for classification experiments and provides the
-	 * majority class results as baseline
-	 *
-	 * @return The report that collects the outcomeId to prediction values.
-	 */
+     * This report is added for classification experiments and provides the majority class results
+     * as baseline
+     *
+     * @return The report that collects the outcomeId to prediction values.
+     */
     ReportBase getMajorityBaselineIdReportClass();
-    
+
     /**
-	 * This report is added for classification experiments and provides a random
-	 * baseline
-	 *
-	 * @return The report that collects the outcomeId to prediction values.
-	 */
+     * This report is added for classification experiments and provides a random baseline
+     *
+     * @return The report that collects the outcomeId to prediction values.
+     */
     ReportBase getRandomBaselineIdReportClass();
 
     /**
@@ -77,8 +75,7 @@ public interface TcDeepLearningAdapter
      * learning framework. For instance, zero should not be used if vectors are zero-padded
      * otherwise distinction between padded-value and actual-value is no longer possible.
      * 
-     * @return 
-     * 		the lowest index that should be used to identify data values
+     * @return the lowest index that should be used to identify data values
      */
     int lowestIndex();
 
@@ -86,8 +83,7 @@ public interface TcDeepLearningAdapter
      * An optional report which is intended to record the environment versions of non-Java
      * frameworks e.g. Keras version, Python version , etc.
      * 
-     * @return
-     * 		Meta collection report object for collecting relevant information of this adapter
+     * @return Meta collection report object for collecting relevant information of this adapter
      */
     ReportBase getMetaCollectionReport();
 

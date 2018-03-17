@@ -51,11 +51,11 @@ public class MappingAnnotator
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
     public static final String PARAM_START_INDEX_INSTANCES = "startIndexInstances";
     @ConfigurationParameter(name = PARAM_START_INDEX_INSTANCES, mandatory = true)
     protected int startIndexInstances;
-    
+
     public static final String PARAM_START_INDEX_OUTCOMES = "startIndexOutcomes";
     @ConfigurationParameter(name = PARAM_START_INDEX_OUTCOMES, mandatory = true)
     protected int startIndexOutcomes;
@@ -74,11 +74,10 @@ public class MappingAnnotator
     int outcomeIdx = -1;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         instanceIdx = startIndexInstances;
         outcomeIdx = startIndexOutcomes;
 
@@ -102,8 +101,7 @@ public class MappingAnnotator
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         mapInstances(aJCas);
         mapOutcomes(aJCas);
@@ -153,13 +151,13 @@ public class MappingAnnotator
         List<String> keys = new ArrayList<>(map.keySet());
         Collections.sort(keys);
 
-		for (int i = 0; i < keys.size(); i++) {
-			String key = keys.get(i);
-			sb.append(key + "\t" + map.get(key));
-			if (i + 1 < keys.size()) {
-				sb.append(System.lineSeparator());
-			}
-		}
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            sb.append(key + "\t" + map.get(key));
+            if (i + 1 < keys.size()) {
+                sb.append(System.lineSeparator());
+            }
+        }
 
         return sb.toString();
     }

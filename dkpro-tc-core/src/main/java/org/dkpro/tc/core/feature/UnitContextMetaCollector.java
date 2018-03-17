@@ -25,22 +25,25 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
-/** A dummy meta-collector which merely sets up the correct file path
- * for the context file. This is required by the {@link ContextCollectorUFE},
- * which in turn is a prerequisite for the BatchTrainTestDetailedOutcomeReport.
+/**
+ * A dummy meta-collector which merely sets up the correct file path for the context file. This is
+ * required by the {@link ContextCollectorUFE}, which in turn is a prerequisite for the
+ * BatchTrainTestDetailedOutcomeReport.
  */
 public class UnitContextMetaCollector
-	extends ContextMetaCollector_ImplBase
+    extends ContextMetaCollector_ImplBase
 {
-    
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		DocumentMetaData dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-		try {
-			bw.write(dmd.getDocumentId() + "\t" + aJCas.getDocumentText()+"\n");
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
-	
+
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        DocumentMetaData dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+        try {
+            bw.write(dmd.getDocumentId() + "\t" + aJCas.getDocumentText() + "\n");
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
+
 }

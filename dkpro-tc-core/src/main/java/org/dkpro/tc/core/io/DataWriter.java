@@ -29,37 +29,36 @@ import org.dkpro.tc.api.features.Instance;
  */
 public interface DataWriter
 {
-    void writeGenericFormat(Collection<Instance> instances)
-        throws AnalysisEngineProcessException;
+    void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException;
 
     /**
      * If the generic data format is/must be used - this method will read the generic file and
      * create the classifier-fitted output format
+     * 
      * @throws java.lang.Exception
-     * 			in case of error
+     *             in case of error
      */
-    void transformFromGeneric()
-        throws Exception;
-
+    void transformFromGeneric() throws Exception;
 
     void writeClassifierFormat(Collection<Instance> instances)
         throws AnalysisEngineProcessException;
 
     /**
      * @param outputDirectory
-     * 			the output directory
+     *            the output directory
      * @param useSparse
-     * 			use sparse feature
+     *            use sparse feature
      * @param learningMode
-     * 			the learning model
+     *            the learning model
      * @param applyWeighting
-     * 			apply weights
+     *            apply weights
      * @param outcomes
-     * 			all outcomes
+     *            all outcomes
      * @throws java.lang.Exception
-     * 			in case of error
-     * */
-    void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting, String [] outcomes)
+     *             in case of error
+     */
+    void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
+            String[] outcomes)
         throws Exception;
 
     /**
@@ -71,10 +70,10 @@ public interface DataWriter
      * @return string holding the generic working file
      */
     String getGenericFileName();
-    
+
     /**
      * @throws java.lang.Exception
-     * 			if error occurs
+     *             if error occurs
      */
     void close() throws Exception;
 }

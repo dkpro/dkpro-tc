@@ -47,242 +47,263 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
- * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
- * the feature extractors on each CAS.
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
+ * extractors on each CAS.
  */
-public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements ConnectorConstants {
+public class ExtractFeaturesConnector
+    extends JCasAnnotator_ImplBase
+    implements ConnectorConstants
+{
 
-	/**
-	 * Directory in which the extracted features will be stored
-	 */
-	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
+    /**
+     * Directory in which the extracted features will be stored
+     */
+    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-	private File outputDirectory;
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+    private File outputDirectory;
 
-	/**
-	 * Whether an ID should be added to each instance in the feature file
-	 */
-	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+    /**
+     * Whether an ID should be added to each instance in the feature file
+     */
+    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
 
-	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
-	private boolean addInstanceId;
+    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+    private boolean addInstanceId;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
-	private String[] featureFilters;
+    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+    private String[] featureFilters;
 
-	@ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
-	private String[] outcomes;
+    @ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
+    private String[] outcomes;
 
-	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
-	private boolean useSparseFeatures;
+    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
+    private boolean useSparseFeatures;
 
-	@ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-	private String dataWriterClass;
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriterClass;
 
-	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
-	private String learningMode;
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
-	private String featureMode;
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
 
-	@ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
-	private boolean applyWeighting;
+    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+    private boolean applyWeighting;
 
-	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
-	private boolean isTesting;
-	
-	@ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
-	private Set<String> requiredTypes;
+    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+    private boolean isTesting;
 
-	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-	protected FeatureExtractorResource_ImplBase[] featureExtractors;
+    @ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
+    private Set<String> requiredTypes;
 
-	DataWriter dsw;
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-	boolean writeFeatureNames = true;
+    DataWriter dsw;
 
-	private InstanceExtractor instanceExtractor;
+    boolean writeFeatureNames = true;
 
-	private FeatureMetaData featureMeta;
+    private InstanceExtractor instanceExtractor;
 
-	private DocumentMetaLogger documentMetaLogger;
+    private FeatureMetaData featureMeta;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		try {
+    private DocumentMetaLogger documentMetaLogger;
 
-			initDocumentMetaDataLogger();
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
+        try {
 
-			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors, addInstanceId);
-			featureMeta = new FeatureMetaData();
+            initDocumentMetaDataLogger();
 
-			if (isTesting) {
-				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-				TreeSet<String> featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
-				featureMeta.setFeatureNames(featureNames);
-			}
+            instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
+                    addInstanceId);
+            featureMeta = new FeatureMetaData();
 
-			if (featureExtractors.length == 0) {
-				context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
-				throw new ResourceInitializationException();
-			}
+            if (isTesting) {
+                File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+                TreeSet<String> featureNames = new TreeSet<>(
+                        FileUtils.readLines(featureNamesFile, "utf-8"));
+                featureMeta.setFeatureNames(featureNames);
+            }
 
-			dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+            if (featureExtractors.length == 0) {
+                context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
+                throw new ResourceInitializationException();
+            }
 
-	private void initDocumentMetaDataLogger() throws Exception {
-		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
-		documentMetaLogger.write("# Order in which JCas documents have been processed");
-		documentMetaLogger.write("#ID\tTitle");
-	}
+            dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
+            dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		
-		checkRequiredTypes(aJCas);
-		
-		
-		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
-				+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
+    private void initDocumentMetaDataLogger() throws Exception
+    {
+        documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+        documentMetaLogger.write("# Order in which JCas documents have been processed");
+        documentMetaLogger.write("#ID\tTitle");
+    }
 
-		recordDocumentMetaLog(aJCas);
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
 
-		if (!featureMeta.didCollect()) {
-			getFeatureNames(aJCas);
-		}
+        checkRequiredTypes(aJCas);
 
+        LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
+                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
-		List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
-		/*
-		 * filter-out feature names which did not occur during training if we
-		 * are in the testing stage
-		 */
-		instances = enforceMatchingFeatures(instances);
+        recordDocumentMetaLog(aJCas);
 
-		if (isFilteringRequestedOrNoStreamingAvailable()) {
-			dsw.writeGenericFormat(instances);
-		} else {
-			dsw.writeClassifierFormat(instances);
-		}
-	}
+        if (!featureMeta.didCollect()) {
+            getFeatureNames(aJCas);
+        }
 
-	private void checkRequiredTypes(JCas aJCas) throws AnalysisEngineProcessException {
+        List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
+        /*
+         * filter-out feature names which did not occur during training if we are in the testing
+         * stage
+         */
+        instances = enforceMatchingFeatures(instances);
 
-		if (requiredTypes == null || requiredTypes.isEmpty()) {
-			return;
-		}
-		
-		try {
+        if (isFilteringRequestedOrNoStreamingAvailable()) {
+            dsw.writeGenericFormat(instances);
+        }
+        else {
+            dsw.writeClassifierFormat(instances);
+        }
+    }
 
-			for (String entry : requiredTypes) {
+    private void checkRequiredTypes(JCas aJCas) throws AnalysisEngineProcessException
+    {
 
-				String[] split = entry.split("\\|");
-				
-				String feature=split[0];
-				for (int i = 1; i < split.length; i++) {
-					String type = split[i];
+        if (requiredTypes == null || requiredTypes.isEmpty()) {
+            return;
+        }
 
-					@SuppressWarnings("unchecked")
-					Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class.forName(type);
-					boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
-					if (exists) {
-						continue;
-					}
-					throw new IllegalStateException("The feature extractor ["+ feature +"] requires the annotation of the type ["
-							+ type
-							+ "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
-				}
-			}
+        try {
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+            for (String entry : requiredTypes) {
 
-	private boolean isFilteringRequestedOrNoStreamingAvailable() {
-		return featureFilters.length > 0 || !dsw.canStream();
-	}
+                String[] split = entry.split("\\|");
 
-	private void recordDocumentMetaLog(JCas aJCas) throws AnalysisEngineProcessException {
-		DocumentMetaData dmd = null;
-		try {
-			dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-			documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
-		} catch (IllegalArgumentException e) {
-			// annotation missing
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+                String feature = split[0];
+                for (int i = 1; i < split.length; i++) {
+                    String type = split[i];
 
-	private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException {
-		// We run one time through feature extraction to get all features names
-		try {
-			List<Instance> instances = instanceExtractor.getInstances(jcas, false);
-			featureMeta.collectMetaData(instances);
-			featureMeta.writeMetaData(outputDirectory);
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class
+                            .forName(type);
+                    boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
+                    if (exists) {
+                        continue;
+                    }
+                    throw new IllegalStateException("The feature extractor [" + feature
+                            + "] requires the annotation of the type [" + type
+                            + "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
+                }
+            }
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
-		if (!isTesting) {
-			return instances;
-		}
+    private boolean isFilteringRequestedOrNoStreamingAvailable()
+    {
+        return featureFilters.length > 0 || !dsw.canStream();
+    }
 
-		List<Instance> out = new ArrayList<>();
+    private void recordDocumentMetaLog(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        DocumentMetaData dmd = null;
+        try {
+            dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+            documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
+        }
+        catch (IllegalArgumentException e) {
+            // annotation missing
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-		for (Instance i : instances) {
-			List<Feature> newFeatures = new ArrayList<>();
-			for (Feature feat : i.getFeatures()) {
-				if (!featureMeta.getFeatureNames().contains(feat.getName())) {
-					continue;
-				}
-				newFeatures.add(feat);
-			}
-			i.setFeatures(newFeatures);
-			out.add(i);
-		}
-		return out;
-	}
+    private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException
+    {
+        // We run one time through feature extraction to get all features names
+        try {
+            List<Instance> instances = instanceExtractor.getInstances(jcas, false);
+            featureMeta.collectMetaData(instances);
+            featureMeta.writeMetaData(outputDirectory);
 
-	@Override
-	public void collectionProcessComplete() throws AnalysisEngineProcessException {
-		super.collectionProcessComplete();
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-		try {
+    private List<Instance> enforceMatchingFeatures(List<Instance> instances)
+    {
+        if (!isTesting) {
+            return instances;
+        }
 
-			if (featureFilters.length > 0) {
-				applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
-			}
+        List<Instance> out = new ArrayList<>();
 
-			if (featureFilters.length > 0 || !dsw.canStream()) {
-				// if we use generic mode we have to finalize the feature
-				// extraction by transforming
-				// the generic file into the classifier-specific data format
-				dsw.transformFromGeneric();
-			}
+        for (Instance i : instances) {
+            List<Feature> newFeatures = new ArrayList<>();
+            for (Feature feat : i.getFeatures()) {
+                if (!featureMeta.getFeatureNames().contains(feat.getName())) {
+                    continue;
+                }
+                newFeatures.add(feat);
+            }
+            i.setFeatures(newFeatures);
+            out.add(i);
+        }
+        return out;
+    }
 
-			dsw.close();
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException
+    {
+        super.collectionProcessComplete();
 
-			documentMetaLogger.close();
+        try {
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+            if (featureFilters.length > 0) {
+                applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
+            }
 
-	}
+            if (featureFilters.length > 0 || !dsw.canStream()) {
+                // if we use generic mode we have to finalize the feature
+                // extraction by transforming
+                // the generic file into the classifier-specific data format
+                dsw.transformFromGeneric();
+            }
 
-	private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException {
-		InstanceFilter filter = new InstanceFilter(featureFilters, isTesting);
-		filter.filter(jsonTempFile);
-	}
+            dsw.close();
+
+            documentMetaLogger.close();
+
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+
+    }
+
+    private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException
+    {
+        InstanceFilter filter = new InstanceFilter(featureFilters, isTesting);
+        filter.filter(jsonTempFile);
+    }
 }

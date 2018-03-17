@@ -43,143 +43,157 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class VectorizationDoc2Regression extends JCasAnnotator_ImplBase {
-	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
-	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
-	protected File targetFolder;
+public class VectorizationDoc2Regression
+    extends JCasAnnotator_ImplBase
+{
+    public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
+    @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
+    protected File targetFolder;
 
-	public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
-	@ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
-	protected String instanceTypeName;
+    public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
+    @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
+    protected String instanceTypeName;
 
-	public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
-	@ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
-	protected File preparationFolder;
+    public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
+    @ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
+    protected File preparationFolder;
 
-	public static final String PARAM_TO_INTEGER = "mapToInteger";
-	@ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
-	protected boolean toInteger;
+    public static final String PARAM_TO_INTEGER = "mapToInteger";
+    @ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
+    protected boolean toInteger;
 
-	File instanceVectorFile;
-	File outcomeVectorFile;
+    File instanceVectorFile;
+    File outcomeVectorFile;
 
-	Map<String, Integer> instanceMap = new HashMap<>();
-	private Type instanceType;
+    Map<String, Integer> instanceMap = new HashMap<>();
+    private Type instanceType;
 
-	BufferedWriter writerInstance;
-	BufferedWriter writerOutcome;
+    BufferedWriter writerInstance;
+    BufferedWriter writerOutcome;
 
-	int maximumLength = 0;
+    int maximumLength = 0;
 
-	StringBuilder outcomeVector = new StringBuilder();
+    StringBuilder outcomeVector = new StringBuilder();
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		instanceVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
-		outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+        instanceVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+        outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 
-		try {
-			if (toInteger) {
-				loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
-			}
+        try {
+            if (toInteger) {
+                loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+            }
 
-			// load the type of the annotation that holds the instances
-			JCas typeFactory = JCasFactory.createJCas();
-			Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
-			AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
-			instanceType = createAnnotation.getType();
+            // load the type of the annotation that holds the instances
+            JCas typeFactory = JCasFactory.createJCas();
+            Type type = JCasUtil.getType(typeFactory, Class.forName(instanceTypeName));
+            AnnotationFS createAnnotation = typeFactory.getCas().createAnnotation(type, 0, 0);
+            instanceType = createAnnotation.getType();
 
-			writerInstance = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
-			writerOutcome = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
+            writerInstance = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
+            writerOutcome = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
 
-			maximumLength = getMaximumLength();
+            maximumLength = getMaximumLength();
 
-		} catch (Exception e)
-		{
-			throw new ResourceInitializationException(e);
-		}
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
 
-	}
+    }
 
-	private int getMaximumLength() throws IOException {
-		String text = FileUtils
-				.readFileToString(new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
-		return Integer.parseInt(text);
-	}
+    private int getMaximumLength() throws IOException
+    {
+        String text = FileUtils.readFileToString(
+                new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
+                "utf-8");
+        return Integer.parseInt(text);
+    }
 
-	private void loadMapping(Map<String, Integer> m, String f) throws IOException {
-		List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
-		for (String s : lines) {
-			if (s.isEmpty()) {
-				continue;
-			}
-			String[] split = s.split("\t");
-			m.put(split[0], Integer.valueOf(split[1]));
-		}
+    private void loadMapping(Map<String, Integer> m, String f) throws IOException
+    {
+        List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
+        for (String s : lines) {
+            if (s.isEmpty()) {
+                continue;
+            }
+            String[] split = s.split("\t");
+            m.put(split[0], Integer.valueOf(split[1]));
+        }
 
-	}
+    }
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		try {
-			processInstances(aJCas);
-			processOutcome(aJCas);
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        try {
+            processInstances(aJCas);
+            processOutcome(aJCas);
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
 
-	}
+    }
 
-	private void processOutcome(JCas aJCas) throws Exception {
-		List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-				JCasUtil.select(aJCas, TextClassificationOutcome.class));
+    private void processOutcome(JCas aJCas) throws Exception
+    {
+        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
+                JCasUtil.select(aJCas, TextClassificationOutcome.class));
 
-		for (int i = 0; i < outcomes.size(); i++) {
-			String outcome = outcomes.get(i).getOutcome();
-			outcomeVector.append(outcome);
-		}
-		outcomeVector.append(" ");
-	}
+        for (int i = 0; i < outcomes.size(); i++) {
+            String outcome = outcomes.get(i).getOutcome();
+            outcomeVector.append(outcome);
+        }
+        outcomeVector.append(" ");
+    }
 
-	private void processInstances(JCas aJCas) throws Exception {
+    private void processInstances(JCas aJCas) throws Exception
+    {
 
-		List<AnnotationFS> annos = new ArrayList<AnnotationFS>(CasUtil.select(aJCas.getCas(), instanceType));
-		for (int i = 0; i < annos.size(); i++) {
-			AnnotationFS a = annos.get(i);
+        List<AnnotationFS> annos = new ArrayList<AnnotationFS>(
+                CasUtil.select(aJCas.getCas(), instanceType));
+        for (int i = 0; i < annos.size(); i++) {
+            AnnotationFS a = annos.get(i);
 
-			if (toInteger) {
-				Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
-				writerInstance.write(intIdOfInstance.toString());
-			} else {
-				writerInstance.write(a.getCoveredText());
-			}
+            if (toInteger) {
+                Integer intIdOfInstance = instanceMap.get(a.getCoveredText());
+                writerInstance.write(intIdOfInstance.toString());
+            }
+            else {
+                writerInstance.write(a.getCoveredText());
+            }
 
-			if (i + 1 < annos.size() && i + 1 < maximumLength) {
-				writerInstance.write(" ");
-			}
+            if (i + 1 < annos.size() && i + 1 < maximumLength) {
+                writerInstance.write(" ");
+            }
 
-			if (i + 1 >= maximumLength) {
-				break;
-			}
-		}
+            if (i + 1 >= maximumLength) {
+                break;
+            }
+        }
 
-		writerInstance.write(System.lineSeparator());
-	}
+        writerInstance.write(System.lineSeparator());
+    }
 
-	@Override
-	public void collectionProcessComplete() {
-		try {
-			writerOutcome.write(outcomeVector.toString().trim());
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
+    @Override
+    public void collectionProcessComplete()
+    {
+        try {
+            writerOutcome.write(outcomeVector.toString().trim());
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
 
-		IOUtils.closeQuietly(writerInstance);
-		IOUtils.closeQuietly(writerOutcome);
-	}
+        IOUtils.closeQuietly(writerInstance);
+        IOUtils.closeQuietly(writerOutcome);
+    }
 
 }

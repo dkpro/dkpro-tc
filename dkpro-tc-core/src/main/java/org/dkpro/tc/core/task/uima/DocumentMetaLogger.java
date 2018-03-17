@@ -25,21 +25,26 @@ import java.io.OutputStreamWriter;
 
 import org.dkpro.tc.core.Constants;
 
-public class DocumentMetaLogger implements Constants {
+public class DocumentMetaLogger
+    implements Constants
+{
 
-	private BufferedWriter logger;
+    private BufferedWriter logger;
 
-	public DocumentMetaLogger(File outputDirectory) throws Exception {
-		File file = new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-		logger = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-	}
+    public DocumentMetaLogger(File outputDirectory) throws Exception
+    {
+        File file = new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG);
+        logger = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+    }
 
-	public void write(String s) throws IOException {
-		logger.write(s + "\n");
-	}
+    public void write(String s) throws IOException
+    {
+        logger.write(s + "\n");
+    }
 
-	public void close() throws IOException {
-		logger.close();
-	}
+    public void close() throws IOException
+    {
+        logger.close();
+    }
 
 }

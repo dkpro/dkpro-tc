@@ -24,16 +24,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.type.JCasId;
 
-public class MetaCollectionLogger extends JCasAnnotator_ImplBase{
+public class MetaCollectionLogger
+    extends JCasAnnotator_ImplBase
+{
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
-        getLogger().log(
-                Level.INFO,
-                "--- meta collection on CAS with id ["
-                        + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
+        getLogger().log(Level.INFO, "--- meta collection on CAS with id ["
+                + JCasUtil.selectSingle(jcas, JCasId.class).getId() + "] ---");
     }
-    
+
 }

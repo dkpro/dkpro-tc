@@ -30,8 +30,7 @@ public class AssignIdConnector
     private int jcasId;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         LogFactory.getLog(getClass()).info("--- validating CAS with id [" + jcasId + "] ---");
 

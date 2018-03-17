@@ -30,100 +30,114 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class ListMappingAnnotator extends LookupResourceAnnotator {
-	 
+public class ListMappingAnnotator
+    extends LookupResourceAnnotator
+{
 
-	Map<String, Integer> map = new HashMap<>();
+    Map<String, Integer> map = new HashMap<>();
 
-	int nextId = 0;
+    int nextId = 0;
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		// do nothing here
-	}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        // do nothing here
+    }
 
-	@Override
-	public void collectionProcessComplete() {
-		
-		init(); //initialize at the end, the resources we need are not available during initialization of the annotator!
-		
-		List<String> mappedDict = processDictionary(dictionaryPath);
-		writeMappedDictionary(dictionaryPath, mappedDict);
+    @Override
+    public void collectionProcessComplete()
+    {
 
-		writeUpdatedInstanceMapping();
+        init(); // initialize at the end, the resources we need are not available during
+                // initialization of the annotator!
 
-	}
+        List<String> mappedDict = processDictionary(dictionaryPath);
+        writeMappedDictionary(dictionaryPath, mappedDict);
 
-	private void init() {
-		try {
-			List<String> instanceMappings = FileUtils
-					.readLines(new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING), "utf-8");
-			for (String e : instanceMappings) {
-				String[] split = e.split("\t");
+        writeUpdatedInstanceMapping();
 
-				String val = split[0];
-				Integer key = Integer.valueOf(split[1]);
-				map.put(val, key);
+    }
 
-				if (key > nextId) {
-					nextId = key;
-				}
-			}
+    private void init()
+    {
+        try {
+            List<String> instanceMappings = FileUtils.readLines(
+                    new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING),
+                    "utf-8");
+            for (String e : instanceMappings) {
+                String[] split = e.split("\t");
 
-			nextId += 1; // next free id
+                String val = split[0];
+                Integer key = Integer.valueOf(split[1]);
+                map.put(val, key);
 
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}		
-	}
+                if (key > nextId) {
+                    nextId = key;
+                }
+            }
 
-	private void writeUpdatedInstanceMapping() {
+            nextId += 1; // next free id
 
-		List<String> mapping = new ArrayList<>();
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
-		List<String> keySet = new ArrayList<>(map.keySet());
-		Collections.sort(keySet);
+    private void writeUpdatedInstanceMapping()
+    {
 
-		for (String key : keySet) {
-			mapping.add(key + "\t" + map.get(key));
-		}
+        List<String> mapping = new ArrayList<>();
 
-		try {
-			FileUtils.writeLines(new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING), "utf-8",
-					mapping);
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
+        List<String> keySet = new ArrayList<>(map.keySet());
+        Collections.sort(keySet);
 
-	}
+        for (String key : keySet) {
+            mapping.add(key + "\t" + map.get(key));
+        }
 
-	private void writeMappedDictionary(String sourceDict, List<String> dict) {
-		File file = new File(sourceDict);
-		try {
-			FileUtils.writeLines(new File(targetFolder, file.getName()), "utf-8", dict);
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
+        try {
+            FileUtils.writeLines(
+                    new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING),
+                    "utf-8", mapping);
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
 
-	private List<String> processDictionary(String dict) {
-		List<String> mappedDict = new ArrayList<>();
-		try {
-			List<String> readLines = FileUtils.readLines(new File(dict), "utf-8");
-			for (String e : readLines) {
+    }
 
-				String word = e.trim();
-				Integer integer = map.get(word);
-				if (integer == null) {
-					integer = nextId++;
-					map.put(word, integer);
-				}
-				mappedDict.add(integer.toString());
-			}
+    private void writeMappedDictionary(String sourceDict, List<String> dict)
+    {
+        File file = new File(sourceDict);
+        try {
+            FileUtils.writeLines(new File(targetFolder, file.getName()), "utf-8", dict);
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
-		return mappedDict;
-	}
+    private List<String> processDictionary(String dict)
+    {
+        List<String> mappedDict = new ArrayList<>();
+        try {
+            List<String> readLines = FileUtils.readLines(new File(dict), "utf-8");
+            for (String e : readLines) {
+
+                String word = e.trim();
+                Integer integer = map.get(word);
+                if (integer == null) {
+                    integer = nextId++;
+                    map.put(word, integer);
+                }
+                mappedDict.add(integer.toString());
+            }
+
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+        return mappedDict;
+    }
 }

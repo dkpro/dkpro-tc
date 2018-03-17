@@ -74,7 +74,7 @@ public class ExperimentUtil
      */
     public static Dimension<TcFeatureSet> getAblationTestFeatures(TcFeature... features)
     {
-        TcFeatureSet [] featureSets = new TcFeatureSet[features.length + 1];
+        TcFeatureSet[] featureSets = new TcFeatureSet[features.length + 1];
 
         for (int i = 0; i < features.length; i++) {
             TcFeatureSet featureNamesMinusOne = getFeatureNamesMinusOne(features, i);
@@ -91,7 +91,7 @@ public class ExperimentUtil
 
     private static TcFeatureSet getFeatureNamesMinusOne(TcFeature[] names, int i)
     {
-        
+
         TcFeatureSet nameList = new TcFeatureSet(names);
         nameList.setFeatureSetName(LEFTOUT_FE + names[i].getDiscriminatorValue());
         nameList.remove(i);
@@ -102,7 +102,8 @@ public class ExperimentUtil
      * A named list which can be used to label values which are lists (e.g. a list of feature
      * extractors) in dimensions.
      * 
-     * @param <T> type of array
+     * @param <T>
+     *            type of array
      */
     @SuppressWarnings("serial")
     public static class NamedArrayList<T>

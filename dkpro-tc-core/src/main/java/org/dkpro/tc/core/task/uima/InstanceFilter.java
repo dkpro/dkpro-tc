@@ -24,29 +24,35 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.feature.filter.FeatureFilter;
 
-public class InstanceFilter implements Constants {
+public class InstanceFilter
+    implements Constants
+{
 
-	private boolean isTesting;
-	private String[] featureFilters;
+    private boolean isTesting;
+    private String[] featureFilters;
 
-	public InstanceFilter(String[] featureFilters, boolean isTesting) {
-		this.featureFilters = Arrays.copyOf(featureFilters, featureFilters.length);
-		this.isTesting = isTesting;
-	}
+    public InstanceFilter(String[] featureFilters, boolean isTesting)
+    {
+        this.featureFilters = Arrays.copyOf(featureFilters, featureFilters.length);
+        this.isTesting = isTesting;
+    }
 
-	public void filter(File jsonTempFile) throws AnalysisEngineProcessException {
-		for (String filterString : featureFilters) {
-			FeatureFilter filter;
-			try {
-				filter = (FeatureFilter) Class.forName(filterString).newInstance();
+    public void filter(File jsonTempFile) throws AnalysisEngineProcessException
+    {
+        for (String filterString : featureFilters) {
+            FeatureFilter filter;
+            try {
+                filter = (FeatureFilter) Class.forName(filterString).newInstance();
 
-				if (filter.isApplicableForTraining() && !isTesting || filter.isApplicableForTesting() && isTesting) {
-					filter.applyFilter(jsonTempFile);
-				}
-			} catch (Exception e) {
-				throw new AnalysisEngineProcessException(e);
-			}
-		}
-	}
+                if (filter.isApplicableForTraining() && !isTesting
+                        || filter.isApplicableForTesting() && isTesting) {
+                    filter.applyFilter(jsonTempFile);
+                }
+            }
+            catch (Exception e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+        }
+    }
 
 }

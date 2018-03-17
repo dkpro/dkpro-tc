@@ -61,10 +61,10 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 /**
  * Iterates over all documents and stores required collection-level meta data, e.g. which n-grams
  * appear in the documents.
- * 
  */
 public class MetaInfoTask
-    extends UimaTaskBase implements Constants
+    extends UimaTaskBase
+    implements Constants
 {
 
     /**
@@ -94,7 +94,7 @@ public class MetaInfoTask
     private boolean recordContext;
 
     private Set<String> featureExtractorNames = new HashSet<>();
-    
+
     private Random r = new Random();
 
     @Override
@@ -209,23 +209,25 @@ public class MetaInfoTask
         throws ResourceInitializationException
     {
         try {
-			if (featureMode.equals(FM_UNIT) || featureMode.equals(FM_DOCUMENT)) {
-				// add additional unit context meta collector that extracts the
-				// context around text
-				// classification units
-				// mainly used for error analysis purposes
-				Map<String, Object> empty = new HashMap<>();
-				MetaCollectorConfiguration conf = new MetaCollectorConfiguration(UnitContextMetaCollector.class, empty);
+            if (featureMode.equals(FM_UNIT) || featureMode.equals(FM_DOCUMENT)) {
+                // add additional unit context meta collector that extracts the
+                // context around text
+                // classification units
+                // mainly used for error analysis purposes
+                Map<String, Object> empty = new HashMap<>();
+                MetaCollectorConfiguration conf = new MetaCollectorConfiguration(
+                        UnitContextMetaCollector.class, empty);
 
-				int rnd = r.nextInt();
-				String val = "" + (rnd > 0 ? rnd : rnd * -1);
-				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
-				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
-				configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
-						AccessMode.READWRITE);
+                int rnd = r.nextInt();
+                String val = "" + (rnd > 0 ? rnd : rnd * -1);
+                conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME,
+                        val);
+                conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
+                configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
+                        AccessMode.READWRITE);
 
-				return conf.descriptor;
-			}
+                return conf.descriptor;
+            }
 
             if (featureMode.equals(FM_SEQUENCE)) {
                 Map<String, Object> empty = new HashMap<>();
@@ -233,10 +235,11 @@ public class MetaInfoTask
                         SequenceContextMetaCollector.class, empty);
 
                 int rnd = r.nextInt();
-				String val = "" + (rnd > 0 ? rnd : rnd * -1);
-				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME, val);
-				conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
-                
+                String val = "" + (rnd > 0 ? rnd : rnd * -1);
+                conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_UNIQUE_EXTRACTOR_NAME,
+                        val);
+                conf.collectorOverrides.put(UnitContextMetaCollector.PARAM_CONTEXT_FOLDER, "");
+
                 configureStorageLocations(aContext, conf.descriptor, null, conf.collectorOverrides,
                         AccessMode.READWRITE);
                 return conf.descriptor;
@@ -261,7 +264,7 @@ public class MetaInfoTask
 
     public static void configureStorageLocations(TaskContext aContext, ResourceSpecifier aDesc,
             String aExtractorName, Map<String, String> aOverrides, AccessMode aMode)
-                throws InstantiationException, IllegalAccessException, ClassNotFoundException
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         // We assume for the moment that we only have primitive analysis engines for meta
         // collection, not aggregates. If there were aggregates, we'd have to do this
@@ -274,7 +277,7 @@ public class MetaInfoTask
             }
         }
         else if (!(aDesc instanceof CustomResourceSpecifier_impl)) {
-              throw new IllegalArgumentException(
+            throw new IllegalArgumentException(
                     "Descriptors of type " + aDesc.getClass() + " not supported.");
         }
 

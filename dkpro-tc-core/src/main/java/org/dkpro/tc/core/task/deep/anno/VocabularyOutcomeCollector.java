@@ -46,26 +46,24 @@ public class VocabularyOutcomeCollector
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
     TreeSet<String> token;
     TreeSet<String> outcomes;
 
     Type instanceType;
-	
-    private File vocabularyFile;
-	private File outcomeFile;
 
+    private File vocabularyFile;
+    private File outcomeFile;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
         token = new TreeSet<>();
         outcomes = new TreeSet<>();
-        
+
         vocabularyFile = new File(targetFolder, DeepLearningConstants.FILENAME_VOCABULARY);
-		outcomeFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOMES);
+        outcomeFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOMES);
 
         try {
             JCas typeFactory = JCasFactory.createJCas();
@@ -80,8 +78,7 @@ public class VocabularyOutcomeCollector
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         collectInstances(aJCas);
         collectOutcomes(aJCas);
@@ -117,7 +114,7 @@ public class VocabularyOutcomeCollector
             throw new UnsupportedOperationException(e);
         }
     }
-    
+
     private String toString(TreeSet<String> tokens)
     {
         StringBuilder sb = new StringBuilder();

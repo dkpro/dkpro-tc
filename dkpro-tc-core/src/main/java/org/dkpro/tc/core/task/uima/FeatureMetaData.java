@@ -32,68 +32,79 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 
-public class FeatureMetaData implements Constants {
+public class FeatureMetaData
+    implements Constants
+{
 
-	private TreeSet<String> featureNames;
-	private Map<String, FeatureType> featDesc = new HashMap<>();
-	private Map<String, String> enumFeatureName = new HashMap<>();
-	private boolean didCollect;
+    private TreeSet<String> featureNames;
+    private Map<String, FeatureType> featDesc = new HashMap<>();
+    private Map<String, String> enumFeatureName = new HashMap<>();
+    private boolean didCollect;
 
-	public FeatureMetaData() {
-		featureNames = new TreeSet<>();
-	}
-	
-	public boolean didCollect(){
-		return this.didCollect;
-	}
+    public FeatureMetaData()
+    {
+        featureNames = new TreeSet<>();
+    }
 
-	public void collectMetaData(List<Instance> instances) {
-		featureNames = new TreeSet<>();
-		for (Feature f : instances.get(0).getFeatures()) {
-			featureNames.add(f.getName());
+    public boolean didCollect()
+    {
+        return this.didCollect;
+    }
 
-			if (!featDesc.containsKey(f.getName())) {
-				featDesc.put(f.getName(), f.getType());
-			}
-			
-			if(f.getType() == FeatureType.NOMINAL){
-				enumFeatureName.put(f.getName(), f.getValue().getClass().getName());
-			}
-		}
+    public void collectMetaData(List<Instance> instances)
+    {
+        featureNames = new TreeSet<>();
+        for (Feature f : instances.get(0).getFeatures()) {
+            featureNames.add(f.getName());
 
-		didCollect = true;
-	}
+            if (!featDesc.containsKey(f.getName())) {
+                featDesc.put(f.getName(), f.getType());
+            }
 
-	private String typeDescriptionToString() {
-		StringBuilder sb = new StringBuilder();
-		List<String> keyList = new ArrayList<String>(featDesc.keySet());
-		Collections.sort(keyList);
-		for (String k : keyList) {
-			FeatureType type = featDesc.get(k);
-			sb.append(k + "\t" + type.toString());
-			
-			if(type == FeatureType.NOMINAL){
-				sb.append("\t" + enumFeatureName.get(k));
-			}
-			
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
+            if (f.getType() == FeatureType.NOMINAL) {
+                enumFeatureName.put(f.getName(), f.getValue().getClass().getName());
+            }
+        }
 
-	public void writeMetaData(File outputDirectory) throws IOException {
+        didCollect = true;
+    }
 
-		FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8", featureNames);
-		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION),
-				typeDescriptionToString(), "utf-8");
-	}
+    private String typeDescriptionToString()
+    {
+        StringBuilder sb = new StringBuilder();
+        List<String> keyList = new ArrayList<String>(featDesc.keySet());
+        Collections.sort(keyList);
+        for (String k : keyList) {
+            FeatureType type = featDesc.get(k);
+            sb.append(k + "\t" + type.toString());
 
-	public void setFeatureNames(TreeSet<String> featureNames) {
-		this.featureNames = featureNames;
-	}
+            if (type == FeatureType.NOMINAL) {
+                sb.append("\t" + enumFeatureName.get(k));
+            }
 
-	public TreeSet<String> getFeatureNames() {
-		return new TreeSet<>(featureNames);
-	}
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public void writeMetaData(File outputDirectory) throws IOException
+    {
+
+        FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8",
+                featureNames);
+        FileUtils.writeStringToFile(
+                new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION),
+                typeDescriptionToString(), "utf-8");
+    }
+
+    public void setFeatureNames(TreeSet<String> featureNames)
+    {
+        this.featureNames = featureNames;
+    }
+
+    public TreeSet<String> getFeatureNames()
+    {
+        return new TreeSet<>(featureNames);
+    }
 
 }

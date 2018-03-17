@@ -30,8 +30,7 @@ public class SequenceContextMetaCollector
 {
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
 
         Collection<TextClassificationSequence> sequences = JCasUtil.select(jcas,

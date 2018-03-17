@@ -39,20 +39,18 @@ public class MaxLenDoc2Label
     public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
     @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
     protected File targetFolder;
-    
+
     public static final String PARAM_INSTANCE_ANNOTATION = "instanceAnnotation";
     @ConfigurationParameter(name = PARAM_INSTANCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token")
     protected String instanceTypeName;
-    
 
     File outputFile;
     Type instanceType;
-    
-    int maximumLength=-1;
+
+    int maximumLength = -1;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -67,15 +65,14 @@ public class MaxLenDoc2Label
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
-        
+
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         int docSize = CasUtil.select(aJCas.getCas(), instanceType).size();
-        if(docSize > maximumLength){
+        if (docSize > maximumLength) {
             maximumLength = docSize;
         }
     }
@@ -84,7 +81,7 @@ public class MaxLenDoc2Label
     public void collectionProcessComplete()
     {
         try {
-            FileUtils.writeStringToFile(outputFile, maximumLength+"", "utf-8");
+            FileUtils.writeStringToFile(outputFile, maximumLength + "", "utf-8");
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

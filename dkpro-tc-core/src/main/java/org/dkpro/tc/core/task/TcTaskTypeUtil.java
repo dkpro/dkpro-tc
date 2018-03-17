@@ -27,30 +27,28 @@ import org.dkpro.tc.core.Constants;
 
 public class TcTaskTypeUtil
 {
-	public static boolean isFacadeTask(StorageService store, String id) throws IOException {
-		return isTask(TcTaskType.FACADE_TASK, store, id);
-	}
-	
+    public static boolean isFacadeTask(StorageService store, String id) throws IOException
+    {
+        return isTask(TcTaskType.FACADE_TASK, store, id);
+    }
+
     public static boolean isMachineLearningAdapterTask(StorageService store, String id)
         throws IOException
     {
         return isTask(TcTaskType.MACHINE_LEARNING_ADAPTER, store, id);
     }
 
-    public static boolean isCrossValidationTask(StorageService store, String id)
-        throws IOException
+    public static boolean isCrossValidationTask(StorageService store, String id) throws IOException
     {
         return isTask(TcTaskType.CROSS_VALIDATION, store, id);
     }
 
-    public static boolean isInitTrainTask(StorageService store, String id)
-        throws IOException
+    public static boolean isInitTrainTask(StorageService store, String id) throws IOException
     {
         return isTask(TcTaskType.INIT_TRAIN, store, id);
     }
 
-    public static boolean isInitTestTask(StorageService store, String id)
-        throws IOException
+    public static boolean isInitTestTask(StorageService store, String id) throws IOException
     {
         return isTask(TcTaskType.INIT_TEST, store, id);
     }
@@ -67,8 +65,7 @@ public class TcTaskTypeUtil
         return isTask(TcTaskType.FEATURE_EXTRACTION_TEST, store, id);
     }
 
-    public static boolean isMetaTask(StorageService store, String id)
-        throws IOException
+    public static boolean isMetaTask(StorageService store, String id) throws IOException
     {
         return isTask(TcTaskType.META, store, id);
     }
@@ -98,11 +95,12 @@ public class TcTaskTypeUtil
                 .getMap();
     }
 
-	public static TcTaskType getType(StorageService store, String id) throws IOException {
-		
-		Map<String, String> loadAttributes = loadAttributes(store, id);
+    public static TcTaskType getType(StorageService store, String id) throws IOException
+    {
+
+        Map<String, String> loadAttributes = loadAttributes(store, id);
         TcTaskType taskType = TcTaskTypeUtil.getTaskType(loadAttributes);
-		return taskType;
-	}
+        return taskType;
+    }
 
 }

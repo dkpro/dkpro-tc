@@ -33,39 +33,32 @@ public class PreprocessConnector
     private int nrofProcessCalls;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
         nrofProcessCalls = 0;
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
-        getLogger().log(
-                Level.FINE,
-                "--- preprocessing of CAS with id ["
-                        + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
+        getLogger().log(Level.FINE, "--- preprocessing of CAS with id ["
+                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         nrofProcessCalls++;
 
-        getLogger().log(
-                Level.FINE,
-                "--- preprocessing of CAS with id ["
-                        + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] complete ---");
+        getLogger().log(Level.FINE, "--- preprocessing of CAS with id ["
+                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] complete ---");
     }
 
     @Override
-    public void collectionProcessComplete()
-        throws AnalysisEngineProcessException
+    public void collectionProcessComplete() throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
 
         if (nrofProcessCalls == 0) {
-            throw new AnalysisEngineProcessException(new TextClassificationException(
-                    "There are no documents to process."));
+            throw new AnalysisEngineProcessException(
+                    new TextClassificationException("There are no documents to process."));
         }
 
     }

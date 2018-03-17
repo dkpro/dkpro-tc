@@ -47,246 +47,285 @@ import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelVersionIO;
 
-public abstract class ModelSerializationTask extends ExecutableTaskBase implements Constants, ModelVersionIO {
-	@Discriminator(name = DIM_FEATURE_SET)
-	protected TcFeatureSet featureSet;
-	@Discriminator(name = DIM_FEATURE_MODE)
-	protected String featureMode;
-	@Discriminator(name = DIM_LEARNING_MODE)
-	protected String learningMode;
-	@Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-	protected String threshold;
+public abstract class ModelSerializationTask
+    extends ExecutableTaskBase
+    implements Constants, ModelVersionIO
+{
+    @Discriminator(name = DIM_FEATURE_SET)
+    protected TcFeatureSet featureSet;
+    @Discriminator(name = DIM_FEATURE_MODE)
+    protected String featureMode;
+    @Discriminator(name = DIM_LEARNING_MODE)
+    protected String learningMode;
+    @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
+    protected String threshold;
 
-	protected File outputFolder;
+    protected File outputFolder;
 
-	public void setOutputFolder(File outputFolder) {
-		this.outputFolder = outputFolder;
-		
-		createFolder(outputFolder);
-	}
+    public void setOutputFolder(File outputFolder)
+    {
+        this.outputFolder = outputFolder;
 
-	private static void createFolder(File outputFolder) {
-		if(!outputFolder.exists()){
-			boolean mkdirs = outputFolder.mkdirs();
-			if(!mkdirs){
-				throw new IllegalStateException("Could not create folder ["+ outputFolder.getParentFile().getAbsolutePath() + "]");
-			}
-		}		
-	}
+        createFolder(outputFolder);
+    }
 
-	protected void writeModelConfiguration(TaskContext aContext) throws Exception {
+    private static void createFolder(File outputFolder)
+    {
+        if (!outputFolder.exists()) {
+            boolean mkdirs = outputFolder.mkdirs();
+            if (!mkdirs) {
+                throw new IllegalStateException("Could not create folder ["
+                        + outputFolder.getParentFile().getAbsolutePath() + "]");
+            }
+        }
+    }
 
-		writeModelParameters(aContext, outputFolder, featureSet);
-		writeFeatureMode(outputFolder, featureMode);
-		writeLearningMode(outputFolder, learningMode);
-		writeCurrentVersionOfDKProTC(outputFolder);
+    protected void writeModelConfiguration(TaskContext aContext) throws Exception
+    {
 
-		writeAdapter();
-	}
+        writeModelParameters(aContext, outputFolder, featureSet);
+        writeFeatureMode(outputFolder, featureMode);
+        writeLearningMode(outputFolder, learningMode);
+        writeCurrentVersionOfDKProTC(outputFolder);
 
-	private void writeModelParameters(TaskContext aContext, File aOutputFolder, List<TcFeature> featureSet)
-			throws Exception {
-		StringBuilder sb = new StringBuilder();
-		for (TcFeature f : featureSet) {
-			copyLuceneMetaResourcesAndGetOverrides(aContext, f, aOutputFolder);
-			persistsFeatureClassObject(f, aOutputFolder);
+        writeAdapter();
+    }
 
-			sb = copyParameters(f, sb, aOutputFolder);
-		}
-		writeFeatureParameters(sb, aOutputFolder);
+    private void writeModelParameters(TaskContext aContext, File aOutputFolder,
+            List<TcFeature> featureSet)
+        throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        for (TcFeature f : featureSet) {
+            copyLuceneMetaResourcesAndGetOverrides(aContext, f, aOutputFolder);
+            persistsFeatureClassObject(f, aOutputFolder);
 
-	}
+            sb = copyParameters(f, sb, aOutputFolder);
+        }
+        writeFeatureParameters(sb, aOutputFolder);
 
-	private void writeFeatureParameters(StringBuilder sb, File aOutputFolder) throws IOException {
-		File file = new File(aOutputFolder, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
-		FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
-	}
+    }
 
-	private StringBuilder copyParameters(TcFeature f, StringBuilder sb, File aOutputFolder)
-			throws IOException {
-		sb.append(f.getFeatureName() + "\t");
+    private void writeFeatureParameters(StringBuilder sb, File aOutputFolder) throws IOException
+    {
+        File file = new File(aOutputFolder, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+        FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
+    }
 
-		ExternalResourceDescription feDesc = f.getActualValue();
-		Map<String, Object> parameterSettings = ConfigurationParameterFactory
-				.getParameterSettings(feDesc.getResourceSpecifier());
-		List<String> keySet = new ArrayList<>(parameterSettings.keySet());
-		for (int i = 0; i < keySet.size(); i++) {
+    private StringBuilder copyParameters(TcFeature f, StringBuilder sb, File aOutputFolder)
+        throws IOException
+    {
+        sb.append(f.getFeatureName() + "\t");
 
-			String key = keySet.get(i);
-			String value = parameterSettings.get(key).toString();
+        ExternalResourceDescription feDesc = f.getActualValue();
+        Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                .getParameterSettings(feDesc.getResourceSpecifier());
+        List<String> keySet = new ArrayList<>(parameterSettings.keySet());
+        for (int i = 0; i < keySet.size(); i++) {
 
-			if (valueExistAsFileOrFolderInTheFileSystem(value)) {
-				String name = new File(value).getName();
-				String destination = aOutputFolder + "/" + name;
-				copyToTargetLocation(new File(value), new File(destination));
-				sb = record(i, keySet, name, sb);
-				continue;
-			}
-			sb = record(i, keySet, parameterSettings, sb);
-		}
+            String key = keySet.get(i);
+            String value = parameterSettings.get(key).toString();
 
-		sb.append("\n");
+            if (valueExistAsFileOrFolderInTheFileSystem(value)) {
+                String name = new File(value).getName();
+                String destination = aOutputFolder + "/" + name;
+                copyToTargetLocation(new File(value), new File(destination));
+                sb = record(i, keySet, name, sb);
+                continue;
+            }
+            sb = record(i, keySet, parameterSettings, sb);
+        }
 
-		return sb;
-	}
+        sb.append("\n");
 
-	private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue) {
-		return new File(aValue).exists();
-	}
+        return sb;
+    }
 
-	private StringBuilder record(int i, List<String> keySet, String name, StringBuilder sb) {
-		String key = keySet.get(i);
-		sb.append(key + "=" + name);
-		if (i + 1 < keySet.size()) {
-			sb.append("\t");
-		}
-		return sb;
-	}
+    private static boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
+    {
+        return new File(aValue).exists();
+    }
 
-	private StringBuilder record(int i, List<String> keySet, Map<String, Object> parameterSettings, StringBuilder sb) {
-		String key = keySet.get(i);
-		sb.append(key + "=" + parameterSettings.get(key).toString());
-		if (i + 1 < keySet.size()) {
-			sb.append("\t");
-		}
-		return sb;
-	}
+    private StringBuilder record(int i, List<String> keySet, String name, StringBuilder sb)
+    {
+        String key = keySet.get(i);
+        sb.append(key + "=" + name);
+        if (i + 1 < keySet.size()) {
+            sb.append("\t");
+        }
+        return sb;
+    }
 
-	private void persistsFeatureClassObject(TcFeature f, File aOutputFolder) throws Exception {
-		ExternalResourceDescription feDesc = f.getActualValue();
+    private StringBuilder record(int i, List<String> keySet, Map<String, Object> parameterSettings,
+            StringBuilder sb)
+    {
+        String key = keySet.get(i);
+        sb.append(key + "=" + parameterSettings.get(key).toString());
+        if (i + 1 < keySet.size()) {
+            sb.append("\t");
+        }
+        return sb;
+    }
 
-		String implName;
-		if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-			implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier()).getResourceClassName();
-		} else {
-			implName = feDesc.getImplementationName();
-		}
+    private void persistsFeatureClassObject(TcFeature f, File aOutputFolder) throws Exception
+    {
+        ExternalResourceDescription feDesc = f.getActualValue();
 
-		Class<?> feature = Class.forName(implName);
+        String implName;
+        if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+            implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                    .getResourceClassName();
+        }
+        else {
+            implName = feDesc.getImplementationName();
+        }
 
-		InputStream is = null;
-		OutputStream os = null;
-		
-		try {
-			is = feature.getResource("/" + implName.replace(".", "/") + ".class").openStream();
-			os = buildOutputStream(aOutputFolder, implName);
-			IOUtils.copy(is, os);
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(os);
-		}
-	}
+        Class<?> feature = Class.forName(implName);
 
-	private static OutputStream buildOutputStream(File modelFolder, String featureString) throws Exception {
+        InputStream is = null;
+        OutputStream os = null;
 
-		String packagePath = featureString.substring(0, featureString.lastIndexOf(".")).replaceAll("\\.", "/");
-		String featureClassName = featureString.substring(featureString.lastIndexOf(".") + 1) + ".class";
+        try {
+            is = feature.getResource("/" + implName.replace(".", "/") + ".class").openStream();
+            os = buildOutputStream(aOutputFolder, implName);
+            IOUtils.copy(is, os);
+        }
+        finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+    }
 
-		String folderPath = modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_CLASS_FOLDER + "/" + packagePath + "/";
-		
-		File f = new File(folderPath);
-		createFolder(f);
-		return new FileOutputStream(new File(f, featureClassName));
-	}
+    private static OutputStream buildOutputStream(File modelFolder, String featureString)
+        throws Exception
+    {
 
-	private void copyLuceneMetaResourcesAndGetOverrides(TaskContext aContext, TcFeature f, File aOutputFolder)
-			throws Exception {
-		ExternalResourceDescription feDesc = f.getActualValue();
-		Map<String, Object> parameterSettings = ConfigurationParameterFactory
-				.getParameterSettings(feDesc.getResourceSpecifier());
+        String packagePath = featureString.substring(0, featureString.lastIndexOf("."))
+                .replaceAll("\\.", "/");
+        String featureClassName = featureString.substring(featureString.lastIndexOf(".") + 1)
+                + ".class";
 
-		String implName;
-		if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-			implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier()).getResourceClassName();
-		} else {
-			implName = feDesc.getImplementationName();
-		}
+        String folderPath = modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_CLASS_FOLDER + "/"
+                + packagePath + "/";
 
-		Class<?> feClass = Class.forName(implName);
+        File f = new File(folderPath);
+        createFolder(f);
+        return new FileOutputStream(new File(f, featureClassName));
+    }
 
-		// Skip feature extractors that are not dependent on meta collectors
-		if (!MetaDependent.class.isAssignableFrom(feClass)) {
-			return;
-		}
+    private void copyLuceneMetaResourcesAndGetOverrides(TaskContext aContext, TcFeature f,
+            File aOutputFolder)
+        throws Exception
+    {
+        ExternalResourceDescription feDesc = f.getActualValue();
+        Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                .getParameterSettings(feDesc.getResourceSpecifier());
 
-		MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+        String implName;
+        if (feDesc.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+            implName = ((CustomResourceSpecifier) feDesc.getResourceSpecifier())
+                    .getResourceClassName();
+        }
+        else {
+            implName = feDesc.getImplementationName();
+        }
 
-		Map<String, Object> metaOverrides = new HashMap<>();
-		Map<String, Object> extractorOverrides = new HashMap<>();
+        Class<?> feClass = Class.forName(implName);
 
-		// Tell the meta collectors where to store their data
-		for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(parameterSettings)) {
-			Map<String, String> collectorOverrides = conf.collectorOverrides;
-			metaOverrides.putAll(collectorOverrides);
-			extractorOverrides.putAll(conf.extractorOverrides);
+        // Skip feature extractors that are not dependent on meta collectors
+        if (!MetaDependent.class.isAssignableFrom(feClass)) {
+            return;
+        }
 
-			for (Entry<String, String> entry : collectorOverrides.entrySet()) {
-				File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE), entry.getValue().toString());
+        MetaDependent feInstance = (MetaDependent) feClass.newInstance();
 
-				String name = file.getName();
-				String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
-				File targetFolder = new File(subFolder);
-				copyToTargetLocation(file, targetFolder);
-			}
-		}
-		writeOverrides(aOutputFolder, metaOverrides, META_COLLECTOR_OVERRIDE);
-		writeOverrides(aOutputFolder, extractorOverrides, META_EXTRACTOR_OVERRIDE);
-	}
+        Map<String, Object> metaOverrides = new HashMap<>();
+        Map<String, Object> extractorOverrides = new HashMap<>();
 
-	private static void writeOverrides(File aOutputFolder, Map<String, Object> override, String target)
-			throws IOException {
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(Entry<String, Object> e : override.entrySet()){
-			sb.append(e.getKey() + "=" + e.getValue());
-		}
+        // Tell the meta collectors where to store their data
+        for (MetaCollectorConfiguration conf : feInstance
+                .getMetaCollectorClasses(parameterSettings)) {
+            Map<String, String> collectorOverrides = conf.collectorOverrides;
+            metaOverrides.putAll(collectorOverrides);
+            extractorOverrides.putAll(conf.extractorOverrides);
 
-		FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
-	}
+            for (Entry<String, String> entry : collectorOverrides.entrySet()) {
+                File file = new File(aContext.getFolder(META_KEY, AccessMode.READWRITE),
+                        entry.getValue().toString());
 
-	private void copyToTargetLocation(File source, File destination) throws IOException {
+                String name = file.getName();
+                String subFolder = aOutputFolder.getAbsoluteFile() + "/" + name;
+                File targetFolder = new File(subFolder);
+                copyToTargetLocation(file, targetFolder);
+            }
+        }
+        writeOverrides(aOutputFolder, metaOverrides, META_COLLECTOR_OVERRIDE);
+        writeOverrides(aOutputFolder, extractorOverrides, META_EXTRACTOR_OVERRIDE);
+    }
 
-		if (source.isDirectory()) {
-			createFolder(destination);
-			
-			String[] filelist = source.list();
-			
-			if(filelist == null){
-				throw new NullPointerException("Retrieved file list of folder [" + source.getAbsolutePath() +"] is null");
-			}
+    private static void writeOverrides(File aOutputFolder, Map<String, Object> override,
+            String target)
+        throws IOException
+    {
 
-			for (String file : filelist) {
-				File src = new File(source, file);
-				File dest = new File(destination, file);
-				copyToTargetLocation(src, dest);
-			}
+        StringBuilder sb = new StringBuilder();
 
-		} else {
-			copySingleFile(source, destination);
-		}
-	}
+        for (Entry<String, Object> e : override.entrySet()) {
+            sb.append(e.getKey() + "=" + e.getValue());
+        }
 
-	private void copySingleFile(File source, File destination) throws IOException {
-		
-		InputStream is = null;
-		OutputStream os = null;
-		try {
-			is = new FileInputStream(source);
-			os = new FileOutputStream(destination);
-			IOUtils.copy(is, os);
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(os);
-		}
-	}
+        FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
+    }
 
-	protected void writeModelAdapterInformation(File aOutputFolder, String aModelMeta) throws Exception {
-		// as a marker for the type, write the name of the ml adapter class
-		// write feature extractors
-		FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta, "utf-8");
-	}
+    private void copyToTargetLocation(File source, File destination) throws IOException
+    {
 
-	protected abstract void writeAdapter() throws Exception;
+        if (source.isDirectory()) {
+            createFolder(destination);
+
+            String[] filelist = source.list();
+
+            if (filelist == null) {
+                throw new NullPointerException(
+                        "Retrieved file list of folder [" + source.getAbsolutePath() + "] is null");
+            }
+
+            for (String file : filelist) {
+                File src = new File(source, file);
+                File dest = new File(destination, file);
+                copyToTargetLocation(src, dest);
+            }
+
+        }
+        else {
+            copySingleFile(source, destination);
+        }
+    }
+
+    private void copySingleFile(File source, File destination) throws IOException
+    {
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(destination);
+            IOUtils.copy(is, os);
+        }
+        finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+    }
+
+    protected void writeModelAdapterInformation(File aOutputFolder, String aModelMeta)
+        throws Exception
+    {
+        // as a marker for the type, write the name of the ml adapter class
+        // write feature extractors
+        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta, "utf-8");
+    }
+
+    protected abstract void writeAdapter() throws Exception;
 
 }

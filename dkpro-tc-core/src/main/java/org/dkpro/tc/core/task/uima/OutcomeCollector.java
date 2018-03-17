@@ -32,29 +32,38 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 
-public class OutcomeCollector extends JCasAnnotator_ImplBase implements Constants {
-	
-	public static final String PARAM_TARGET_FOLDER = "PARAM_TARGET_FOLDER";
-	@ConfigurationParameter(name = "PARAM_TARGET_FOLDER", mandatory = true)
-	private String targetFolder;
+public class OutcomeCollector
+    extends JCasAnnotator_ImplBase
+    implements Constants
+{
 
-	Set<String> outcomes = new HashSet<>();
+    public static final String PARAM_TARGET_FOLDER = "PARAM_TARGET_FOLDER";
+    @ConfigurationParameter(name = "PARAM_TARGET_FOLDER", mandatory = true)
+    private String targetFolder;
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		Collection<TextClassificationOutcome> tcos = JCasUtil.select(aJCas, TextClassificationOutcome.class);
-		for(TextClassificationOutcome o : tcos){
-			outcomes.add(o.getOutcome());
-		}
-	}
+    Set<String> outcomes = new HashSet<>();
 
-	@Override
-	public void collectionProcessComplete() {
-		File file = new File(targetFolder, Constants.FILENAME_OUTCOMES);
-		try {
-			FileUtils.writeLines(new File(targetFolder, Constants.FILENAME_OUTCOMES), "utf-8", outcomes);
-		} catch (IOException e) {
-			throw new UnsupportedOperationException("Failed to write outcomes to [" + file.getAbsolutePath() + "]");
-		}
-	}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        Collection<TextClassificationOutcome> tcos = JCasUtil.select(aJCas,
+                TextClassificationOutcome.class);
+        for (TextClassificationOutcome o : tcos) {
+            outcomes.add(o.getOutcome());
+        }
+    }
+
+    @Override
+    public void collectionProcessComplete()
+    {
+        File file = new File(targetFolder, Constants.FILENAME_OUTCOMES);
+        try {
+            FileUtils.writeLines(new File(targetFolder, Constants.FILENAME_OUTCOMES), "utf-8",
+                    outcomes);
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(
+                    "Failed to write outcomes to [" + file.getAbsolutePath() + "]");
+        }
+    }
 }

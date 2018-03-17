@@ -46,13 +46,14 @@ public class ReportUtils
         return false;
     }
 
-    public static void writeExcelAndCSV(TaskContext context, String contextLabel, TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv) throws IOException
+    public static void writeExcelAndCSV(TaskContext context, String contextLabel,
+            TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
+        throws IOException
     {
         StorageService store = context.getStorageService();
         // Excel cannot cope with more than 255 columns
         if (table.getColumnIds().length <= 255) {
-            context.storeBinary(evalFileName + "_compact" + suffixExcel,
-                    table.getExcelWriter());
+            context.storeBinary(evalFileName + "_compact" + suffixExcel, table.getExcelWriter());
         }
         context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
         table.setCompact(false);
@@ -75,8 +76,7 @@ public class ReportUtils
             Map<String, String> discriminatorsMap, List<String> discriminatorsToExclude)
     {
         Map<String, String> cleanedDiscriminatorsMap = new HashMap<String, String>();
-        
-        
+
         for (Entry<String, String> e : discriminatorsMap.entrySet()) {
             if (!ReportUtils.containsExcludePattern(e.getKey(), discriminatorsToExclude)) {
                 cleanedDiscriminatorsMap.put(e.getKey(), e.getValue());

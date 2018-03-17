@@ -61,10 +61,10 @@ public class VectorizationSeq2SeqOfLabel
     public static final String PARAM_PREPARATION_DIRECTORY = "mappingDirectory";
     @ConfigurationParameter(name = PARAM_PREPARATION_DIRECTORY, mandatory = true)
     protected File preparationFolder;
-    
+
     public static final String PARAM_TO_INTEGER = "mapToInteger";
-	@ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
-	protected boolean toInteger;
+    @ConfigurationParameter(name = PARAM_TO_INTEGER, mandatory = true, defaultValue = "false")
+    protected boolean toInteger;
 
     File instanceVectorFile;
     File outcomeVectorFile;
@@ -81,8 +81,7 @@ public class VectorizationSeq2SeqOfLabel
     int maximumLength = 0;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -90,10 +89,10 @@ public class VectorizationSeq2SeqOfLabel
         outcomeVectorFile = new File(targetFolder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
 
         try {
-        	if (toInteger) {
-        		loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
-        		loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
-        	}
+            if (toInteger) {
+                loadMapping(instanceMap, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+                loadMapping(outcomeMap, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+            }
 
             // load the type of the annotation that holds the instances
             JCas typeFactory = JCasFactory.createJCas();
@@ -117,8 +116,7 @@ public class VectorizationSeq2SeqOfLabel
         }
     }
 
-    private int getMaximumLength()
-        throws IOException
+    private int getMaximumLength() throws IOException
     {
         String text = FileUtils.readFileToString(
                 new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
@@ -126,8 +124,7 @@ public class VectorizationSeq2SeqOfLabel
         return Integer.parseInt(text);
     }
 
-    private void loadMapping(Map<String, Integer> m, String f)
-        throws IOException
+    private void loadMapping(Map<String, Integer> m, String f) throws IOException
     {
         List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
         for (String s : lines) {
@@ -141,8 +138,7 @@ public class VectorizationSeq2SeqOfLabel
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         try {
             processSequences(aJCas);
@@ -154,8 +150,7 @@ public class VectorizationSeq2SeqOfLabel
 
     }
 
-    private void processOutcome(JCas aJCas)
-        throws Exception
+    private void processOutcome(JCas aJCas) throws Exception
     {
         List<AnnotationFS> sequenceAnnos = new ArrayList<AnnotationFS>(
                 CasUtil.select(aJCas.getCas(), sequenceSpanType));
@@ -169,11 +164,12 @@ public class VectorizationSeq2SeqOfLabel
             int i = 0;
             for (; i < instances.size(); i++) {
                 TextClassificationOutcome tco = instances.get(i);
-                
-                if(toInteger){
-                	writerSeqOutcome.write(outcomeMap.get(tco.getOutcome()).toString());
-                }else{
-                	writerSeqOutcome.write(tco.getOutcome());
+
+                if (toInteger) {
+                    writerSeqOutcome.write(outcomeMap.get(tco.getOutcome()).toString());
+                }
+                else {
+                    writerSeqOutcome.write(tco.getOutcome());
                 }
 
                 if (i + 1 >= maximumLength) {
@@ -187,8 +183,7 @@ public class VectorizationSeq2SeqOfLabel
         }
     }
 
-    private void processSequences(JCas aJCas)
-        throws Exception
+    private void processSequences(JCas aJCas) throws Exception
     {
         List<AnnotationFS> sequenceAnnos = new ArrayList<AnnotationFS>(
                 CasUtil.select(aJCas.getCas(), sequenceSpanType));
@@ -202,11 +197,12 @@ public class VectorizationSeq2SeqOfLabel
             int i = 0;
             for (; i < instances.size(); i++) {
                 AnnotationFS annotationFS = instances.get(i);
-                
-                if(toInteger){
-                	writerSeqInst.write(instanceMap.get(annotationFS.getCoveredText()).toString());
-                }else{
-                	writerSeqInst.write(annotationFS.getCoveredText());
+
+                if (toInteger) {
+                    writerSeqInst.write(instanceMap.get(annotationFS.getCoveredText()).toString());
+                }
+                else {
+                    writerSeqInst.write(annotationFS.getCoveredText());
                 }
 
                 if (i + 1 >= maximumLength) {

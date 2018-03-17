@@ -45,120 +45,130 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
- * This annotator creates a mapping of the <b>order</b> of the
- * TextClassificationOutcomes to an index. Its purpose is to be able later on -
- * after prediction - to restore which instance has which prediction result. The
- * identity of the target is, thus, determined by the processing order
+ * This annotator creates a mapping of the <b>order</b> of the TextClassificationOutcomes to an
+ * index. Its purpose is to be able later on - after prediction - to restore which instance has
+ * which prediction result. The identity of the target is, thus, determined by the processing order
  */
-public class IdentificationCollector extends JCasAnnotator_ImplBase {
-	public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
-	@ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
-	protected File targetFolder;
+public class IdentificationCollector
+    extends JCasAnnotator_ImplBase
+{
+    public static final String PARAM_TARGET_DIRECTORY = "targetDirectory";
+    @ConfigurationParameter(name = PARAM_TARGET_DIRECTORY, mandatory = true)
+    protected File targetFolder;
 
-	public static final String PARAM_SEQUENCE_ANNOTATION = "sequenceAnnotation";
-	@ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
-	protected String sequenceSpanTypeName;
+    public static final String PARAM_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    @ConfigurationParameter(name = PARAM_SEQUENCE_ANNOTATION, mandatory = true, defaultValue = "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence")
+    protected String sequenceSpanTypeName;
 
-	public static final String PARAM_MODE = "mode";
-	@ConfigurationParameter(name = PARAM_MODE, mandatory = true)
-	protected String mode;
+    public static final String PARAM_MODE = "mode";
+    @ConfigurationParameter(name = PARAM_MODE, mandatory = true)
+    protected String mode;
 
-	public static final String PARAM_USER_SET_MAXIMUM_LENGTH = "maxLen";
-	@ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = false)
-	protected Integer maximumLength;
+    public static final String PARAM_USER_SET_MAXIMUM_LENGTH = "maxLen";
+    @ConfigurationParameter(name = PARAM_USER_SET_MAXIMUM_LENGTH, mandatory = false)
+    protected Integer maximumLength;
 
-	BufferedWriter writer;
-	private Type sequenceSpanType;
+    BufferedWriter writer;
+    private Type sequenceSpanType;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-		try {
-			File f = new File(targetFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
+        try {
+            File f = new File(targetFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
 
-			writer.write(
-					"# processing sequence of the respective document / target - prediction output should conform to this order enabling determination which document/item was classified as X"
-							+ System.lineSeparator());
+            writer.write(
+                    "# processing sequence of the respective document / target - prediction output should conform to this order enabling determination which document/item was classified as X"
+                            + System.lineSeparator());
 
-			JCas typeFactory = JCasFactory.createJCas();
-			Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
-			AnnotationFS sequenceAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
-			sequenceSpanType = sequenceAnno.getType();
+            JCas typeFactory = JCasFactory.createJCas();
+            Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
+            AnnotationFS sequenceAnno = typeFactory.getCas().createAnnotation(type, 0, 0);
+            sequenceSpanType = sequenceAnno.getType();
 
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
 
-	}
+    }
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		switch (mode) {
-		case Constants.FM_DOCUMENT:
-			processDocumentMode(aJCas);
-			return;
-		case Constants.FM_SEQUENCE:
-			processSequenceMode(aJCas);
-			return;
-		}
-	}
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        switch (mode) {
+        case Constants.FM_DOCUMENT:
+            processDocumentMode(aJCas);
+            return;
+        case Constants.FM_SEQUENCE:
+            processSequenceMode(aJCas);
+            return;
+        }
+    }
 
-	private void processSequenceMode(JCas aJCas) throws AnalysisEngineProcessException {
-		int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
+    private void processSequenceMode(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
 
-		try {
-			int seqId = 0;
-			Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
-			for (AnnotationFS s : sequences) {
+        try {
+            int seqId = 0;
+            Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
+            for (AnnotationFS s : sequences) {
 
-				List<TextClassificationTarget> targets = new ArrayList<TextClassificationTarget>(JCasUtil.selectCovered(aJCas,
-						TextClassificationTarget.class, s));
+                List<TextClassificationTarget> targets = new ArrayList<TextClassificationTarget>(
+                        JCasUtil.selectCovered(aJCas, TextClassificationTarget.class, s));
 
-				for (int i = 0; i < targets.size(); i++) {
-					TextClassificationTarget tco = targets.get(i);
-					// This formatted identification will allow sorting the
-					// information in sequence. This
-					// leads to a human readable id2outcome report
-					String identification = String.format("%06d_%06d_%06d", jcasId, seqId, i);
-					writer.write(identification + "\t" + tco.getCoveredText());
-					if (i + 1 < targets.size()) {
-						writer.write(System.lineSeparator());
-					}
+                for (int i = 0; i < targets.size(); i++) {
+                    TextClassificationTarget tco = targets.get(i);
+                    // This formatted identification will allow sorting the
+                    // information in sequence. This
+                    // leads to a human readable id2outcome report
+                    String identification = String.format("%06d_%06d_%06d", jcasId, seqId, i);
+                    writer.write(identification + "\t" + tco.getCoveredText());
+                    if (i + 1 < targets.size()) {
+                        writer.write(System.lineSeparator());
+                    }
 
-					if (maximumLength != null && maximumLength > 0 && i + 1 >= maximumLength) {
-						break;
-					}
-				}
-				writer.write(System.lineSeparator());
-				seqId++;
-			}
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+                    if (maximumLength != null && maximumLength > 0 && i + 1 >= maximumLength) {
+                        break;
+                    }
+                }
+                writer.write(System.lineSeparator());
+                seqId++;
+            }
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	private void processDocumentMode(JCas aJCas) throws AnalysisEngineProcessException {
-		int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
-		try {
-			String documentFile = DocumentMetaData.get(aJCas).getDocumentUri();
-			if(documentFile==null){
-				documentFile = DocumentMetaData.get(aJCas).getDocumentId();
-			}
-			writer.write(jcasId + "\t" + documentFile + System.lineSeparator());
-		} catch (IOException e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+    private void processDocumentMode(JCas aJCas) throws AnalysisEngineProcessException
+    {
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
+        try {
+            String documentFile = DocumentMetaData.get(aJCas).getDocumentUri();
+            if (documentFile == null) {
+                documentFile = DocumentMetaData.get(aJCas).getDocumentId();
+            }
+            writer.write(jcasId + "\t" + documentFile + System.lineSeparator());
+        }
+        catch (IOException e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
-	@Override
-	public void collectionProcessComplete() {
-		try {
-			writer.close();
-		} catch (IOException e) {
-			throw new UnsupportedOperationException(e);
-		}
-	}
+    @Override
+    public void collectionProcessComplete()
+    {
+        try {
+            writer.close();
+        }
+        catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
 }

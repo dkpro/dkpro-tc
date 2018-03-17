@@ -30,7 +30,6 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
  */
 public interface TcShallowLearningAdapter
 {
-
     /**
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
@@ -54,41 +53,44 @@ public interface TcShallowLearningAdapter
      * @return The report that collects the outcomeId to prediction values.
      */
     Class<? extends ReportBase> getOutcomeIdReportClass();
-    
+
     /**
-     * This report is always added to provide baseline values. For classification, this report assigns the majority class to all instances, in case of regression the mean value of all regression values encountered during training. 
+     * This report is always added to provide baseline values. For classification, this report
+     * assigns the majority class to all instances, in case of regression the mean value of all
+     * regression values encountered during training.
+     * 
      * @return a report in the same format as {@link getOutcomeIdReportClass()}.
      */
     Class<? extends ReportBase> getMajorityClassBaselineIdReportClass();
-    
+
     /**
-     * This report is always added to provide a random baseline. A uniformly distributed value is generated as prediciton. 
+     * This report is always added to provide a random baseline. A uniformly distributed value is
+     * generated as prediciton.
+     * 
      * @return a report in the same format as {@link getOutcomeIdReportClass()}.
      */
     Class<? extends ReportBase> getRandomBaselineIdReportClass();
 
     /**
-     * @param  files
-     * 			collection of cas
+     * @param files
+     *            collection of cas
      * @param folds
-     * 			number of folds
+     *            number of folds
      * @param <T>
-     * 			data type
+     *            data type
      * @return The fold dimension bundle for CV
      */
     <T extends DimensionBundle<Collection<String>>> T getFoldDimensionBundle(String[] files,
             int folds);
 
     /**
-     * @return
-     * 		Returns a task that deals with serializing a model
+     * @return Returns a task that deals with serializing a model
      */
-	Class<? extends ModelSerializationTask> getSaveModelTask();
+    Class<? extends ModelSerializationTask> getSaveModelTask();
 
-	/**
-	 * 
-	 * @return
-	 * 		boolean value wheter sparse features shall be used or not
-	 */
-	boolean useSparseFeatures();
+    /**
+     * 
+     * @return boolean value wheter sparse features shall be used or not
+     */
+    boolean useSparseFeatures();
 }

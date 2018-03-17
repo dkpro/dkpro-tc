@@ -41,183 +41,181 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 public class TestTaskUtils
 {
 
-    //test numeration for unit mode i.e. no sequence
+    // test numeration for unit mode i.e. no sequence
     @Test
-    public void testUnitModeInstanceNumbering()
-        throws Exception
+    public void testUnitModeInstanceNumbering() throws Exception
     {
         JCas jCas = initJCas(true);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        
+
         InstanceExtractor ie = new InstanceExtractor(Constants.FM_UNIT, featureExtractors, true);
         List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_a", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_a",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_1_car", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_car",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_2_drives", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_2_drives",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
 
         idx = 3;
-        assertEquals("4711_3_the", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_3_the",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(3, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 4;
-        assertEquals("4711_4_hedgehogs", multipleInstances.get(idx).getFeatures().iterator()
-                .next().getValue());
+        assertEquals("4711_4_hedgehogs",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(4, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 5;
-        assertEquals("4711_5_dies", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_5_dies",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(5, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
 
     @Test
-    public void testInstanceMultiplicationWithUnitId()
-        throws Exception
+    public void testInstanceMultiplicationWithUnitId() throws Exception
     {
         JCas jCas = initJCas(true);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        
-        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors, true);
+
+        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors,
+                true);
         List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 
         int idx = 0;
-        assertEquals("4711_0_0_a", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_0_a",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1_car", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_1_car",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2_drives", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_2_drives",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
 
         idx = 3;
-        assertEquals("4711_1_0_the", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_0_the",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 4;
-        assertEquals("4711_1_1_hedgehogs", multipleInstances.get(idx).getFeatures().iterator()
-                .next().getValue());
+        assertEquals("4711_1_1_hedgehogs",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 5;
-        assertEquals("4711_1_2_dies", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_2_dies",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
 
     @Test
-    public void testInstanceMultiplicationWithoutUnitId()
-        throws Exception
+    public void testInstanceMultiplicationWithoutUnitId() throws Exception
     {
         JCas jCas = initJCas(false);
 
         FeatureExtractorResource_ImplBase[] featureExtractors = {};
-        
-        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors, true);
+
+        InstanceExtractor ie = new InstanceExtractor(Constants.FM_SEQUENCE, featureExtractors,
+                true);
         List<Instance> multipleInstances = ie.getInstances(jCas, false);
 
         assertEquals(6, multipleInstances.size());
 
         // Sequence 1
         int idx = 0;
-        assertEquals("4711_0_0", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_0",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 1;
-        assertEquals("4711_0_1", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_1",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 2;
-        assertEquals("4711_0_2", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_0_2",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(0, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
 
         // Sequence 2
         idx = 3;
-        assertEquals("4711_1_0", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_0",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(0, multipleInstances.get(idx).getSequencePosition());
         assertEquals("DT", multipleInstances.get(idx).getOutcome());
 
         idx = 4;
-        assertEquals("4711_1_1", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_1",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(1, multipleInstances.get(idx).getSequencePosition());
         assertEquals("NN", multipleInstances.get(idx).getOutcome());
 
         idx = 5;
-        assertEquals("4711_1_2", multipleInstances.get(idx).getFeatures().iterator().next()
-                .getValue());
+        assertEquals("4711_1_2",
+                multipleInstances.get(idx).getFeatures().iterator().next().getValue());
         assertEquals(1, multipleInstances.get(idx).getSequenceId());
         assertEquals(2, multipleInstances.get(idx).getSequencePosition());
         assertEquals("VBZ", multipleInstances.get(idx).getOutcome());
     }
 
-    private JCas initJCas(boolean setUnitIdAsPartOfTheInstanceId)
-        throws Exception
+    private JCas initJCas(boolean setUnitIdAsPartOfTheInstanceId) throws Exception
     {
         AnalysisEngine engine = AnalysisEngineFactory.createEngine(NoOpAnnotator.class);
         JCas jCas = engine.newJCas();
-        
+
         JCasId id = new JCasId(jCas);
         id.setId(4711);
         id.addToIndexes();

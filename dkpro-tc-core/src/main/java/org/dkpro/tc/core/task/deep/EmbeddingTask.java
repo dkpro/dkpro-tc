@@ -45,175 +45,189 @@ import org.dkpro.tc.core.DeepLearningConstants;
 /**
  * Prunes the embedding if one is provided
  */
-public class EmbeddingTask extends ExecutableTaskBase {
+public class EmbeddingTask
+    extends ExecutableTaskBase
+{
+    /**
+     * Public name of the task key
+     */
+    public static final String OUTPUT_KEY = "output";
+    /**
+     * Public name of the folder where meta information will be stored within the task
+     */
+    public static final String INPUT_MAPPING = "mappingInput";
 
-	/**
-	 * Public name of the task key
-	 */
-	public static final String OUTPUT_KEY = "output";
-	/**
-	 * Public name of the folder where meta information will be stored within
-	 * the task
-	 */
-	public static final String INPUT_MAPPING = "mappingInput";
+    @Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
+    private String embedding;
 
-	@Discriminator(name = DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS)
-	private String embedding;
+    @Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
+    private boolean integerVectorization;
 
-	@Discriminator(name = DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER)
-	private boolean integerVectorization;
-	
-	int lenVec = -1;
+    int lenVec = -1;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		if (embedding == null) {
-			// create folder
-			aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
-			return;
-		}
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
+        if (embedding == null) {
+            // create folder
+            aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
+            return;
+        }
 
-		if (integerVectorization) {
-			integerPreparation(aContext);
-		} else {
-			wordPreparation(aContext);
-		}
+        if (integerVectorization) {
+            integerPreparation(aContext);
+        }
+        else {
+            wordPreparation(aContext);
+        }
 
-	}
+    }
 
-	private void wordPreparation(TaskContext aContext) throws Exception {
-		Set<String> vocabulary = loadVocabulary(aContext);
+    private void wordPreparation(TaskContext aContext) throws Exception
+    {
+        Set<String> vocabulary = loadVocabulary(aContext);
 
-		BufferedReader reader = null;
-		BufferedWriter writer = null;
-		try {
-			reader = getEmbeddingReader();
-			writer = getPrunedEmbeddingWriter(aContext);
+        BufferedReader reader = null;
+        BufferedWriter writer = null;
+        try {
+            reader = getEmbeddingReader();
+            writer = getPrunedEmbeddingWriter(aContext);
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.trim().isEmpty()) {
-					continue;
-				}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
-				int indexOf = line.indexOf(" ");
-				String token = line.substring(0, indexOf);
+                int indexOf = line.indexOf(" ");
+                String token = line.substring(0, indexOf);
 
-				if (vocabulary.contains(token)) {
-					writer.write(line + "\n");
-					vocabulary.remove(token);
-				}
-				if (lenVec < 0) {
-					String vector = line.substring(indexOf + 1);
-					lenVec = vector.split(" ").length;
-				}
-			}
+                if (vocabulary.contains(token)) {
+                    writer.write(line + "\n");
+                    vocabulary.remove(token);
+                }
+                if (lenVec < 0) {
+                    String vector = line.substring(indexOf + 1);
+                    lenVec = vector.split(" ").length;
+                }
+            }
 
-			for (String k : vocabulary) {
-				writer.write(k + " " + randomVector(lenVec) + "\n");
-			}
-		} finally {
-			IOUtils.closeQuietly(writer);
-			IOUtils.closeQuietly(reader);
-		}
+            for (String k : vocabulary) {
+                writer.write(k + " " + randomVector(lenVec) + "\n");
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(writer);
+            IOUtils.closeQuietly(reader);
+        }
 
-	}
+    }
 
-	private Set<String> loadVocabulary(TaskContext aContext) throws IOException {
+    private Set<String> loadVocabulary(TaskContext aContext) throws IOException
+    {
 
-		File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
-		File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_VOCABULARY);
+        File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
+        File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_VOCABULARY);
 
-		List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
-		Set<String> m = new HashSet<>();
+        List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
+        Set<String> m = new HashSet<>();
 
-		for (String l : lines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			m.add(l);
-		}
+        for (String l : lines) {
+            if (l.isEmpty()) {
+                continue;
+            }
+            m.add(l);
+        }
 
-		return m;
-	}
+        return m;
+    }
 
-	private void integerPreparation(TaskContext aContext) throws Exception {
-		Map<String, String> tokenIdMap = loadWord2IntegerMap(aContext);
+    private void integerPreparation(TaskContext aContext) throws Exception
+    {
+        Map<String, String> tokenIdMap = loadWord2IntegerMap(aContext);
 
-		BufferedReader reader = getEmbeddingReader();
-		BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
+        BufferedReader reader = getEmbeddingReader();
+        BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (line.trim().isEmpty()) {
-				continue;
-			}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
 
-			int indexOf = line.indexOf(" ");
-			String token = line.substring(0, indexOf);
-			String vector = line.substring(indexOf + 1);
+            int indexOf = line.indexOf(" ");
+            String token = line.substring(0, indexOf);
+            String vector = line.substring(indexOf + 1);
 
-			if (tokenIdMap.containsKey(token)) {
-				writer.write(tokenIdMap.get(token) + " " + vector + "\n");
-				tokenIdMap.remove(token);
-			}
-			if (lenVec < 0) {
-				lenVec = vector.split(" ").length;
-			}
-		}
+            if (tokenIdMap.containsKey(token)) {
+                writer.write(tokenIdMap.get(token) + " " + vector + "\n");
+                tokenIdMap.remove(token);
+            }
+            if (lenVec < 0) {
+                lenVec = vector.split(" ").length;
+            }
+        }
 
-		for(Entry<String,String> e : tokenIdMap.entrySet()) {
-			writer.write(e.getValue() + " " + randomVector(lenVec) + "\n");
-		}
+        for (Entry<String, String> e : tokenIdMap.entrySet()) {
+            writer.write(e.getValue() + " " + randomVector(lenVec) + "\n");
+        }
 
-		writer.close();
-		reader.close();
-	}
+        writer.close();
+        reader.close();
+    }
 
-	private BufferedReader getEmbeddingReader() throws Exception {
-		return new BufferedReader(new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
+    private BufferedReader getEmbeddingReader() throws Exception
+    {
+        return new BufferedReader(
+                new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
 
-	}
+    }
 
-	private BufferedWriter getPrunedEmbeddingWriter(TaskContext aContext) throws Exception {
-		return new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE),
-						DeepLearningConstants.FILENAME_PRUNED_EMBEDDING)),
-				"utf-8"));
-	}
+    private BufferedWriter getPrunedEmbeddingWriter(TaskContext aContext) throws Exception
+    {
+        return new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(
+                                new File(aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE),
+                                        DeepLearningConstants.FILENAME_PRUNED_EMBEDDING)),
+                        "utf-8"));
+    }
 
-	private Map<String, String> loadWord2IntegerMap(TaskContext aContext) throws IOException {
-		File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
-		File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
+    private Map<String, String> loadWord2IntegerMap(TaskContext aContext) throws IOException
+    {
+        File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
+        File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
 
-		List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
-		Map<String, String> m = new HashMap<>();
+        List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
+        Map<String, String> m = new HashMap<>();
 
-		for (String l : lines) {
-			if (l.isEmpty()) {
-				continue;
-			}
-			String[] entry = l.split("\t");
-			m.put(entry[0], entry[1]);
-		}
+        for (String l : lines) {
+            if (l.isEmpty()) {
+                continue;
+            }
+            String[] entry = l.split("\t");
+            m.put(entry[0], entry[1]);
+        }
 
-		return m;
-	}
+        return m;
+    }
 
-	public static String randomVector(int aSize, long seed) {
-		Random rand = new Random(seed);
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < aSize; i++) {
-			float f = (rand.nextFloat() - 0.5f) / aSize;
-			sb.append(String.format(Locale.US, "%.5f", f));
-			if (i + 1 < aSize) {
-				sb.append(" ");
-			}
-		}
-		return sb.toString();
-	}
+    public static String randomVector(int aSize, long seed)
+    {
+        Random rand = new Random(seed);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < aSize; i++) {
+            float f = (rand.nextFloat() - 0.5f) / aSize;
+            sb.append(String.format(Locale.US, "%.5f", f));
+            if (i + 1 < aSize) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
 
-	public static String randomVector(int aSize) {
-		return randomVector(aSize, 123456789);
-	}
+    public static String randomVector(int aSize)
+    {
+        return randomVector(aSize, 123456789);
+    }
 }

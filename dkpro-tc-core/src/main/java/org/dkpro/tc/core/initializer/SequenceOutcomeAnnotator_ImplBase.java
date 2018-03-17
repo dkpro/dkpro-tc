@@ -27,26 +27,29 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public abstract class SequenceOutcomeAnnotator_ImplBase
-	extends JCasAnnotator_ImplBase
-	implements SequenceOutcomeAnnotator
+    extends JCasAnnotator_ImplBase
+    implements SequenceOutcomeAnnotator
 {
- 
-	@Override
-	public void process(JCas jcas)
-			throws AnalysisEngineProcessException
-	{
-        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas, TextClassificationTarget.class, JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
-            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, unit.getBegin(), unit.getEnd());
+
+    @Override
+    public void process(JCas jcas) throws AnalysisEngineProcessException
+    {
+        for (TextClassificationTarget unit : JCasUtil.selectCovered(jcas,
+                TextClassificationTarget.class,
+                JCasUtil.selectSingle(jcas, TextClassificationSequence.class))) {
+            TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, unit.getBegin(),
+                    unit.getEnd());
             outcome.setOutcome(getTextClassificationOutcome(jcas, unit));
             outcome.setWeight(getTextClassificationOutcomeWeight(jcas, unit));
             outcome.addToIndexes();
         }
-	}
-    
-	public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationTarget unit) {
-    	/**
-    	 * By default, set all the instance outcome weights equally to one
-    	 */
-		return 1.0;
-	}
+    }
+
+    public double getTextClassificationOutcomeWeight(JCas jcas, TextClassificationTarget unit)
+    {
+        /**
+         * By default, set all the instance outcome weights equally to one
+         */
+        return 1.0;
+    }
 }

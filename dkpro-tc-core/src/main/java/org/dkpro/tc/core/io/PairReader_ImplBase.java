@@ -43,21 +43,14 @@ public abstract class PairReader_ImplBase
     implements Constants, PairReader
 {
     @Override
-    public void getNext(JCas jcas)
-        throws IOException, CollectionException
+    public void getNext(JCas jcas) throws IOException, CollectionException
     {
         try {
-            createMetaData(
-            		jcas,
-            		getCollectionId1() + "_" + getCollectionId2(),
-            		getDocumentId1() + "_" + getDocumentId2(),
-            		getTitle1() + " " + getTitle2()
-           );
+            createMetaData(jcas, getCollectionId1() + "_" + getCollectionId2(),
+                    getDocumentId1() + "_" + getDocumentId2(), getTitle1() + " " + getTitle2());
 
-            createView(PART_ONE, jcas, getLanguage1(), getText1(), getDocumentId1(),
-                    getTitle1());
-            createView(PART_TWO, jcas, getLanguage2(), getText2(), getDocumentId2(),
-                    getTitle2());
+            createView(PART_ONE, jcas, getLanguage1(), getText1(), getDocumentId1(), getTitle1());
+            createView(PART_TWO, jcas, getLanguage2(), getText2(), getDocumentId2(), getTitle2());
         }
         catch (TextClassificationException e) {
             throw new CollectionException(e);
@@ -74,21 +67,15 @@ public abstract class PairReader_ImplBase
         JCas view = jCas.createView(part.toString());
         view.setDocumentText(text);
         view.setDocumentLanguage(language);
-        
+
         TextClassificationTarget aTarget = new TextClassificationTarget(view, 0, text.length());
         aTarget.addToIndexes();
 
         DocumentMetaData baseMetaData = DocumentMetaData.get(jCas);
-        createMetaData(
-                view,
-                baseMetaData.getCollectionId(),
-                docId,
-                docTitle
-        );
+        createMetaData(view, baseMetaData.getCollectionId(), docId, docTitle);
     }
 
-    protected void createMetaData(JCas jcas, String collectionId, String docId,
-            String docTitle)
+    protected void createMetaData(JCas jcas, String collectionId, String docId, String docTitle)
     {
         DocumentMetaData metaData = DocumentMetaData.create(jcas);
         metaData.setCollectionId(collectionId);

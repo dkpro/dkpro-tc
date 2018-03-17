@@ -138,7 +138,7 @@ public interface Constants
      * Name of the class that implements
      */
     String DIM_FEATURE_USE_SPARSE = "featureStore";
-    
+
     /**
      * Name of the discriminator that stores whether the instance weighting should be applied to
      * learning task or not
@@ -154,17 +154,16 @@ public interface Constants
      * Records the context of a unit/sequence in either unit mode or sequence mode as debugging help
      */
     String DIM_RECORD_CONTEXT = "recordContext";
-    
-    
+
     String GENERIC_FEATURE_FILE = "JSON.txt";
-    
+
     /**
-     * File name for storing the predictions in the classifier specific output data format 
+     * File name for storing the predictions in the classifier specific output data format
      */
     String FILENAME_PREDICTIONS = "predictions.txt";
-    
+
     /**
-     * File name for storing the training / testing data file 
+     * File name for storing the training / testing data file
      */
     String FILENAME_DATA_IN_CLASSIFIER_FORMAT = "featureFile.txt";
 
@@ -270,11 +269,13 @@ public interface Constants
      */
     String ID_OUTCOME_KEY = "id2outcome.txt";
     /**
-     * Name of the file which assigns the majority class as prediction or the mean floating point value in case of regression, as baseline
+     * Name of the file which assigns the majority class as prediction or the mean floating point
+     * value in case of regression, as baseline
      */
     String BASELINE_MAJORITIY_ID_OUTCOME_KEY = "baselineMajority2outcome.txt";
     /**
-     * Name of the file which assigns for each instance a randomly predicted class or value, as baseline
+     * Name of the file which assigns for each instance a randomly predicted class or value, as
+     * baseline
      */
     String BASELINE_RANDOM_ID_OUTCOME_KEY = "baselineRandom2outcome.txt";
     /**
@@ -282,16 +283,18 @@ public interface Constants
      */
     String ID_DETAILED_OUTCOME_KEY = "id2detailedOutcome.csv";
     /**
-     * Name of the global file which contains the classifier predictions and gold
-     * standard for all test instances.
+     * Name of the global file which contains the classifier predictions and gold standard for all
+     * test instances.
      */
     String FILE_COMBINED_ID_OUTCOME_KEY = "combinedId2Outcome.txt";
     /**
-     * Name of the global file which contains a prediction with the majority class for all test instances.
+     * Name of the global file which contains a prediction with the majority class for all test
+     * instances.
      */
     String FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY = "combinedBaselineMajorityId2Outcome.txt";
     /**
-     * Name of the global file which contains a prediction with a random class for all test instances.
+     * Name of the global file which contains a prediction with a random class for all test
+     * instances.
      */
     String FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY = "combinedBaselineRandomId2Outcome.txt";
     /**
@@ -344,11 +347,11 @@ public interface Constants
      * extraction test-task about the output location of the extraction train-task
      */
     String TRAIN_OUTPUT = "TRAIN_OUTPUT";
-	String OUTCOMES_INPUT_KEY = "outcomesFolder";
+    String OUTCOMES_INPUT_KEY = "outcomesFolder";
     String FILENAME_FEATURES_DESCRIPTION = "featureDescription.txt";
-	String FILENAME_DOCUMENT_META_DATA_LOG = "documentMetaData.txt";
-	
-	String TC_TASK_TYPE = "TcTaskType";
+    String FILENAME_DOCUMENT_META_DATA_LOG = "documentMetaData.txt";
+
+    String TC_TASK_TYPE = "TcTaskType";
 
     /**
      * Dummy value for text classification outcomes as placeholder for the real outcome
@@ -425,10 +428,11 @@ public interface Constants
      * on how the cross validation will be performed
      */
     String DIM_CROSS_VALIDATION_MANUAL_FOLDS = "useCrossValidationManualFolds";
-    
+
     /**
-     * Allows to skip the sanity checks that ensures that each classification target corresponds to an outcome.
-     * Setting this flag should speed up experiment execution considerably for larger amounts of data.
+     * Allows to skip the sanity checks that ensures that each classification target corresponds to
+     * an outcome. Setting this flag should speed up experiment execution considerably for larger
+     * amounts of data.
      */
     String DIM_SKIP_SANITY_CHECKS = "skipSanityChecks";
 

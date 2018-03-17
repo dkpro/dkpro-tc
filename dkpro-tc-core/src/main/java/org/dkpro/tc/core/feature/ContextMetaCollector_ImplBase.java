@@ -41,19 +41,17 @@ public abstract class ContextMetaCollector_ImplBase
     protected File folder;
 
     public static final String CONTEXT_KEY = "id2context.txt";
-    
+
     protected BufferedWriter bw;
 
-
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, CONTEXT_KEY)),
-                    "utf-8"));
+            bw = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(folder, CONTEXT_KEY)), "utf-8"));
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -61,8 +59,7 @@ public abstract class ContextMetaCollector_ImplBase
     }
 
     @Override
-    public void collectionProcessComplete()
-        throws AnalysisEngineProcessException
+    public void collectionProcessComplete() throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
 

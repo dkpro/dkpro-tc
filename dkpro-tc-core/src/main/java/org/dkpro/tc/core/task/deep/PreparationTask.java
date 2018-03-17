@@ -51,142 +51,162 @@ import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 /**
  * Collects information about the entire document
  */
-public class PreparationTask extends UimaTaskBase implements Constants, DeepLearningConstants{
+public class PreparationTask
+    extends UimaTaskBase
+    implements Constants, DeepLearningConstants
+{
 
-	/**
-	 * Public name of the task key
-	 */
-	public static final String OUTPUT_KEY = "output";
-	/**
-	 * Public name of the folder where meta information will be stored within
-	 * the task
-	 */
-	public static final String INPUT_KEY_TRAIN = "inputTrain";
-	public static final String INPUT_KEY_TEST = "inputTest";
+    /**
+     * Public name of the task key
+     */
+    public static final String OUTPUT_KEY = "output";
+    /**
+     * Public name of the folder where meta information will be stored within the task
+     */
+    public static final String INPUT_KEY_TRAIN = "inputTrain";
+    public static final String INPUT_KEY_TEST = "inputTest";
 
-	@Discriminator(name = Constants.DIM_FEATURE_MODE)
-	private String mode;
+    @Discriminator(name = Constants.DIM_FEATURE_MODE)
+    private String mode;
 
-	@Discriminator(name = DIM_MAXIMUM_LENGTH)
-	private Integer maximumLength;
+    @Discriminator(name = DIM_MAXIMUM_LENGTH)
+    private Integer maximumLength;
 
-	@Discriminator(name = DIM_FILES_ROOT)
-	private File filesRoot;
+    @Discriminator(name = DIM_FILES_ROOT)
+    private File filesRoot;
 
-	@Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
-	private boolean integerVectorization;
-	
-	@Discriminator(name = DIM_DICTIONARY_PATHS)
-	private List<String> dictionaryLists;
+    @Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
+    private boolean integerVectorization;
 
-	private TcDeepLearningAdapter mlDeepLearningAdapter;
+    @Discriminator(name = DIM_DICTIONARY_PATHS)
+    private List<String> dictionaryLists;
 
-	@Override
-	public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
-			throws ResourceInitializationException, IOException {
-		File trainRoot = aContext.getFolder(INPUT_KEY_TRAIN, AccessMode.READONLY);
-		Collection<File> files = FileUtils.listFiles(trainRoot, new String[] { "bin" }, true);
+    private TcDeepLearningAdapter mlDeepLearningAdapter;
 
-		if (!isCrossValidation()) {
-			File testRoot = aContext.getFolder(INPUT_KEY_TEST, AccessMode.READONLY);
-			files.addAll(FileUtils.listFiles(testRoot, new String[] { "bin" }, true));
-		}
-		return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS, files);
-	}
+    @Override
+    public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
+        throws ResourceInitializationException, IOException
+    {
+        File trainRoot = aContext.getFolder(INPUT_KEY_TRAIN, AccessMode.READONLY);
+        Collection<File> files = FileUtils.listFiles(trainRoot, new String[] { "bin" }, true);
 
-	private boolean isCrossValidation() {
-		return filesRoot != null;
-	}
+        if (!isCrossValidation()) {
+            File testRoot = aContext.getFolder(INPUT_KEY_TEST, AccessMode.READONLY);
+            files.addAll(FileUtils.listFiles(testRoot, new String[] { "bin" }, true));
+        }
+        return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+                files);
+    }
 
-	@Override
-	public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
-			throws ResourceInitializationException, IOException {
-		File folder = aContext.getFolder(OUTPUT_KEY, AccessMode.READONLY);
+    private boolean isCrossValidation()
+    {
+        return filesRoot != null;
+    }
 
-		AggregateBuilder builder = new AggregateBuilder();
+    @Override
+    public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
+        throws ResourceInitializationException, IOException
+    {
+        File folder = aContext.getFolder(OUTPUT_KEY, AccessMode.READONLY);
 
-		if (integerVectorization) {
-			builder.add(createEngineDescription(MappingAnnotator.class,
-					MappingAnnotator.PARAM_TARGET_DIRECTORY, folder, MappingAnnotator.PARAM_START_INDEX_INSTANCES,
-					mlDeepLearningAdapter.lowestIndex(),MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
-			
-			if (dictionaryLists != null && !dictionaryLists.isEmpty()){
-				
-				sanityCheckDictionaries(dictionaryLists);
-				
-				for(int i=0; i < dictionaryLists.size(); i+=2){
-					
-					Class<? extends AnalysisComponent> cast = castName(dictionaryLists.get(i+1));
-					builder.add(createEngineDescription(cast, 
-							LookupResourceAnnotator.PARAM_DICTIONARY_PATH, dictionaryLists.get(i),
-							LookupResourceAnnotator.PARAM_TARGET_DIRECTORY, folder));
-				}
-				
-			}
-			
-		}else{
-			builder.add(createEngineDescription(VocabularyOutcomeCollector.class,
-					VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));
-		}
+        AggregateBuilder builder = new AggregateBuilder();
 
-		builder.add(getMaximumLengthDeterminer(folder));
-		return builder.createAggregateDescription();
+        if (integerVectorization) {
+            builder.add(createEngineDescription(MappingAnnotator.class,
+                    MappingAnnotator.PARAM_TARGET_DIRECTORY, folder,
+                    MappingAnnotator.PARAM_START_INDEX_INSTANCES,
+                    mlDeepLearningAdapter.lowestIndex(),
+                    MappingAnnotator.PARAM_START_INDEX_OUTCOMES, 0));
 
-	}
+            if (dictionaryLists != null && !dictionaryLists.isEmpty()) {
 
-	@SuppressWarnings("unchecked")
-	private Class<? extends AnalysisComponent> castName(String annotatorName) throws ResourceInitializationException {
-		try {
-			return  (Class<? extends AnalysisComponent>) Class.forName(annotatorName);
-		} catch (ClassNotFoundException e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+                sanityCheckDictionaries(dictionaryLists);
 
-	private void sanityCheckDictionaries(List<String> dictionaryLists) {
-		if(dictionaryLists.size() % 2 != 0){
-			throw new IllegalStateException(
-					"Dictionaries are pairs of the dicitonary file and a processing UIMA component for the format of the dictionary, i.e. [dicPath, UIMA.class.getName, dictPath2, UIMA.class]");
-		}
-	}
+                for (int i = 0; i < dictionaryLists.size(); i += 2) {
 
-	private AnalysisEngineDescription getMaximumLengthDeterminer(File folder) throws ResourceInitializationException {
-		if (mode == null) {
-			throw new ResourceInitializationException(new IllegalStateException("Learning model is [null]"));
-		}
+                    Class<? extends AnalysisComponent> cast = castName(dictionaryLists.get(i + 1));
+                    builder.add(createEngineDescription(cast,
+                            LookupResourceAnnotator.PARAM_DICTIONARY_PATH, dictionaryLists.get(i),
+                            LookupResourceAnnotator.PARAM_TARGET_DIRECTORY, folder));
+                }
 
-		if (maximumLength != null && maximumLength > 0) {
-			LogFactory.getLog(getClass()).info("Maximum length was set by user to [" + maximumLength + "]");
+            }
 
-			writeExpectedMaximumLengthFile(folder);
+        }
+        else {
+            builder.add(createEngineDescription(VocabularyOutcomeCollector.class,
+                    VocabularyOutcomeCollector.PARAM_TARGET_DIRECTORY, folder));
+        }
 
-			return createEngineDescription(NoOpAnnotator.class);
-		}
+        builder.add(getMaximumLengthDeterminer(folder));
+        return builder.createAggregateDescription();
 
-		switch (mode) {
-		case Constants.FM_DOCUMENT:
-			return createEngineDescription(MaxLenDoc2Label.class,
-					MaxLenDoc2Label.PARAM_TARGET_DIRECTORY, folder);
-		case Constants.FM_SEQUENCE:
-			return createEngineDescription(MaxLenSeq2Label.class,
-					MaxLenSeq2Label.PARAM_TARGET_DIRECTORY, folder);
-		default:
-			throw new ResourceInitializationException(
-					new IllegalStateException("Mode [" + mode + "] not defined for deep learning experiements"));
-		}
+    }
 
-	}
+    @SuppressWarnings("unchecked")
+    private Class<? extends AnalysisComponent> castName(String annotatorName)
+        throws ResourceInitializationException
+    {
+        try {
+            return (Class<? extends AnalysisComponent>) Class.forName(annotatorName);
+        }
+        catch (ClassNotFoundException e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
 
-	private void writeExpectedMaximumLengthFile(File folder) throws ResourceInitializationException {
-		try {
-			FileUtils.writeStringToFile(new File(folder, FILENAME_MAXIMUM_LENGTH),
-					maximumLength.toString(), "utf-8");
-		} catch (IOException e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+    private void sanityCheckDictionaries(List<String> dictionaryLists)
+    {
+        if (dictionaryLists.size() % 2 != 0) {
+            throw new IllegalStateException(
+                    "Dictionaries are pairs of the dicitonary file and a processing UIMA component for the format of the dictionary, i.e. [dicPath, UIMA.class.getName, dictPath2, UIMA.class]");
+        }
+    }
 
-	public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter) {
-		this.mlDeepLearningAdapter = mlDeepLearningAdapter;
-	}
+    private AnalysisEngineDescription getMaximumLengthDeterminer(File folder)
+        throws ResourceInitializationException
+    {
+        if (mode == null) {
+            throw new ResourceInitializationException(
+                    new IllegalStateException("Learning model is [null]"));
+        }
+
+        if (maximumLength != null && maximumLength > 0) {
+            LogFactory.getLog(getClass())
+                    .info("Maximum length was set by user to [" + maximumLength + "]");
+
+            writeExpectedMaximumLengthFile(folder);
+
+            return createEngineDescription(NoOpAnnotator.class);
+        }
+
+        switch (mode) {
+        case Constants.FM_DOCUMENT:
+            return createEngineDescription(MaxLenDoc2Label.class,
+                    MaxLenDoc2Label.PARAM_TARGET_DIRECTORY, folder);
+        case Constants.FM_SEQUENCE:
+            return createEngineDescription(MaxLenSeq2Label.class,
+                    MaxLenSeq2Label.PARAM_TARGET_DIRECTORY, folder);
+        default:
+            throw new ResourceInitializationException(new IllegalStateException(
+                    "Mode [" + mode + "] not defined for deep learning experiements"));
+        }
+
+    }
+
+    private void writeExpectedMaximumLengthFile(File folder) throws ResourceInitializationException
+    {
+        try {
+            FileUtils.writeStringToFile(new File(folder, FILENAME_MAXIMUM_LENGTH),
+                    maximumLength.toString(), "utf-8");
+        }
+        catch (IOException e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
+
+    public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter)
+    {
+        this.mlDeepLearningAdapter = mlDeepLearningAdapter;
+    }
 }

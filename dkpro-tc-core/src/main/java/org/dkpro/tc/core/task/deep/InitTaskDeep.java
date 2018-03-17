@@ -41,18 +41,19 @@ import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
 public class InitTaskDeep
-    extends UimaTaskBase implements Constants, DeepLearningConstants
+    extends UimaTaskBase
+    implements Constants, DeepLearningConstants
 {
 
     @Discriminator(name = DIM_READER_TRAIN)
     protected CollectionReaderDescription readerTrain;
-    
+
     @Discriminator(name = DIM_READER_TEST)
     protected CollectionReaderDescription readerTest;
-    
+
     @Discriminator(name = DIM_PRETRAINED_EMBEDDINGS)
     private String embedding;
-    
+
     @Discriminator(name = DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING)
     private boolean dropVocabWithoutEmbedding;
 
@@ -114,7 +115,8 @@ public class InitTaskDeep
         // special connector that just checks whether there are no instances and outputs a
         // meaningful error message then
         // should be added before preprocessing
-        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(PreprocessConnector.class);
+        AnalysisEngineDescription emptyProblemChecker = createEngineDescription(
+                PreprocessConnector.class);
 
         if (operativeViews != null) {
             AggregateBuilder builder = new AggregateBuilder();
@@ -124,11 +126,10 @@ public class InitTaskDeep
             }
             preprocessing = builder.createAggregateDescription();
         }
-        
-        
+
         AggregateBuilder builder = new AggregateBuilder();
-        
-        if(dropVocabWithoutEmbedding){
+
+        if (dropVocabWithoutEmbedding) {
             builder.add(createEngineDescription(FilterVocabularyByEmbeddingAnnotator.class,
                     FilterVocabularyByEmbeddingAnnotator.PARAM_EMBEDDING, embedding));
         }

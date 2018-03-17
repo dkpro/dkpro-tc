@@ -57,174 +57,184 @@ import org.dkpro.tc.core.util.TaskUtils;
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
 /**
- * Executes all feature extractors and stores the feature representation
- * (usually an Weka ARFF file) on disk.
+ * Executes all feature extractors and stores the feature representation (usually an Weka ARFF file)
+ * on disk.
  */
-public class ExtractFeaturesTask extends UimaTaskBase implements Constants, ConnectorConstants {
+public class ExtractFeaturesTask
+    extends UimaTaskBase
+    implements Constants, ConnectorConstants
+{
 
-	/**
-	 * Public name of the folder where the extracted features are stored within
-	 * the task
-	 */
-	public static final String OUTPUT_KEY = "output";
-	/**
-	 * Public name of the folder where the input documents are stored within the
-	 * task
-	 */
-	public static final String INPUT_KEY = "input";
+    /**
+     * Public name of the folder where the extracted features are stored within the task
+     */
+    public static final String OUTPUT_KEY = "output";
+    /**
+     * Public name of the folder where the input documents are stored within the task
+     */
+    public static final String INPUT_KEY = "input";
     public static final String COLLECTION_INPUT_KEY = "collectionInput";
 
-	@Discriminator(name = DIM_FEATURE_FILTERS)
-	private List<String> featureFilters = Collections.<String> emptyList();
-	
-	@Discriminator(name = DIM_FILES_ROOT)
-	private File filesRoot;
-	
-	@Discriminator(name = DIM_FILES_TRAINING)
-	private Collection<String> files_training;
-	
-	@Discriminator(name = DIM_FILES_VALIDATION)
-	private Collection<String> files_validation;
-	
-	@Discriminator(name = DIM_LEARNING_MODE)
-	private String learningMode;
-	
-	@Discriminator(name = DIM_FEATURE_MODE)
-	private String featureMode;
-	
-	@Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
-	private boolean applyWeighting;
-	
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<Object> classArgs;
-	
-	@Discriminator(name = DIM_FEATURE_SET)
-	private TcFeatureSet featureExtractors;
+    @Discriminator(name = DIM_FEATURE_FILTERS)
+    private List<String> featureFilters = Collections.<String> emptyList();
 
-	private boolean isTesting = false;
+    @Discriminator(name = DIM_FILES_ROOT)
+    private File filesRoot;
 
-	public void setTesting(boolean isTesting) {
-		this.isTesting = isTesting;
-	}
+    @Discriminator(name = DIM_FILES_TRAINING)
+    private Collection<String> files_training;
 
-	@Override
-	public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
-			throws ResourceInitializationException {
-		
-		File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
+    @Discriminator(name = DIM_FILES_VALIDATION)
+    private Collection<String> files_validation;
 
-		// Resolve the feature extractor closures to actual descritors
-		List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
+    @Discriminator(name = DIM_LEARNING_MODE)
+    private String learningMode;
 
-		// Configure the meta collectors for each feature extractor individually
-		try {
-			for (TcFeature feClosure : featureExtractors) {
-				ExternalResourceDescription feDesc = feClosure.getActualValue();
-				featureExtractorDescriptions.add(feDesc);
+    @Discriminator(name = DIM_FEATURE_MODE)
+    private String featureMode;
 
-				Class<?> feClass = MetaInfoTask.getClass(feDesc);
+    @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
+    private boolean applyWeighting;
 
-				// Skip feature extractors that are not dependent on meta
-				// collectors
-				if (!MetaDependent.class.isAssignableFrom(feClass)) {
-					continue;
-				}
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> classArgs;
 
-				MetaDependent feInstance = (MetaDependent) feClass.newInstance();
-				Map<String, Object> parameterSettings = ConfigurationParameterFactory
-						.getParameterSettings(feDesc.getResourceSpecifier());
+    @Discriminator(name = DIM_FEATURE_SET)
+    private TcFeatureSet featureExtractors;
 
-				// Tell the meta collectors where to store their data
-				for (MetaCollectorConfiguration conf : feInstance.getMetaCollectorClasses(parameterSettings)) {
-					MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(),
-							(String) feClosure.getId(), conf.extractorOverrides, AccessMode.READONLY);
-				}
-			}
+    private boolean isTesting = false;
 
-			Set<String> requiredTypes = getRequiredTypesFromFeatureExtractors(featureExtractorDescriptions);
+    public void setTesting(boolean isTesting)
+    {
+        this.isTesting = isTesting;
+    }
 
-			// as feature filters are optional, check for null
-			if (featureFilters == null) {
-				featureFilters = Collections.<String> emptyList();
-			}
+    @Override
+    public AnalysisEngineDescription getAnalysisEngineDescription(TaskContext aContext)
+        throws ResourceInitializationException
+    {
 
-			// ensure that outcomes file is copied into this folder
-			File folder = aContext.getFolder(COLLECTION_INPUT_KEY, AccessMode.READONLY);
-			File file = new File(folder, Constants.FILENAME_OUTCOMES);
-			String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
+        File outputDir = aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE);
 
-			TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
+        // Resolve the feature extractor closures to actual descritors
+        List<ExternalResourceDescription> featureExtractorDescriptions = new ArrayList<>();
 
-			List<Object> parameters = new ArrayList<>();
-			parameters.addAll(
-					Arrays.asList(
-					ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
-					ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
-					PARAM_APPLY_WEIGHTING, applyWeighting,
-					PARAM_DATA_WRITER_CLASS, adapter.getDataWriterClass().getName(),
-					PARAM_FEATURE_FILTERS, featureFilters,
-					PARAM_FEATURE_MODE, featureMode,
-					PARAM_LEARNING_MODE, learningMode,
-					PARAM_IS_TESTING, isTesting,
-					PARAM_USE_SPARSE_FEATURES, adapter.useSparseFeatures(),
-					PARAM_OUTCOMES, outcomes,
-					PARAM_FEATURE_EXTRACTORS, featureExtractorDescriptions,
-					PARAM_REQUIRED_TYPES, requiredTypes));
+        // Configure the meta collectors for each feature extractor individually
+        try {
+            for (TcFeature feClosure : featureExtractors) {
+                ExternalResourceDescription feDesc = feClosure.getActualValue();
+                featureExtractorDescriptions.add(feDesc);
 
-			return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class, parameters.toArray());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+                Class<?> feClass = MetaInfoTask.getClass(feDesc);
 
-	@Override
-	public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
-			throws ResourceInitializationException, IOException {
-		// TrainTest setup: input files are set as imports
-		if (filesRoot == null) {
-			File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
-			Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
-			return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS, files);
-		}
-		// CV setup: filesRoot and files_atrining have to be set as dimension
-		else {
+                // Skip feature extractors that are not dependent on meta
+                // collectors
+                if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                    continue;
+                }
 
-			Collection<String> files = isTesting ? files_validation : files_training;
-			return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS, files);
-		}
-	}
-	
-	private Set<String> getRequiredTypesFromFeatureExtractors(List<ExternalResourceDescription> featureSet)
-			throws Exception {
+                MetaDependent feInstance = (MetaDependent) feClass.newInstance();
+                Map<String, Object> parameterSettings = ConfigurationParameterFactory
+                        .getParameterSettings(feDesc.getResourceSpecifier());
 
-		Set<String> requirements = new HashSet<>();
-		for (ExternalResourceDescription element : featureSet) {
+                // Tell the meta collectors where to store their data
+                for (MetaCollectorConfiguration conf : feInstance
+                        .getMetaCollectorClasses(parameterSettings)) {
+                    MetaInfoTask.configureStorageLocations(aContext, feDesc.getResourceSpecifier(),
+                            (String) feClosure.getId(), conf.extractorOverrides,
+                            AccessMode.READONLY);
+                }
+            }
 
-			String implName;
-			if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
-				implName = ((CustomResourceSpecifier) element.getResourceSpecifier()).getResourceClassName();
-			} else {
-				implName = element.getImplementationName();
-			}
+            Set<String> requiredTypes = getRequiredTypesFromFeatureExtractors(
+                    featureExtractorDescriptions);
 
-			TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(implName), TypeCapability.class);
+            // as feature filters are optional, check for null
+            if (featureFilters == null) {
+                featureFilters = Collections.<String> emptyList();
+            }
 
-			if (annotation == null){
-				continue;
-			}
-			
-			String[] inputs = annotation.inputs();
-			StringBuilder sb = new StringBuilder();
-			sb.append(implName + "|");
-			for (int i=0; i < inputs.length; i++){
-				sb.append(inputs[i]);
-				if(i + 1 < inputs.length){
-					sb.append("|");
-				}
-			}
-			requirements.add(sb.toString());
-		}
+            // ensure that outcomes file is copied into this folder
+            File folder = aContext.getFolder(COLLECTION_INPUT_KEY, AccessMode.READONLY);
+            File file = new File(folder, Constants.FILENAME_OUTCOMES);
+            String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
 
-		return requirements;
-	}
+            TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
+
+            List<Object> parameters = new ArrayList<>();
+            parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
+                    ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
+                    PARAM_APPLY_WEIGHTING, applyWeighting, PARAM_DATA_WRITER_CLASS,
+                    adapter.getDataWriterClass().getName(), PARAM_FEATURE_FILTERS, featureFilters,
+                    PARAM_FEATURE_MODE, featureMode, PARAM_LEARNING_MODE, learningMode,
+                    PARAM_IS_TESTING, isTesting, PARAM_USE_SPARSE_FEATURES,
+                    adapter.useSparseFeatures(), PARAM_OUTCOMES, outcomes, PARAM_FEATURE_EXTRACTORS,
+                    featureExtractorDescriptions, PARAM_REQUIRED_TYPES, requiredTypes));
+
+            return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
+                    parameters.toArray());
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
+
+    @Override
+    public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
+        throws ResourceInitializationException, IOException
+    {
+        // TrainTest setup: input files are set as imports
+        if (filesRoot == null) {
+            File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
+            Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
+            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+                    files);
+        }
+        // CV setup: filesRoot and files_atrining have to be set as dimension
+        else {
+
+            Collection<String> files = isTesting ? files_validation : files_training;
+            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+                    files);
+        }
+    }
+
+    private Set<String> getRequiredTypesFromFeatureExtractors(
+            List<ExternalResourceDescription> featureSet)
+        throws Exception
+    {
+
+        Set<String> requirements = new HashSet<>();
+        for (ExternalResourceDescription element : featureSet) {
+
+            String implName;
+            if (element.getResourceSpecifier() instanceof CustomResourceSpecifier) {
+                implName = ((CustomResourceSpecifier) element.getResourceSpecifier())
+                        .getResourceClassName();
+            }
+            else {
+                implName = element.getImplementationName();
+            }
+
+            TypeCapability annotation = ReflectionUtil.getAnnotation(Class.forName(implName),
+                    TypeCapability.class);
+
+            if (annotation == null) {
+                continue;
+            }
+
+            String[] inputs = annotation.inputs();
+            StringBuilder sb = new StringBuilder();
+            sb.append(implName + "|");
+            for (int i = 0; i < inputs.length; i++) {
+                sb.append(inputs[i]);
+                if (i + 1 < inputs.length) {
+                    sb.append("|");
+                }
+            }
+            requirements.add(sb.toString());
+        }
+
+        return requirements;
+    }
 }

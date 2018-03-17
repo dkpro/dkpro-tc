@@ -42,7 +42,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * each CAS.
  */
 public class ValidityCheckConnectorPost
-extends JCasAnnotator_ImplBase implements ConnectorConstants
+    extends JCasAnnotator_ImplBase
+    implements ConnectorConstants
 {
 
     @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
@@ -58,8 +59,7 @@ extends JCasAnnotator_ImplBase implements ConnectorConstants
     private int learningModeI;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
 
         if (runSanityCheck()) {
@@ -89,18 +89,20 @@ extends JCasAnnotator_ImplBase implements ConnectorConstants
         return skipSanityChecks == false;
     }
 
-    private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(List<TextClassificationTarget> targets, List<TextClassificationOutcome> outcomes)
-                throws AnalysisEngineProcessException
+    private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(
+            List<TextClassificationTarget> targets, List<TextClassificationOutcome> outcomes)
+        throws AnalysisEngineProcessException
     {
         // iff unit/sequence classification is active, there must be classificationUnit
         // annotations, each
         // labeled with an outcome annotation
         if (featureModeI == 2 || featureModeI == 4) {
-			if (targets.size() == 0) {
-				throw new AnalysisEngineProcessException(
-						new TextClassificationException("Your experiment is supposed to have [+"
-								+ TextClassificationTarget.class.getName() + "] annotations, which are missing"));
-			}
+            if (targets.size() == 0) {
+                throw new AnalysisEngineProcessException(
+                        new TextClassificationException("Your experiment is supposed to have [+"
+                                + TextClassificationTarget.class.getName()
+                                + "] annotations, which are missing"));
+            }
             else {
                 if (targets.size() != outcomes.size()) {
                     throwException("Number of targets [" + targets.size()
@@ -120,15 +122,14 @@ extends JCasAnnotator_ImplBase implements ConnectorConstants
         }
     }
 
-    private void throwException(String message)
-        throws AnalysisEngineProcessException
+    private void throwException(String message) throws AnalysisEngineProcessException
     {
         throw new AnalysisEngineProcessException(new TextClassificationException(message));
     }
 
     private void checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(JCas jcas,
             Collection<TextClassificationOutcome> outcomes)
-                throws AnalysisEngineProcessException
+        throws AnalysisEngineProcessException
     {
         // iff single-label is configured, there may not be more than one outcome annotation per
         // CAS, except the experiment is unit or sequence classification

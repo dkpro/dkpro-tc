@@ -30,49 +30,58 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.core.task.uima.ConnectorConstants;
 
-public abstract class ModelSerialization_ImplBase extends JCasAnnotator_ImplBase implements ConnectorConstants, Constants, ModelVersionIO {
+public abstract class ModelSerialization_ImplBase
+    extends JCasAnnotator_ImplBase
+    implements ConnectorConstants, Constants, ModelVersionIO
+{
 
-	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
-	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-	protected File outputDirectory;
+    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+    protected File outputDirectory;
 
-	protected TcShallowLearningAdapter initMachineLearningAdapter(File tcModelLocation) throws Exception {
-		File modelMeta = new File(tcModelLocation, MODEL_META);
-		String fileContent = FileUtils.readFileToString(modelMeta, "utf-8");
-		Class<?> classObj = Class.forName(fileContent);
-		return (TcShallowLearningAdapter) classObj.newInstance();
-	}
+    protected TcShallowLearningAdapter initMachineLearningAdapter(File tcModelLocation)
+        throws Exception
+    {
+        File modelMeta = new File(tcModelLocation, MODEL_META);
+        String fileContent = FileUtils.readFileToString(modelMeta, "utf-8");
+        Class<?> classObj = Class.forName(fileContent);
+        return (TcShallowLearningAdapter) classObj.newInstance();
+    }
 
-	protected void verifyTcVersion(File tcModelLocation, Class<? extends ModelSerialization_ImplBase> class1)
-			throws Exception {
-		String loadedVersion = loadTcVersionFromModel(tcModelLocation);
-		String currentVersion = getCurrentTcVersionFromJar();
+    protected void verifyTcVersion(File tcModelLocation,
+            Class<? extends ModelSerialization_ImplBase> class1)
+        throws Exception
+    {
+        String loadedVersion = loadTcVersionFromModel(tcModelLocation);
+        String currentVersion = getCurrentTcVersionFromJar();
 
-		if (currentVersion == null) {
-			currentVersion = getCurrentTcVersionFromWorkspace();
-		}
+        if (currentVersion == null) {
+            currentVersion = getCurrentTcVersionFromWorkspace();
+        }
 
-		if (loadedVersion.equals(currentVersion)) {
-			return;
-		}
-		Logger.getLogger(class1).warn(
-				"The model was created under version [" + loadedVersion + "], you are using [" + currentVersion + "]");
-	}
+        if (loadedVersion.equals(currentVersion)) {
+            return;
+        }
+        Logger.getLogger(class1).warn("The model was created under version [" + loadedVersion
+                + "], you are using [" + currentVersion + "]");
+    }
 
-	protected String loadTcVersionFromModel(File modelFolder) throws Exception {
-		File file = new File(modelFolder, MODEL_TC_VERSION);
-		Properties prop = new Properties();
+    protected String loadTcVersionFromModel(File modelFolder) throws Exception
+    {
+        File file = new File(modelFolder, MODEL_TC_VERSION);
+        Properties prop = new Properties();
 
-		FileInputStream fis = null;
-		
-		try {
-			fis = new FileInputStream(file);
-			prop.load(fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+        FileInputStream fis = null;
 
-		return prop.getProperty(ModelSerializationTask.TCVERSION);
-	}
+        try {
+            fis = new FileInputStream(file);
+            prop.load(fis);
+        }
+        finally {
+            IOUtils.closeQuietly(fis);
+        }
+
+        return prop.getProperty(ModelSerializationTask.TCVERSION);
+    }
 
 }

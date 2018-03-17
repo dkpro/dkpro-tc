@@ -22,7 +22,6 @@ package org.dkpro.tc.core;
  */
 public interface DeepLearningConstants
 {
-
     String FILENAME_TOKEN = "occurringToken.txt";
 
     String FILENAME_PRUNED_EMBEDDING = "prunedEmbedding.txt";
@@ -59,11 +58,11 @@ public interface DeepLearningConstants
      * later on to identify which unit/target was classified
      */
     String FILENAME_TARGET_ID_TO_INDEX = "targetName2Index.txt";
-    
+
     /**
-	 * File that stores the parameter list the user code is expected to read and
-	 * configure the user code accordingly.
-	 */
+     * File that stores the parameter list the user code is expected to read and configure the user
+     * code accordingly.
+     */
     String FILENAME_USERCODE_PARAMETERS = "userCodeParameters.txt";
 
     /**
@@ -97,6 +96,6 @@ public interface DeepLearningConstants
     /**
      * Path to tab-separated lookup lists
      */
-	String DIM_DICTIONARY_PATHS = "dictionaryPaths";
+    String DIM_DICTIONARY_PATHS = "dictionaryPaths";
 
 }

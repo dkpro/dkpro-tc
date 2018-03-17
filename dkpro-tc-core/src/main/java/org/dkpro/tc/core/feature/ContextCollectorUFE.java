@@ -57,7 +57,8 @@ public class ContextCollectorUFE
     {
         boolean result = false;
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(contextFile), "utf-8"));
+            bw = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(contextFile), "utf-8"));
             result = super.initialize(aSpecifier, aAdditionalParams);
         }
         catch (Exception e) {
@@ -67,14 +68,15 @@ public class ContextCollectorUFE
         return result;
     }
 
-//    @Override
-//    public List<java.lang.Class<? extends MetaCollector>> getMetaCollectorClasses()
-//    {
-//        List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends MetaCollector>>();
-//        metaCollectorClasses.add(UnitContextMetaCollector.class);
-//
-//        return metaCollectorClasses;
-//    };
+    // @Override
+    // public List<java.lang.Class<? extends MetaCollector>> getMetaCollectorClasses()
+    // {
+    // List<Class<? extends MetaCollector>> metaCollectorClasses = new ArrayList<Class<? extends
+    // MetaCollector>>();
+    // metaCollectorClasses.add(UnitContextMetaCollector.class);
+    //
+    // return metaCollectorClasses;
+    // };
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget unit)
@@ -97,7 +99,7 @@ public class ContextCollectorUFE
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         return null;
     }

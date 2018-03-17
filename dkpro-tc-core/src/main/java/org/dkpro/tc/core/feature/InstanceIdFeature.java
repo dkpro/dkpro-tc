@@ -29,9 +29,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class InstanceIdFeature
 {
-
-    public static Feature retrieve(JCas jcas)
-        throws TextClassificationException
+    public static Feature retrieve(JCas jcas) throws TextClassificationException
     {
         String fullId = getFullId(jcas);
         return new Feature(ID_FEATURE_NAME, fullId, FeatureType.STRING);
@@ -68,8 +66,7 @@ public class InstanceIdFeature
         return new Feature(ID_FEATURE_NAME, fullId, FeatureType.STRING);
     };
 
-    private static String getFullId(JCas jcas)
-        throws TextClassificationException
+    private static String getFullId(JCas jcas) throws TextClassificationException
     {
         JCasId jcasId = JCasUtil.selectSingle(jcas, JCasId.class);
         return "" + jcasId.getId();

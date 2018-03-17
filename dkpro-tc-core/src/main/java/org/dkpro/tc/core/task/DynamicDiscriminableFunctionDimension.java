@@ -37,7 +37,7 @@ public class DynamicDiscriminableFunctionDimension
         super(aName);
         closures = aClosures;
     }
-    
+
     @Override
     public void setConfiguration(Map<String, Object> aConfig)
     {
@@ -47,7 +47,7 @@ public class DynamicDiscriminableFunctionDimension
     @Override
     public boolean hasNext()
     {
-        return current+1 < closures.length;
+        return current + 1 < closures.length;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DynamicDiscriminableFunctionDimension
         if (config == null) {
             return null;
         }
-        
+
         closures[current].setConfig(config);
         return closures[current];
     }
@@ -80,6 +80,7 @@ public class DynamicDiscriminableFunctionDimension
     @Override
     public String toString()
     {
-        return "[" + getName() + ": " + (current >= 0 && current < closures.length ? current() : "?") + "]";
+        return "[" + getName() + ": "
+                + (current >= 0 && current < closures.length ? current() : "?") + "]";
     }
 }

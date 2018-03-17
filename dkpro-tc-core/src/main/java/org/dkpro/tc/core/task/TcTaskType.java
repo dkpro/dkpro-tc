@@ -19,25 +19,13 @@ package org.dkpro.tc.core.task;
 
 public enum TcTaskType
 {
-	// Facade task that wraps a machine learning adapter task
-	FACADE_TASK,
-	
-	//Shallow tasks
-    INIT_TRAIN,
-    INIT_TEST,
-    COLLECTION,
-    META,
-    FEATURE_EXTRACTION_TRAIN,
-    FEATURE_EXTRACTION_TEST,
-    MACHINE_LEARNING_ADAPTER, 
-    EVALUATION,
-    CROSS_VALIDATION,
-    NO_TYPE,
-    
-	//Deep tasks
-    PREPARATION,
-    VECTORIZATION_TRAIN,
-    VECTORIZATION_TEST,
-    EMBEDDING,;
+    // Facade task that wraps a machine learning adapter task
+    FACADE_TASK,
+
+    // Shallow tasks
+    INIT_TRAIN, INIT_TEST, COLLECTION, META, FEATURE_EXTRACTION_TRAIN, FEATURE_EXTRACTION_TEST, MACHINE_LEARNING_ADAPTER, EVALUATION, CROSS_VALIDATION, NO_TYPE,
+
+    // Deep tasks
+    PREPARATION, VECTORIZATION_TRAIN, VECTORIZATION_TEST, EMBEDDING,;
 
 }

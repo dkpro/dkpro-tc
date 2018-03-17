@@ -28,13 +28,15 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class NoopFeatureExtractor
-	extends FeatureExtractorResource_ImplBase
-	implements FeatureExtractor
+    extends FeatureExtractorResource_ImplBase
+    implements FeatureExtractor
 {
 
-	@Override
-	public Set<Feature> extract(JCas view, TextClassificationTarget aTarget) throws TextClassificationException {
-		return Collections.<Feature>emptySet();
-	}
+    @Override
+    public Set<Feature> extract(JCas view, TextClassificationTarget aTarget)
+        throws TextClassificationException
+    {
+        return Collections.<Feature> emptySet();
+    }
 
 }

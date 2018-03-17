@@ -56,8 +56,7 @@ public class MaxLenSeq2Label
     int maximumLength = -1;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
@@ -80,8 +79,7 @@ public class MaxLenSeq2Label
     }
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         Collection<AnnotationFS> sequences = CasUtil.select(aJCas.getCas(), sequenceSpanType);
 
