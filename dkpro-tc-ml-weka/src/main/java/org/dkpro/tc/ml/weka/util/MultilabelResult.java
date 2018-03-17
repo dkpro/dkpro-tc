@@ -51,7 +51,7 @@ public class MultilabelResult implements Serializable {
 	 * @return predictions as LxN matrix
 	 */
 	public double[][] getPredictions() {
-		return predictions;
+		return predictions.clone();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class MultilabelResult implements Serializable {
 	 * @return gold standard as LxN matrix
 	 */
 	public int[][] getGoldstandard() {
-		return actuals;
+		return actuals.clone();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class MultilabelResult implements Serializable {
 	 */
 	String[] instanceIds;
 	public String[] getInstanceIds() {
-		return instanceIds;
+		return instanceIds.clone();
 	}
 
 	/**
