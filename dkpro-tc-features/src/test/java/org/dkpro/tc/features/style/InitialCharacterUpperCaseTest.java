@@ -33,11 +33,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+
 public class InitialCharacterUpperCaseTest
 {
     @Test
-    public void initialLetterTest()
-        throws Exception
+    public void initialLetterTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
@@ -46,10 +46,10 @@ public class InitialCharacterUpperCaseTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("he Loves it");
         engine.process(jcas);
-        
+
         TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 3, 8);
         aTarget.addToIndexes();
-        
+
         InitialCharacterUpperCase extractor = new InitialCharacterUpperCase();
         Set<Feature> features = extractor.extract(jcas, aTarget);
 
@@ -57,5 +57,5 @@ public class InitialCharacterUpperCaseTest
         Assert.assertEquals(1, features.size());
         Assert.assertEquals(InitialCharacterUpperCase.FEATURE_NAME, fetList.get(0).getName());
         Assert.assertEquals(1.0, (double) fetList.get(0).getValue(), 0.1);
-   }
+    }
 }

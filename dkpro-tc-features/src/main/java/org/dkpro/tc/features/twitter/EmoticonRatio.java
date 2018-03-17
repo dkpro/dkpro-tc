@@ -44,9 +44,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * </pre>
  * 
  */
-@TypeCapability(inputs = { 
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
-"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+        "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class EmoticonRatio
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

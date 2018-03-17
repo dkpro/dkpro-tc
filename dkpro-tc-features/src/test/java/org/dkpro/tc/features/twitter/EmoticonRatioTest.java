@@ -44,11 +44,9 @@ import org.dkpro.tc.features.twitter.EmoticonRatio;
 public class EmoticonRatioTest
 {
     @Test
-    public void emoticonRatioFeatureExtractorTest()
-        throws Exception
+    public void emoticonRatioFeatureExtractorTest() throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(
-                NoOpAnnotator.class);
+        AnalysisEngineDescription desc = createEngineDescription(NoOpAnnotator.class);
         AnalysisEngine engine = createEngine(desc);
 
         TokenBuilder<Token, Sentence> builder = TokenBuilder.create(Token.class, Sentence.class);
@@ -62,8 +60,9 @@ public class EmoticonRatioTest
         emo.addToIndexes();
 
         engine.process(jcas);
-        
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
         EmoticonRatio extractor = new EmoticonRatio();

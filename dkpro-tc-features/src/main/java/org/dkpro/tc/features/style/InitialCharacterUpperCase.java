@@ -47,6 +47,7 @@ public class InitialCharacterUpperCase
         String token = aTarget.getCoveredText();
 
         boolean bool = Character.isUpperCase(token.charAt(0));
-		return new Feature(FEATURE_NAME, bool ? 1.0 : 0.0, bool == false, FeatureType.BOOLEAN).asSet();
+        return new Feature(FEATURE_NAME, bool ? 1.0 : 0.0, bool == false, FeatureType.BOOLEAN)
+                .asSet();
     }
 }

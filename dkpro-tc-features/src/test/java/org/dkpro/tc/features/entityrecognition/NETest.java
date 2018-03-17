@@ -37,10 +37,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 public class NETest
 {
     @Test
-    public void nEFeatureExtractorTest()
-        throws Exception
+    public void nEFeatureExtractorTest() throws Exception
     {
-
         AnalysisEngine engine = createEngine(NoOpAnnotator.class);
 
         JCas jcas = engine.newJCas();

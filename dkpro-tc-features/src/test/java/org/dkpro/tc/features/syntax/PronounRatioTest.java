@@ -43,13 +43,11 @@ import org.dkpro.tc.features.syntax.PronounRatioFeatureExtractor;
 public class PronounRatioTest
 {
     @Test
-    public void posContextFeatureExtractorTest()
-        throws Exception
+    public void posContextFeatureExtractorTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en"));
+                createEngineDescription(BreakIteratorSegmenter.class), createEngineDescription(
+                        OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en"));
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
@@ -57,9 +55,10 @@ public class PronounRatioTest
         jcas.setDocumentText("He is no tester. I am a tester.");
         engine.process(jcas);
 
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
-        
+
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 

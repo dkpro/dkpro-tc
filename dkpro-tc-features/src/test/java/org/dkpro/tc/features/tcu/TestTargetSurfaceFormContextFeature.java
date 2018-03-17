@@ -40,8 +40,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 public class TestTargetSurfaceFormContextFeature
 {
     @Test
-    public void testTokenFeatureExtractors()
-        throws Exception
+    public void testTokenFeatureExtractors() throws Exception
     {
 
         Object[] o = setUp();
@@ -59,19 +58,19 @@ public class TestTargetSurfaceFormContextFeature
         assertResult(jcas, tcu, +4, TargetSurfaceFormContextFeature.OUT_OF_BOUNDARY);
     }
 
-    private void assertResult(JCas jcas, TextClassificationTarget tcu, int i, String o) throws Exception
+    private void assertResult(JCas jcas, TextClassificationTarget tcu, int i, String o)
+        throws Exception
     {
-        TargetSurfaceFormContextFeature createResource = FeatureUtil.createResource(
-                TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
-                TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, i));
+        TargetSurfaceFormContextFeature createResource = FeatureUtil
+                .createResource(TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
+                        TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, i));
         Set<Feature> extract = createResource.extract(jcas, tcu);
 
         assertEquals(1, extract.size());
-        assertEquals(o, extract.iterator().next().getValue());        
+        assertEquals(o, extract.iterator().next().getValue());
     }
 
-    private Object[] setUp()
-        throws Exception
+    private Object[] setUp() throws Exception
     {
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentText("It is raining all day");

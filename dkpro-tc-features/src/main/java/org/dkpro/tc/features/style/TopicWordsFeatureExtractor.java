@@ -44,9 +44,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 /**
  * Given a list of topic terms, extracts the ratio of topic terms to all terms.
  */
-@TypeCapability(inputs = {
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"
-})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class TopicWordsFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

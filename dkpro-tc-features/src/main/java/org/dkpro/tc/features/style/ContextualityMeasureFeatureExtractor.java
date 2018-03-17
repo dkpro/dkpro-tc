@@ -50,9 +50,8 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_VERB;
  */
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
-"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-})
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+        "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class ContextualityMeasureFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -69,15 +68,15 @@ public class ContextualityMeasureFeatureExtractor
         double noun = selectCovered(jcas, POS_NOUN.class, aTarget).size() / total;
         double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
         double prep = selectCovered(jcas, POS_ADP.class, aTarget).size() / total;
-        double art = selectCovered(jcas, POS_DET.class, aTarget).size() / total;// !includes determiners
+        double art = selectCovered(jcas, POS_DET.class, aTarget).size() / total;// !includes
+                                                                                // determiners
         double pro = selectCovered(jcas, POS_PRON.class, aTarget).size() / total;
         double verb = selectCovered(jcas, POS_VERB.class, aTarget).size() / total;
         double adv = selectCovered(jcas, POS_ADV.class, aTarget).size() / total;
 
         // noun freq + adj.freq. + prepositions freq. + article freq. - pronoun freq. - verb f. -
         // adverb - interjection + 100
-        double contextualityMeasure = 0.5
-                * (noun + adj + prep + art - pro - verb - adv + 100);
+        double contextualityMeasure = 0.5 * (noun + adj + prep + art - pro - verb - adv + 100);
 
         featSet.add(new Feature("NounRate", noun, FeatureType.NUMERIC));
         featSet.add(new Feature("AdjectiveRate", adj, FeatureType.NUMERIC));
@@ -86,7 +85,8 @@ public class ContextualityMeasureFeatureExtractor
         featSet.add(new Feature("PronounRate", pro, FeatureType.NUMERIC));
         featSet.add(new Feature("VerbRate", verb, FeatureType.NUMERIC));
         featSet.add(new Feature("AdverbRate", adv, FeatureType.NUMERIC));
-        featSet.add(new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(CONTEXTUALITY_MEASURE_FN, contextualityMeasure, FeatureType.NUMERIC));
 
         return featSet;
     }

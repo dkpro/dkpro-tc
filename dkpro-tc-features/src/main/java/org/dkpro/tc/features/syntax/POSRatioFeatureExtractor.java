@@ -48,9 +48,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
 /**
  * Extracts the ratio of each universal POS tags to the total number of tags
  */
-@TypeCapability(inputs = {
-"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class POSRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -91,7 +89,7 @@ public class POSRatioFeatureExtractor
         features.add(new Feature(FN_ART_RATIO, art, FeatureType.NUMERIC));
         features.add(new Feature(FN_CARD_RATIO, card, FeatureType.NUMERIC));
         features.add(new Feature(FN_CONJ_RATIO, conj, FeatureType.NUMERIC));
-        features.add(new Feature(FN_N_RATIO, noun+propNoun, FeatureType.NUMERIC));
+        features.add(new Feature(FN_N_RATIO, noun + propNoun, FeatureType.NUMERIC));
         features.add(new Feature(FN_O_RATIO, other, FeatureType.NUMERIC));
         features.add(new Feature(FN_PR_RATIO, pron, FeatureType.NUMERIC));
         features.add(new Feature(FN_PP_RATIO, prep, FeatureType.NUMERIC));

@@ -35,24 +35,25 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.style.AdjectiveEndingFeatureExtractor;
 import org.junit.Assert;
+
 public class AdjectiveEndingTest
 {
     @Test
-    public void adjectiveEndingFeatureExtractorTest()
-        throws Exception
+    public void adjectiveEndingFeatureExtractorTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en"));
+                createEngineDescription(BreakIteratorSegmenter.class), createEngineDescription(
+                        OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en"));
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
-        jcas.setDocumentText("Lovable phenomenal beautiful incredible fantastic gorgeous positive nice good mainly harmless.");
+        jcas.setDocumentText(
+                "Lovable phenomenal beautiful incredible fantastic gorgeous positive nice good mainly harmless.");
         engine.process(jcas);
-        
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();
@@ -69,5 +70,5 @@ public class AdjectiveEndingTest
         assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING7, 10.0, features, 0.001);
         assertFeatures(AdjectiveEndingFeatureExtractor.ADJ_ENDING8, 10.0, features, 0.001);
         assertFeatures(AdjectiveEndingFeatureExtractor.ADV_ENDING9, 100.0, features, 0.001);
-   }
+    }
 }

@@ -37,19 +37,18 @@ import org.dkpro.tc.features.twitter.NumberOfHashTags;
 public class NumberOfHashTagsTest
 {
     @Test
-    public void numberOfHashTagsFeatureExtractorTest()
-        throws Exception
+    public void numberOfHashTagsFeatureExtractorTest() throws Exception
     {
-        AnalysisEngineDescription desc = createEngineDescription(
-                NoOpAnnotator.class);
+        AnalysisEngineDescription desc = createEngineDescription(NoOpAnnotator.class);
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a very #emotional tweet ;-) #icouldcry #ILoveHashTags");
         engine.process(jcas);
-        
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
         NumberOfHashTags extractor = new NumberOfHashTags();

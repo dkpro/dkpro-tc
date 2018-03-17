@@ -33,8 +33,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 /**
  * A feature extracting the number of hashtags in a tweet.
  */
-@TypeCapability(inputs = { 
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NumberOfHashTags
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -55,7 +54,8 @@ public class NumberOfHashTags
         while (hashTagMatcher.find()) {
             numberOfHashTags++;
         }
-        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags, FeatureType.NUMERIC).asSet();
+        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags,
+                FeatureType.NUMERIC).asSet();
     }
 
 }

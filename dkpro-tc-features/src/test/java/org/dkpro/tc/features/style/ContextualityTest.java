@@ -51,21 +51,20 @@ import org.dkpro.tc.features.style.ContextualityMeasureFeatureExtractor;
 public class ContextualityTest
 {
     @Test
-    public void posContextFeatureExtractorTest()
-        throws Exception
+    public void posContextFeatureExtractorTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE,
-                        "en"));
+                createEngineDescription(BreakIteratorSegmenter.class), createEngineDescription(
+                        OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, "en"));
         AnalysisEngine engine = createEngine(desc);
 
         JCas jcas = engine.newJCas();
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("This is a test.");
         engine.process(jcas);
-        
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();

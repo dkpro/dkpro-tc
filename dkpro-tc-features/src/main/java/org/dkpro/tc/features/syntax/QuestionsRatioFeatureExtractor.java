@@ -34,10 +34,10 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 
 /**
- * Extracts the ratio of questions (indicated by a single question mark at the end) to total sentences.
+ * Extracts the ratio of questions (indicated by a single question mark at the end) to total
+ * sentences.
  */
-@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence"
-})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
 public class QuestionsRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor

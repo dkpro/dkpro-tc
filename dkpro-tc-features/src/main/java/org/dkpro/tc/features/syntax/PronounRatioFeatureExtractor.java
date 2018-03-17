@@ -38,9 +38,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_PRON;
  * English only.
  */
 
-@TypeCapability(inputs = {  
-"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-})
+@TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class PronounRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -52,7 +50,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_THEY_RATIO = "PronounRatioThey";
     public static final String FN_US_RATIO = "PronounRatioUs";
     public static final String FN_YOU_RATIO = "PronounRatioYou";
-    
+
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException

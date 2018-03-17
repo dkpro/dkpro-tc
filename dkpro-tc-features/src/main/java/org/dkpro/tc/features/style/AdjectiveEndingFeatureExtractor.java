@@ -33,21 +33,18 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_ADV;
 
 /**
- * Gender-Preferential Text Mining of E-mail Discourse
- * Malcolm Corney, Olivier de Vel, Alison Anderson, George Mohay
+ * Gender-Preferential Text Mining of E-mail Discourse Malcolm Corney, Olivier de Vel, Alison
+ * Anderson, George Mohay
  * 
- * Counts ratio of English adjective and adverb endings 
- * (in proportion to all adjectives/adverbs)
- * that may signalize neuroticism,
- * respectively express the emotional level of a person. Can be used
+ * Counts ratio of English adjective and adverb endings (in proportion to all adjectives/adverbs)
+ * that may signalize neuroticism, respectively express the emotional level of a person. Can be used
  * for autorship attribution or such style-related tasks.
  * 
  * Output is multiplied by 100 to avoid too small numbers.
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
-"de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS"
-})
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token",
+        "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
 public class AdjectiveEndingFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -60,7 +57,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String ADJ_ENDING6 = "EndingOus";
     public static final String ADJ_ENDING7 = "EndingIve";
     public static final String ADJ_ENDING8 = "EndingIc";
-    
+
     public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
@@ -118,16 +115,25 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-		Set<Feature> featSet = new HashSet<Feature>();
-		featSet.add(new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING2, n > 0 ? al * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING3, n > 0 ? ful * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING4, n > 0 ? ible * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING5, n > 0 ? less * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING6, n > 0 ? ous * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING7, n > 0 ? ive * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADJ_ENDING8, n > 0 ? ic * 100 / n : 0, n == 0, FeatureType.NUMERIC));
-		featSet.add(new Feature(ADV_ENDING9, m > 0 ? ly * 100 / m : 0, n == 0, FeatureType.NUMERIC));
+        Set<Feature> featSet = new HashSet<Feature>();
+        featSet.add(
+                new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING2, n > 0 ? al * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING3, n > 0 ? ful * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING4, n > 0 ? ible * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING5, n > 0 ? less * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING6, n > 0 ? ous * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING7, n > 0 ? ive * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADJ_ENDING8, n > 0 ? ic * 100 / n : 0, n == 0, FeatureType.NUMERIC));
+        featSet.add(
+                new Feature(ADV_ENDING9, m > 0 ? ly * 100 / m : 0, n == 0, FeatureType.NUMERIC));
 
         return featSet;
     }

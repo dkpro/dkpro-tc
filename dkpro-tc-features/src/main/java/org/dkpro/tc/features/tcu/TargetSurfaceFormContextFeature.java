@@ -33,8 +33,7 @@ import org.dkpro.tc.api.type.TextClassificationTarget;
  * only work with machine classifier that can deal with <b>string</b> feature values
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token"
-})
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class TargetSurfaceFormContextFeature
     extends TcuLookUpTable
 {
@@ -68,7 +67,8 @@ public class TargetSurfaceFormContextFeature
         Integer targetIdx = currentTargetIdx + shiftIdx;
 
         String featureVal = getTargetText(targetIdx);
-        return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal, FeatureType.NUMERIC).asSet();
+        return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal,
+                FeatureType.NUMERIC).asSet();
     }
 
     private String toHumanReadable(Integer shiftIdx)

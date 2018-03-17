@@ -39,7 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
  * Extracts the ratio of named entities per sentence
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
-"de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
+        "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class NamedEntityPerSentenceRatio
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
@@ -62,12 +62,15 @@ public class NamedEntityPerSentenceRatio
             featList.add(new Feature("NrOfPersonEntities", numPersonNE, FeatureType.NUMERIC));
             featList.add(new Feature("NrOfLocationEntities", numLocNE, FeatureType.NUMERIC));
 
-            featList.add(new Feature("NrOfOrganizationEntitiesPerSent", Math
-                    .round(((float) numOrgaNE / numSentences) * 100f) / 100f, FeatureType.NUMERIC));
-            featList.add(new Feature("NrOfPersonEntitiesPerSent", Math
-                    .round(((float) numPersonNE / numSentences) * 100f) / 100f, FeatureType.NUMERIC));
-            featList.add(new Feature("NrOfLocationEntitiesPerSent", Math
-                    .round(((float) numLocNE / numSentences) * 100f) / 100f, FeatureType.NUMERIC));
+            featList.add(new Feature("NrOfOrganizationEntitiesPerSent",
+                    Math.round(((float) numOrgaNE / numSentences) * 100f) / 100f,
+                    FeatureType.NUMERIC));
+            featList.add(new Feature("NrOfPersonEntitiesPerSent",
+                    Math.round(((float) numPersonNE / numSentences) * 100f) / 100f,
+                    FeatureType.NUMERIC));
+            featList.add(new Feature("NrOfLocationEntitiesPerSent",
+                    Math.round(((float) numLocNE / numSentences) * 100f) / 100f,
+                    FeatureType.NUMERIC));
         }
 
         return featList;

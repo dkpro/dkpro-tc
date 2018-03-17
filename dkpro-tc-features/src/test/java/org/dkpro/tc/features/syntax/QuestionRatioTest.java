@@ -38,8 +38,7 @@ import org.junit.Assert;
 public class QuestionRatioTest
 {
     @Test
-    public void questionRatioFeatureExtractorTest()
-        throws Exception
+    public void questionRatioFeatureExtractorTest() throws Exception
     {
         AnalysisEngineDescription desc = createEngineDescription(BreakIteratorSegmenter.class);
         AnalysisEngine engine = createEngine(desc);
@@ -48,8 +47,9 @@ public class QuestionRatioTest
         jcas.setDocumentLanguage("en");
         jcas.setDocumentText("Is he a tester???? Really?? He is a tester! Oh yes.");
         engine.process(jcas);
-        
-        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+
+        TextClassificationTarget aTarget = new TextClassificationTarget(jcas, 0,
+                jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
         QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
