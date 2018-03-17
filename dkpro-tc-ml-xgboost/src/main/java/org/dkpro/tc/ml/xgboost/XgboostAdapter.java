@@ -37,7 +37,7 @@ import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
  * 
  * <pre>
   General Parameters:
-  	booster={gbtree, gblinear, gbree}  (default booster=gbtree)
+  	booster={gbtree, gblinear, dart}  (default booster=gbtree)
    	Choices:
  		- gbtree (Tree Booster)
  		- gblinear (Linear Booster)
@@ -254,12 +254,12 @@ public class XgboostAdapter
 
     @Override
     public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-        return null;
+        return XgboostLoadModelConnector.class;
     }
 
     @Override
     public Class<? extends ModelSerializationTask> getSaveModelTask() {
-    		return null;
+    		return XgboostSerializeModelConnector.class;
     }
     
     @Override
