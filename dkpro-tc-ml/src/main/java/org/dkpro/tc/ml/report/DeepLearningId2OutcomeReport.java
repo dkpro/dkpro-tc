@@ -88,7 +88,6 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		}
 
 		List<String> nameOfTargets = getNameOfTargets();
-
 		Properties prop = new SortedKeyProperties();
 
 		int shift = 0;
@@ -105,8 +104,7 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 				continue;
 			}
 
-			String id = !nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift) ? nameOfTargets.get(i - shift)
-					: ("" + (counter++));
+			String id = determineId(nameOfTargets, i, shift);
 
 			String[] split = p.split("\t");
 
@@ -143,6 +141,11 @@ public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements C
 		}
 	}
 	
+	private String determineId(List<String> nameOfTargets, int i, int shift) {
+		return !nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift) ? nameOfTargets.get(i - shift)
+				: "" + (counter++);
+	}
+
 	protected List<String> update(List<String> predictions) {
 		//is overwritten in baseline reports
 		return predictions;
