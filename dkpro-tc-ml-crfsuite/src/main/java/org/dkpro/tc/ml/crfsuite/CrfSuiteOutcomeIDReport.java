@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -71,8 +72,8 @@ public class CrfSuiteOutcomeIDReport
         // add "#labels' line with all labels
         StringBuilder sb = new StringBuilder();
         sb.append("labels");
-        for (String label : mapping.keySet()) {
-            sb.append(" " + mapping.get(label) + "=" + URLEncoder.encode(label, "UTF-8"));
+        for(Entry<String,Integer> e : mapping.entrySet()){
+        	sb.append(" " + e.getValue() + "=" + URLEncoder.encode(e.getKey(), "UTF-8"));
         }
 
         File id2o = getTargetFile();
