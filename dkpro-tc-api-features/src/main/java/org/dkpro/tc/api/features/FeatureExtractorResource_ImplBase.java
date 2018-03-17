@@ -35,7 +35,7 @@ public abstract class FeatureExtractorResource_ImplBase
     public static final String PARAM_UNIQUE_EXTRACTOR_NAME = "uniqueFeatureExtractorName";
     @ConfigurationParameter(name = PARAM_UNIQUE_EXTRACTOR_NAME, mandatory = true)
     protected String featureExtractorName;
-    
+
     @Override
     public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
         throws ResourceInitializationException
@@ -43,7 +43,7 @@ public abstract class FeatureExtractorResource_ImplBase
         if (!super.initialize(aSpecifier, aAdditionalParams)) {
             return false;
         }
-                
+
         return true;
     }
 }

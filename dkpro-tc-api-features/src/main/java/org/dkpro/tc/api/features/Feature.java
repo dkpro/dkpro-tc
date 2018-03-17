@@ -32,11 +32,11 @@ public class Feature
     protected String name;
     protected Object value;
     private boolean isDefaultValue;
-	private FeatureType type;
+    private FeatureType type;
 
     public Feature(String name, Object value, FeatureType type)
     {
-		// TODO should we cache the feature espacing? this is called quite often ...
+        // TODO should we cache the feature espacing? this is called quite often ...
         this.name = FeatureUtil.escapeFeatureName(name).intern();
         this.value = value;
         this.isDefaultValue = false;
@@ -56,11 +56,11 @@ public class Feature
      *            A boolean if the feature value is a default value i.e. means this feature is
      *            <i>not set</i> for an instance
      * @param type
-     * 			  Type of this feature
+     *            Type of this feature
      */
     public Feature(String name, Object value, boolean isDefaultValue, FeatureType type)
     {
-		// TODO should we cache the feature espacing? this is called quite often ...
+        // TODO should we cache the feature espacing? this is called quite often ...
         this.name = FeatureUtil.escapeFeatureName(name).intern();
         this.value = value;
         this.isDefaultValue = isDefaultValue;
@@ -146,9 +146,10 @@ public class Feature
     {
         return this.getName().compareTo(o.getName());
     }
-    
-    public FeatureType getType(){
-    	return this.type;
+
+    public FeatureType getType()
+    {
+        return this.type;
     }
 
 }

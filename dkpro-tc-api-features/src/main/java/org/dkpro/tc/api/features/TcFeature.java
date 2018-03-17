@@ -49,7 +49,7 @@ public class TcFeature
         this.classOfFeat = classOfFeat;
         this.id = id;
         this.fullFeatureName = classOfFeat.getName();
-        this.params = Arrays.<Object>copyOf(params, params.length);
+        this.params = Arrays.<Object> copyOf(params, params.length);
     }
 
     public void setConfig(Map<String, Object> aConfig)

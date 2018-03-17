@@ -19,8 +19,5 @@ package org.dkpro.tc.api.features;
 
 public enum FeatureType
 {
-    STRING,
-    NOMINAL, 
-    NUMERIC, 
-    BOOLEAN, 
+    STRING, NOMINAL, NUMERIC, BOOLEAN,
 }

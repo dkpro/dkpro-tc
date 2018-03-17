@@ -43,12 +43,12 @@ public class MetaCollectorConfiguration
 
     public MetaCollectorConfiguration(Class<? extends AnalysisComponent> aClass,
             Map<String, Object> parameterSettings)
-                throws ResourceInitializationException
+        throws ResourceInitializationException
     {
         List<Object> param = new ArrayList<>();
-        
-        for(Entry<String, Object> e : parameterSettings.entrySet()){
-        	param.add(e.getKey());
+
+        for (Entry<String, Object> e : parameterSettings.entrySet()) {
+            param.add(e.getKey());
             Object object = e.getValue();
 
             if (NumberUtils.isNumber(object.toString())) {
@@ -63,7 +63,7 @@ public class MetaCollectorConfiguration
                 param.add(e.getValue());
             }
         }
-        
+
         descriptor = createEngineDescription(aClass, param.toArray());
     }
 

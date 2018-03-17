@@ -28,8 +28,9 @@ public abstract class MetaCollector
     extends JCasAnnotator_ImplBase
 {
     /**
-     * Each feature extractor needs a unique id to know which feature extractors and which meta collector correspond to each other.
-     * This value has to be set for extractors which do net use meta collection, too. 
+     * Each feature extractor needs a unique id to know which feature extractors and which meta
+     * collector correspond to each other. This value has to be set for extractors which do net use
+     * meta collection, too.
      */
     public static final String PARAM_UNIQUE_EXTRACTOR_NAME = FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME;
     @ConfigurationParameter(name = PARAM_UNIQUE_EXTRACTOR_NAME, mandatory = true)
