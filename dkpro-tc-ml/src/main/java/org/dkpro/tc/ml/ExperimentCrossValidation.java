@@ -52,7 +52,8 @@ import org.dkpro.tc.ml.report.InnerBatchReport;
  * 
  */
 public class ExperimentCrossValidation
-    extends ShallowLearningExperiment_ImplBase implements Constants
+    extends ShallowLearningExperiment_ImplBase
+    implements Constants
 {
 
     protected Comparator<String> comparator;
@@ -72,11 +73,11 @@ public class ExperimentCrossValidation
     /**
      * 
      * @param aExperimentName
-     * 			the experiment name
+     *            the experiment name
      * @param aNumFolds
-     * 			the number of folds
+     *            the number of folds
      * @throws TextClassificationException
-     * 			in case of errors
+     *             in case of errors
      */
     public ExperimentCrossValidation(String aExperimentName, int aNumFolds)
         throws TextClassificationException
@@ -87,16 +88,17 @@ public class ExperimentCrossValidation
     /**
      * Use this constructor for CV fold control. The Comparator is used to determine which instances
      * must occur together in the same CV fold.
-          * @param aExperimentName
-     * 			the experiment name
+     * 
+     * @param aExperimentName
+     *            the experiment name
      * @param aNumFolds
-     * 			the number of folds
+     *            the number of folds
      * @param aComparator
-     * 			the comparator 
+     *            the comparator
      * @throws TextClassificationException
-     * 			in case of errors
+     *             in case of errors
      */
-    public ExperimentCrossValidation(String aExperimentName,int aNumFolds,
+    public ExperimentCrossValidation(String aExperimentName, int aNumFolds,
             Comparator<String> aComparator)
         throws TextClassificationException
     {
@@ -112,8 +114,7 @@ public class ExperimentCrossValidation
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
      */
-    protected void init()
-        throws IllegalStateException
+    protected void init() throws IllegalStateException
     {
 
         if (experimentName == null) {
@@ -136,12 +137,12 @@ public class ExperimentCrossValidation
         // inner batch task (carried out numFolds times)
         DefaultBatchTask crossValidationTask = new DefaultBatchTask()
         {
-            @Discriminator(name=DIM_FEATURE_MODE)
+            @Discriminator(name = DIM_FEATURE_MODE)
             private String featureMode;
-            
-            @Discriminator(name=DIM_CROSS_VALIDATION_MANUAL_FOLDS)
+
+            @Discriminator(name = DIM_CROSS_VALIDATION_MANUAL_FOLDS)
             private boolean useCrossValidationManualFolds;
-            
+
             @Override
             public void initialize(TaskContext aContext)
             {
@@ -163,9 +164,11 @@ public class ExperimentCrossValidation
                     numFolds = fileNames.length;
                 }
 
-                //is executed if we have less CAS than requested folds and manual mode is turned off
+                // is executed if we have less CAS than requested folds and manual mode is turned
+                // off
                 if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
-                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
+                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length,
+                            featureMode);
                     files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
                     fileNames = new String[files.size()];
                     i = 0;
@@ -184,26 +187,26 @@ public class ExperimentCrossValidation
             }
 
             /**
-			 * creates required number of CAS
-			 * 
-			 * @param xmiPathRoot
-			 * 			input path
-			 * @param numAvailableJCas
-			 * 			all CAS
-			 * @param featureMode
-			 * 			the feature mode
-			 * @return
-			 * 			a file
-			 */
-            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode)
+             * creates required number of CAS
+             * 
+             * @param xmiPathRoot
+             *            input path
+             * @param numAvailableJCas
+             *            all CAS
+             * @param featureMode
+             *            the feature mode
+             * @return a file
+             */
+            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas,
+                    String featureMode)
             {
 
                 try {
                     File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
                             numFolds, numAvailableJCas, FM_SEQUENCE.equals(featureMode));
-                    
-                    if(outputFolder == null){
-                    	throw new NullPointerException("Output folder is null");
+
+                    if (outputFolder == null) {
+                        throw new NullPointerException("Output folder is null");
                     }
 
                     verfiyThatNeededNumberOfCasWasCreated(outputFolder);
@@ -218,12 +221,13 @@ public class ExperimentCrossValidation
             private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
             {
                 int numCas = 0;
-                
+
                 File[] listFiles = outputFolder.listFiles();
-                if(listFiles == null){
-                	throw new NullPointerException("Retrieving files in folder led to a NullPointer");
+                if (listFiles == null) {
+                    throw new NullPointerException(
+                            "Retrieving files in folder led to a NullPointer");
                 }
-                
+
                 for (File f : listFiles) {
                     if (f.getName().contains(".bin")) {
                         numCas++;
@@ -242,10 +246,10 @@ public class ExperimentCrossValidation
 
         // collecting meta features only on the training data (numFolds times)
         collectionTask = new OutcomeCollectionTask();
-		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
-		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
-		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
-        
+        collectionTask.setType(collectionTask.getType() + "-" + experimentName);
+        collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
+        collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
+
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
@@ -254,34 +258,36 @@ public class ExperimentCrossValidation
         // extracting features from training data (numFolds times)
         extractFeaturesTrainTask = new ExtractFeaturesTask();
         extractFeaturesTrainTask.setTesting(false);
-        extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-"
-                + experimentName);
+        extractFeaturesTrainTask
+                .setType(extractFeaturesTrainTask.getType() + "-Train-" + experimentName);
         extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
         extractFeaturesTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-        extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+        extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE,
+                TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // extracting features from test data (numFolds times)
         extractFeaturesTestTask = new ExtractFeaturesTask();
         extractFeaturesTestTask.setTesting(true);
-        extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-"
-                + experimentName);
+        extractFeaturesTestTask
+                .setType(extractFeaturesTestTask.getType() + "-Test-" + experimentName);
         extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
         extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
         extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
                 ExtractFeaturesTask.INPUT_KEY);
         extractFeaturesTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-        extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
+        extractFeaturesTestTask.setAttribute(TC_TASK_TYPE,
+                TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
-        
         // test task operating on the models of the feature extraction train and test tasks
         List<ReportBase> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
-        
-        testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask, reports);
+
+        testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask,
+                collectionTask, reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
@@ -295,12 +301,13 @@ public class ExperimentCrossValidation
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+                Constants.OUTCOMES_INPUT_KEY);
 
         // ================== CONFIG OF THE INNER BATCH TASK =======================
 
         crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
-        crossValidationTask.setType(crossValidationTask.getType()+ "-" + experimentName);
+        crossValidationTask.setType(crossValidationTask.getType() + "-" + experimentName);
         crossValidationTask.addTask(collectionTask);
         crossValidationTask.addTask(metaTask);
         crossValidationTask.addTask(extractFeaturesTrainTask);
@@ -318,13 +325,12 @@ public class ExperimentCrossValidation
         addTask(crossValidationTask);
     }
 
-	/**
-	 * 
-	 * @param fileNames
-	 * 			the file names
-	 * @return
-	 * 		fold dimension bundle
-	 */
+    /**
+     * 
+     * @param fileNames
+     *            the file names
+     * @return fold dimension bundle
+     */
     protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
     {
         if (comparator != null) {
@@ -334,21 +340,23 @@ public class ExperimentCrossValidation
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
     }
 
-	/**
-	 * sets the number of folds
-	 * @param numFolds
-	 * 			folds
-	 */
+    /**
+     * sets the number of folds
+     * 
+     * @param numFolds
+     *            folds
+     */
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
     }
 
-	/**
-	 * Sets a comparator
-	 * @param aComparator
-	 * 			the comparator
-	 */
+    /**
+     * Sets a comparator
+     * 
+     * @param aComparator
+     *            the comparator
+     */
     public void setComparator(Comparator<String> aComparator)
     {
         comparator = aComparator;

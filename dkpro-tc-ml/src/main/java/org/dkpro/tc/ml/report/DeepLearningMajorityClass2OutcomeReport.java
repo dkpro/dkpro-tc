@@ -31,69 +31,78 @@ import org.dkpro.tc.core.DeepLearningConstants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
-public class DeepLearningMajorityClass2OutcomeReport extends DeepLearningId2OutcomeReport
-		implements DeepLearningConstants {
+public class DeepLearningMajorityClass2OutcomeReport
+    extends DeepLearningId2OutcomeReport
+    implements DeepLearningConstants
+{
 
-	String majorityClass;
+    String majorityClass;
 
-	@Override
-	public void execute() throws Exception {
-		init();
+    @Override
+    public void execute() throws Exception
+    {
+        init();
 
-		if (isRegression) {
-			return;
-		}
+        if (isRegression) {
+            return;
+        }
 
-		super.execute();
-	}
+        super.execute();
+    }
 
-	@Override
-	protected void baselinePreparation() throws Exception {
-		
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_OUTCOME_VECTOR);
-		determineMajorityClass(file);
-	}
-	
-	@Override
-	protected File getTargetFile() {
-		return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
-	}
+    @Override
+    protected void baselinePreparation() throws Exception
+    {
 
-	private void determineMajorityClass(File f) throws Exception {
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		
-		BufferedReader reader = null;
-		try{
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
-			String line=null;
-			while((line=reader.readLine())!=null){
-				String[] split = line.split(" ");
-				for(String v : split){
-					fd.addSample(v, 1);
-				}
-			}
-		}finally{
-			IOUtils.closeQuietly(reader);
-		}
-		
-		majorityClass = fd.getSampleWithMaxFreq();
-	}
-	
-	@Override
-	protected List<String> update(List<String> predictions) {
-		
-		List<String> out = new ArrayList<>();
-		
-		for (String p : predictions) {
-			if(p.isEmpty()){
-				continue;
-			}
-			String[] split = p.split("\t");
-			out.add(split[0] + "\t" + majorityClass);
-		}
-		
-		return out;
-	}
-	
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_OUTCOME_VECTOR);
+        determineMajorityClass(file);
+    }
+
+    @Override
+    protected File getTargetFile()
+    {
+        return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
+
+    private void determineMajorityClass(File f) throws Exception
+    {
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                String[] split = line.split(" ");
+                for (String v : split) {
+                    fd.addSample(v, 1);
+                }
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        majorityClass = fd.getSampleWithMaxFreq();
+    }
+
+    @Override
+    protected List<String> update(List<String> predictions)
+    {
+
+        List<String> out = new ArrayList<>();
+
+        for (String p : predictions) {
+            if (p.isEmpty()) {
+                continue;
+            }
+            String[] split = p.split("\t");
+            out.add(split[0] + "\t" + majorityClass);
+        }
+
+        return out;
+    }
+
 }

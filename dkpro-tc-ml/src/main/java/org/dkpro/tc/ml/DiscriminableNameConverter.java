@@ -52,7 +52,8 @@ public class DiscriminableNameConverter
         return description;
     }
 
-    static private List<String> addParameters(List<String> entries, NameValuePair[] parameterSettings)
+    static private List<String> addParameters(List<String> entries,
+            NameValuePair[] parameterSettings)
     {
         for (int i = 0; i < parameterSettings.length; i++) {
             NameValuePair nvp = parameterSettings[i];
@@ -76,5 +77,5 @@ public class DiscriminableNameConverter
 
         return entries;
     }
-    
+
 }

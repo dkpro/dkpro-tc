@@ -36,56 +36,55 @@ public class ScatterplotReport
 {
 
     @Override
-    public void execute()
-        throws Exception
+    public void execute() throws Exception
     {
 
         for (TaskContextMetadata subcontext : getSubtasks()) {
             if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(),
                     subcontext.getId())) {
-                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(), Constants.FILE_COMBINED_ID_OUTCOME_KEY);
+                File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
+                        Constants.FILE_COMBINED_ID_OUTCOME_KEY);
 
-                EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2outcomeFile);
-                                
-                double [] gold = new double[(int) data.size()];
-                double [] prediction = new double [(int) data.size()];
+                EvaluationData<Double> data = Tc2LtlabEvalConverter
+                        .convertRegressionModeId2Outcome(id2outcomeFile);
+
+                double[] gold = new double[(int) data.size()];
+                double[] prediction = new double[(int) data.size()];
                 Iterator<EvaluationEntry<Double>> iterator = data.iterator();
-                
-                int i=0;
-                while(iterator.hasNext()) {
-                	EvaluationEntry<Double> next = iterator.next();
-                	gold[i] = next.getGold();
-                	prediction[i] = next.getPredicted();
-                	i++;
+
+                int i = 0;
+                while (iterator.hasNext()) {
+                    EvaluationEntry<Double> next = iterator.next();
+                    gold[i] = next.getGold();
+                    prediction[i] = next.getPredicted();
+                    i++;
                 }
-                
-                ScatterplotRenderer renderer = new ScatterplotRenderer(gold,
-                       prediction);
+
+                ScatterplotRenderer renderer = new ScatterplotRenderer(gold, prediction);
 
                 getContext().storeBinary("scatterplot.pdf", renderer);
             }
-            else if (TcTaskTypeUtil.isMachineLearningAdapterTask(
-                    getContext().getStorageService(), subcontext.getId())) {
+            else if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(),
+                    subcontext.getId())) {
                 File id2outcomeFile = getContext().getStorageService().locateKey(subcontext.getId(),
                         Constants.ID_OUTCOME_KEY);
 
+                EvaluationData<Double> data = Tc2LtlabEvalConverter
+                        .convertRegressionModeId2Outcome(id2outcomeFile);
 
-                EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2outcomeFile);
-                
-                double [] gold = new double[(int) data.size()];
-                double [] prediction = new double [(int) data.size()];
+                double[] gold = new double[(int) data.size()];
+                double[] prediction = new double[(int) data.size()];
                 Iterator<EvaluationEntry<Double>> iterator = data.iterator();
-                
-                int i=0;
-                while(iterator.hasNext()) {
-                	EvaluationEntry<Double> next = iterator.next();
-                	gold[i] = next.getGold();
-                	prediction[i] = next.getPredicted();
-                	i++;
+
+                int i = 0;
+                while (iterator.hasNext()) {
+                    EvaluationEntry<Double> next = iterator.next();
+                    gold[i] = next.getGold();
+                    prediction[i] = next.getPredicted();
+                    i++;
                 }
 
-                ScatterplotRenderer renderer = new ScatterplotRenderer(gold,
-                        prediction);
+                ScatterplotRenderer renderer = new ScatterplotRenderer(gold, prediction);
                 getContext().storeBinary("scatterplot.pdf", renderer);
             }
         }

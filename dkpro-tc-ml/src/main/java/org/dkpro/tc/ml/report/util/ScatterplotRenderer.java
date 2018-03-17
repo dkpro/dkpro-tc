@@ -40,17 +40,18 @@ public class ScatterplotRenderer
 
     public ScatterplotRenderer(double[] gold, double[] prediction)
     {
-    	if (gold.length != prediction.length) {
-    		throw new IllegalArgumentException("A equal number of gold and prediction values is required.");
-    	}
-    	
-    	if (gold.length == 0) {
-    		throw new IllegalArgumentException("Cannot draw without values.");
-    	}
-    	
-    	min = Math.min(getMin(gold), getMin(prediction));
-    	max = Math.max(getMax(gold), getMax(prediction));
-    	
+        if (gold.length != prediction.length) {
+            throw new IllegalArgumentException(
+                    "A equal number of gold and prediction values is required.");
+        }
+
+        if (gold.length == 0) {
+            throw new IllegalArgumentException("Cannot draw without values.");
+        }
+
+        min = Math.min(getMin(gold), getMin(prediction));
+        max = Math.max(getMax(gold), getMax(prediction));
+
         DefaultXYDataset dataset = new DefaultXYDataset();
         double[][] data = new double[2][gold.length];
         data[0] = gold;
@@ -60,29 +61,30 @@ public class ScatterplotRenderer
     }
 
     @Override
-    public void write(OutputStream aStream)
-        throws IOException
+    public void write(OutputStream aStream) throws IOException
     {
-        JFreeChart chart = ChartFactory.createXYLineChart("Scatterplot", "Gold", "Prediction", aDataset,
-                PlotOrientation.VERTICAL, false, false, false);
-        
+        JFreeChart chart = ChartFactory.createXYLineChart("Scatterplot", "Gold", "Prediction",
+                aDataset, PlotOrientation.VERTICAL, false, false, false);
+
         XYDotRenderer renderer = new XYDotRenderer();
         renderer.setDotHeight(2);
         renderer.setDotWidth(2);
-        
+
         double padding = (max - min) / 10;
-        
+
         chart.getXYPlot().setRenderer(renderer);
         chart.getXYPlot().getRangeAxis().setRange(min - padding, max + padding);
         chart.getXYPlot().getDomainAxis().setRange(min - padding, max + padding);
         ChartUtil.writeChartAsPDF(aStream, chart, 400, 400);
     }
-    
-    private double getMin(double[] values) {
-    	return Collections.min(Arrays.asList(ArrayUtils.toObject(values)));
+
+    private double getMin(double[] values)
+    {
+        return Collections.min(Arrays.asList(ArrayUtils.toObject(values)));
     }
-    
-    private double getMax(double[] values) {
-    	return Collections.max(Arrays.asList(ArrayUtils.toObject(values)));
+
+    private double getMax(double[] values)
+    {
+        return Collections.max(Arrays.asList(ArrayUtils.toObject(values)));
     }
 }

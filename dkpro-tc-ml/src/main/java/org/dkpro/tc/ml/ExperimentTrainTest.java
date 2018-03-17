@@ -35,6 +35,7 @@ import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
+
 /**
  * Train-Test setup
  * 
@@ -58,8 +59,7 @@ public class ExperimentTrainTest
     /*
      * Preconfigured train-test setup.
      */
-    public ExperimentTrainTest(String aExperimentName)
-            throws TextClassificationException
+    public ExperimentTrainTest(String aExperimentName) throws TextClassificationException
     {
         setExperimentName(aExperimentName);
         // set name of overall batch task
@@ -76,10 +76,8 @@ public class ExperimentTrainTest
     @Override
     protected void init()
     {
-        if (experimentName == null)
-        {
-            throw new IllegalStateException(
-                    "You must set an experiment name");
+        if (experimentName == null) {
+            throw new IllegalStateException("You must set an experiment name");
         }
 
         // init the train part of the experiment
@@ -97,20 +95,19 @@ public class ExperimentTrainTest
         initTaskTest.setOperativeViews(operativeViews);
         initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
         initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
-        
-		collectionTask = new OutcomeCollectionTask();
-		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
-		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
-		collectionTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
-		collectionTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST);
+
+        collectionTask = new OutcomeCollectionTask();
+        collectionTask.setType(collectionTask.getType() + "-" + experimentName);
+        collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
+        collectionTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
+        collectionTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST);
 
         // get some meta data depending on the whole document collection that we need for training
         metaTask = new MetaInfoTask();
         metaTask.setOperativeViews(operativeViews);
         metaTask.setType(metaTask.getType() + "-" + experimentName);
 
-        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
-                MetaInfoTask.INPUT_KEY);
+        metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
         metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
         // feature extraction on training data
@@ -122,7 +119,8 @@ public class ExperimentTrainTest
                 ExtractFeaturesTask.INPUT_KEY);
         featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-        featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+        featuresTrainTask.setAttribute(TC_TASK_TYPE,
+                TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
         // feature extraction on test data
         featuresTestTask = new ExtractFeaturesTask();
@@ -136,12 +134,12 @@ public class ExperimentTrainTest
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
         featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
-
         // test task operating on the models of the feature extraction train and test tasks
         List<ReportBase> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
-        
-        testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports);
+
+        testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask,
+                reports);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
@@ -150,12 +148,13 @@ public class ExperimentTrainTest
                 testTask.addReport(report);
             }
         }
-        
+
         testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
         testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
                 Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
+        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+                Constants.OUTCOMES_INPUT_KEY);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);

@@ -43,171 +43,195 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 
-public class FeatureResourceLoader implements Constants, PrivilegedAction<Void> {
+public class FeatureResourceLoader
+    implements Constants, PrivilegedAction<Void>
+{
 
-	private File tcModelLocation;
-	URLClassLoader urlClassLoader = null;
-	URL url = null;
+    private File tcModelLocation;
+    URLClassLoader urlClassLoader = null;
+    URL url = null;
 
-	public FeatureResourceLoader(File tcModelLocation) throws MalformedURLException {
-		this.tcModelLocation = tcModelLocation;
+    public FeatureResourceLoader(File tcModelLocation) throws MalformedURLException
+    {
+        this.tcModelLocation = tcModelLocation;
 
-		File classFile = new File(tcModelLocation + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
-		url = classFile.toURI().toURL();
+        File classFile = new File(tcModelLocation + "/" + Constants.MODEL_FEATURE_CLASS_FOLDER);
+        url = classFile.toURI().toURL();
 
-		AccessController.doPrivileged(this);
-	}
+        AccessController.doPrivileged(this);
+    }
 
-	public List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures() throws Exception {
-		List<ExternalResourceDescription> erd = new ArrayList<>();
+    public List<ExternalResourceDescription> loadExternalResourceDescriptionOfFeatures()
+        throws Exception
+    {
+        List<ExternalResourceDescription> erd = new ArrayList<>();
 
-		File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
-		for (String l : FileUtils.readLines(file, "utf-8")) {
-			String[] split = l.split("\t");
-			String name = split[0];
-			Object[] parameters = getParameters(split);
+        File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+        for (String l : FileUtils.readLines(file, "utf-8")) {
+            String[] split = l.split("\t");
+            String name = split[0];
+            Object[] parameters = getParameters(split);
 
-			Class<? extends Resource> feClass = urlClassLoader.loadClass(name).asSubclass(Resource.class);
+            Class<? extends Resource> feClass = urlClassLoader.loadClass(name)
+                    .asSubclass(Resource.class);
 
-			List<Object> idRemovedParameters = filterId(parameters);
-			String id = getId(parameters);
+            List<Object> idRemovedParameters = filterId(parameters);
+            String id = getId(parameters);
 
-			idRemovedParameters = addModelPathAsPrefixIfParameterIsExistingFile(idRemovedParameters,
-					tcModelLocation.getAbsolutePath());
+            idRemovedParameters = addModelPathAsPrefixIfParameterIsExistingFile(idRemovedParameters,
+                    tcModelLocation.getAbsolutePath());
 
-			TcFeature feature = TcFeatureFactory.create(id, feClass, idRemovedParameters.toArray());
-			ExternalResourceDescription exRes = feature.getActualValue();
+            TcFeature feature = TcFeatureFactory.create(id, feClass, idRemovedParameters.toArray());
+            ExternalResourceDescription exRes = feature.getActualValue();
 
-			// Skip feature extractors that are not dependent on meta collectors
-			if (!MetaDependent.class.isAssignableFrom(feClass)) {
-				erd.add(exRes);
-				continue;
-			}
+            // Skip feature extractors that are not dependent on meta collectors
+            if (!MetaDependent.class.isAssignableFrom(feClass)) {
+                erd.add(exRes);
+                continue;
+            }
 
-			Map<String, String> overrides = loadOverrides(tcModelLocation, META_COLLECTOR_OVERRIDE);
-			configureOverrides(tcModelLocation, exRes, overrides);
-			overrides = loadOverrides(tcModelLocation, META_EXTRACTOR_OVERRIDE);
-			configureOverrides(tcModelLocation, exRes, overrides);
+            Map<String, String> overrides = loadOverrides(tcModelLocation, META_COLLECTOR_OVERRIDE);
+            configureOverrides(tcModelLocation, exRes, overrides);
+            overrides = loadOverrides(tcModelLocation, META_EXTRACTOR_OVERRIDE);
+            configureOverrides(tcModelLocation, exRes, overrides);
 
-			erd.add(exRes);
-		}
+            erd.add(exRes);
+        }
 
-		urlClassLoader.close();
+        urlClassLoader.close();
 
-		return erd;
-	}
+        return erd;
+    }
 
-	private String getId(Object[] parameters) {
-		for (int i = 0; i < parameters.length; i++) {
-			if (parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
-				return parameters[i + 1].toString();
-			}
-		}
-		return null;
-	}
+    private String getId(Object[] parameters)
+    {
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].toString()
+                    .equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
+                return parameters[i + 1].toString();
+            }
+        }
+        return null;
+    }
 
-	private List<Object> addModelPathAsPrefixIfParameterIsExistingFile(List<Object> idRemovedParameters,
-			String modelPath) {
-		List<Object> out = new ArrayList<>();
+    private List<Object> addModelPathAsPrefixIfParameterIsExistingFile(
+            List<Object> idRemovedParameters, String modelPath)
+    {
+        List<Object> out = new ArrayList<>();
 
-		for (int i = 0; i < idRemovedParameters.size(); i++) {
-			if (i % 2 == 0) { // those are keys, keys are no surely no file
-								// paths
-				out.add(idRemovedParameters.get(i));
-				continue;
-			}
-			if (valueExistAsFileOrFolderInTheFileSystem(modelPath + "/" + idRemovedParameters.get(i))) {
-				out.add(modelPath + "/" + idRemovedParameters.get(i));
-			} else {
-				out.add(idRemovedParameters.get(i));
-			}
-		}
+        for (int i = 0; i < idRemovedParameters.size(); i++) {
+            if (i % 2 == 0) { // those are keys, keys are no surely no file
+                              // paths
+                out.add(idRemovedParameters.get(i));
+                continue;
+            }
+            if (valueExistAsFileOrFolderInTheFileSystem(
+                    modelPath + "/" + idRemovedParameters.get(i))) {
+                out.add(modelPath + "/" + idRemovedParameters.get(i));
+            }
+            else {
+                out.add(idRemovedParameters.get(i));
+            }
+        }
 
-		return out;
-	}
+        return out;
+    }
 
-	private boolean valueExistAsFileOrFolderInTheFileSystem(String aValue) {
-		return new File(aValue).exists();
-	}
+    private boolean valueExistAsFileOrFolderInTheFileSystem(String aValue)
+    {
+        return new File(aValue).exists();
+    }
 
-	private void configureOverrides(File tcModelLocation, ExternalResourceDescription exRes,
-			Map<String, String> overrides) throws IOException {
-		// We assume for the moment that we only have primitive analysis engines
-		// for meta
-		// collection, not aggregates. If there were aggregates, we'd have to do
-		// this
-		// recursively
-		ResourceSpecifier aDesc = exRes.getResourceSpecifier();
-		if (aDesc instanceof AnalysisEngineDescription) {
-			// Analysis engines are ok
-			if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
-				throw new IllegalArgumentException("Only primitive meta collectors currently supported.");
-			}
-		} else if (aDesc instanceof CustomResourceSpecifier_impl) {
-			// Feature extractors are ok
-		} else {
-			throw new IllegalArgumentException("Descriptors of type " + aDesc.getClass() + " not supported.");
-		}
+    private void configureOverrides(File tcModelLocation, ExternalResourceDescription exRes,
+            Map<String, String> overrides)
+        throws IOException
+    {
+        // We assume for the moment that we only have primitive analysis engines
+        // for meta
+        // collection, not aggregates. If there were aggregates, we'd have to do
+        // this
+        // recursively
+        ResourceSpecifier aDesc = exRes.getResourceSpecifier();
+        if (aDesc instanceof AnalysisEngineDescription) {
+            // Analysis engines are ok
+            if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
+                throw new IllegalArgumentException(
+                        "Only primitive meta collectors currently supported.");
+            }
+        }
+        else if (aDesc instanceof CustomResourceSpecifier_impl) {
+            // Feature extractors are ok
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Descriptors of type " + aDesc.getClass() + " not supported.");
+        }
 
-		for (Entry<String, String> e : overrides.entrySet()) {
-			// We generate a storage location from the feature extractor
-			// discriminator value
-			// and the preferred value specified by the meta collector
-			String parameterName = e.getKey();
-			ConfigurationParameterFactory.setParameter(aDesc, parameterName,
-					new File(tcModelLocation, e.getValue()).getAbsolutePath());
+        for (Entry<String, String> e : overrides.entrySet()) {
+            // We generate a storage location from the feature extractor
+            // discriminator value
+            // and the preferred value specified by the meta collector
+            String parameterName = e.getKey();
+            ConfigurationParameterFactory.setParameter(aDesc, parameterName,
+                    new File(tcModelLocation, e.getValue()).getAbsolutePath());
 
-		}
-	}
+        }
+    }
 
-	private Map<String, String> loadOverrides(File tcModelLocation, String overrideFile) throws IOException {
-		List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile), "utf-8");
-		Map<String, String> overrides = new HashMap<>();
+    private Map<String, String> loadOverrides(File tcModelLocation, String overrideFile)
+        throws IOException
+    {
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile), "utf-8");
+        Map<String, String> overrides = new HashMap<>();
 
-		for (String s : lines) {
-			String[] split = s.split("=");
-			overrides.put(split[0], split[1]);
-		}
+        for (String s : lines) {
+            String[] split = s.split("=");
+            overrides.put(split[0], split[1]);
+        }
 
-		return overrides;
-	}
+        return overrides;
+    }
 
-	private List<Object> filterId(Object[] parameters) {
-		List<Object> out = new ArrayList<>();
-		for (int i = 0; i < parameters.length; i++) {
-			if (parameters[i].toString().equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
-				i++;
-				continue;
-			}
-			out.add(parameters[i]);
-		}
+    private List<Object> filterId(Object[] parameters)
+    {
+        List<Object> out = new ArrayList<>();
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].toString()
+                    .equals(FeatureExtractorResource_ImplBase.PARAM_UNIQUE_EXTRACTOR_NAME)) {
+                i++;
+                continue;
+            }
+            out.add(parameters[i]);
+        }
 
-		return out;
-	}
+        return out;
+    }
 
-	private Object[] getParameters(String[] split) {
-		List<Object> p = new ArrayList<>();
-		for (int i = 1; i < split.length; i++) {
-			String string = split[i];
-			int indexOf = string.indexOf("=");
-			String paramName = string.substring(0, indexOf);
-			String paramVal = string.substring(indexOf + 1);
-			p.add(paramName);
-			p.add(paramVal);
-		}
+    private Object[] getParameters(String[] split)
+    {
+        List<Object> p = new ArrayList<>();
+        for (int i = 1; i < split.length; i++) {
+            String string = split[i];
+            int indexOf = string.indexOf("=");
+            String paramName = string.substring(0, indexOf);
+            String paramVal = string.substring(indexOf + 1);
+            p.add(paramName);
+            p.add(paramVal);
+        }
 
-		return p.toArray();
-	}
+        return p.toArray();
+    }
 
-	/*
-	 * Depending on security settings; class loading instantiation might require
-	 * special privileges
-	 */
-	@Override
-	public Void run() {
+    /*
+     * Depending on security settings; class loading instantiation might require special privileges
+     */
+    @Override
+    public Void run()
+    {
 
-		urlClassLoader = new URLClassLoader(new URL[] { url }, Thread.currentThread().getContextClassLoader());
+        urlClassLoader = new URLClassLoader(new URL[] { url },
+                Thread.currentThread().getContextClassLoader());
 
-		return null;
-	}
+        return null;
+    }
 }

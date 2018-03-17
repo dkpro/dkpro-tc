@@ -40,96 +40,111 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 
 /**
- * Collects the results from fold-runs in a crossvalidation setting and copies
- * them into the upper level task context.
+ * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
+ * level task context.
  */
-public class InnerBatchReport extends TcBatchReportBase implements Constants {
-	public InnerBatchReport() {
-		// required by groovy
-	}
+public class InnerBatchReport
+    extends TcBatchReportBase
+    implements Constants
+{
+    public InnerBatchReport()
+    {
+        // required by groovy
+    }
 
-	@Override
-	public void execute() throws Exception {
-		StorageService store = getContext().getStorageService();
-		Properties prop = new Properties();
+    @Override
+    public void execute() throws Exception
+    {
+        StorageService store = getContext().getStorageService();
+        Properties prop = new Properties();
 
-		List<File> id2outcomeFiles = new ArrayList<>();
-		List<File> baselineMajorityClass2outcomeFiles = new ArrayList<>();
-		List<File> baselineRandom2outcomeFiles = new ArrayList<>();
-		Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
-		
-		for (String id : ids) {
+        List<File> id2outcomeFiles = new ArrayList<>();
+        List<File> baselineMajorityClass2outcomeFiles = new ArrayList<>();
+        List<File> baselineRandom2outcomeFiles = new ArrayList<>();
+        Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
 
-			if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
-				continue;
-			}
+        for (String id : ids) {
 
-			Set<String> wrap = new HashSet<>();
-			wrap.add(id);
-			Set<String> subTaskId = collectTasks(wrap);
-			subTaskId.remove(id);
+            if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
+                continue;
+            }
 
-			// Should be only one anyway?
-			for (String subId : subTaskId) {
+            Set<String> wrap = new HashSet<>();
+            wrap.add(id);
+            Set<String> subTaskId = collectTasks(wrap);
+            subTaskId.remove(id);
 
-				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
-					continue;
-				}
+            // Should be only one anyway?
+            for (String subId : subTaskId) {
 
-				Map<String, String> discriminatorsMap = store
-						.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+                if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
+                    continue;
+                }
 
-				File id2outcomeFile = store.locateKey(subId, ID_OUTCOME_KEY);
-				id2outcomeFiles.add(id2outcomeFile);
-				
-				File baselineMajority2outcomeFile = store.locateKey(subId, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-				if(isAvailable(baselineMajority2outcomeFile)){
-					baselineMajorityClass2outcomeFiles.add(baselineMajority2outcomeFile);
-				}
-				
-				File baselineRandom2outcomeFile = store.locateKey(subId, BASELINE_RANDOM_ID_OUTCOME_KEY);
-				if(isAvailable(baselineRandom2outcomeFile)){
-					baselineRandom2outcomeFiles.add(baselineRandom2outcomeFile);
-				}
+                Map<String, String> discriminatorsMap = store
+                        .retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter())
+                        .getMap();
 
-				
-				for(Entry<String, String> e : discriminatorsMap.entrySet()){
-					String key = e.getKey();
-					String value = e.getValue();
-					
-					prop.setProperty(key, value);
-				}
-			}
-		}
+                File id2outcomeFile = store.locateKey(subId, ID_OUTCOME_KEY);
+                id2outcomeFiles.add(id2outcomeFile);
 
-		String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
+                File baselineMajority2outcomeFile = store.locateKey(subId,
+                        BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+                if (isAvailable(baselineMajority2outcomeFile)) {
+                    baselineMajorityClass2outcomeFiles.add(baselineMajority2outcomeFile);
+                }
 
-		writeCombinedOutcomeReport(FILE_COMBINED_ID_OUTCOME_KEY, aggregate(learningMode, id2outcomeFiles));
-		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY, aggregate(learningMode, baselineMajorityClass2outcomeFiles));
-		writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY, aggregate(learningMode, baselineRandom2outcomeFiles));
-	}
-	
-	private boolean isAvailable(File f) {
-		return f != null && f.exists();
-	}
+                File baselineRandom2outcomeFile = store.locateKey(subId,
+                        BASELINE_RANDOM_ID_OUTCOME_KEY);
+                if (isAvailable(baselineRandom2outcomeFile)) {
+                    baselineRandom2outcomeFiles.add(baselineRandom2outcomeFile);
+                }
 
-	private String aggregate(String learningMode, List<File> files) throws Exception {
-		
-		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
-		for (File id2o : files) {
-			aggregator.add(id2o, learningMode);
-		}
-		return aggregator.generateId2OutcomeFile();
-	}
+                for (Entry<String, String> e : discriminatorsMap.entrySet()) {
+                    String key = e.getKey();
+                    String value = e.getValue();
 
-	private void writeCombinedOutcomeReport(String key, String payload) throws Exception {
-		File file = getContext().getFile(key, AccessMode.READWRITE);
-		Writer writer = null;
-		try{
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-			writer.write(payload);
-		}finally{
-			IOUtils.closeQuietly(writer);
-		}
-	}
+                    prop.setProperty(key, value);
+                }
+            }
+        }
+
+        String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
+
+        writeCombinedOutcomeReport(FILE_COMBINED_ID_OUTCOME_KEY,
+                aggregate(learningMode, id2outcomeFiles));
+        writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_MAJORITY_OUTCOME_KEY,
+                aggregate(learningMode, baselineMajorityClass2outcomeFiles));
+        writeCombinedOutcomeReport(FILE_COMBINED_BASELINE_RANDOM_OUTCOME_KEY,
+                aggregate(learningMode, baselineRandom2outcomeFiles));
+    }
+
+    private boolean isAvailable(File f)
+    {
+        return f != null && f.exists();
+    }
+
+    private String aggregate(String learningMode, List<File> files) throws Exception
+    {
+
+        ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
+        for (File id2o : files) {
+            aggregator.add(id2o, learningMode);
+        }
+        return aggregator.generateId2OutcomeFile();
+    }
+
+    private void writeCombinedOutcomeReport(String key, String payload) throws Exception
+    {
+        File file = getContext().getFile(key, AccessMode.READWRITE);
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+            writer.write(payload);
+        }
+        finally {
+            IOUtils.closeQuietly(writer);
+        }
+    }
 }

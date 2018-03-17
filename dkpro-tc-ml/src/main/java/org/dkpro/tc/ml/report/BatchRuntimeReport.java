@@ -36,104 +36,115 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 /**
  * Collects the final runtime results in a train/test setting.
  */
-public class BatchRuntimeReport extends TcBatchReportBase {
+public class BatchRuntimeReport
+    extends TcBatchReportBase
+{
 
-	/**
-	 * Name of the output file where the report stores the runtime results
-	 */
-	public static final String RUNTIME_KEY = "runtime.txt";
+    /**
+     * Name of the output file where the report stores the runtime results
+     */
+    public static final String RUNTIME_KEY = "runtime.txt";
 
-	private Map<String, Long> timeMap = new HashMap<String, Long>();
-	
-	@Override
-	public void execute() throws Exception {
+    private Map<String, Long> timeMap = new HashMap<String, Long>();
 
-		List<String> keyOrdered = new ArrayList<>();
+    @Override
+    public void execute() throws Exception
+    {
 
-		StorageService store = getContext().getStorageService();
-		
-		Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
-		
-		taskIds = readInnerTasksIfCrossValidation(taskIds);
+        List<String> keyOrdered = new ArrayList<>();
 
-		for (String id: taskIds) {
+        StorageService store = getContext().getStorageService();
 
-			if (TcTaskTypeUtil.isFacadeTask(store, id)) {
-				Set<String> subTasks = collectSubtasks(id);
-				subTasks.remove(id);
-				for (String subId : subTasks) {
-					long executionTime = getExecutionTime(subId);
-					registerTime(subId, executionTime);
-					keyOrdered.add(subId);
-				}
+        Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
 
-				// Facade tasks are not registered they are just a shell and do not much anyway
-				continue;
-			}
+        taskIds = readInnerTasksIfCrossValidation(taskIds);
 
-			long executionTime = getExecutionTime(id);
-			registerTime(id, executionTime);
-			keyOrdered.add(id);
-		}
-		
-		String output = buildOutput(keyOrdered);
-		File runtime = getContext().getFile(RUNTIME_KEY, AccessMode.READWRITE);
-		FileUtils.writeStringToFile(runtime, output, "utf-8");
-	}
+        for (String id : taskIds) {
 
-	private Set<String> readInnerTasksIfCrossValidation(Set<String> taskIds) throws Exception {
-		
-		Set<String> ids = new HashSet<>();
-		
-		for(String id : taskIds) {
-			if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(), id)) {
-				ids.addAll(collectSubtasks(id));
-			}
-		}
-		
-		ids.addAll(taskIds);
-		return ids;
-	}
+            if (TcTaskTypeUtil.isFacadeTask(store, id)) {
+                Set<String> subTasks = collectSubtasks(id);
+                subTasks.remove(id);
+                for (String subId : subTasks) {
+                    long executionTime = getExecutionTime(subId);
+                    registerTime(subId, executionTime);
+                    keyOrdered.add(subId);
+                }
 
-	private String buildOutput(List<String> keyOrdered) {
-		
-		int maxLen = keyOrdered.stream().max(Comparator.comparingInt(String::length)).get().length();
-		
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(String.format("#%"+(maxLen-1)+"s\thh:mm:ss:ms\n", "TaskName"));
-		keyOrdered.forEach(k -> buffer.append(formatOutput(maxLen, k, timeMap.get(k)) + "\n"));
-		
-		//summary
-		long sum = timeMap.values().stream().mapToLong(l -> l.longValue()).sum();
-		buffer.append("\n" + formatOutput(maxLen, "Total-time", sum));
-		
-		return buffer.toString();
-	}
+                // Facade tasks are not registered they are just a shell and do not much anyway
+                continue;
+            }
 
+            long executionTime = getExecutionTime(id);
+            registerTime(id, executionTime);
+            keyOrdered.add(id);
+        }
 
-	private void registerTime(String id, long executionTime) {
-		timeMap.put(id, executionTime);
-	}
+        String output = buildOutput(keyOrdered);
+        File runtime = getContext().getFile(RUNTIME_KEY, AccessMode.READWRITE);
+        FileUtils.writeStringToFile(runtime, output, "utf-8");
+    }
 
-	private long getExecutionTime(String taskId) {
-		long begin = getTime(taskId, "begin");
-		long end = getTime(taskId, "end");
-		return end - begin;
-	}
+    private Set<String> readInnerTasksIfCrossValidation(Set<String> taskIds) throws Exception
+    {
 
-	private long getTime(String taskId, String key) {
-		Map<String, String> metaMap = getContext().getStorageService()
-				.retrieveBinary(taskId, TaskContextMetadata.METADATA_KEY, new PropertiesAdapter()).getMap();
+        Set<String> ids = new HashSet<>();
 
-		return Long.parseLong(metaMap.get(key));
-	}
+        for (String id : taskIds) {
+            if (TcTaskTypeUtil.isCrossValidationTask(getContext().getStorageService(), id)) {
+                ids.addAll(collectSubtasks(id));
+            }
+        }
 
-	private String formatOutput(int maxLen, String key, long time) {
-		long millis = time % 1000;
-		long second = (time / 1000) % 60;
-		long minute = (time / (1000 * 60)) % 60;
-		long hour = (time / (1000 * 60 * 60)) % 24;
+        ids.addAll(taskIds);
+        return ids;
+    }
 
-		return String.format("%"+maxLen+"s\t%02d:%02d:%02d:%d", key, hour, minute, second, millis);
-	}
+    private String buildOutput(List<String> keyOrdered)
+    {
+
+        int maxLen = keyOrdered.stream().max(Comparator.comparingInt(String::length)).get()
+                .length();
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(String.format("#%" + (maxLen - 1) + "s\thh:mm:ss:ms\n", "TaskName"));
+        keyOrdered.forEach(k -> buffer.append(formatOutput(maxLen, k, timeMap.get(k)) + "\n"));
+
+        // summary
+        long sum = timeMap.values().stream().mapToLong(l -> l.longValue()).sum();
+        buffer.append("\n" + formatOutput(maxLen, "Total-time", sum));
+
+        return buffer.toString();
+    }
+
+    private void registerTime(String id, long executionTime)
+    {
+        timeMap.put(id, executionTime);
+    }
+
+    private long getExecutionTime(String taskId)
+    {
+        long begin = getTime(taskId, "begin");
+        long end = getTime(taskId, "end");
+        return end - begin;
+    }
+
+    private long getTime(String taskId, String key)
+    {
+        Map<String, String> metaMap = getContext().getStorageService()
+                .retrieveBinary(taskId, TaskContextMetadata.METADATA_KEY, new PropertiesAdapter())
+                .getMap();
+
+        return Long.parseLong(metaMap.get(key));
+    }
+
+    private String formatOutput(int maxLen, String key, long time)
+    {
+        long millis = time % 1000;
+        long second = (time / 1000) % 60;
+        long minute = (time / (1000 * 60)) % 60;
+        long hour = (time / (1000 * 60 * 60)) % 24;
+
+        return String.format("%" + maxLen + "s\t%02d:%02d:%02d:%d", key, hour, minute, second,
+                millis);
+    }
 }

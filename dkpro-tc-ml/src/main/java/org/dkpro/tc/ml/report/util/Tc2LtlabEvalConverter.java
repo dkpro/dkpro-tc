@@ -31,250 +31,270 @@ import java.util.Map;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 
-public class Tc2LtlabEvalConverter {
+public class Tc2LtlabEvalConverter
+{
 
-	/**
-	 * Loads a single-label DKPro TC id2outcome file into the evaluation data
-	 * format
-	 * 
-	 * @param id2OutcomeFile
-	 *            the id2outcome file
-	 * @return an evaluation data object
-	 * @throws Exception
-	 *             in case of error
-	 */
-	public static EvaluationData<String> convertSingleLabelModeId2Outcome(File id2OutcomeFile) throws Exception {
+    /**
+     * Loads a single-label DKPro TC id2outcome file into the evaluation data format
+     * 
+     * @param id2OutcomeFile
+     *            the id2outcome file
+     * @return an evaluation data object
+     * @throws Exception
+     *             in case of error
+     */
+    public static EvaluationData<String> convertSingleLabelModeId2Outcome(File id2OutcomeFile)
+        throws Exception
+    {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
-		reader.readLine(); // pop first line
+        reader.readLine(); // pop first line
 
-		Map<String, String> map = buildMappingFromHeader(reader.readLine());
+        Map<String, String> map = buildMappingFromHeader(reader.readLine());
 
-		EvaluationData<String> data = new EvaluationData<>();
+        EvaluationData<String> data = new EvaluationData<>();
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (skipLine(line)) {
-				continue;
-			}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (skipLine(line)) {
+                continue;
+            }
 
-			int lastIdx = line.lastIndexOf("=");
-			checkIndexRange(line, lastIdx);
+            int lastIdx = line.lastIndexOf("=");
+            checkIndexRange(line, lastIdx);
 
-			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx + 1);
+            String docName = line.substring(0, lastIdx);
+            String values = line.substring(lastIdx + 1);
 
-			String[] valSplit = values.split(";");
-			String prediction = map.get(valSplit[0]);
-			String gold = map.get(valSplit[1]);
-			// String threshold = valSplit[2];
+            String[] valSplit = values.split(";");
+            String prediction = map.get(valSplit[0]);
+            String gold = map.get(valSplit[1]);
+            // String threshold = valSplit[2];
 
-			data.register(gold, prediction, docName);
-		}
+            data.register(gold, prediction, docName);
+        }
 
-		reader.close();
+        reader.close();
 
-		return data;
-	}
+        return data;
+    }
 
-	private static boolean skipLine(String line) {
-		return line.trim().isEmpty() || line.startsWith("#");
-	}
+    private static boolean skipLine(String line)
+    {
+        return line.trim().isEmpty() || line.startsWith("#");
+    }
 
-	/**
-	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data
-	 * format
-	 * 
-	 * @param id2OutcomeFile
-	 *            the id2outcome file
-	 * @return an evaluation data object
-	 * @throws Exception
-	 *             in case of error
-	 */
-	public static EvaluationData<String> convertMultiLabelModeId2Outcome(File id2OutcomeFile) throws Exception {
+    /**
+     * Loads a multi-label DKPro TC id2outcome file into the evaluation data format
+     * 
+     * @param id2OutcomeFile
+     *            the id2outcome file
+     * @return an evaluation data object
+     * @throws Exception
+     *             in case of error
+     */
+    public static EvaluationData<String> convertMultiLabelModeId2Outcome(File id2OutcomeFile)
+        throws Exception
+    {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
-		reader.readLine(); // pop first line
+        reader.readLine(); // pop first line
 
-		Map<String, String> map = buildMappingFromHeader(reader.readLine());
+        Map<String, String> map = buildMappingFromHeader(reader.readLine());
 
-		EvaluationData<String> data = new EvaluationData<>();
+        EvaluationData<String> data = new EvaluationData<>();
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (skipLine(line)) {
-				continue;
-			}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (skipLine(line)) {
+                continue;
+            }
 
-			int lastIdx = line.lastIndexOf("=");
-			checkIndexRange(line, lastIdx);
-			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx + 1);
+            int lastIdx = line.lastIndexOf("=");
+            checkIndexRange(line, lastIdx);
+            String docName = line.substring(0, lastIdx);
+            String values = line.substring(lastIdx + 1);
 
-			String[] valSplit = values.split(";");
+            String[] valSplit = values.split(";");
 
-			Double threshold = Double.valueOf(valSplit[2]);
+            Double threshold = Double.valueOf(valSplit[2]);
 
-			String prediction = valSplit[0];
-			List<String> mappedPred = convertMultiLabel(prediction.split(","), threshold, map);
+            String prediction = valSplit[0];
+            List<String> mappedPred = convertMultiLabel(prediction.split(","), threshold, map);
 
-			String gold = valSplit[1];
-			List<String> mappedGold = convertMultiLabel(gold.split(","), threshold, map);
+            String gold = valSplit[1];
+            List<String> mappedGold = convertMultiLabel(gold.split(","), threshold, map);
 
-			data.registerMultiLabel(mappedGold, mappedPred, docName);
-		}
+            data.registerMultiLabel(mappedGold, mappedPred, docName);
+        }
 
-		reader.close();
+        reader.close();
 
-		return data;
-	}
+        return data;
+    }
 
-	/**
-	 * Loads a multi-label DKPro TC id2outcome file into the evaluation data
-	 * format. The values are not mapped to their label names, the integer
-	 * representation is used instead. This is necessary for some evaluation
-	 * metrics which work on the integer values
-	 * 
-	 * @param id2OutcomeFile
-	 *            the id2outcome file
-	 * @return an evaluation data object
-	 * @throws Exception
-	 *             in case of error
-	 */
-	public static EvaluationData<Integer> convertMultiLabelModeId2OutcomeUseInteger(File id2OutcomeFile)
-			throws Exception {
+    /**
+     * Loads a multi-label DKPro TC id2outcome file into the evaluation data format. The values are
+     * not mapped to their label names, the integer representation is used instead. This is
+     * necessary for some evaluation metrics which work on the integer values
+     * 
+     * @param id2OutcomeFile
+     *            the id2outcome file
+     * @return an evaluation data object
+     * @throws Exception
+     *             in case of error
+     */
+    public static EvaluationData<Integer> convertMultiLabelModeId2OutcomeUseInteger(
+            File id2OutcomeFile)
+        throws Exception
+    {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
-		reader.readLine(); // pop first line
-		reader.readLine(); // pop header
+        reader.readLine(); // pop first line
+        reader.readLine(); // pop header
 
-		EvaluationData<Integer> data = new EvaluationData<>();
+        EvaluationData<Integer> data = new EvaluationData<>();
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (skipLine(line)) {
-				continue;
-			}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (skipLine(line)) {
+                continue;
+            }
 
-			int lastIdx = line.lastIndexOf("=");
+            int lastIdx = line.lastIndexOf("=");
 
-			checkIndexRange(line, lastIdx);
+            checkIndexRange(line, lastIdx);
 
-			String docName = line.substring(0, lastIdx);
-			String values = line.substring(lastIdx + 1);
+            String docName = line.substring(0, lastIdx);
+            String values = line.substring(lastIdx + 1);
 
-			String[] valSplit = values.split(";");
+            String[] valSplit = values.split(";");
 
-			Double threshold = Double.valueOf(valSplit[2]);
+            Double threshold = Double.valueOf(valSplit[2]);
 
-			String prediction = valSplit[0];
-			List<Integer> mappedPred = convertMultiLabelToIntegerArray(prediction.split(","), threshold);
+            String prediction = valSplit[0];
+            List<Integer> mappedPred = convertMultiLabelToIntegerArray(prediction.split(","),
+                    threshold);
 
-			String gold = valSplit[1];
-			List<Integer> mappedGold = convertMultiLabelToIntegerArray(gold.split(","), threshold);
+            String gold = valSplit[1];
+            List<Integer> mappedGold = convertMultiLabelToIntegerArray(gold.split(","), threshold);
 
-			data.registerMultiLabel(mappedGold, mappedPred, docName);
-		}
+            data.registerMultiLabel(mappedGold, mappedPred, docName);
+        }
 
-		reader.close();
+        reader.close();
 
-		return data;
-	}
+        return data;
+    }
 
-	private static void checkIndexRange(String line, int lastIdx) {
-		if (lastIdx >= 0) {
-			return;
-		}
-		throw new IllegalArgumentException("Index became negative when looking for an occurence of [=] in the string: [" + line + "]");
-	}
+    private static void checkIndexRange(String line, int lastIdx)
+    {
+        if (lastIdx >= 0) {
+            return;
+        }
+        throw new IllegalArgumentException(
+                "Index became negative when looking for an occurence of [=] in the string: [" + line
+                        + "]");
+    }
 
-	private static List<Integer> convertMultiLabelToIntegerArray(String[] vals, Double threshold)
-			throws ParseException {
+    private static List<Integer> convertMultiLabelToIntegerArray(String[] vals, Double threshold)
+        throws ParseException
+    {
 
-		List<Integer> out = new ArrayList<>();
-		for (int i = 0; i < vals.length; i++) {
-			if (Double.valueOf(vals[i]) >= threshold) {
-				out.add(1);
-			} else {
-				out.add(0);
-			}
-		}
+        List<Integer> out = new ArrayList<>();
+        for (int i = 0; i < vals.length; i++) {
+            if (Double.valueOf(vals[i]) >= threshold) {
+                out.add(1);
+            }
+            else {
+                out.add(0);
+            }
+        }
 
-		return out;
-	}
+        return out;
+    }
 
-	private static List<String> convertMultiLabel(String[] vals, Double threshold, Map<String, String> map) {
+    private static List<String> convertMultiLabel(String[] vals, Double threshold,
+            Map<String, String> map)
+    {
 
-		List<String> outLabels = new ArrayList<>();
+        List<String> outLabels = new ArrayList<>();
 
-		for (int i = 0; i < vals.length; i++) {
-			if (Double.valueOf(vals[i]) >= threshold) {
-				outLabels.add(map.get("" + i));
-			}
-		}
+        for (int i = 0; i < vals.length; i++) {
+            if (Double.valueOf(vals[i]) >= threshold) {
+                outLabels.add(map.get("" + i));
+            }
+        }
 
-		return outLabels;
-	}
+        return outLabels;
+    }
 
-	private static Map<String, String> buildMappingFromHeader(String header) throws UnsupportedEncodingException {
+    private static Map<String, String> buildMappingFromHeader(String header)
+        throws UnsupportedEncodingException
+    {
 
-		header = header.replaceAll("#labels", "").trim();
-		Map<String, String> map = new HashMap<>();
+        header = header.replaceAll("#labels", "").trim();
+        Map<String, String> map = new HashMap<>();
 
-		String[] split = header.split(" ");
-		for (String entry : split) {
-			int indexOf = entry.indexOf("=");
-			checkIndexRange(entry, indexOf);
-			String key = entry.substring(0, indexOf).trim();
-			String value = entry.substring(indexOf + 1).trim();
-			String decodedValue = URLDecoder.decode(value, "utf-8");
-			map.put(key, decodedValue);
-		}
+        String[] split = header.split(" ");
+        for (String entry : split) {
+            int indexOf = entry.indexOf("=");
+            checkIndexRange(entry, indexOf);
+            String key = entry.substring(0, indexOf).trim();
+            String value = entry.substring(indexOf + 1).trim();
+            String decodedValue = URLDecoder.decode(value, "utf-8");
+            map.put(key, decodedValue);
+        }
 
-		return map;
-	}
+        return map;
+    }
 
-	/**
-	 * Loads a regression DKPro TC id2outcome file into the evaluation data
-	 * format
-	 * 
-	 * @param id2OutcomeFile
-	 *            the id2outcome file
-	 * @return an evaluation data object
-	 * @throws Exception
-	 *             in case of error
-	 */
-	public static EvaluationData<Double> convertRegressionModeId2Outcome(File id2OutcomeFile) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+    /**
+     * Loads a regression DKPro TC id2outcome file into the evaluation data format
+     * 
+     * @param id2OutcomeFile
+     *            the id2outcome file
+     * @return an evaluation data object
+     * @throws Exception
+     *             in case of error
+     */
+    public static EvaluationData<Double> convertRegressionModeId2Outcome(File id2OutcomeFile)
+        throws Exception
+    {
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
-		reader.readLine(); // pop head line
-		reader.readLine(); // pop header (not needed for regression)
+        reader.readLine(); // pop head line
+        reader.readLine(); // pop header (not needed for regression)
 
-		EvaluationData<Double> data = new EvaluationData<>();
+        EvaluationData<Double> data = new EvaluationData<>();
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			if (line.isEmpty() || line.startsWith("#")) {
-				continue;
-			}
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
 
-			String[] split = line.split("=");
-			String docName = split[0];
-			String values = split[1];
+            String[] split = line.split("=");
+            String docName = split[0];
+            String values = split[1];
 
-			String[] valSplit = values.split(";");
-			Double prediction = Double.valueOf(valSplit[0]);
-			Double gold = Double.valueOf(valSplit[1]);
+            String[] valSplit = values.split(";");
+            Double prediction = Double.valueOf(valSplit[0]);
+            Double gold = Double.valueOf(valSplit[1]);
 
-			data.register(gold, prediction, docName);
-		}
+            data.register(gold, prediction, docName);
+        }
 
-		reader.close();
+        reader.close();
 
-		return data;
-	}
+        return data;
+    }
 
 }

@@ -38,58 +38,65 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 
 /**
- * Collects the results from fold-runs in a crossvalidation setting and copies
- * them into the upper level task context.
+ * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
+ * level task context.
  */
-public class DeepLearningInnerBatchReport extends TcBatchReportBase implements Constants {
-	public DeepLearningInnerBatchReport() {
-		// required by groovy
-	}
+public class DeepLearningInnerBatchReport
+    extends TcBatchReportBase
+    implements Constants
+{
+    public DeepLearningInnerBatchReport()
+    {
+        // required by groovy
+    }
 
-	@Override
-	public void execute() throws Exception {
-		StorageService store = getContext().getStorageService();
-		Properties prop = new Properties();
+    @Override
+    public void execute() throws Exception
+    {
+        StorageService store = getContext().getStorageService();
+        Properties prop = new Properties();
 
-		List<File> id2outcomeFiles = new ArrayList<>();
-		Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
+        List<File> id2outcomeFiles = new ArrayList<>();
+        Set<String> ids = getTaskIdsFromMetaData(getSubtasks());
 
-		for (String id : ids) {
+        for (String id : ids) {
 
-			if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
-				continue;
-			}
+            if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
+                continue;
+            }
 
-			Map<String, String> discriminatorsMap = store
-					.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+            Map<String, String> discriminatorsMap = store
+                    .retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
 
-			File id2outcomeFile = store.locateKey(id, Constants.ID_OUTCOME_KEY);
-			id2outcomeFiles.add(id2outcomeFile);
+            File id2outcomeFile = store.locateKey(id, Constants.ID_OUTCOME_KEY);
+            id2outcomeFiles.add(id2outcomeFile);
 
-			for (Entry<String, String> e : discriminatorsMap.entrySet()) {
-				String key = e.getKey();
-				String value = e.getValue();
+            for (Entry<String, String> e : discriminatorsMap.entrySet()) {
+                String key = e.getKey();
+                String value = e.getValue();
 
-				prop.setProperty(key, value);
-			}
-		}
+                prop.setProperty(key, value);
+            }
+        }
 
-		String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
+        String learningMode = getDiscriminator(store, ids, DIM_LEARNING_MODE);
 
-		ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
-		for (File id2o : id2outcomeFiles) {
-			aggregator.add(id2o, learningMode);
-		}
+        ID2OutcomeCombiner<String> aggregator = new ID2OutcomeCombiner<>(learningMode);
+        for (File id2o : id2outcomeFiles) {
+            aggregator.add(id2o, learningMode);
+        }
 
-		writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
-	}
+        writeCombinedOutcomeReport(aggregator.generateId2OutcomeFile());
+    }
 
-	private void writeCombinedOutcomeReport(String payload) throws Exception {
-		File file = getContext().getFile(FILE_COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
-		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+    private void writeCombinedOutcomeReport(String payload) throws Exception
+    {
+        File file = getContext().getFile(FILE_COMBINED_ID_OUTCOME_KEY, AccessMode.READWRITE);
+        Writer writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
 
-		writer.write(payload);
+        writer.write(payload);
 
-		writer.close();
-	}
+        writer.close();
+    }
 }

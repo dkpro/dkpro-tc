@@ -37,80 +37,89 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-public class BatchTrainTestReport extends TcBatchReportBase implements Constants {
-	private final List<String> discriminatorsToExclude = Arrays
-			.asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
+public class BatchTrainTestReport
+    extends TcBatchReportBase
+    implements Constants
+{
+    private final List<String> discriminatorsToExclude = Arrays
+            .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 
-	public BatchTrainTestReport() {
-		// required by groovy
-	}
+    public BatchTrainTestReport()
+    {
+        // required by groovy
+    }
 
-	@Override
-	public void execute() throws Exception {
-		StorageService store = getContext().getStorageService();
-		TcFlexTable<String> table = TcFlexTable.forClass(String.class);
-		table.setDefaultValue("");
+    @Override
+    public void execute() throws Exception
+    {
+        StorageService store = getContext().getStorageService();
+        TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+        table.setDefaultValue("");
 
-		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+        Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-		for (String id : idPool) {
+        for (String id : idPool) {
 
-			if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
-				continue;
-			}
+            if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
+                continue;
+            }
 
-			Set<String> wrapped = new HashSet<>();
-			wrapped.add(id);
-			Set<String> subTaskId = collectTasks(wrapped);
-			subTaskId.remove(id);
+            Set<String> wrapped = new HashSet<>();
+            wrapped.add(id);
+            Set<String> subTaskId = collectTasks(wrapped);
+            subTaskId.remove(id);
 
-			// Should be only one anyway?
-			for (String subId : subTaskId) {
+            // Should be only one anyway?
+            for (String subId : subTaskId) {
 
-				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
-					continue;
-				}
+                if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
+                    continue;
+                }
 
-				Map<String, String> discriminatorsMap = getDiscriminators(store, subId);
-				discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
-						discriminatorsToExclude);
+                Map<String, String> discriminatorsMap = getDiscriminators(store, subId);
+                discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(
+                        discriminatorsMap, discriminatorsToExclude);
 
-				// add the results into the discriminator map
-				File id2o = getId2Outcome(subId);
-				String mode = getDiscriminator(store, subId, DIM_LEARNING_MODE);
+                // add the results into the discriminator map
+                File id2o = getId2Outcome(subId);
+                String mode = getDiscriminator(store, subId, DIM_LEARNING_MODE);
 
-				Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
-				discriminatorsMap.putAll(resultMap);
-				
-				File majBaseline = getBaselineMajorityClassId2Outcome(subId);
-				if (isAvailable(majBaseline)) {
-					Map<String, String> results = MetricComputationUtil.getResults(majBaseline, mode);
-					for(Entry<String, String> e : results.entrySet()){
-						discriminatorsMap.put(e.getKey() + ".MajorityBaseline", e.getValue());
-					}
-				}
+                Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
+                discriminatorsMap.putAll(resultMap);
 
-				File randomBaseline = getBaselineRandomId2Outcome(subId);
-				if (isAvailable(randomBaseline)) {
-					Map<String, String> results = MetricComputationUtil.getResults(randomBaseline, mode);
-					for(Entry<String, String> e : results.entrySet()){
-						discriminatorsMap.put(e.getKey() + ".RandomBaseline", e.getValue());
-					}
-				}
-				
+                File majBaseline = getBaselineMajorityClassId2Outcome(subId);
+                if (isAvailable(majBaseline)) {
+                    Map<String, String> results = MetricComputationUtil.getResults(majBaseline,
+                            mode);
+                    for (Entry<String, String> e : results.entrySet()) {
+                        discriminatorsMap.put(e.getKey() + ".MajorityBaseline", e.getValue());
+                    }
+                }
 
-				table.addRow(getContextLabel(subId), discriminatorsMap);
-			}
-		}
+                File randomBaseline = getBaselineRandomId2Outcome(subId);
+                if (isAvailable(randomBaseline)) {
+                    Map<String, String> results = MetricComputationUtil.getResults(randomBaseline,
+                            mode);
+                    for (Entry<String, String> e : results.entrySet()) {
+                        discriminatorsMap.put(e.getKey() + ".RandomBaseline", e.getValue());
+                    }
+                }
 
-		ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME, SUFFIX_EXCEL, SUFFIX_CSV);
-	}
+                table.addRow(getContextLabel(subId), discriminatorsMap);
+            }
+        }
 
-	private boolean isAvailable(File f) {
-		return f != null && f.exists();
-	}
+        ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME,
+                SUFFIX_EXCEL, SUFFIX_CSV);
+    }
 
-	private Map<String, String> getDiscriminators(StorageService store, String id) {
-		return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-	}
+    private boolean isAvailable(File f)
+    {
+        return f != null && f.exists();
+    }
+
+    private Map<String, String> getDiscriminators(StorageService store, String id)
+    {
+        return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+    }
 }

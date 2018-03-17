@@ -72,11 +72,10 @@ public class FoldClassificationUnitCasMultiplier
     int annosPerCas = 0;
 
     @Override
-    public void process(JCas aJCas)
-        throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         jCas = aJCas;
-//        subCASCounter = 0; //do not reinitialize
+        // subCASCounter = 0; //do not reinitialize
         unitCounter = 0;
         seqCounter = 0;
         totalNum = 0;
@@ -103,8 +102,8 @@ public class FoldClassificationUnitCasMultiplier
         iterator = annotations.iterator();
 
         if (!iterator.hasNext())
-            throw new AnalysisEngineProcessException(new RuntimeException(
-                    "No annotations found in CAS for Units or Sequences."));
+            throw new AnalysisEngineProcessException(
+                    new RuntimeException("No annotations found in CAS for Units or Sequences."));
     }
 
     private void isUnitsGreaterZero()
@@ -122,8 +121,7 @@ public class FoldClassificationUnitCasMultiplier
     }
 
     @Override
-    public boolean hasNext()
-        throws AnalysisEngineProcessException
+    public boolean hasNext() throws AnalysisEngineProcessException
     {
         buf = new ArrayList<AnnotationFS>();
 
@@ -136,8 +134,7 @@ public class FoldClassificationUnitCasMultiplier
     }
 
     @Override
-    public AbstractCas next()
-        throws AnalysisEngineProcessException
+    public AbstractCas next() throws AnalysisEngineProcessException
     {
         // Create an empty CAS as a destination for a copy.
         JCas emptyJCas = this.getEmptyJCas();
@@ -188,7 +185,7 @@ public class FoldClassificationUnitCasMultiplier
         setTargetAnnotation(copyJCas);
 
         assignNewId(copyJCas);
-        
+
         subCASCounter++;
 
         // issue #261
@@ -244,12 +241,14 @@ public class FoldClassificationUnitCasMultiplier
                     TextClassificationSequence.class)) {
                 s.removeFromIndexes();
             }
-            for (TextClassificationTarget u : JCasUtil.select(copyJCas, TextClassificationTarget.class)) {
+            for (TextClassificationTarget u : JCasUtil.select(copyJCas,
+                    TextClassificationTarget.class)) {
                 u.removeFromIndexes();
             }
         }
         else {
-            for (TextClassificationTarget u : JCasUtil.select(copyJCas, TextClassificationTarget.class)) {
+            for (TextClassificationTarget u : JCasUtil.select(copyJCas,
+                    TextClassificationTarget.class)) {
                 u.removeFromIndexes();
             }
         }

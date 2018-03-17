@@ -56,31 +56,31 @@ public class TestFoldUtil
     private JCas jcasSequence;
 
     @Test(expected = IllegalStateException.class)
-    public void testSeqExceptionOnTooFewData()
-        throws Exception
+    public void testSeqExceptionOnTooFewData() throws Exception
     {
         FoldUtil.createMinimalSplit(tmpFoldSeq.getRoot().getAbsolutePath(), 11, 1, true);
     }
-    
+
     @Test
-    public void testSeqSplittingAllTcuIntoOneCas()
-        throws Exception
+    public void testSeqSplittingAllTcuIntoOneCas() throws Exception
     {
         File output = FoldUtil.createMinimalSplit(tmpFoldSeq.getRoot().getAbsolutePath(), 1, 1,
                 true);
 
         List<File> writtenBins = getWrittenBins(output);
 
-        List<List<Integer>> numTcusCas = countNumberOfTextClassificationSequencesAndUnitsPerCas(writtenBins);
+        List<List<Integer>> numTcusCas = countNumberOfTextClassificationSequencesAndUnitsPerCas(
+                writtenBins);
 
         assertEquals(1, writtenBins.size());
-        
+
         assertEquals(new Integer(10), numTcusCas.get(0).get(0));
         assertEquals(new Integer(20), numTcusCas.get(1).get(0));
     }
-    
 
-    private List<List<Integer>> countNumberOfTextClassificationSequencesAndUnitsPerCas(List<File> writtenBins) throws Exception
+    private List<List<Integer>> countNumberOfTextClassificationSequencesAndUnitsPerCas(
+            List<File> writtenBins)
+        throws Exception
     {
         List<List<Integer>> arrayList = new ArrayList<>();
         List<Integer> units = new ArrayList<>();
@@ -101,61 +101,59 @@ public class TestFoldUtil
         arrayList.add(units);
         return arrayList;
     }
-    
+
     @Test
-    public void testSeqSplittingOneTcuIntoOneCas()
-        throws Exception
+    public void testSeqSplittingOneTcuIntoOneCas() throws Exception
     {
         File output = FoldUtil.createMinimalSplit(tmpFoldSeq.getRoot().getAbsolutePath(), 10, 1,
                 true);
 
         List<File> writtenBins = getWrittenBins(output);
 
-        List<List<Integer>> numTcusCas = countNumberOfTextClassificationSequencesAndUnitsPerCas(writtenBins);
+        List<List<Integer>> numTcusCas = countNumberOfTextClassificationSequencesAndUnitsPerCas(
+                writtenBins);
 
         assertEquals(10, writtenBins.size());
 
         assertEquals(new Integer(1), numTcusCas.get(0).get(0));
         assertEquals(new Integer(2), numTcusCas.get(1).get(0));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(1));
         assertEquals(new Integer(2), numTcusCas.get(1).get(1));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(2));
         assertEquals(new Integer(2), numTcusCas.get(1).get(2));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(3));
         assertEquals(new Integer(2), numTcusCas.get(1).get(3));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(4));
         assertEquals(new Integer(2), numTcusCas.get(1).get(4));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(5));
         assertEquals(new Integer(2), numTcusCas.get(1).get(5));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(6));
         assertEquals(new Integer(2), numTcusCas.get(1).get(6));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(7));
         assertEquals(new Integer(2), numTcusCas.get(1).get(7));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(8));
         assertEquals(new Integer(2), numTcusCas.get(1).get(8));
-        
+
         assertEquals(new Integer(1), numTcusCas.get(0).get(9));
         assertEquals(new Integer(2), numTcusCas.get(1).get(9));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testNoSeqExceptionOnTooFewData()
-        throws Exception
+    public void testNoSeqExceptionOnTooFewData() throws Exception
     {
         FoldUtil.createMinimalSplit(tmpFoldNoSeq.getRoot().getAbsolutePath(), 14, 1, false);
     }
 
     @Test
-    public void testNoSeqSplittingAllTcuIntoOneCas()
-        throws Exception
+    public void testNoSeqSplittingAllTcuIntoOneCas() throws Exception
     {
         File output = FoldUtil.createMinimalSplit(tmpFoldNoSeq.getRoot().getAbsolutePath(), 1, 1,
                 false);
@@ -169,8 +167,7 @@ public class TestFoldUtil
     }
 
     @Test
-    public void testNoSeqSplittingOneTcuIntoOneCas()
-        throws Exception
+    public void testNoSeqSplittingOneTcuIntoOneCas() throws Exception
     {
         File output = FoldUtil.createMinimalSplit(tmpFoldNoSeq.getRoot().getAbsolutePath(), 13, 1,
                 false);
@@ -211,8 +208,7 @@ public class TestFoldUtil
         return arrayList;
     }
 
-    private CollectionReader createReader(JCas jcas, File f)
-        throws ResourceInitializationException
+    private CollectionReader createReader(JCas jcas, File f) throws ResourceInitializationException
     {
         return CollectionReaderFactory.createReader(BinaryCasReader.class,
                 BinaryCasReader.PARAM_SOURCE_LOCATION, f);
@@ -230,8 +226,7 @@ public class TestFoldUtil
     }
 
     @Before
-    public void setUp()
-        throws Exception
+    public void setUp() throws Exception
     {
         createNoSequenceCas();
         createSequenceCas();
@@ -244,15 +239,14 @@ public class TestFoldUtil
         id.addToIndexes();
     }
 
-    private void createSequenceCas()
-        throws IOException, UIMAException
+    private void createSequenceCas() throws IOException, UIMAException
     {
         tmpFoldSeq = new TemporaryFolder();
         tmpFoldSeq.create();
 
         jcasSequence = JCasFactory.createJCas();
-        jcasSequence
-                .setDocumentText("One A Two B Three C Four D Five E Six F Seven G Eight H Nine I Ten J");
+        jcasSequence.setDocumentText(
+                "One A Two B Three C Four D Five E Six F Seven G Eight H Nine I Ten J");
         setSeq(jcasSequence, 0, 5);
         setSeq(jcasSequence, 6, 11);
         setSeq(jcasSequence, 12, 19);
@@ -263,11 +257,11 @@ public class TestFoldUtil
         setSeq(jcasSequence, 48, 55);
         setSeq(jcasSequence, 56, 62);
         setSeq(jcasSequence, 63, 68);
-        
+
         DocumentMetaData dmd = new DocumentMetaData(jcasSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
-        
+
         createJCasIdAnnotation(jcasSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,
@@ -287,15 +281,14 @@ public class TestFoldUtil
         setUnit(cas, beg + split[0].length() + 1, end);
     }
 
-    private void createNoSequenceCas()
-        throws Exception
+    private void createNoSequenceCas() throws Exception
     {
         tmpFoldNoSeq = new TemporaryFolder();
         tmpFoldNoSeq.create();
 
         jcasNoSequence = JCasFactory.createJCas();
-        jcasNoSequence
-                .setDocumentText("Mr. Hawksley said yesterday he would be willing to go before the city .");
+        jcasNoSequence.setDocumentText(
+                "Mr. Hawksley said yesterday he would be willing to go before the city .");
 
         setUnit(jcasNoSequence, 0, 2);
         setUnit(jcasNoSequence, 4, 12);
@@ -314,7 +307,7 @@ public class TestFoldUtil
         DocumentMetaData dmd = new DocumentMetaData(jcasNoSequence);
         dmd.setDocumentId("id");
         dmd.addToIndexes();
-        
+
         createJCasIdAnnotation(jcasNoSequence);
 
         AnalysisEngine xmiWriter = AnalysisEngineFactory.createEngine(BinaryCasWriter.class,

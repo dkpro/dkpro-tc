@@ -52,7 +52,7 @@ public abstract class Experiment_ImplBase
     protected List<Class<? extends Report>> innerReports;
 
     Log log = LogFactory.getLog(Experiment_ImplBase.class);
-    
+
     @Override
     public void initialize(TaskContext aContext)
     {
@@ -75,35 +75,35 @@ public abstract class Experiment_ImplBase
 
     private void addConversionServiceEntries(TaskContext aContext)
     {
-        
+
         ParameterSpace pSpace = getParameterSpace();
         Dimension<?>[] dimensions = pSpace.getDimensions();
         for (Dimension<?> d : dimensions) {
             if (d.getName().equals("readers")) {
                 addConversionForCollectionReader(aContext, d);
             }
-        }        
+        }
     }
 
     private void addConversionForCollectionReader(TaskContext aContext, Dimension<?> d)
     {
-        if(!d.hasNext()){
+        if (!d.hasNext()) {
             return;
         }
 
         @SuppressWarnings("unchecked")
-		Map<String, CollectionReaderDescription> readers = (Map<String,CollectionReaderDescription>) d.next();
-        
-        for(Entry<String,CollectionReaderDescription> e : readers.entrySet()) {
-        	String description = DiscriminableNameConverter
+        Map<String, CollectionReaderDescription> readers = (Map<String, CollectionReaderDescription>) d
+                .next();
+
+        for (Entry<String, CollectionReaderDescription> e : readers.entrySet()) {
+            String description = DiscriminableNameConverter
                     .getCollectionReaderDescription(e.getValue());
             aContext.getConversionService().registerDiscriminable(e.getValue(), description);
         }
-        
+
     }
 
-    protected abstract void init()
-        throws IllegalStateException;
+    protected abstract void init() throws IllegalStateException;
 
     public void setExperimentName(String experimentName)
     {

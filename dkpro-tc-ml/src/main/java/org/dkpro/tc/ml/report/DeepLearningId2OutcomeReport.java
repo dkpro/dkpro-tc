@@ -40,256 +40,282 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
-public class DeepLearningId2OutcomeReport extends TcBatchReportBase implements Constants, DeepLearningConstants {
+public class DeepLearningId2OutcomeReport
+    extends TcBatchReportBase
+    implements Constants, DeepLearningConstants
+{
 
-	/**
-	 * Character that is used for separating fields in the output file
-	 */
-	public static final String SEPARATOR_CHAR = ";";
+    /**
+     * Character that is used for separating fields in the output file
+     */
+    public static final String SEPARATOR_CHAR = ";";
 
-	private String THRESHOLD = "-1";
+    private String THRESHOLD = "-1";
 
-	int counter = 0;
-	
-	boolean isMultiLabel;
-	boolean isRegression;
-	boolean isIntegerMode;
+    int counter = 0;
 
-	@Override
-	public void execute() throws Exception {
-		
-		init();
-		
-		baselinePreparation();
+    boolean isMultiLabel;
+    boolean isRegression;
+    boolean isIntegerMode;
 
-		File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
-		List<String> predictions = getPredictions(file);
-		
-		predictions = update(predictions);
+    @Override
+    public void execute() throws Exception
+    {
 
-		Map<String, String> map = loadMap(isIntegerMode);
-		Map<String, String> inverseMap = inverseMap(map);
+        init();
 
-		StringBuilder header = new StringBuilder();
-		header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
+        baselinePreparation();
 
-		List<String> k = new ArrayList<>(map.keySet());
-		for (Integer i = 0; i < map.keySet().size(); i++) {
-			if (!isRegression) {
-				if (!isIntegerMode) {
-					header.append(i + "=" + inverseMap.get(i+""));
-				} else {
-					header.append( i + "=" + map.get(i+""));
-				}
-				if (i + 1 < k.size()) {
-					header.append(" ");
-				}
-			}
-		}
+        File file = getContext().getFile(FILENAME_PREDICTION_OUT, AccessMode.READONLY);
+        List<String> predictions = getPredictions(file);
 
-		List<String> nameOfTargets = getNameOfTargets();
-		Properties prop = new SortedKeyProperties();
+        predictions = update(predictions);
 
-		int shift = 0;
-		for (int i = 0; i < predictions.size(); i++) {
+        Map<String, String> map = loadMap(isIntegerMode);
+        Map<String, String> inverseMap = inverseMap(map);
 
-			String p = predictions.get(i);
-			if (p.startsWith("#Gold")) {
-				// header line exists in the prediction file and in the name of
-				// targets files
-				continue;
-			}
-			if (p.trim().isEmpty()) {
-				shift++;
-				continue;
-			}
+        StringBuilder header = new StringBuilder();
+        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
 
-			String id = determineId(nameOfTargets, i, shift);
+        List<String> k = new ArrayList<>(map.keySet());
+        for (Integer i = 0; i < map.keySet().size(); i++) {
+            if (!isRegression) {
+                if (!isIntegerMode) {
+                    header.append(i + "=" + inverseMap.get(i + ""));
+                }
+                else {
+                    header.append(i + "=" + map.get(i + ""));
+                }
+                if (i + 1 < k.size()) {
+                    header.append(" ");
+                }
+            }
+        }
 
-			String[] split = p.split("\t");
+        List<String> nameOfTargets = getNameOfTargets();
+        Properties prop = new SortedKeyProperties();
 
-			if (isMultiLabel) {
-				multilabelReport(id, split, isIntegerMode, prop, map);
-				continue;
-			}
+        int shift = 0;
+        for (int i = 0; i < predictions.size(); i++) {
 
-			String gold = null;
-			String prediction = null;
+            String p = predictions.get(i);
+            if (p.startsWith("#Gold")) {
+                // header line exists in the prediction file and in the name of
+                // targets files
+                continue;
+            }
+            if (p.trim().isEmpty()) {
+                shift++;
+                continue;
+            }
 
-			if (isRegression) {
-				gold = split[0];
-				prediction = split[1];
-			} else {
-				if (isIntegerMode) {
-					gold = split[0];
-					prediction = split[1];
-				} else {
-					gold = map.get(split[0]).toString();
-					prediction = map.get(split[1]).toString();
-				}
-			}
-			prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
-		}
+            String id = determineId(nameOfTargets, i, shift);
 
-		File id2o = getTargetFile();
-		OutputStreamWriter osw = null;
-		try {
-			osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-			prop.store(osw, header.toString());
-		} finally {
-			IOUtils.closeQuietly(osw);
-		}
-	}
-	
-	private String determineId(List<String> nameOfTargets, int i, int shift) {
-		return !nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift) ? nameOfTargets.get(i - shift)
-				: "" + (counter++);
-	}
+            String[] split = p.split("\t");
 
-	protected List<String> update(List<String> predictions) {
-		//is overwritten in baseline reports
-		return predictions;
-	}
+            if (isMultiLabel) {
+                multilabelReport(id, split, isIntegerMode, prop, map);
+                continue;
+            }
 
-	protected File getTargetFile() {
-		return getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
-	}
+            String gold = null;
+            String prediction = null;
 
-	protected void baselinePreparation() throws Exception {
-		//is overwritten in baseline reports
-	}
+            if (isRegression) {
+                gold = split[0];
+                prediction = split[1];
+            }
+            else {
+                if (isIntegerMode) {
+                    gold = split[0];
+                    prediction = split[1];
+                }
+                else {
+                    gold = map.get(split[0]).toString();
+                    prediction = map.get(split[1]).toString();
+                }
+            }
+            prop.setProperty("" + id,
+                    prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+        }
 
-	protected void init() {
-		isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
-		isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+        File id2o = getTargetFile();
+        OutputStreamWriter osw = null;
+        try {
+            osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+            prop.store(osw, header.toString());
+        }
+        finally {
+            IOUtils.closeQuietly(osw);
+        }
+    }
 
-		if (isMultiLabel) {
-			THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
-		}
+    private String determineId(List<String> nameOfTargets, int i, int shift)
+    {
+        return !nameOfTargets.isEmpty() && nameOfTargets.size() > (i - shift)
+                ? nameOfTargets.get(i - shift)
+                : "" + (counter++);
+    }
 
-		isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DIM_VECTORIZE_TO_INTEGER));		
-	}
+    protected List<String> update(List<String> predictions)
+    {
+        // is overwritten in baseline reports
+        return predictions;
+    }
 
-	private Map<String, String> inverseMap(Map<String, String> map) {
-		HashMap<String, String> inverseMap = new HashMap<>();
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			inverseMap.put(entry.getValue(), entry.getKey());
-		}
-		return inverseMap;
-	}
+    protected File getTargetFile()
+    {
+        return getContext().getFile(Constants.ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
 
-	private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,
-			Map<String, String> map) {
+    protected void baselinePreparation() throws Exception
+    {
+        // is overwritten in baseline reports
+    }
 
-		String gold = null;
-		String prediction = null;
-		if (isIntegerMode) {
-			String[] s = split[0].split(" ");
-			gold = StringUtils.join(s, ",");
+    protected void init()
+    {
+        isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
+        isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
 
-			s = split[1].split(" ");
-			prediction = StringUtils.join(s, ",");
-		} else {
-			String[] s = split[0].split(" ");
-			gold = label2String(s, map);
+        if (isMultiLabel) {
+            THRESHOLD = getDiscriminator(getContext(), DIM_BIPARTITION_THRESHOLD);
+        }
 
-			s = split[1].split(" ");
-			prediction = label2String(s, map);
-		}
-		prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
-	}
+        isIntegerMode = Boolean.valueOf(getDiscriminator(getContext(), DIM_VECTORIZE_TO_INTEGER));
+    }
 
-	private String label2String(String[] val, Map<String, String> map) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < val.length; i++) {
-			String e = val[i];
-			sb.append(map.get(e.toString()));
-			if (i + 1 < val.length) {
-				sb.append(",");
-			}
-		}
-		return sb.toString().trim();
-	}
+    private Map<String, String> inverseMap(Map<String, String> map)
+    {
+        HashMap<String, String> inverseMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            inverseMap.put(entry.getValue(), entry.getKey());
+        }
+        return inverseMap;
+    }
 
-	private Map<String, String> loadMap(boolean isIntegerMode) throws IOException {
+    private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,
+            Map<String, String> map)
+    {
 
-		Map<String, String> m = new HashMap<>();
+        String gold = null;
+        String prediction = null;
+        if (isIntegerMode) {
+            String[] s = split[0].split(" ");
+            gold = StringUtils.join(s, ",");
 
-		if (isIntegerMode) {
+            s = split[1].split(" ");
+            prediction = StringUtils.join(s, ",");
+        }
+        else {
+            String[] s = split[0].split(" ");
+            gold = label2String(s, map);
 
-			File prepFolder = getContext().getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER, AccessMode.READONLY);
-			File mapping = new File(prepFolder, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
+            s = split[1].split(" ");
+            prediction = label2String(s, map);
+        }
+        prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+    }
 
-			List<String> outcomeMappings = FileUtils.readLines(mapping, "utf-8");
-			for (String s : outcomeMappings) {
-				String[] split = s.split("\t");
-				m.put(split[1], split[0]);
-			}
-			return m;
-		}
+    private String label2String(String[] val, Map<String, String> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < val.length; i++) {
+            String e = val[i];
+            sb.append(map.get(e.toString()));
+            if (i + 1 < val.length) {
+                sb.append(",");
+            }
+        }
+        return sb.toString().trim();
+    }
 
-		File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT, AccessMode.READONLY);
-		List<String> readLines = FileUtils.readLines(file, "utf-8");
+    private Map<String, String> loadMap(boolean isIntegerMode) throws IOException
+    {
 
-		Set<String> keys = new HashSet<>();
+        Map<String, String> m = new HashMap<>();
 
-		int mapIdx = 0;
-		for (int i = 1; i < readLines.size(); i++) {
-			String l = readLines.get(i);
-			if (l.isEmpty()) {
-				continue;
-			}
-			String[] e = l.split("\t");
+        if (isIntegerMode) {
 
-			keys.add(e[0]);
-			keys.add(e[1]);
-		}
+            File prepFolder = getContext().getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
+                    AccessMode.READONLY);
+            File mapping = new File(prepFolder, DeepLearningConstants.FILENAME_OUTCOME_MAPPING);
 
-		List<String> sortedKeys = new ArrayList<String>(keys);
-		Collections.sort(sortedKeys);
+            List<String> outcomeMappings = FileUtils.readLines(mapping, "utf-8");
+            for (String s : outcomeMappings) {
+                String[] split = s.split("\t");
+                m.put(split[1], split[0]);
+            }
+            return m;
+        }
 
-		for (String k : sortedKeys) {
-			String string = m.get(k);
-			if (string == null) {
-				m.put(k, "" + (mapIdx++));
-			}
-		}
+        File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT,
+                AccessMode.READONLY);
+        List<String> readLines = FileUtils.readLines(file, "utf-8");
 
-		return m;
-	}
+        Set<String> keys = new HashSet<>();
 
-	protected List<String> getPredictions(File file) throws IOException {
-		List<String> readLines = FileUtils.readLines(file, "utf-8");
-		return readLines.subList(1, readLines.size());// ignore first-line with
-														// comments
-	}
+        int mapIdx = 0;
+        for (int i = 1; i < readLines.size(); i++) {
+            String l = readLines.get(i);
+            if (l.isEmpty()) {
+                continue;
+            }
+            String[] e = l.split("\t");
 
-	private List<String> getNameOfTargets() throws IOException {
-		File targetIdMappingFolder = getContext().getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST,
-				AccessMode.READONLY);
-		File targetIdMappingFile = new File(targetIdMappingFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
+            keys.add(e[0]);
+            keys.add(e[1]);
+        }
 
-		List<String> t = new ArrayList<>();
+        List<String> sortedKeys = new ArrayList<String>(keys);
+        Collections.sort(sortedKeys);
 
-		List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
-		for (String s : readLines) {
-			if (s.startsWith("#")) {
-				continue;
-			}
-			if (s.isEmpty()) {
-				t.add("");
-				continue;
-			}
+        for (String k : sortedKeys) {
+            String string = m.get(k);
+            if (string == null) {
+                m.put(k, "" + (mapIdx++));
+            }
+        }
 
-			String[] split = s.split("\t");
-			if (split[0].contains("_")) {
-				t.add(s.replaceAll("\t", "_"));
-			} else {
-				t.add(split[1]);
-			}
-		}
+        return m;
+    }
 
-		return t;
-	}
+    protected List<String> getPredictions(File file) throws IOException
+    {
+        List<String> readLines = FileUtils.readLines(file, "utf-8");
+        return readLines.subList(1, readLines.size());// ignore first-line with
+                                                      // comments
+    }
+
+    private List<String> getNameOfTargets() throws IOException
+    {
+        File targetIdMappingFolder = getContext()
+                .getFolder(TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST, AccessMode.READONLY);
+        File targetIdMappingFile = new File(targetIdMappingFolder,
+                DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
+
+        List<String> t = new ArrayList<>();
+
+        List<String> readLines = FileUtils.readLines(targetIdMappingFile, "utf-8");
+        for (String s : readLines) {
+            if (s.startsWith("#")) {
+                continue;
+            }
+            if (s.isEmpty()) {
+                t.add("");
+                continue;
+            }
+
+            String[] split = s.split("\t");
+            if (split[0].contains("_")) {
+                t.add(s.replaceAll("\t", "_"));
+            }
+            else {
+                t.add(split[1]);
+            }
+        }
+
+        return t;
+    }
 
 }

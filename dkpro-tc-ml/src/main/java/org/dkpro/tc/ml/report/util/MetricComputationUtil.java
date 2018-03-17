@@ -39,127 +39,144 @@ import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.measures.regression.RSquared;
 import de.unidue.ltl.evaluation.visualization.ConfusionMatrix;
 
-public class MetricComputationUtil {
-	
-	public static Map<String, String> getResults(File id2o, String mode) throws Exception {
-		
-		if(mode == null){
-			throw new IllegalArgumentException("The learning mode is null");
-		}
-		
+public class MetricComputationUtil
+{
 
-		Map<String, String> map = new HashMap<>();
+    public static Map<String, String> getResults(File id2o, String mode) throws Exception
+    {
 
-		if (mode.equals(Constants.LM_SINGLE_LABEL)) {
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
+        if (mode == null) {
+            throw new IllegalArgumentException("The learning mode is null");
+        }
 
-			Accuracy<String> acc = new Accuracy<>(data);
-			map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
+        Map<String, String> map = new HashMap<>();
 
-			Fscore<String> fmeasure = new Fscore<>(data);
-			map.put("Micro FScore", "" + getMicroFscore(fmeasure));
-			map.put("Macro FScore", "" + getMacroFscore(fmeasure));
-			
-			ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
-			File matrixFile = new File(id2o.getParentFile(), "confusionMatrix.txt");
-			FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
-			
-		} else if (mode.equals(Constants.LM_REGRESSION)) {
-			
-			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2o);
+        if (mode.equals(Constants.LM_SINGLE_LABEL)) {
+            EvaluationData<String> data = Tc2LtlabEvalConverter
+                    .convertSingleLabelModeId2Outcome(id2o);
 
-			EvaluationMeasure<?> m = new RSquared(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+            Accuracy<String> acc = new Accuracy<>(data);
+            map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
 
-			m = new PearsonCorrelation(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+            Fscore<String> fmeasure = new Fscore<>(data);
+            map.put("Micro FScore", "" + getMicroFscore(fmeasure));
+            map.put("Macro FScore", "" + getMacroFscore(fmeasure));
 
-			m = new SpearmanCorrelation(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+            ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
+            File matrixFile = new File(id2o.getParentFile(), "confusionMatrix.txt");
+            FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
 
-			m = new MeanSquaredError(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+        }
+        else if (mode.equals(Constants.LM_REGRESSION)) {
 
-			m = new MeanAbsoluteError(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+            EvaluationData<Double> data = Tc2LtlabEvalConverter
+                    .convertRegressionModeId2Outcome(id2o);
 
-		} else if (mode.equals(Constants.LM_MULTI_LABEL)) {
+            EvaluationMeasure<?> m = new RSquared(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			EvaluationData<String> data = Tc2LtlabEvalConverter.convertMultiLabelModeId2Outcome(id2o);
+            m = new PearsonCorrelation(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-			EvaluationMeasure<?> m = new ExactMatchRatio<>(data);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
-			
-			EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
-			
-			m = new HammingLoss(dataInt);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
-			
-			m = new MultilabelAccuracy(dataInt);
-			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
-			
-		}
-		return map;
-	}
+            m = new SpearmanCorrelation(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-	/**
-	 * if an exception occurs, it is caught and written to string, execution should not be interrupted at this point.
-	 * @param measure
-	 * 		the current measure
-	 * @return
-	 * 		a string with the computed measure or the exception error message if an error occurred
-	 */
-	private static String getExceptionFreeResult(EvaluationMeasure<?> measure) {
-		String val=null;
-		
-		try {
-			val = measure.getResult()+"";
-			
-		} catch (Exception e) {
-			String stackTrace = ExceptionUtils.getStackTrace(e);
-			return "Exception occurred with following stack trace: [" + stackTrace + "]";
-		}
-		
-		return val;
-	}
+            m = new MeanSquaredError(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-	private static String getMatrix(ConfusionMatrix<String> matrix) {
-		String val = "";
-		
-		try {
-			val = matrix.toText();
-		} catch (Exception e) {
-			String stackTrace = ExceptionUtils.getStackTrace(e);
-			return "Exception occurred with following stack trace: [" + stackTrace + "]";
-		}
+            m = new MeanAbsoluteError(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-		return val;
-	}
+        }
+        else if (mode.equals(Constants.LM_MULTI_LABEL)) {
 
-	private static String getMicroFscore(Fscore<String> fmeasure) {
-		String retVal="";
-		
-		try {
-			retVal = fmeasure.getMicroFscore()+"";
-		} catch (Exception e) {
-			String stackTrace = ExceptionUtils.getStackTrace(e);
-			return "Exception occurred with following stack trace: [" + stackTrace + "]";
-		}
-		
-		return retVal;
-	}
-	
-	private static String getMacroFscore(Fscore<String> fmeasure) {
-		String retVal="";
-		
-		try {
-			retVal = fmeasure.getMacroFscore() + "";
-		} catch (Exception e) {
-			String stackTrace = ExceptionUtils.getStackTrace(e);
-			return "Exception occurred with following stack trace: [" + stackTrace + "]";
-		}
-		
-		return retVal;
-	}
+            EvaluationData<String> data = Tc2LtlabEvalConverter
+                    .convertMultiLabelModeId2Outcome(id2o);
+
+            EvaluationMeasure<?> m = new ExactMatchRatio<>(data);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+
+            EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter
+                    .convertMultiLabelModeId2OutcomeUseInteger(id2o);
+
+            m = new HammingLoss(dataInt);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+
+            m = new MultilabelAccuracy(dataInt);
+            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+
+        }
+        return map;
+    }
+
+    /**
+     * if an exception occurs, it is caught and written to string, execution should not be
+     * interrupted at this point.
+     * 
+     * @param measure
+     *            the current measure
+     * @return a string with the computed measure or the exception error message if an error
+     *         occurred
+     */
+    private static String getExceptionFreeResult(EvaluationMeasure<?> measure)
+    {
+        String val = null;
+
+        try {
+            val = measure.getResult() + "";
+
+        }
+        catch (Exception e) {
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            return "Exception occurred with following stack trace: [" + stackTrace + "]";
+        }
+
+        return val;
+    }
+
+    private static String getMatrix(ConfusionMatrix<String> matrix)
+    {
+        String val = "";
+
+        try {
+            val = matrix.toText();
+        }
+        catch (Exception e) {
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            return "Exception occurred with following stack trace: [" + stackTrace + "]";
+        }
+
+        return val;
+    }
+
+    private static String getMicroFscore(Fscore<String> fmeasure)
+    {
+        String retVal = "";
+
+        try {
+            retVal = fmeasure.getMicroFscore() + "";
+        }
+        catch (Exception e) {
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            return "Exception occurred with following stack trace: [" + stackTrace + "]";
+        }
+
+        return retVal;
+    }
+
+    private static String getMacroFscore(Fscore<String> fmeasure)
+    {
+        String retVal = "";
+
+        try {
+            retVal = fmeasure.getMacroFscore() + "";
+        }
+        catch (Exception e) {
+            String stackTrace = ExceptionUtils.getStackTrace(e);
+            return "Exception occurred with following stack trace: [" + stackTrace + "]";
+        }
+
+        return retVal;
+    }
 
 }
