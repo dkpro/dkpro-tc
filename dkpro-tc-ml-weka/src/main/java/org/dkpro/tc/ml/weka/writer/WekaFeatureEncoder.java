@@ -58,19 +58,20 @@ public class WekaFeatureEncoder
 
     public static Attribute featureToAttributeUsingFeatureDescription(String featureName,
             FeatureType value, String enumType)
-                throws TextClassificationException
+        throws TextClassificationException
     {
         String name = Utils.quote(featureName);
         Attribute attribute;
         // if value is a number then create a numeric attribute
         if (value.equals(FeatureType.NUMERIC) || value.equals(FeatureType.BOOLEAN)) {
             attribute = new Attribute(name);
-        }else if(value.equals(FeatureType.STRING)){
-        	attribute = new Attribute(name, true);
+        }
+        else if (value.equals(FeatureType.STRING)) {
+            attribute = new Attribute(name, true);
         }
         // if value is an Enum thene create a nominal attribute
         else if (value.equals(FeatureType.NOMINAL)) {
-            Class<?> forName=null;
+            Class<?> forName = null;
             try {
                 forName = Class.forName(enumType);
             }
@@ -90,8 +91,7 @@ public class WekaFeatureEncoder
         return attribute;
     }
 
-    public static Attribute featureToAttribute(Feature feature)
-        throws TextClassificationException
+    public static Attribute featureToAttribute(Feature feature) throws TextClassificationException
     {
         String name = Utils.quote(feature.getName());
         Object value = feature.getValue();

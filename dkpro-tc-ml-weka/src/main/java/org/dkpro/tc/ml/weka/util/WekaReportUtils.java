@@ -33,25 +33,13 @@ public class WekaReportUtils
 {
 
     /*
-     * Creates data for average PR curve diagram over a threshold. <br>
-     * See:
+     * Creates data for average PR curve diagram over a threshold. <br> See:
      * 
-     * <pre>
-     * <code>
-     * {@literal @}article{Vens2008, <br>
-     * author = {Vens, Celine and Struyf, Jan and Schietgat, Leander and D\v{z}eroski, Sa\v{s}o and
-     * Blockeel, Hendrik}, <br>
-     * title = {Decision trees for hierarchical multi-label classification}, <br>
-     * journal = {Mach. Learn.}, <br>
-     * issue_date = {November 2008}, <br>
-     * volume = {73}, <br>
-     * number = {2}, <br>
-     * month = nov, <br>
-     * year = {2008},<br>
-     * pages = {185--214} <br>
-     * }
-     * </code>
-     * </pre>
+     * <pre> <code> {@literal @}article{Vens2008, <br> author = {Vens, Celine and Struyf, Jan and
+     * Schietgat, Leander and D\v{z}eroski, Sa\v{s}o and Blockeel, Hendrik}, <br> title = {Decision
+     * trees for hierarchical multi-label classification}, <br> journal = {Mach. Learn.}, <br>
+     * issue_date = {November 2008}, <br> volume = {73}, <br> number = {2}, <br> month = nov, <br>
+     * year = {2008},<br> pages = {185--214} <br> } </code> </pre>
      */
     public static double[][] createPRData(boolean[][] actualsArray, double[][] predictions)
         throws IOException

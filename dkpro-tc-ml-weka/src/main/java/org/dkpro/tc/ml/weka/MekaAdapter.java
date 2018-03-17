@@ -35,65 +35,74 @@ import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
 import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
 import org.dkpro.tc.ml.weka.writer.MekaDataWriter;
 
-public class MekaAdapter 
-	implements TcShallowLearningAdapter
+public class MekaAdapter
+    implements TcShallowLearningAdapter
 {
 
-	public static TcShallowLearningAdapter getInstance() {
-		return new MekaAdapter();
-	}
-	
-	@Override
-	public ExecutableTaskBase getTestTask() {
-		return new WekaTestTask();
-	}
-	
-	@Override
-	public Class<? extends ReportBase> getRandomBaselineIdReportClass() {
-		return null;
-	}
+    public static TcShallowLearningAdapter getInstance()
+    {
+        return new MekaAdapter();
+    }
 
-	@Override
-	public Class<? extends ReportBase> getOutcomeIdReportClass() {
-		return WekaOutcomeIDReport.class;
-	}
-	
     @Override
-    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass() {
+    public ExecutableTaskBase getTestTask()
+    {
+        return new WekaTestTask();
+    }
+
+    @Override
+    public Class<? extends ReportBase> getRandomBaselineIdReportClass()
+    {
         return null;
     }
 
-	@SuppressWarnings("unchecked")
     @Override
-	public DimensionBundle<Collection<String>> getFoldDimensionBundle(
-			String[] files, int folds) {
-		return  new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
-	}
+    public Class<? extends ReportBase> getOutcomeIdReportClass()
+    {
+        return WekaOutcomeIDReport.class;
+    }
 
-	@Override
-	public Class<? extends DataWriter> getDataWriterClass() {
-		return MekaDataWriter.class;
-	}
-	
-	@Override
-	public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass() {
-		return WekaLoadModelConnector.class;
-	}
-	
-	@Override
-	public Class<? extends ModelSerializationTask> getSaveModelTask() {
-	    return WekaSerliazeModelConnector.class;
-	}
+    @Override
+    public Class<? extends ReportBase> getMajorityClassBaselineIdReportClass()
+    {
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public DimensionBundle<Collection<String>> getFoldDimensionBundle(String[] files, int folds)
+    {
+        return new FoldDimensionBundle<String>("files", Dimension.create("", files), folds);
+    }
+
+    @Override
+    public Class<? extends DataWriter> getDataWriterClass()
+    {
+        return MekaDataWriter.class;
+    }
+
+    @Override
+    public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
+    {
+        return WekaLoadModelConnector.class;
+    }
+
+    @Override
+    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    {
+        return WekaSerliazeModelConnector.class;
+    }
 
     @Override
     public boolean useSparseFeatures()
     {
         return false;
     }
-    
+
     @Override
-    public String toString(){
-    	return getClass().getSimpleName();
+    public String toString()
+    {
+        return getClass().getSimpleName();
     }
 
 }

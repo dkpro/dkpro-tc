@@ -54,7 +54,8 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public class WekaLoadModelConnector
-    extends ModelSerialization_ImplBase implements Constants
+    extends ModelSerialization_ImplBase
+    implements Constants
 {
 
     @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
@@ -78,13 +79,13 @@ public class WekaLoadModelConnector
     private String bipartitionThreshold;
 
     @Override
-    public void initialize(UimaContext context)
-        throws ResourceInitializationException
+    public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
         try {
-            TcShallowLearningAdapter initMachineLearningAdapter = initMachineLearningAdapter(tcModelLocation);
+            TcShallowLearningAdapter initMachineLearningAdapter = initMachineLearningAdapter(
+                    tcModelLocation);
             bipartitionThreshold = initBipartitionThreshold(tcModelLocation);
             useSparse = initMachineLearningAdapter.useSparseFeatures();
 
@@ -102,31 +103,35 @@ public class WekaLoadModelConnector
             throw new ResourceInitializationException(e);
         }
     }
-    
-	private String initBipartitionThreshold(File tcModelLocation) throws FileNotFoundException, IOException {
-		File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
-		Properties prop = new Properties();
 
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(file);
-			prop.load(fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
+    private String initBipartitionThreshold(File tcModelLocation)
+        throws FileNotFoundException, IOException
+    {
+        File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
+        Properties prop = new Properties();
 
-		return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
-	}
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            prop.load(fis);
+        }
+        finally {
+            IOUtils.closeQuietly(fis);
+        }
 
-	private void loadClassLabels() throws IOException {
-		classLabels = new ArrayList<>();
-		for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS), "utf-8")) {
-			classLabels.add(classLabel);
-		}
-	}
+        return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
+    }
 
-    private void loadTrainingData()
-        throws IOException, ClassNotFoundException
+    private void loadClassLabels() throws IOException
+    {
+        classLabels = new ArrayList<>();
+        for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS),
+                "utf-8")) {
+            classLabels.add(classLabel);
+        }
+    }
+
+    private void loadTrainingData() throws IOException, ClassNotFoundException
     {
         ObjectInputStream inT = new ObjectInputStream(
                 new FileInputStream(new File(tcModelLocation, "training_data")));
@@ -134,23 +139,22 @@ public class WekaLoadModelConnector
         inT.close();
     }
 
-    private void loadClassifier()
-        throws Exception
+    private void loadClassifier() throws Exception
     {
         cls = (Classifier) weka.core.SerializationHelper
                 .read(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
     }
 
     @Override
-    public void process(JCas jcas)
-        throws AnalysisEngineProcessException
+    public void process(JCas jcas) throws AnalysisEngineProcessException
     {
 
         Instance instance = null;
         try {
-        	
-        	InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, false);
-        	List<Instance> instances = extractor.getInstances(jcas, useSparse);
+
+            InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors,
+                    false);
+            List<Instance> instances = extractor.getInstances(jcas, useSparse);
             instance = instances.get(0);
         }
         catch (Exception e1) {

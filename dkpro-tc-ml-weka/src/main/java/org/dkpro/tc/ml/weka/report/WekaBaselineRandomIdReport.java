@@ -36,80 +36,92 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
+public class WekaBaselineRandomIdReport
+    extends WekaOutcomeIDReport
+{
 
-	private Random random = new Random(42);
+    private Random random = new Random(42);
 
-	private List<String> pool = new ArrayList<>();
+    private List<String> pool = new ArrayList<>();
 
-	public WekaBaselineRandomIdReport() {
-		// required by groovy
-	}
-	
-	@Override
-	public void execute() throws Exception {
+    public WekaBaselineRandomIdReport()
+    {
+        // required by groovy
+    }
 
-		init();
+    @Override
+    public void execute() throws Exception
+    {
 
-		if (isRegression) {
-			return;
-		}
+        init();
 
-		super.execute();
-	}
+        if (isRegression) {
+            return;
+        }
 
-	@Override
-	protected String getPrediction(Double prediction, Map<String, Integer> class2number, Attribute gsAtt) {
-		Integer idx = random.nextInt(pool.size());		
-		return class2number.get(pool.get(idx)).toString();
-	}
+        super.execute();
+    }
 
-	@Override
-	protected void prepareBaseline() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		buildPool(file);
-	}
+    @Override
+    protected String getPrediction(Double prediction, Map<String, Integer> class2number,
+            Attribute gsAtt)
+    {
+        Integer idx = random.nextInt(pool.size());
+        return class2number.get(pool.get(idx)).toString();
+    }
 
-	@Override
-	protected File getTargetOutputFile() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
-	}
+    @Override
+    protected void prepareBaseline() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        buildPool(file);
+    }
 
-	private void buildPool(File file) throws Exception {
+    @Override
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
+    }
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+    private void buildPool(File file) throws Exception
+    {
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty() || line.startsWith("@")) {
-					continue;
-				}
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-				String[] split = line.split(",");
-				
-				String v = split[split.length-1];
-				if(hasInstanceWeighting(v)){
-					v = split[split.length-2];
-				}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty() || line.startsWith("@")) {
+                    continue;
+                }
 
-				if (!pool.contains(v)) {
-					pool.add(v);
-				}
-			}
+                String[] split = line.split(",");
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
-		
-		Collections.shuffle(pool);
-	}
-	
-	private boolean hasInstanceWeighting(String v) {
-		return v.startsWith("{") && v.endsWith("}");
-	}
+                String v = split[split.length - 1];
+                if (hasInstanceWeighting(v)) {
+                    v = split[split.length - 2];
+                }
+
+                if (!pool.contains(v)) {
+                    pool.add(v);
+                }
+            }
+
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        Collections.shuffle(pool);
+    }
+
+    private boolean hasInstanceWeighting(String v)
+    {
+        return v.startsWith("{") && v.endsWith("}");
+    }
 
 }

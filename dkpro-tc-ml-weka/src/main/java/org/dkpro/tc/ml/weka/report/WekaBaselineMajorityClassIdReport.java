@@ -33,79 +33,90 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
+public class WekaBaselineMajorityClassIdReport
+    extends WekaOutcomeIDReport
+{
 
-	private String majorityClass;
+    private String majorityClass;
 
-	public WekaBaselineMajorityClassIdReport() {
-		// required by groovy
-	}
-	
-	@Override
-	public void execute() throws Exception {
+    public WekaBaselineMajorityClassIdReport()
+    {
+        // required by groovy
+    }
 
-		init();
+    @Override
+    public void execute() throws Exception
+    {
 
-		if (isRegression) {
-			return;
-		}
+        init();
 
-		super.execute();
-	}
+        if (isRegression) {
+            return;
+        }
 
-	@Override
-	protected String getPrediction(Double prediction, Map<String, Integer> class2number, Attribute gsAtt) {
-		// is overwritten in baseline reports
-		 return class2number
-                 .get(majorityClass).toString();
-	}
+        super.execute();
+    }
 
-	@Override
-	protected void prepareBaseline() throws Exception {
-		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-		determineMajorityClass(file);
-	}
-	
-	@Override
-	protected File getTargetOutputFile() {
-		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-		return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-	}
+    @Override
+    protected String getPrediction(Double prediction, Map<String, Integer> class2number,
+            Attribute gsAtt)
+    {
+        // is overwritten in baseline reports
+        return class2number.get(majorityClass).toString();
+    }
 
-	private void determineMajorityClass(File file) throws Exception {
+    @Override
+    protected void prepareBaseline() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        determineMajorityClass(file);
+    }
 
-		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+    @Override
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+    }
 
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+    private void determineMajorityClass(File file) throws Exception
+    {
 
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				if (line.isEmpty() || line.startsWith("@")) {
-					continue;
-				}
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-				String[] split = line.split(",");
-				
-				String v = split[split.length-1];
-				if(hasInstanceWeighting(v)){
-					v = split[split.length-2];
-				}
-				
-				fd.addSample(v, 1);
-			}
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty() || line.startsWith("@")) {
+                    continue;
+                }
 
-		majorityClass = fd.getSampleWithMaxFreq();
-	}
+                String[] split = line.split(",");
 
-	private boolean hasInstanceWeighting(String v) {
-		return v.startsWith("{") && v.endsWith("}");
-	}
+                String v = split[split.length - 1];
+                if (hasInstanceWeighting(v)) {
+                    v = split[split.length - 2];
+                }
+
+                fd.addSample(v, 1);
+            }
+
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        majorityClass = fd.getSampleWithMaxFreq();
+    }
+
+    private boolean hasInstanceWeighting(String v)
+    {
+        return v.startsWith("{") && v.endsWith("}");
+    }
 
 }

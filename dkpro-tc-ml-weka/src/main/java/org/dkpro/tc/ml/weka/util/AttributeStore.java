@@ -58,8 +58,7 @@ public class AttributeStore
         }
     }
 
-    public void addAttribute(String name, Attribute attribute)
-        throws TextClassificationException
+    public void addAttribute(String name, Attribute attribute) throws TextClassificationException
     {
         if (!nameOffsetMap.containsKey(name)) {
             attributes.add(attribute);

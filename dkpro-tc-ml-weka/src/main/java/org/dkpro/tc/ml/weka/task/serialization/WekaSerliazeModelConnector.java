@@ -57,19 +57,19 @@ public class WekaSerliazeModelConnector
 
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     protected List<Object> classificationArguments;
-    
+
     @Discriminator(name = DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
-    
+
     @Discriminator(name = DIM_ATTRIBUTE_EVALUATOR_ARGS)
     protected List<String> attributeEvaluator;
-    
+
     @Discriminator(name = DIM_LABEL_TRANSFORMATION_METHOD)
     protected String labelTransformationMethod;
-    
+
     @Discriminator(name = DIM_NUM_LABELS_TO_KEEP)
     protected int numLabelsToKeep;
-    
+
     @Discriminator(name = DIM_APPLY_FEATURE_SELECTION)
     protected boolean applySelection;
 
@@ -85,8 +85,7 @@ public class WekaSerliazeModelConnector
     }
 
     @Override
-    public void execute(TaskContext aContext)
-        throws Exception
+    public void execute(TaskContext aContext) throws Exception
     {
         writeWekaSpecificInformation(aContext);
         writeModelConfiguration(aContext);
@@ -105,16 +104,17 @@ public class WekaSerliazeModelConnector
 
         File file = new File(outputFolder + "/" + MODEL_BIPARTITION_THRESHOLD);
         FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(file);
-			properties.store(fos, "Bipartition threshold used to train this model (only multi-label classification)");
-		} finally {
-			IOUtils.closeQuietly(fos);
-		}
+        try {
+            fos = new FileOutputStream(file);
+            properties.store(fos,
+                    "Bipartition threshold used to train this model (only multi-label classification)");
+        }
+        finally {
+            IOUtils.closeQuietly(fos);
+        }
     }
 
-    private void writeWekaSpecificInformation(TaskContext aContext)
-        throws Exception
+    private void writeWekaSpecificInformation(TaskContext aContext) throws Exception
     {
         boolean isMultiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
         boolean isRegression = learningMode.equals(Constants.LM_REGRESSION);
@@ -174,19 +174,21 @@ public class WekaSerliazeModelConnector
         }
 
     }
-    
-	private void mkdir(File f) {
-		if (f.exists()) {
-			return;
-		}
-		boolean mkdirs = f.mkdirs();
-		if (!mkdirs) {
-			throw new IllegalStateException("Could not create folder [" + f + "]");
-		}
-	}
 
-	@Override
-	protected void writeAdapter() throws Exception {
-		writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());
-	}
+    private void mkdir(File f)
+    {
+        if (f.exists()) {
+            return;
+        }
+        boolean mkdirs = f.mkdirs();
+        if (!mkdirs) {
+            throw new IllegalStateException("Could not create folder [" + f + "]");
+        }
+    }
+
+    @Override
+    protected void writeAdapter() throws Exception
+    {
+        writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());
+    }
 }

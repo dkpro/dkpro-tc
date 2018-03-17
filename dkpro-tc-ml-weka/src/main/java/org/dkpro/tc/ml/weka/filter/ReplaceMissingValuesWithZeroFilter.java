@@ -77,8 +77,8 @@ public class ReplaceMissingValuesWithZeroFilter
             for (int j = 0; j < instance.numValues(); j++) {
                 if (instance.isMissingSparse(j)
                         && (getInputFormat().classIndex() != instance.index(j))
-                        && (instance.attributeSparse(j).isNominal() || instance.attributeSparse(j)
-                                .isNumeric())) {
+                        && (instance.attributeSparse(j).isNominal()
+                                || instance.attributeSparse(j).isNumeric())) {
                 }
                 else {
                     vals[num] = instance.valueSparse(j);
@@ -102,10 +102,9 @@ public class ReplaceMissingValuesWithZeroFilter
         else {
             double[] vals = new double[getInputFormat().numAttributes()];
             for (int j = 0; j < instance.numAttributes(); j++) {
-                if (instance.isMissing(j)
-                        && (getInputFormat().classIndex() != j)
-                        && (getInputFormat().attribute(j).isNominal() || getInputFormat()
-                                .attribute(j).isNumeric())) {
+                if (instance.isMissing(j) && (getInputFormat().classIndex() != j)
+                        && (getInputFormat().attribute(j).isNominal()
+                                || getInputFormat().attribute(j).isNumeric())) {
                     vals[j] = 0.0d;
                 }
                 else {

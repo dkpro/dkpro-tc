@@ -77,9 +77,8 @@ public class WekaSerializedModel
      *            key - frequency distribution pairs with all meta files
      */
     public WekaSerializedModel(List<Attribute> attributes, Classifier trainedClassifier,
-            String bipartitionThreshold, List<String> editFeatureExtractors,
-            List<String> allLabels, List<Object> pipelineParameters,
-            Map<String, FrequencyDistribution<String>> metaFiles)
+            String bipartitionThreshold, List<String> editFeatureExtractors, List<String> allLabels,
+            List<Object> pipelineParameters, Map<String, FrequencyDistribution<String>> metaFiles)
     {
         this.attributes = attributes;
         this.bipartitionThreshold = bipartitionThreshold;
@@ -91,8 +90,7 @@ public class WekaSerializedModel
     }
 
     @Override
-    public void load(DataResource aData)
-        throws ResourceInitializationException
+    public void load(DataResource aData) throws ResourceInitializationException
     {
         ConfigurationParameterInitializer.initialize(this, aData);
 

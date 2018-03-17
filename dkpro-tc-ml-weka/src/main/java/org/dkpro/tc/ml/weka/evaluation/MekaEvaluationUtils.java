@@ -36,9 +36,10 @@ public class MekaEvaluationUtils
 {
 
     public static final String HAMMING_ACCURACY = "Hemming Accuracy";
-    
+
     /**
-     * Calculates a number of evaluation measures for multi-label classification, without class-wise measures.
+     * Calculates a number of evaluation measures for multi-label classification, without class-wise
+     * measures.
      * 
      * @param predictions
      *            predictions by the classifier (ranking)
@@ -70,7 +71,8 @@ public class MekaEvaluationUtils
     }
 
     /**
-     * Calculates a number of evaluation measures for multi-label classification, including class-wise measures.
+     * Calculates a number of evaluation measures for multi-label classification, including
+     * class-wise measures.
      * 
      * @param predictions
      *            predictions by the classifier (ranking)
@@ -83,8 +85,7 @@ public class MekaEvaluationUtils
      * @return the evaluation statistics
      */
     public static HashMap<String, Double> calcMLStats(double predictions[][], int goldStandard[][],
-            double t[],
-            String[] classNames)
+            double t[], String[] classNames)
     {
         HashMap<String, Double> results = calcMLStats(predictions, goldStandard, t);
         int L = goldStandard[0].length;

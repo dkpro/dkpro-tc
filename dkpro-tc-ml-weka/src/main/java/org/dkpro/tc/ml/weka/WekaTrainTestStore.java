@@ -30,32 +30,36 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
 
 /**
- * A subclass of the ExperiementTrainTest batch task, which
- * will store the trained classifier to the output directory
- * that is provided in the constructor or via setter.
+ * A subclass of the ExperiementTrainTest batch task, which will store the trained classifier to the
+ * output directory that is provided in the constructor or via setter.
  * 
  */
-public class WekaTrainTestStore extends ExperimentTrainTest {
+public class WekaTrainTestStore
+    extends ExperimentTrainTest
+{
 
-	File outputDirectory = null;
+    File outputDirectory = null;
 
-	public WekaTrainTestStore() {
-		/* needed for Groovy */
-	}
-
-	public WekaTrainTestStore(String aExperimentName, File outputDirectory)
-            throws TextClassificationException {
-
-		super(aExperimentName);
-
-		this.outputDirectory = outputDirectory;
+    public WekaTrainTestStore()
+    {
+        /* needed for Groovy */
     }
 
-	public void setOutputDirectory(File outputDirectory) {
-		this.outputDirectory = outputDirectory;
-	}
+    public WekaTrainTestStore(String aExperimentName, File outputDirectory)
+        throws TextClassificationException
+    {
 
-	/**
+        super(aExperimentName);
+
+        this.outputDirectory = outputDirectory;
+    }
+
+    public void setOutputDirectory(File outputDirectory)
+    {
+        this.outputDirectory = outputDirectory;
+    }
+
+    /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * four-argument constructor.
@@ -63,63 +67,65 @@ public class WekaTrainTestStore extends ExperimentTrainTest {
      * @throws IllegalStateException
      *             if not all necessary arguments have been set.
      */
-	@Override
-    protected void init() {
-    	super.init();
+    @Override
+    protected void init()
+    {
+        super.init();
 
-    	if (outputDirectory == null) {
+        if (outputDirectory == null) {
             throw new IllegalStateException("You must set the outputdirectory.");
         }
 
         WekaSerliazeModelConnector saveModelTask = new WekaSerliazeModelConnector();
-    	String type = saveModelTask.getType() + "-" + experimentName;
-    	saveModelTask.setType(type);
-    	saveModelTask.setOutputFolder(outputDirectory.getAbsoluteFile());
+        String type = saveModelTask.getType() + "-" + experimentName;
+        saveModelTask.setType(type);
+        saveModelTask.setOutputFolder(outputDirectory.getAbsoluteFile());
 
-    	saveModelTask.addImport(this.getMetaTask(), MetaInfoTask.META_KEY);
-        saveModelTask.addImport(this.getFeatureExtractionTask(), ExtractFeaturesTask.OUTPUT_KEY, Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        saveModelTask.addImport(this.getMetaTask(), MetaInfoTask.META_KEY);
+        saveModelTask.addImport(this.getFeatureExtractionTask(), ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
         this.addTask(saveModelTask);
     }
 
-	@Override
-	public void initialize(TaskContext aContext)
-	{
+    @Override
+    public void initialize(TaskContext aContext)
+    {
         super.initialize(aContext);
         init();
-	}
+    }
 
-	/**
-	 * Private helper function that returns the ExtractFeaturesTask of
-	 * the super class. Required, because all tasks are private in
-	 * ExperimentTrainTest.
-	 *
-	 * @return The ExtractFeaturesTask
-	 */
-	private ExtractFeaturesTask getFeatureExtractionTask() {
-		for(Task task : this.getTasks()) {
-            if(task instanceof ExtractFeaturesTask) {
+    /**
+     * Private helper function that returns the ExtractFeaturesTask of the super class. Required,
+     * because all tasks are private in ExperimentTrainTest.
+     *
+     * @return The ExtractFeaturesTask
+     */
+    private ExtractFeaturesTask getFeatureExtractionTask()
+    {
+        for (Task task : this.getTasks()) {
+            if (task instanceof ExtractFeaturesTask) {
                 return (ExtractFeaturesTask) task;
             }
         }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Private helper function that returns the MetaTask of
-	 * the super class. Required, because all tasks are private in
-	 * ExperimentTrainTest.
-	 *
-	 * @return The MetaTask
-	 */
-	private MetaInfoTask getMetaTask() {
-		for(Task task : this.getTasks()) {
-            if(task instanceof MetaInfoTask) {
+    /**
+     * Private helper function that returns the MetaTask of the super class. Required, because all
+     * tasks are private in ExperimentTrainTest.
+     *
+     * @return The MetaTask
+     */
+    private MetaInfoTask getMetaTask()
+    {
+        for (Task task : this.getTasks()) {
+            if (task instanceof MetaInfoTask) {
                 return (MetaInfoTask) task;
             }
         }
 
-		return null;
-	}
+        return null;
+    }
 }
