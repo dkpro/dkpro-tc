@@ -34,7 +34,6 @@ import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
 
 /**
- * 
  * <pre>
   General Parameters:
   	booster={gbtree, gblinear, dart}  (default booster=gbtree)
