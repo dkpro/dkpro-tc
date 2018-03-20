@@ -122,8 +122,7 @@ public class XgboostTestTask
 
     private static String flipBackslash(String s)
     {
-        // escaping regex-backslash is a bit redundant i.e. matches a single char-backslash to
-        // replace it with a forwards-slash
+        // flip backslash to be a forwards-slash instead otherwise this might lead to issues on Windows OS
         return s.replaceAll("\\\\", "/");
     }
 
