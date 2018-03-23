@@ -43,27 +43,22 @@ public class BasicResultReport
     @Override
     public void execute() throws Exception
     {
-        StorageService store = getContext().getStorageService();
-
-        File id2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
-                ID_OUTCOME_KEY);
-
         String learningMode = getDiscriminator(getContext().getStorageService(),
                 getContext().getId(), DIM_LEARNING_MODE);
 
-        MetricComputationUtil.writeConfusionMatrix(id2outcomeFile,
-                new File(id2outcomeFile.getParentFile(), "confusionMatrix.txt"));
-        Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile,
-                learningMode);
-
         Properties pa = new SortedKeyProperties();
-        for (Entry<String, String> e : resultMap.entrySet()) {
-            pa.setProperty(e.getKey(), e.getValue());
-        }
-
+        pa = addPredictedResults(pa, learningMode);
         pa = addMajorityBaselineResults(pa, learningMode);
         pa = addRandomBaselineResult(pa, learningMode);
 
+        writeConfusionMatrixForSingleLabel(learningMode);
+
+        writeToDisk(pa);
+    }
+
+    private void writeToDisk(Properties pa) throws Exception
+    {
+        StorageService store = getContext().getStorageService();
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
         FileOutputStream fos = null;
         try {
@@ -72,7 +67,33 @@ public class BasicResultReport
         }
         finally {
             IOUtils.closeQuietly(fos);
+        }        
+    }
+
+    private void writeConfusionMatrixForSingleLabel(String learningMode) throws Exception
+    {
+        if (!learningMode.equals(LM_SINGLE_LABEL)) {
+            return;
         }
+        File id2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
+                ID_OUTCOME_KEY);
+
+        MetricComputationUtil.writeConfusionMatrix(id2outcomeFile,
+                new File(id2outcomeFile.getParentFile(), "confusionMatrix.txt"));
+    }
+
+    private Properties addPredictedResults(Properties pa, String learningMode) throws Exception
+    {
+        File id2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
+                ID_OUTCOME_KEY);
+
+        Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile,
+                learningMode);
+
+        for (Entry<String, String> e : resultMap.entrySet()) {
+            pa.setProperty(e.getKey(), e.getValue());
+        }
+        return pa;
     }
 
     private Properties addRandomBaselineResult(Properties pa, String learningMode) throws Exception
