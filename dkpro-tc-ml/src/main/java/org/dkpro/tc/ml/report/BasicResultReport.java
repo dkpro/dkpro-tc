@@ -51,6 +51,8 @@ public class BasicResultReport
         String learningMode = getDiscriminator(getContext().getStorageService(),
                 getContext().getId(), DIM_LEARNING_MODE);
 
+        MetricComputationUtil.writeConfusionMatrix(id2outcomeFile,
+                new File(id2outcomeFile.getParentFile(), "confusionMatrix.txt"));
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile,
                 learningMode);
 
@@ -59,6 +61,40 @@ public class BasicResultReport
             pa.setProperty(e.getKey(), e.getValue());
         }
 
+        pa = addMajorityBaselineResults(pa, learningMode);
+        pa = addRandomBaselineResult(pa, learningMode);
+
+        File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(key);
+            pa.store(fos, "Results");
+        }
+        finally {
+            IOUtils.closeQuietly(fos);
+        }
+    }
+
+    private Properties addRandomBaselineResult(Properties pa, String learningMode) throws Exception
+    {
+        // Random baseline results
+        File randomBaseline2outcomeFile = getContext().getStorageService()
+                .locateKey(getContext().getId(), BASELINE_RANDOM_ID_OUTCOME_KEY);
+        // FIXME: Remove if-check after implementing this report for all adapters
+        if (randomBaseline2outcomeFile != null && randomBaseline2outcomeFile.exists()) {
+            Map<String, String> randomBaseline = MetricComputationUtil
+                    .getResults(randomBaseline2outcomeFile, learningMode);
+            String suffix = ".RandomClassBaseline";
+            for (Entry<String, String> e : randomBaseline.entrySet()) {
+                pa.setProperty(e.getKey() + suffix, e.getValue());
+            }
+        }
+        return pa;
+    }
+
+    private Properties addMajorityBaselineResults(Properties pa, String learningMode)
+        throws Exception
+    {
         // Baseline results
         File baseline2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
                 BASELINE_MAJORITIY_ID_OUTCOME_KEY);
@@ -72,28 +108,7 @@ public class BasicResultReport
             }
         }
 
-        // Random baseline results
-        File randomBaseline2outcomeFile = getContext().getStorageService()
-                .locateKey(getContext().getId(), BASELINE_RANDOM_ID_OUTCOME_KEY);
-        // FIXME: Remove if-check after implementing this report for all adapters
-        if (randomBaseline2outcomeFile != null && randomBaseline2outcomeFile.exists()) {
-            Map<String, String> randomBaseline = MetricComputationUtil
-                    .getResults(randomBaseline2outcomeFile, learningMode);
-            String suffix = ".RandomClassBaseline";
-            for (Entry<String, String> e : randomBaseline.entrySet()) {
-                pa.setProperty(e.getKey() + suffix, e.getValue());
-            }
-        }
-
-        File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(key);
-            pa.store(fos, "Results");
-        }
-        finally {
-            IOUtils.closeQuietly(fos);
-        }
+        return pa;
     }
 
 }

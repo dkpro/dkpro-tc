@@ -62,10 +62,6 @@ public class MetricComputationUtil
             map.put("Micro FScore", "" + getMicroFscore(fmeasure));
             map.put("Macro FScore", "" + getMacroFscore(fmeasure));
 
-            ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
-            File matrixFile = new File(id2o.getParentFile(), "confusionMatrix.txt");
-            FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
-
         }
         else if (mode.equals(Constants.LM_REGRESSION)) {
 
@@ -107,6 +103,24 @@ public class MetricComputationUtil
 
         }
         return map;
+    }
+
+    /**
+     * Writes a visualization of the results in the id2outcome file as confusion matrix. This operation is only supported for single-label classification results.
+     * @param id2outcome
+     *          The id2outcome file with the results
+     * @param matrixFile
+     *          The file of the output marix
+     * @throws Exception
+     *          In case of an error
+     */
+    public static void writeConfusionMatrix(File id2outcome, File matrixFile) throws Exception
+    {
+        EvaluationData<String> data = Tc2LtlabEvalConverter
+                .convertSingleLabelModeId2Outcome(id2outcome);
+
+        ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
+        FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
     }
 
     /**
