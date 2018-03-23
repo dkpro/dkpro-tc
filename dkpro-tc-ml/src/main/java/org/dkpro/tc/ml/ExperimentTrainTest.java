@@ -139,7 +139,7 @@ public class ExperimentTrainTest
         reports.add(new BasicResultReport());
 
         testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask,
-                reports);
+                reports, experimentName);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 

@@ -62,6 +62,8 @@ public class DKProTcShallowTestTask
 
     private List<ReportBase> reports;
 
+    private String experimentName;
+
     public DKProTcShallowTestTask()
     {
         // groovy
@@ -69,12 +71,13 @@ public class DKProTcShallowTestTask
 
     public DKProTcShallowTestTask(ExtractFeaturesTask featuresTrainTask,
             ExtractFeaturesTask featuresTestTask, OutcomeCollectionTask collectionTask,
-            List<ReportBase> reports)
+            List<ReportBase> reports, String experimentName)
     {
         this.featuresTrainTask = featuresTrainTask;
         this.featuresTestTask = featuresTestTask;
         this.collectionTask = collectionTask;
         this.reports = reports;
+        this.experimentName = experimentName;
     }
 
     ExecutableTaskBase tt;
@@ -116,8 +119,7 @@ public class DKProTcShallowTestTask
                 Constants.OUTCOMES_INPUT_KEY);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
-        String[] split = getType().split("-");
-        testTask.setType(testTask.getClass().getName() + "-" + split[1]);
+        testTask.setType(testTask.getType() + "-" + experimentName);
 
         deleteOldTaskSetNewOne(testTask);
     }
