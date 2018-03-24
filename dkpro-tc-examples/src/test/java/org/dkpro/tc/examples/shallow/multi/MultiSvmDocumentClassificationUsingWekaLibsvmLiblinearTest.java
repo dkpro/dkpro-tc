@@ -21,11 +21,13 @@ package org.dkpro.tc.examples.shallow.multi;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.task.BatchTask;
 import org.dkpro.lab.task.ParameterSpace;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
@@ -60,6 +62,7 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
                 ContextMemoryReport.allIds.size());
+
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
                 ContextMemoryReport.id2outcomeFiles.size());
 
@@ -89,14 +92,14 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 1; // 1 x Init
         sum += 4; // 2 x FeatExtract Train/Test
-        sum += 2; // 2 x Meta
-        sum += 1; // 1 x Outcome
         sum += 4; // 2 x Facade + 2x ML Adapter
-        sum += 1; // 1 x Crossvalidation
-
+        sum += 2; // 2 x Meta
         sum *= 3; // 3 adapter in the setup
+
+        sum += 1; // 1 x Init
+        sum += 1; // 1 x Outcome
+        sum += 3; // 3 x Crossvalidation
 
         return sum;
     }
@@ -123,26 +126,61 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         for (File f : id2outcomeFiles) {
 
-            List<String> lines = FileUtils
-                    .readLines(new File(f.getParentFile(), "DISCRIMINATORS.txt"), "utf-8");
-            String classArgs = "";
-            for (String s : lines) {
-                if (s.contains(Constants.DIM_CLASSIFICATION_ARGS)) {
-                    classArgs = s;
-                    break;
+            File file = new File(f.getParentFile(), "ATTRIBUTES.txt");
+            Set<String> readSubTasks = readSubTasks(file);
+            for (String k : readSubTasks) {
+                File file2 = new File(f.getParentFile().getParentFile() + "/" + k,
+                        "ATTRIBUTES.txt");
+                if (!file2.exists()) {
+                    continue;
                 }
-            }
-
-            if (classArgs.toLowerCase().contains(simpleName.toLowerCase())) {
-
-                EvaluationData<String> data = Tc2LtlabEvalConverter
-                        .convertSingleLabelModeId2Outcome(f);
-                Accuracy<String> acc = new Accuracy<>(data);
-                return acc.getResult();
+                Set<String> readSubTasks2 = readSubTasks(file2);
+                for (String j : readSubTasks2) {
+                    if (j.toLowerCase().contains(simpleName.toLowerCase())) {
+                        EvaluationData<String> data = Tc2LtlabEvalConverter
+                                .convertSingleLabelModeId2Outcome(f);
+                        Accuracy<String> acc = new Accuracy<>(data);
+                        return acc.getResult();
+                    }
+                }
             }
         }
 
         return -1;
+    }
+
+    private Set<String> readSubTasks(File attributesTXT) throws Exception
+    {
+        List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+
+        int idx = 0;
+        boolean found = false;
+        for (String line : readLines) {
+            if (line.startsWith(BatchTask.SUBTASKS_KEY)) {
+                found = true;
+                break;
+            }
+            idx++;
+        }
+
+        if (!found) {
+            return new HashSet<>();
+        }
+
+        String line = readLines.get(idx);
+        int start = line.indexOf("[") + 1;
+        int end = line.indexOf("]");
+        String subTasks = line.substring(start, end);
+
+        String[] tasks = subTasks.split(",");
+
+        Set<String> results = new HashSet<>();
+
+        for (String task : tasks) {
+            results.add(task.trim());
+        }
+
+        return results;
     }
 
     private Integer getSumOfMachineLearningAdapterTasks()
@@ -162,13 +200,13 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 2; // 2 x Init
         sum += 2; // 2 x FeatExtract
-        sum += 1; // 1 x Meta
-        sum += 1; // 1 x Outcome
         sum += 2; // 1 x Facade + 1x ML Adapter
 
         sum *= 3; // 3 adapter in setup
+        sum += 2; // 2 x Init
+        sum += 1; // 1 x Outcome
+        sum += 1; // 1 x Meta
 
         return sum;
     }

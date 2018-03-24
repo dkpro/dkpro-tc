@@ -50,9 +50,6 @@ public class ValidityCheckConnector
     @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
     private String bipartitionThreshold;
 
-    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-    private String dataWriter;
-
     @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected String[] featureExtractors;
 
@@ -95,11 +92,6 @@ public class ValidityCheckConnector
 
             // getLogger().log(Level.INFO, "--- checking validity of experiment setup ---");
 
-            // iff multi-label classification is active, no single-label data writer may be used
-            if (isMultiLabel()) {
-                checkErrorConditionDataWriterAndThreshold();
-            }
-
             // iff pair classification is set, 2 views need to be present
             if (isPairMode()) {
                 checkErrorConditionCasHasTwoVies(jcas);
@@ -138,23 +130,6 @@ public class ValidityCheckConnector
     private boolean isSingleLabelSequenceMode()
     {
         return featureModeI == 4 && learningModeI != 1;
-    }
-
-    private void checkErrorConditionDataWriterAndThreshold() throws AnalysisEngineProcessException
-    {
-        if (dataWriter.equals("org.dkpro.tc.weka.WekaDataWriter")) {
-            throw new AnalysisEngineProcessException(new TextClassificationException(
-                    "Your experiment is configured to be multi-label. Please use a DataWriter, which is able to handle multi-label data."));
-        }
-        if (bipartitionThreshold == null) {
-            throw new AnalysisEngineProcessException(new TextClassificationException(
-                    "Your experiment is configured to be multi-label. Please set a bipartition threshold."));
-        }
-    }
-
-    private boolean isMultiLabel()
-    {
-        return learningModeI == 2;
     }
 
     private boolean isPairMode()

@@ -122,7 +122,7 @@ public class MultiRegressionWekaLibsvmLiblinear
     // ##### TRAIN-TEST #####
     public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
-        ExperimentTrainTest experiment = new ExperimentTrainTest("WekaRegressionDemo");
+        ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionDemo");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchTrainTestReport.class);

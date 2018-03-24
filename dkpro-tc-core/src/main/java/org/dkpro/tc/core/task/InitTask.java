@@ -37,14 +37,12 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.AssignIdConnector;
 import org.dkpro.tc.core.task.uima.DocumentModeAnnotator;
 import org.dkpro.tc.core.task.uima.OutcomeCollector;
 import org.dkpro.tc.core.task.uima.PreprocessConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnector;
 import org.dkpro.tc.core.task.uima.ValidityCheckConnectorPost;
-import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
 
@@ -75,9 +73,6 @@ public class InitTask
 
     @Discriminator(name = DIM_FEATURE_SET)
     protected TcFeatureSet featureExtractors;
-
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    protected List<Object> classArgs;
 
     protected boolean isTesting = false;
 
@@ -188,14 +183,10 @@ public class InitTask
                     "No feature extractors have been added to the experiment."));
         }
 
-        TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
-
         List<Object> parameters = new ArrayList<Object>();
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
         parameters.add(learningMode);
-        parameters.add(ValidityCheckConnector.PARAM_DATA_WRITER_CLASS);
-        parameters.add(adapter.getDataWriterClass().getName());
         parameters.add(ValidityCheckConnector.PARAM_FEATURE_MODE);
         parameters.add(featureMode);
         parameters.add(ValidityCheckConnector.PARAM_BIPARTITION_THRESHOLD);

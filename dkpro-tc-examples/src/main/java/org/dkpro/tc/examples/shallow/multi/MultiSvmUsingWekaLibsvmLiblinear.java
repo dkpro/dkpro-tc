@@ -136,7 +136,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear
     public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
-        ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
+        ExperimentTrainTest experiment = new ExperimentTrainTest("SvmDemo");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
