@@ -51,25 +51,25 @@ public class LinewiseTextOutcomeReader
      */
     public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
     @ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
-    private String separatingChar;
+    protected String separatingChar;
 
     public static final String PARAM_TEXT_INDEX = "PARAM_TEXT_INDEX";
     @ConfigurationParameter(name = PARAM_TEXT_INDEX, mandatory = true, defaultValue = "0")
-    private Integer textIdx;
+    protected Integer textIdx;
 
     public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
     @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
-    private Integer outcomeIdx;
+    protected Integer outcomeIdx;
 
     public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
     @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
-    private String skipLinePrefix;
+    protected String skipLinePrefix;
 
-    private BufferedReader reader;
+    protected BufferedReader reader;
 
-    private String nextDocument = null;
+    protected String nextDocument = null;
 
-    private int runningId = 0;
+    protected int runningId = 0;
 
     @Override
     public void getNext(JCas aJCas) throws IOException, CollectionException
@@ -84,6 +84,9 @@ public class LinewiseTextOutcomeReader
         String text = split[textIdx].trim();
         String outcome = split[outcomeIdx].trim();
 
+        text = performAdditionalTextOperation(text);
+        outcome = performAdditionalOutcomeOperation(outcome);
+
         int entryStart = documentText.length();
         int entryEnd = documentText.length() + text.length();
 
@@ -93,6 +96,18 @@ public class LinewiseTextOutcomeReader
         documentText.append(text + " ");
 
         aJCas.setDocumentText(documentText.toString().trim());
+    }
+
+    protected String performAdditionalOutcomeOperation(String outcome)
+    {
+        // opportunity to modify token information by overloading
+        return outcome;
+    }
+
+    protected String performAdditionalTextOperation(String text)
+    {
+        // opportunity to modify token information by overloading
+        return text;
     }
 
     protected void setTextClassificationTarget(JCas aJCas, int begin, int end)

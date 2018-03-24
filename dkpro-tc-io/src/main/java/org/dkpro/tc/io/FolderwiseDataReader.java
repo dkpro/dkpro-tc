@@ -59,12 +59,19 @@ public class FolderwiseDataReader
             }
 
             String text = buffer.toString().trim();
+            text = performAdditionalTextOperation(text);
 
             setTextClassificationTarget(aJCas, currentFile, 0, text.length());
             setTextClassificationOutcome(aJCas, currentFile, 0, text.length());
 
             aJCas.setDocumentText(text.trim());
         }
+    }
+
+    protected String performAdditionalTextOperation(String text)
+    {
+        // opportunity to modify token information by overloading
+        return text;
     }
 
     protected void setTextClassificationTarget(JCas aJCas, Resource currentFile, int begin, int end)

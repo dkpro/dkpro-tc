@@ -69,26 +69,26 @@ public class SequenceOutcomeReader
      */
     public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
     @ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
-    private String separatingChar;
+    protected String separatingChar;
 
     public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
     @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
-    private String skipLinePrefix;
+    protected String skipLinePrefix;
 
     public static final String PARAM_TOKEN_INDEX = "PARAM_TOKEN_INDEX";
     @ConfigurationParameter(name = PARAM_TOKEN_INDEX, mandatory = true, defaultValue = "0")
-    private Integer tokenIdx;
+    protected Integer tokenIdx;
 
     public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
     @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
-    private Integer outcomeIdx;
+    protected Integer outcomeIdx;
 
-    private BufferedReader reader;
+    protected BufferedReader reader;
 
-    private List<String> nextSequence = null;
-    private String line = null;
+    protected List<String> nextSequence = null;
+    protected String line = null;
 
-    private int runningId = 0;
+    protected int runningId = 0;
 
     @Override
     public void getNext(JCas aJCas) throws IOException, CollectionException
@@ -105,6 +105,9 @@ public class SequenceOutcomeReader
 
             String token = entry[tokenIdx];
             String outcome = entry[outcomeIdx];
+
+            token = performAdditionalTokenOperation(token);
+            outcome = performAdditionalOutcomeOperation(outcome);
 
             int tokStart = documentText.length();
             int tokEnd = tokStart + token.length();
@@ -124,13 +127,25 @@ public class SequenceOutcomeReader
         aJCas.setDocumentText(documentText.toString());
     }
 
-    private void setToken(JCas aJCas, int begin, int end)
+    private String performAdditionalOutcomeOperation(String outcome)
+    {
+        // opportunity to modify token information by overloading
+        return outcome;
+    }
+
+    protected String performAdditionalTokenOperation(String token)
+    {
+        // opportunity to modify token information by overloading
+        return token;
+    }
+
+    protected void setToken(JCas aJCas, int begin, int end)
     {
         Token token = new Token(aJCas, begin, end);
         token.addToIndexes();
     }
 
-    private void setSentence(JCas aJCas, int begin, int end)
+    protected void setSentence(JCas aJCas, int begin, int end)
     {
         Sentence sentence = new Sentence(aJCas, begin, end);
         sentence.addToIndexes();
@@ -220,12 +235,12 @@ public class SequenceOutcomeReader
         return buffer;
     }
 
-    private boolean skipElement()
+    protected boolean skipElement()
     {
         return skipLinePrefix != null && line.startsWith(skipLinePrefix);
     }
 
-    private boolean sequenceIncomplete() throws IOException
+    protected boolean sequenceIncomplete() throws IOException
     {
         return (line = reader.readLine()) != null && !line.isEmpty();
     }
