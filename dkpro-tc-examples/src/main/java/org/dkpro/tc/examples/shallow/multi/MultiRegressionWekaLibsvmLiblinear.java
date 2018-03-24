@@ -135,7 +135,7 @@ public class MultiRegressionWekaLibsvmLiblinear
 
     public void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("WekaRegressionDemo",
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionDemo",
                 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
