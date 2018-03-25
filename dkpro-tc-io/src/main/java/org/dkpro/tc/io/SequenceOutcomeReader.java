@@ -127,7 +127,7 @@ public class SequenceOutcomeReader
         aJCas.setDocumentText(documentText.toString());
     }
 
-    private String performAdditionalOutcomeOperation(String outcome)
+    protected String performAdditionalOutcomeOperation(String outcome)
     {
         // opportunity to modify token information by overloading
         return outcome;
