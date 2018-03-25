@@ -113,7 +113,7 @@ public class SequenceOutcomeReader
             int tokEnd = tokStart + token.length();
 
             setToken(aJCas, tokStart, tokEnd);
-            setTextClassificationTarget(aJCas, tokStart, tokEnd);
+            setTextClassificationTarget(aJCas, token, tokStart, tokEnd);
             setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
 
             documentText.append(token);
@@ -151,9 +151,10 @@ public class SequenceOutcomeReader
         sentence.addToIndexes();
     }
 
-    protected void setTextClassificationTarget(JCas aJCas, int begin, int end)
+    protected void setTextClassificationTarget(JCas aJCas, String token, int begin, int end)
     {
         TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
+        aTarget.setSuffix(token); //This improves readability of the id2outcome report
         aTarget.addToIndexes();
     }
 
@@ -175,6 +176,7 @@ public class SequenceOutcomeReader
     {
         DocumentMetaData data = new DocumentMetaData(aJCas);
         data.setDocumentId(runningId + "");
+        data.setDocumentTitle("Title_" + runningId);
         data.addToIndexes();
 
         runningId++;

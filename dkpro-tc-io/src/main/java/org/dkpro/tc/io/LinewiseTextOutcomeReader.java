@@ -128,6 +128,7 @@ public class LinewiseTextOutcomeReader
     {
         DocumentMetaData data = new DocumentMetaData(aJCas);
         data.setDocumentId(runningId + "");
+        data.setDocumentTitle("Title_" + runningId);
         data.addToIndexes();
 
         runningId++;
