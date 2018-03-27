@@ -74,7 +74,7 @@ public class ExperimentBuilder
 
     private Dimension<?> addReaders()
     {
-        return Dimension.createBundle("reader", trainTestReaders);
+        return Dimension.createBundle(DIM_READERS, trainTestReaders);
     }
 
     private Dimension<?> addFeatureSets()

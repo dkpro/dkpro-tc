@@ -34,6 +34,7 @@ import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.DiscriminableNameConverter;
 
 /**
@@ -79,7 +80,7 @@ public abstract class Experiment_ImplBase
         ParameterSpace pSpace = getParameterSpace();
         Dimension<?>[] dimensions = pSpace.getDimensions();
         for (Dimension<?> d : dimensions) {
-            if (d.getName().equals("readers")) {
+            if (d.getName().equals(Constants.DIM_READERS)) {
                 addConversionForCollectionReader(aContext, d);
             }
         }

@@ -70,6 +70,11 @@ public interface Constants
     /*
      * Discriminators
      */
+    
+    /**
+     * Name of the discriminator that stores a map containing either both (train and test) readers or only the train reader (i.e. cross-validation mode)
+     */
+    String DIM_READERS = "readers";
 
     /**
      * Name of the discriminator that stores the reader for training data
