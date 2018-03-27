@@ -33,6 +33,9 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+
 public class SequenceOutcomeReaderTest
 {
 
@@ -42,7 +45,8 @@ public class SequenceOutcomeReaderTest
 
         CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
                 SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
-                SequenceOutcomeReader.PARAM_PATTERNS, "posDummy.txt");
+                SequenceOutcomeReader.PARAM_PATTERNS, "posDummy.txt",
+                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 1);
 
         List<List<String>> readSequences = new ArrayList<>();
         List<List<String>> readOutcomes = new ArrayList<>();
@@ -53,21 +57,27 @@ public class SequenceOutcomeReaderTest
             JCas theJCas = JCasFactory.createJCas();
             reader.getNext(theJCas.getCas());
 
-            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
-                    TextClassificationTarget.class);
-            List<String> tokens = new ArrayList<>();
-            for (TextClassificationTarget target : targets) {
-                tokens.add(target.getCoveredText());
+            Collection<TextClassificationSequence> sequence = JCasUtil.select(theJCas,
+                    TextClassificationSequence.class);
+            for (TextClassificationSequence s : sequence) {
+                List<TextClassificationTarget> targets = JCasUtil.selectCovered(theJCas,
+                        TextClassificationTarget.class, s);
+                List<String> tokens = new ArrayList<>();
+                for (TextClassificationTarget target : targets) {
+                    tokens.add(target.getCoveredText());
+                }
+                readSequences.add(tokens);
             }
-            readSequences.add(tokens);
 
-            Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
-                    TextClassificationOutcome.class);
-            List<String> outcomes = new ArrayList<>();
-            for (TextClassificationOutcome o : outcomeAnnotations) {
-                outcomes.add(o.getOutcome());
+            for (TextClassificationSequence s : sequence) {
+                List<TextClassificationOutcome> outcomeAnnotations = JCasUtil.selectCovered(theJCas,
+                        TextClassificationOutcome.class, s);
+                List<String> outcomes = new ArrayList<>();
+                for (TextClassificationOutcome o : outcomeAnnotations) {
+                    outcomes.add(o.getOutcome());
+                }
+                readOutcomes.add(outcomes);
             }
-            readOutcomes.add(outcomes);
 
             seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
         }
@@ -138,21 +148,29 @@ public class SequenceOutcomeReaderTest
             JCas theJCas = JCasFactory.createJCas();
             reader.getNext(theJCas.getCas());
 
-            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
-                    TextClassificationTarget.class);
-            List<String> tokens = new ArrayList<>();
-            for (TextClassificationTarget target : targets) {
-                tokens.add(target.getCoveredText());
+            Collection<TextClassificationSequence> sequences = JCasUtil.select(theJCas,
+                    TextClassificationSequence.class);
+            for (TextClassificationSequence s : sequences) {
+                List<TextClassificationTarget> targets = JCasUtil.selectCovered(theJCas,
+                        TextClassificationTarget.class, s);
+                List<String> tokens = new ArrayList<>();
+                for (TextClassificationTarget target : targets) {
+                    tokens.add(target.getCoveredText());
+                }
+                readSequences.add(tokens);
             }
-            readSequences.add(tokens);
 
-            Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
-                    TextClassificationOutcome.class);
-            List<String> outcomes = new ArrayList<>();
-            for (TextClassificationOutcome o : outcomeAnnotations) {
-                outcomes.add(o.getOutcome());
+            Collection<TextClassificationSequence> outcomeSequences = JCasUtil.select(theJCas,
+                    TextClassificationSequence.class);
+            for (TextClassificationSequence s : outcomeSequences) {
+                List<TextClassificationOutcome> outcomeAnnotations = JCasUtil.selectCovered(theJCas,
+                        TextClassificationOutcome.class, s);
+                List<String> outcomes = new ArrayList<>();
+                for (TextClassificationOutcome o : outcomeAnnotations) {
+                    outcomes.add(o.getOutcome());
+                }
+                readOutcomes.add(outcomes);
             }
-            readOutcomes.add(outcomes);
 
             seqTargets += JCasUtil.select(theJCas, TextClassificationSequence.class).size();
         }
@@ -204,13 +222,18 @@ public class SequenceOutcomeReaderTest
             JCas theJCas = JCasFactory.createJCas();
             reader.getNext(theJCas.getCas());
 
-            Collection<TextClassificationTarget> targets = JCasUtil.select(theJCas,
-                    TextClassificationTarget.class);
-            List<String> tokens = new ArrayList<>();
-            for (TextClassificationTarget target : targets) {
-                tokens.add(target.getCoveredText());
+            Collection<TextClassificationSequence> sequence = JCasUtil.select(theJCas,
+                    TextClassificationSequence.class);
+            for (TextClassificationSequence s : sequence) {
+                List<TextClassificationTarget> targets = JCasUtil.selectCovered(theJCas,
+                        TextClassificationTarget.class, s);
+
+                List<String> tokens = new ArrayList<>();
+                for (TextClassificationTarget target : targets) {
+                    tokens.add(target.getCoveredText());
+                }
+                readSequences.add(tokens);
             }
-            readSequences.add(tokens);
 
             Collection<TextClassificationOutcome> outcomeAnnotations = JCasUtil.select(theJCas,
                     TextClassificationOutcome.class);
@@ -227,6 +250,71 @@ public class SequenceOutcomeReaderTest
         assertEquals("is2", readSequences.get(1).get(1));
         assertEquals("a2", readSequences.get(1).get(2));
         assertEquals("!", readSequences.get(1).get(3));
+    }
+
+    @Test
+    public void testNumberOfCas() throws Exception
+    {
+
+        // all in one
+        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt",
+                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 10);
+
+        int sentCount = 0;
+        int tokenCount = 0;
+        int createdCas = 0;
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+            sentCount += JCasUtil.select(theJCas, Sentence.class).size();
+            tokenCount += JCasUtil.select(theJCas, Token.class).size();
+            createdCas++;
+        }
+        assertEquals(1, createdCas);
+        assertEquals(3, sentCount);
+        assertEquals(15, tokenCount);
+
+        // one per cas
+        reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt",
+                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 1);
+
+        sentCount = 0;
+        tokenCount = 0;
+        createdCas = 0;
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+            sentCount += JCasUtil.select(theJCas, Sentence.class).size();
+            tokenCount += JCasUtil.select(theJCas, Token.class).size();
+            createdCas++;
+        }
+        assertEquals(3, createdCas);
+        assertEquals(3, sentCount);
+        assertEquals(15, tokenCount);
+
+        // two in first one third in second one
+        reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
+                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt",
+                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 2);
+
+        sentCount = 0;
+        tokenCount = 0;
+        createdCas = 0;
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+            sentCount += JCasUtil.select(theJCas, Sentence.class).size();
+            tokenCount += JCasUtil.select(theJCas, Token.class).size();
+            createdCas++;
+        }
+        assertEquals(2, createdCas);
+        assertEquals(3, sentCount);
+        assertEquals(15, tokenCount);
     }
 
 }

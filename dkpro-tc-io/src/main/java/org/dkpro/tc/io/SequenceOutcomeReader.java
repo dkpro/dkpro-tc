@@ -42,13 +42,13 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * Part-of-Speech tagging, where each token is associated with an own outcome e.g.:
  * 
  * <pre>
- * 		The TAB DET
- * 		car	TAB NOUN
- * 		drives TAB VERB
- * 		 
- * 		The	TAB DET
- * 		sun	TAB NOUN
- * 		shines	TAB VERB
+ *      The TAB DET
+ *      car TAB NOUN
+ *      drives TAB VERB
+ *       
+ *      The TAB DET
+ *      sun TAB NOUN
+ *      shines  TAB VERB
  * </pre>
  * 
  * Each token is annotated as {@link org.dkpro.tc.api.type.TextClassificationTarget} and the outcome
@@ -83,8 +83,13 @@ public class SequenceOutcomeReader
     @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
     protected Integer outcomeIdx;
 
+    public static final String PARAM_SEQUENCES_PER_CAS = "PARAM_SEQUENCES_PER_CAS";
+    @ConfigurationParameter(name = PARAM_SEQUENCES_PER_CAS, mandatory = true, defaultValue = "3")
+    protected Integer sequencesPerCas;
+
     protected BufferedReader reader;
 
+    protected List<List<String>> sequenceBuffer = new ArrayList<>();
     protected List<String> nextSequence = null;
     protected String line = null;
 
@@ -98,33 +103,38 @@ public class SequenceOutcomeReader
 
         StringBuilder documentText = new StringBuilder();
 
-        int seqStart = documentText.length();
-        for (int i = 0; i < nextSequence.size(); i++) {
-            String e = nextSequence.get(i);
-            String[] entry = e.split(separatingChar);
+        for (List<String> sequence : sequenceBuffer) {
+            int seqStart = documentText.length();
+            for (int i = 0; i < sequence.size(); i++) {
+                String e = sequence.get(i);
+                String[] entry = e.split(separatingChar);
 
-            String token = entry[tokenIdx];
-            String outcome = entry[outcomeIdx];
+                String token = entry[tokenIdx];
+                String outcome = entry[outcomeIdx];
 
-            token = performAdditionalTokenOperation(token);
-            outcome = performAdditionalOutcomeOperation(outcome);
+                token = performAdditionalTokenOperation(token);
+                outcome = performAdditionalOutcomeOperation(outcome);
 
-            int tokStart = documentText.length();
-            int tokEnd = tokStart + token.length();
+                int tokStart = documentText.length();
+                int tokEnd = tokStart + token.length();
 
-            setToken(aJCas, tokStart, tokEnd);
-            setTextClassificationTarget(aJCas, token, tokStart, tokEnd);
-            setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
+                setToken(aJCas, tokStart, tokEnd);
+                setTextClassificationTarget(aJCas, token, tokStart, tokEnd);
+                setTextClassificationOutcome(aJCas, outcome, tokStart, tokEnd);
 
-            documentText.append(token);
-            if (i + 1 < nextSequence.size()) {
-                documentText.append(" ");
+                documentText.append(token);
+                if (i + 1 < sequence.size()) {
+                    documentText.append(" ");
+                }
             }
+
+            setTextClassificationSequence(aJCas, seqStart, documentText.length());
+            setSentence(aJCas, seqStart, documentText.length());
+            documentText.append(" ");
         }
 
-        setTextClassificationSequence(aJCas, seqStart, documentText.length());
-        setSentence(aJCas, seqStart, documentText.length());
         aJCas.setDocumentText(documentText.toString());
+        sequenceBuffer = new ArrayList<>();
     }
 
     protected String performAdditionalOutcomeOperation(String outcome)
@@ -154,7 +164,7 @@ public class SequenceOutcomeReader
     protected void setTextClassificationTarget(JCas aJCas, String token, int begin, int end)
     {
         TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, begin, end);
-        aTarget.setSuffix(token); //This improves readability of the id2outcome report
+        aTarget.setSuffix(token); // This improves readability of the id2outcome report
         aTarget.addToIndexes();
     }
 
@@ -188,15 +198,31 @@ public class SequenceOutcomeReader
 
         if (reader == null) {
             Resource nextFile = getNextResource();
+            if (!sequenceBuffer.isEmpty()) {
+                return true; // data left to process
+            }
             if (nextFile == null) {
                 return false;
             }
             initReader(nextFile);
         }
 
-        nextSequence = read();
+        int sequencesRead = 0;
 
-        if (nextSequence.isEmpty()) {
+        while (sequencesRead < sequencesPerCas) {
+            nextSequence = read();
+            if (!nextSequence.isEmpty()) {
+                sequenceBuffer.add(nextSequence);
+                sequencesRead++;
+            }
+            if (nextSequence.isEmpty()) {
+                close();
+                reader = null;
+                return hasNext();
+            }
+        }
+
+        if (sequenceBuffer.isEmpty()) {
             close();
             reader = null;
             return hasNext();
