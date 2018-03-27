@@ -49,10 +49,8 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.ConnectorConstants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
-import org.dkpro.tc.core.util.TaskUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
 
@@ -96,8 +94,11 @@ public class ExtractFeaturesTask
     @Discriminator(name = DIM_APPLY_INSTANCE_WEIGHTING)
     private boolean applyWeighting;
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classArgs;
+    @Discriminator(name = DIM_DATA_WRITER)
+    private String dataWriter;
+    
+    @Discriminator(name = DIM_FEATURE_USE_SPARSE)
+    private boolean useSparse;
 
     @Discriminator(name = DIM_FEATURE_SET)
     private TcFeatureSet featureExtractors;
@@ -159,16 +160,14 @@ public class ExtractFeaturesTask
             File file = new File(folder, Constants.FILENAME_OUTCOMES);
             String[] outcomes = FileUtils.readLines(file, "utf-8").toArray(new String[0]);
 
-            TcShallowLearningAdapter adapter = TaskUtils.getAdapter(classArgs);
-
             List<Object> parameters = new ArrayList<>();
             parameters.addAll(Arrays.asList(ExtractFeaturesConnector.PARAM_ADD_INSTANCE_ID, true,
                     ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputDir,
                     PARAM_APPLY_WEIGHTING, applyWeighting, PARAM_DATA_WRITER_CLASS,
-                    adapter.getDataWriterClass().getName(), PARAM_FEATURE_FILTERS, featureFilters,
+                    dataWriter, PARAM_FEATURE_FILTERS, featureFilters,
                     PARAM_FEATURE_MODE, featureMode, PARAM_LEARNING_MODE, learningMode,
                     PARAM_IS_TESTING, isTesting, PARAM_USE_SPARSE_FEATURES,
-                    adapter.useSparseFeatures(), PARAM_OUTCOMES, outcomes, PARAM_FEATURE_EXTRACTORS,
+                    useSparse, PARAM_OUTCOMES, outcomes, PARAM_FEATURE_EXTRACTORS,
                     featureExtractorDescriptions, PARAM_REQUIRED_TYPES, requiredTypes));
 
             return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,

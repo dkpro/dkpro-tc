@@ -135,9 +135,14 @@ public interface Constants
     String DIM_BIPARTITION_THRESHOLD = "threshold";
 
     /**
-     * Name of the class that implements
+     * Flag to use sparse features during feature extraction
      */
-    String DIM_FEATURE_USE_SPARSE = "featureStore";
+    String DIM_FEATURE_USE_SPARSE = "useSparseFeatures";
+    
+    /**
+     * Name of the class that implements the data writer for a machine learning adapter
+     */
+    String DIM_DATA_WRITER = "mlaDataWriter";
 
     /**
      * Name of the discriminator that stores whether the instance weighting should be applied to
@@ -167,9 +172,6 @@ public interface Constants
      */
     String FILENAME_DATA_IN_CLASSIFIER_FORMAT = "featureFile.txt";
 
-    /**
-     * Developer mode enables it to use unit feature extractors in documents
-     */
     String DIM_FILES_ROOT = "filesRoot";
 
     String DIM_FILES_TRAINING = "files_training";
