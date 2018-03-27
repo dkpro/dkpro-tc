@@ -120,7 +120,7 @@ public class ExperimentSaveModel
             saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                     Constants.OUTCOMES_INPUT_KEY);
             saveModelTask.setAttribute(TC_TASK_TYPE,
-                    TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+                    TcTaskType.FACADE_TASK.toString());
 
         }
         catch (Exception e) {

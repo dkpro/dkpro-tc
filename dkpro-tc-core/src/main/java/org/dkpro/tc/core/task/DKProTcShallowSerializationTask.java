@@ -18,6 +18,7 @@
 package org.dkpro.tc.core.task;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
@@ -77,7 +78,17 @@ public class DKProTcShallowSerializationTask
 
         String[] split = getType().split("-");
         serializationTask.setType(serializationTask.getClass().getName() + "-" + split[1]);
-        this.addTask(serializationTask);
+        this.tasks = new HashSet<>();
+        addTask(serializationTask);
 
+    }
+    
+    @Override
+    public boolean isInitialized()
+    {
+        // This is a hack - the facade-task has to re-initialize at every
+        // execution to load the <i>current</i> machine learning adapter from
+        // the classification arguments
+        return false;
     }
 }
