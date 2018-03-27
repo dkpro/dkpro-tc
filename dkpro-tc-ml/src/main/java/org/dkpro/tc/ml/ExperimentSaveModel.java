@@ -112,7 +112,7 @@ public class ExperimentSaveModel
         // feature extraction and prediction on test data
         try {
             saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
-                    collectionTask, outputFolder);
+                    collectionTask, outputFolder, experimentName);
             saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
             saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
             saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,

@@ -43,14 +43,17 @@ public class DKProTcShallowSerializationTask
 
     private File outputFolder;
 
+    private String experimentName;
+
     public DKProTcShallowSerializationTask(MetaInfoTask metaInfoTask,
             ExtractFeaturesTask featuresTrainTask, OutcomeCollectionTask collectionTask,
-            File outputFolder)
+            File outputFolder, String experimentName)
     {
         this.metaInfoTask = metaInfoTask;
         this.featuresTrainTask = featuresTrainTask;
         this.collectionTask = collectionTask;
         this.outputFolder = outputFolder;
+        this.experimentName = experimentName;
     }
 
     @Override
@@ -76,8 +79,7 @@ public class DKProTcShallowSerializationTask
                 Constants.OUTCOMES_INPUT_KEY);
         serializationTask.setOutputFolder(outputFolder);
 
-        String[] split = getType().split("-");
-        serializationTask.setType(serializationTask.getClass().getName() + "-" + split[1]);
+        serializationTask.setType(serializationTask.getType() + "-" + experimentName);
         this.tasks = new HashSet<>();
         addTask(serializationTask);
 
