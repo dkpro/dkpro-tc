@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.uima;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,8 +66,10 @@ public class FeatureResourceLoader
         throws Exception
     {
         List<ExternalResourceDescription> erd = new ArrayList<>();
-
         File file = new File(tcModelLocation, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
+
+        assertModelFolderExists(file);
+
         for (String l : FileUtils.readLines(file, "utf-8")) {
             String[] split = l.split("\t");
             String name = split[0];
@@ -101,6 +104,17 @@ public class FeatureResourceLoader
         urlClassLoader.close();
 
         return erd;
+    }
+
+    private void assertModelFolderExists(File file) throws FileNotFoundException
+    {
+        if (!file.getParentFile().exists()) {
+            throw new FileNotFoundException(
+                    "The folder [" + file.getParentFile().getAbsolutePath() + "] does not exist");
+        }
+        if (!file.exists()) {
+            throw new FileNotFoundException("The file [" + file.getAbsolutePath() + "]");
+        }
     }
 
     private String getId(Object[] parameters)

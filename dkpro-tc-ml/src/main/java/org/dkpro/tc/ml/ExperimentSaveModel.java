@@ -112,7 +112,7 @@ public class ExperimentSaveModel
         // feature extraction and prediction on test data
         try {
             saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
-                    collectionTask, outputFolder);
+                    collectionTask, outputFolder, experimentName);
             saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
             saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
             saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
@@ -120,7 +120,7 @@ public class ExperimentSaveModel
             saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                     Constants.OUTCOMES_INPUT_KEY);
             saveModelTask.setAttribute(TC_TASK_TYPE,
-                    TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+                    TcTaskType.FACADE_TASK.toString());
 
         }
         catch (Exception e) {

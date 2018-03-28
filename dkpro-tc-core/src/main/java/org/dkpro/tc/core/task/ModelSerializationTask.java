@@ -180,6 +180,46 @@ public abstract class ModelSerializationTask
             implName = feDesc.getImplementationName();
         }
 
+        storeFeature(aOutputFolder, implName);
+    }
+
+    private void storeFeature(File aOutputFolder, String implName) throws Exception
+    {
+        writeClassObjectToDisk(aOutputFolder, implName);
+
+        List<String> listOfAnonymousClasses = getAnonymousClasses(implName);
+        for (String anonymousClass : listOfAnonymousClasses) {
+            writeClassObjectToDisk(aOutputFolder, anonymousClass);
+        }
+
+        Class<?> forName = Class.forName(implName);
+        Class<?>[] declaredClasses = forName.getDeclaredClasses();
+        for (Class<?> c : declaredClasses) {
+            storeFeature(aOutputFolder, c.getName());
+        }
+
+    }
+
+    private List<String> getAnonymousClasses(String implName)
+    {
+        List<String> existingClasses = new ArrayList<>();
+        for (int i = 1; i < Integer.MAX_VALUE; i++) {
+            try {
+                // we test if this causes an exception - if yes, no inner classes are used
+                String name = implName + "$" + i;
+                Class.forName(name);
+                existingClasses.add(name);
+            }
+            catch (Exception e) {
+                break;
+            }
+        }
+
+        return existingClasses;
+    }
+
+    private void writeClassObjectToDisk(File aOutputFolder, String implName) throws Exception
+    {
         Class<?> feature = Class.forName(implName);
 
         InputStream is = null;

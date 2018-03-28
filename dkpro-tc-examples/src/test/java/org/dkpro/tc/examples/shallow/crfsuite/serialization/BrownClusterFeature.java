@@ -22,9 +22,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
@@ -33,8 +38,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -74,7 +79,66 @@ public class BrownClusterFeature
         String unit = aTarget.getCoveredText().toLowerCase();
         Set<Feature> features = createFeatures(unit);
 
+        someOperationsOnInnerClassUsingAnonymousClasses();
+
         return features;
+    }
+
+    /*
+     * part of a test case that ensures that the inner and anonymous classes are loaded properly -
+     * irrelevant for productive use
+     */
+    private void someOperationsOnInnerClassUsingAnonymousClasses()
+    {
+        List<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo> l = new ArrayList<>();
+        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
+        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
+        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
+
+        // This will create an anonymous inner class xxxx$1
+        Collections.sort(l,
+                new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
+                {
+
+                    @Override
+                    public int compare(
+                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o1,
+                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o2)
+                    {
+                        if (o1.a > o2.a) {
+                            return 1;
+                        }
+                        else if (o1.a < o2.a) {
+                            return -1;
+                        }
+
+                        return 0;
+                    }
+
+                });
+
+        // This will create an anonymous inner class xxxx$2
+        Collections.sort(l,
+                new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
+                {
+
+                    @Override
+                    public int compare(
+                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o1,
+                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o2)
+                    {
+                        if (o1.a < o2.a) {
+                            return 1;
+                        }
+                        else if (o1.a > o2.a) {
+                            return -1;
+                        }
+
+                        return 0;
+                    }
+
+                });
+
     }
 
     private Set<Feature> createFeatures(String unit)
@@ -140,6 +204,56 @@ public class BrownClusterFeature
             isr = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
         }
         return new BufferedReader(isr);
+    }
+
+    class PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo
+    {
+        int a;
+        int few;
+        int variables;
+        private AnotherOne x;
+
+        PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo()
+        {
+            this.a = new Random().nextInt();
+            this.few = 23;
+            this.variables = 2;
+            this.x = new AnotherOne();
+
+            List<AnotherOne> o = new ArrayList<>();
+            o.add(x);
+            o.add(new AnotherOne());
+            o.add(new AnotherOne());
+            o.add(new AnotherOne());
+
+            Collections.sort(o, new Comparator<AnotherOne>()
+            {
+
+                @Override
+                public int compare(AnotherOne o1, AnotherOne o2)
+                {
+                    if (o1.y > o2.y) {
+                        return -1;
+                    }
+                    else if (o1.y < o2.y) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+
+        }
+
+        class AnotherOne
+        {
+            int y = 0;
+
+            public AnotherOne()
+            {
+                y = new Random().nextInt();
+            }
+        }
+
     }
 
 }
