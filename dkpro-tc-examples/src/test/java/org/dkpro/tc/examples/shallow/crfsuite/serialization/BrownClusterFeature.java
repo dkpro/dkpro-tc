@@ -95,7 +95,7 @@ public class BrownClusterFeature
         l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
         l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
 
-        //This will create an anonymous inner class xxxx$1
+        // This will create an anonymous inner class xxxx$1
         Collections.sort(l,
                 new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
                 {
@@ -116,8 +116,8 @@ public class BrownClusterFeature
                     }
 
                 });
-        
-        //This will create an anonymous inner class xxxx$2
+
+        // This will create an anonymous inner class xxxx$2
         Collections.sort(l,
                 new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
                 {
@@ -211,12 +211,47 @@ public class BrownClusterFeature
         int a;
         int few;
         int variables;
+        private AnotherOne x;
 
         PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo()
         {
             this.a = new Random().nextInt();
             this.few = 23;
             this.variables = 2;
+            this.x = new AnotherOne();
+
+            List<AnotherOne> o = new ArrayList<>();
+            o.add(x);
+            o.add(new AnotherOne());
+            o.add(new AnotherOne());
+            o.add(new AnotherOne());
+
+            Collections.sort(o, new Comparator<AnotherOne>()
+            {
+
+                @Override
+                public int compare(AnotherOne o1, AnotherOne o2)
+                {
+                    if (o1.y > o2.y) {
+                        return -1;
+                    }
+                    else if (o1.y < o2.y) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+
+        }
+
+        class AnotherOne
+        {
+            int y = 0;
+
+            public AnotherOne()
+            {
+                y = new Random().nextInt();
+            }
         }
 
     }
