@@ -94,7 +94,7 @@ public class LibsvmTrainModel
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             throw new IllegalArgumentException("NaN or Infinity in input\n");
         }
-        return (d);
+        return d;
     }
 
     private static int atoi(String s)

@@ -43,13 +43,6 @@ public class ValidityCheckConnector
     implements ConnectorConstants
 {
 
-    /**
-     * Bipartition threshold used in multi-label experiments
-     */
-    public static final String PARAM_BIPARTITION_THRESHOLD = "bipartitionThreshold";
-    @ConfigurationParameter(name = PARAM_BIPARTITION_THRESHOLD, mandatory = false)
-    private String bipartitionThreshold;
-
     @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected String[] featureExtractors;
 
