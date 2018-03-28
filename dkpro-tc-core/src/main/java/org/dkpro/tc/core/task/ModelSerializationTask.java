@@ -181,14 +181,24 @@ public abstract class ModelSerializationTask
         }
 
         writeClassObjectToDisk(aOutputFolder, implName);
+        writerInnerClassesToDisk(aOutputFolder, implName);
 
-        if (featureUsesAnonymousInnerClasses(implName)) {
+        if (featureUsesAnonymousClasses(implName)) {
             writeClassObjectToDisk(aOutputFolder, implName + "$1");
         }
 
     }
+    
+    private void writerInnerClassesToDisk(File aOutputFolder, String implName) throws Exception
+    {
+        Class<?> forName = Class.forName(implName);
+        Class<?>[] declaredClasses = forName.getDeclaredClasses();
+        for(Class<?> c : declaredClasses) {
+            writeClassObjectToDisk(aOutputFolder, c.getName());
+        }
+    }
 
-    private boolean featureUsesAnonymousInnerClasses(String implName)
+    private boolean featureUsesAnonymousClasses(String implName)
     {
         try {
             // we test if this causes an exception - if yes, no inner classes are used
