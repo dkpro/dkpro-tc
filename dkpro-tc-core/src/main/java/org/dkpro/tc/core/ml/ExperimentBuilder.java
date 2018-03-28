@@ -38,33 +38,42 @@ public class ExperimentBuilder
 {
     List<TcShallowLearningAdapter> adapter = new ArrayList<>();
     List<String[]> arguments = new ArrayList<>();
-    String learningMode = null;
-    String featureMode = null;
-    Map<String, Object> trainTestReaders = null;
+    String learningMode = LM_SINGLE_LABEL;
+    String featureMode = FM_DOCUMENT;
+    Map<String, Object> readers = null;
     List<TcFeatureSet> featureSets = new ArrayList<>();
 
+    /**
+     * Adds a machine learning adapter configuration. Several configurations for the same adapter
+     * can be added by calling this method multiple times with other parametritzation for the
+     * adapter
+     * 
+     * @param adapter
+     *            the adapter that shall be executed
+     * @param arguments
+     *            the parametrization of this adapter - optional
+     */
     public void addAdapterConfiguration(TcShallowLearningAdapter adapter, String... arguments)
     {
         this.adapter.add(adapter);
         this.arguments.add(arguments);
     }
 
+    /**
+     * Wires all provided information into a parameter space object that can be provided to an
+     * experiment
+     * 
+     * @return the parameter space filled with the provided information
+     */
     public ParameterSpace build()
     {
         List<Dimension<?>> dimensions = new ArrayList<>();
 
-        List<Map<String, Object>> adapterMaps = getAdapterInfo();
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object>[] array = adapterMaps.toArray(new Map[0]);
-        Dimension<Map<String, Object>> mlaDim = Dimension
-                .createBundle("machineLearningAdapterConfigurations", array);
-        dimensions.add(mlaDim);
-
-        dimensions.add(addFeatureMode());
-        dimensions.add(addLearningMode());
-        dimensions.add(addFeatureSets());
-        dimensions.add(addReaders());
+        dimensions.add(getAsDimensionMachineLearningAdapter());
+        dimensions.add(getAsDimensionFeatureMode());
+        dimensions.add(getAsDimensionLearningMode());
+        dimensions.add(getAsDimensionFeatureSets());
+        dimensions.add(getAsDimensionReaders());
 
         ParameterSpace ps = new ParameterSpace();
         ps.setDimensions(dimensions.toArray(new Dimension<?>[0]));
@@ -72,12 +81,22 @@ public class ExperimentBuilder
         return ps;
     }
 
-    private Dimension<?> addReaders()
+    private Dimension<?> getAsDimensionMachineLearningAdapter()
     {
-        return Dimension.createBundle(DIM_READERS, trainTestReaders);
+        List<Map<String, Object>> adapterMaps = getAdapterInfo();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object>[] array = adapterMaps.toArray(new Map[0]);
+        Dimension<Map<String, Object>> mlaDim = Dimension.createBundle("configurations", array);
+        return mlaDim;
     }
 
-    private Dimension<?> addFeatureSets()
+    private Dimension<?> getAsDimensionReaders()
+    {
+        return Dimension.createBundle(DIM_READERS, readers);
+    }
+
+    private Dimension<?> getAsDimensionFeatureSets()
     {
         if (featureSets.isEmpty()) {
             throw new IllegalStateException(
@@ -88,7 +107,7 @@ public class ExperimentBuilder
         return Dimension.create(DIM_FEATURE_SET, featureSets.toArray(new TcFeatureSet[0]));
     }
 
-    private Dimension<?> addLearningMode()
+    private Dimension<?> getAsDimensionLearningMode()
     {
         if (learningMode == null) {
             throw new NullPointerException(
@@ -98,7 +117,7 @@ public class ExperimentBuilder
         return Dimension.create(DIM_LEARNING_MODE, learningMode);
     }
 
-    private Dimension<?> addFeatureMode()
+    private Dimension<?> getAsDimensionFeatureMode()
     {
         if (featureMode == null) {
             throw new NullPointerException(
@@ -110,6 +129,11 @@ public class ExperimentBuilder
 
     private List<Map<String, Object>> getAdapterInfo()
     {
+        if (adapter.size() == 0) {
+            throw new IllegalStateException(
+                    "No machine learning adapter set - Provide at least one machine learning configuration");
+        }
+
         List<Map<String, Object>> maps = new ArrayList<>();
 
         for (int i = 0; i < adapter.size(); i++) {
@@ -132,54 +156,105 @@ public class ExperimentBuilder
         return maps;
     }
 
-    public void setReaders(Map<String, Object> dimReaders)
+    /**
+     * Sets the readers of an experiment. Overwrites any previously added readers.
+     * 
+     * @param dimReaders
+     */
+    public void setReaders(Map<String, Object> dimReaders) throws NullPointerException
     {
-        this.trainTestReaders = dimReaders;
+        nullCheckReaderMap(dimReaders);
+        this.readers = dimReaders;
         sanityCheckReaders();
+    }
+
+    private void nullCheckReaderMap(Map<String, Object> readers)
+    {
+        if(readers == null) {
+            throw new NullPointerException("The provided readers are null");
+        }        
     }
 
     public void setFeatureMode(String featureMode)
     {
         this.featureMode = featureMode;
+        nullCheckFeatureMode();
+    }
+
+    private void nullCheckFeatureMode()
+    {
+        if (this.learningMode == null) {
+            throw new NullPointerException("The provided feature mode is null");
+        }
     }
 
     public void setLearningMode(String learningMode)
     {
         this.learningMode = learningMode;
+        nullCheckLearningMode();
+    }
+
+    private void nullCheckLearningMode()
+    {
+        if (this.learningMode == null) {
+            throw new NullPointerException("The provided learning mode is null");
+        }
     }
 
     public void addFeatureSet(TcFeatureSet featureSet)
     {
+        sanityCheckFeatureSet(featureSet);
         this.featureSets.add(featureSet);
     }
 
+    private void sanityCheckFeatureSet(TcFeatureSet featureSet)
+    {
+        if (featureSet == null) {
+            throw new NullPointerException("The provided feature set is null");
+        }
+        if (featureSet.isEmpty()) {
+            throw new IllegalStateException("The provided feature set contains no features");
+        }
+    }
+
+    /**
+     * Provides a reader that is added to the setup.
+     * 
+     * @param reader
+     *            the reader
+     * @param isTrain
+     *            indicates if the reader provides information for training or testing data
+     * @throws IllegalStateException
+     *             if more than two reader instances are added
+     */
     public void addReader(CollectionReaderDescription reader, boolean isTrain)
+        throws IllegalStateException
     {
         if (reader == null) {
             throw new NullPointerException(
                     "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
 
-        if (trainTestReaders == null) {
-            trainTestReaders = new HashMap<>();
+        if (readers == null) {
+            readers = new HashMap<>();
         }
         if (isTrain) {
-            trainTestReaders.put(DIM_READER_TRAIN, reader);
+            readers.put(DIM_READER_TRAIN, reader);
         }
         else {
-            trainTestReaders.put(DIM_READER_TEST, reader);
+            readers.put(DIM_READER_TEST, reader);
         }
 
         sanityCheckReaders();
     }
 
-    private void sanityCheckReaders()
+    private void sanityCheckReaders() throws IllegalStateException
     {
-        if (trainTestReaders.size() > 2) {
+        if (readers.size() > 2) {
             throw new IllegalStateException(
                     "More than two readers have been added. Train-test experiments require two data readers, one for train, one for test. Cross-validation experiments require only one.");
         }
-        
+
     }
 
 }

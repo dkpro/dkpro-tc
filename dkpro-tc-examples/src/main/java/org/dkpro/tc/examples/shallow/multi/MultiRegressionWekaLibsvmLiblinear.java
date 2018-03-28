@@ -20,9 +20,7 @@ package org.dkpro.tc.examples.shallow.multi;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -47,10 +45,9 @@ import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
-import org.dkpro.tc.ml.weka.WekaAdapter;
+import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.functions.LinearRegression;
 
 public class MultiRegressionWekaLibsvmLiblinear
     implements Constants
@@ -76,7 +73,6 @@ public class MultiRegressionWekaLibsvmLiblinear
         experiment.runCrossValidation(pSpace);
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -101,10 +97,25 @@ public class MultiRegressionWekaLibsvmLiblinear
                 LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), LinearRegression.class.getName() }),
-                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "6" }),
-                Arrays.asList(new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" }));
+        Map<String, Object> xgboostConfig = new HashMap<>();
+        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+
+        Map<String, Object> liblinearConfig = new HashMap<>();
+        liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LiblinearAdapter(), "-s", "6" });
+        liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+        
+        Map<String, Object> libsvmConfig = new HashMap<>();
+        libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" });
+        libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig, liblinearConfig, libsvmConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
@@ -114,7 +125,7 @@ public class MultiRegressionWekaLibsvmLiblinear
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
 
         return pSpace;
     }
@@ -135,8 +146,7 @@ public class MultiRegressionWekaLibsvmLiblinear
 
     public void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionDemo",
-                2);
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionDemo", 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchCrossValidationReport.class);

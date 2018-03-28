@@ -20,6 +20,9 @@ package org.dkpro.tc.examples.shallow.multi;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -76,62 +79,42 @@ public class MultiSvmUsingWekaLibsvmLiblinear
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the
         // train part
-//        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-//        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 //
-//        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-//                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
-//                corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-//                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-//        dimReaders.put(DIM_READER_TEST, readerTest);
-
-//        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-//                new TcFeatureSet("DummyFeatureSet",
-//                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-//                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-//                                500, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-//                                3)));
-//
-//        @SuppressWarnings("unchecked")
-//        Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-//                Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName(), "-C", "1.0",
-//                        "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2" }),
-//                Arrays.asList(
-//                        new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" }),
-//                Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" }));
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         ExperimentBuilder x = new ExperimentBuilder();
-        x.addReader(readerTrain, true);
+        x.setReaders(dimReaders);
         x.addAdapterConfiguration(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3");
         x.addAdapterConfiguration(new LiblinearAdapter(),  "-s", "4", "-c", "100");
-        x.addAdapterConfiguration(new XgboostAdapter());
+        x.addAdapterConfiguration(new XgboostAdapter(), "objective=multi:softmax");
         x.addAdapterConfiguration(new WekaAdapter(),  SMO.class.getName(), "-C", "1.0",
                 "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2");
         x.setFeatureMode(FM_DOCUMENT);
         x.setLearningMode(LM_SINGLE_LABEL);
-        x.addFeatureSet(new TcFeatureSet("DummyFeatureSet",
-                TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-                        500, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-                        3)));
+        x.addFeatureSet(getFeatureSet());
         
         ParameterSpace ps = x.build();
         return ps;
-//        
-//        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-//                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-//                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, array);
-//        
-//        ParameterSpace parameterSpace = new ParameterSpace();
-//        parameterSpace.setDimensions(aDimensions);
-//
-//
-//        return null;
+    }
+
+    private static TcFeatureSet getFeatureSet()
+    {
+        return new TcFeatureSet("DummyFeatureSet",
+                TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                        500, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                        3));
     }
 
     // ##### CV #####

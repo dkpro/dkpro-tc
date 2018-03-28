@@ -20,9 +20,7 @@ package org.dkpro.tc.examples.shallow.xgboost.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -92,13 +90,18 @@ public class XgboostDocumentPlain
                                 20, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
                                 3)));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new XgboostAdapter(), "objective=multi:softmax" }));
+        Map<String, Object> xgboostConfig = new HashMap<>();
+        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config",
+                xgboostConfig);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimClassArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
 
         return pSpace;
     }
