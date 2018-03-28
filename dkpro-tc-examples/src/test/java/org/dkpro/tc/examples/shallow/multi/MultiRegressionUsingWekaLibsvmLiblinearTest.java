@@ -67,6 +67,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
                 ContextMemoryReport.id2outcomeFiles.size());
 
+        assertEquals(1.3, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.1);
         assertEquals(0.5, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
         assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
         assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
@@ -218,6 +219,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
         sum += 1; // Weka
         sum += 1; // Libsvm
         sum += 1; // Liblinear
+        sum += 1; // Xgboost
 
         return sum;
     }
@@ -227,10 +229,11 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 2; // 2 x FeatExtract
         sum += 2; // 1 x Facade + 1x ML Adapter
-
-        sum *= 3; // 3 adapter in setup
+        sum *= 4; // 3 adapter in setup
+        
+        sum += 2; // 2 x FeatExtract shared by Xgboost/Liblinear/Libsvm
+        sum += 2; // 2 x FeatExtract for Weka
         sum += 2; // 2 x Init
         sum += 1; // 1 x Meta
         sum += 1; // 1 x Outcome

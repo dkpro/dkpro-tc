@@ -45,9 +45,11 @@ import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import weka.classifiers.functions.LinearRegression;
 
 public class MultiRegressionWekaLibsvmLiblinear
     implements Constants
@@ -108,14 +110,21 @@ public class MultiRegressionWekaLibsvmLiblinear
                 new Object[] { new LiblinearAdapter(), "-s", "6" });
         liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
         liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
-        
+
         Map<String, Object> libsvmConfig = new HashMap<>();
         libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" });
         libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
         libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig, liblinearConfig, libsvmConfig);
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), LinearRegression.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig,
+                liblinearConfig, libsvmConfig, wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
@@ -124,8 +133,7 @@ public class MultiRegressionWekaLibsvmLiblinear
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                mlas);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
 
         return pSpace;
     }
