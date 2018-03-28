@@ -180,6 +180,29 @@ public abstract class ModelSerializationTask
             implName = feDesc.getImplementationName();
         }
 
+        writeClassObjectToDisk(aOutputFolder, implName);
+
+        if (featureUsesAnonymousInnerClasses(implName)) {
+            writeClassObjectToDisk(aOutputFolder, implName + "$1");
+        }
+
+    }
+
+    private boolean featureUsesAnonymousInnerClasses(String implName)
+    {
+        try {
+            // we test if this causes an exception - if yes, no inner classes are used
+            Class.forName(implName + "$1");
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void writeClassObjectToDisk(File aOutputFolder, String implName) throws Exception
+    {
         Class<?> feature = Class.forName(implName);
 
         InputStream is = null;
