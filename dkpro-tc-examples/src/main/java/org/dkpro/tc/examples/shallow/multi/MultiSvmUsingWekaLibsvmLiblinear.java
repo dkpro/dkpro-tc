@@ -46,7 +46,6 @@ import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
-import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
@@ -70,8 +69,8 @@ public class MultiSvmUsingWekaLibsvmLiblinear
         ParameterSpace pSpace = getParameterSpace();
 
         MultiSvmUsingWekaLibsvmLiblinear experiment = new MultiSvmUsingWekaLibsvmLiblinear();
-//        experiment.runTrainTest(pSpace);
-         experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest(pSpace);
+//         experiment.runCrossValidation(pSpace);
     }
 
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
@@ -97,7 +96,6 @@ public class MultiSvmUsingWekaLibsvmLiblinear
         x.setReaders(dimReaders);
         x.addAdapterConfiguration(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3");
         x.addAdapterConfiguration(new LiblinearAdapter(),  "-s", "4", "-c", "100");
-        x.addAdapterConfiguration(new XgboostAdapter(), "objective=multi:softmax");
         x.addAdapterConfiguration(new WekaAdapter(),  SMO.class.getName(), "-C", "1.0",
                 "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2");
         x.setFeatureMode(FM_DOCUMENT);

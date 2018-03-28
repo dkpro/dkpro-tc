@@ -200,10 +200,12 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 2; // 2 x FeatExtract
         sum += 2; // 1 x Facade + 1x ML Adapter
-
         sum *= 3; // 3 adapter in setup
+        
+        sum += 2; // 2 folder FeatExtract Train+Test shared by Liblinear/Libsvm
+        sum += 2; // 2 folder FeatExtract Train+Test for Weka
+        
         sum += 2; // 2 x Init
         sum += 1; // 1 x Outcome
         sum += 1; // 1 x Meta
