@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
@@ -137,7 +137,7 @@ public class SVMHMMSaveAndLoadModelTest
                 new TcFeatureSet(
                         TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
-                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
         @SuppressWarnings("unchecked")
         Dimension<List<Object>> dimClassificationArgs = Dimension.create(

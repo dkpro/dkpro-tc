@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfCharsOverAllTokensMC;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfTokensOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
@@ -42,11 +42,10 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgTokenLengthRatioPerDocument
+public class TokenRatioPerDocument
     extends MaximumNormalizationExtractorBase
 {
-
-    public static final String FEATURE_NAME = "NumberOfCharsPerTokenRatio";
+    public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
@@ -55,14 +54,8 @@ public class AvgTokenLengthRatioPerDocument
 
         long maxLen = getMax();
 
-        double avgTokenLen = 0.0;
         Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
-        for (Token t : tokens) {
-            avgTokenLen += t.getCoveredText().length();
-        }
-        avgTokenLen /= tokens.size();
-
-        double ratio = getRatio(avgTokenLen, maxLen);
+        double ratio = getRatio(tokens.size(), maxLen);
         return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
     }
 
@@ -72,17 +65,17 @@ public class AvgTokenLengthRatioPerDocument
         throws ResourceInitializationException
     {
 
-        return Arrays.asList(
-                new MetaCollectorConfiguration(MaxNrOfCharsOverAllTokensMC.class, parameterSettings)
-                        .addStorageMapping(MaxNrOfCharsOverAllTokensMC.PARAM_TARGET_LOCATION,
-                                AvgTokenLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
-                                MaxNrOfCharsOverAllTokensMC.LUCENE_DIR));
+        return Arrays.asList(new MetaCollectorConfiguration(MaxNrOfTokensOverAllDocumentsMC.class,
+                parameterSettings).addStorageMapping(
+                        MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                        TokenRatioPerDocument.PARAM_SOURCE_LOCATION,
+                        MaxNrOfTokensOverAllDocumentsMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return MaxNrOfCharsOverAllTokensMC.LUCENE_MAX_CHAR_FIELD + featureExtractorName;
+        return MaxNrOfTokensOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
     }
 
     @Override

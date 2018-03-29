@@ -29,14 +29,14 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
 import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfTokensOverAllDocumentsMC;
 import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
-public class AvgTokenRatioPerDocumentTest
+public class TokenRatioPerDocumentTest
     extends LuceneMetaCollectionBasedFeatureTestBase
 {
     private static String EXTRACTOR_NAME = "5646534431";
@@ -46,7 +46,7 @@ public class AvgTokenRatioPerDocumentTest
     {
         super.setup();
 
-        featureClass = AvgTokenRatioPerDocument.class;
+        featureClass = TokenRatioPerDocument.class;
         metaCollectorClass = MaxNrOfTokensOverAllDocumentsMC.class;
     }
 
@@ -119,19 +119,19 @@ public class AvgTokenRatioPerDocumentTest
     @Override
     protected Object[] getMetaCollectorParameters(File luceneFolder)
     {
-        return new Object[] { AvgTokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-                AvgTokenRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
-                AvgTokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+        return new Object[] { TokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                TokenRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
+                TokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
                 MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
-                AvgTokenRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-                AvgTokenRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+                TokenRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
+                TokenRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
     }
 
     @Override
     protected Object[] getFeatureExtractorParameters(File luceneFolder)
     {
-        return new Object[] { AvgTokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-                AvgTokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+        return new Object[] { TokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                TokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
                 MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
     }
 }
