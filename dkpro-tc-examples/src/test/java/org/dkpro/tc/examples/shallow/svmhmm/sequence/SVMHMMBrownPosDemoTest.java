@@ -65,7 +65,7 @@ public class SVMHMMBrownPosDemoTest
                 .convertSingleLabelModeId2Outcome(pathVerification(inputFile));
         Accuracy<String> acc = new Accuracy<String>(data);
 
-        assertEquals(0.3, acc.getResult(), 0.1);
+        assertEquals(0.3, acc.getResult(), 0.2);
 
         assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
         List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
