@@ -29,11 +29,11 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.ExperimentBuilder;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
@@ -70,7 +70,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear
 
         MultiSvmUsingWekaLibsvmLiblinear experiment = new MultiSvmUsingWekaLibsvmLiblinear();
         experiment.runTrainTest(pSpace);
-//         experiment.runCrossValidation(pSpace);
+        // experiment.runCrossValidation(pSpace);
     }
 
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
@@ -85,24 +85,41 @@ public class MultiSvmUsingWekaLibsvmLiblinear
                 corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-//
+        //
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        ExperimentBuilder expBuilder = new ExperimentBuilder();
-        expBuilder.setReaders(dimReaders);
-        expBuilder.addAdapterConfiguration(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3");
-        expBuilder.addAdapterConfiguration(new LiblinearAdapter(),  "-s", "4", "-c", "100");
-        expBuilder.addAdapterConfiguration(new WekaAdapter(),  SMO.class.getName(), "-C", "1.0",
-                "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2");
-        expBuilder.setFeatureMode(FM_DOCUMENT);
-        expBuilder.setLearningMode(LM_SINGLE_LABEL);
-        expBuilder.addFeatureSet(getFeatureSet());
-        
-        ParameterSpace ps = expBuilder.build();
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), SMO.class.getName(),
+                "-C", "1.0", "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2" });
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Map<String, Object> config2 = new HashMap<>();
+        config2.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" });
+        config2.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        config2.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+
+        Map<String, Object> config3 = new HashMap<>();
+        config3.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" });
+        config3.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config3.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config, config2,
+                config3);
+
+        Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+        Dimension<String> dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
+        Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, getFeatureSet());
+
+        ParameterSpace ps = new ParameterSpace(dimLearningMode, dimFeatureMode, dimFeatureMode,
+                dimFeatureSet, mlas, Dimension.createBundle(DIM_READERS, dimReaders));
+
         return ps;
     }
 
@@ -110,9 +127,8 @@ public class MultiSvmUsingWekaLibsvmLiblinear
     {
         return new TcFeatureSet("DummyFeatureSet",
                 TcFeatureFactory.create(TokenRatioPerDocument.class),
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-                        500, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-                        3));
+                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3));
     }
 
     // ##### CV #####
