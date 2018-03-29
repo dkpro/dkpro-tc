@@ -18,9 +18,7 @@
  */
 package org.dkpro.tc.groovyexamples.single.unit
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
@@ -29,19 +27,18 @@ import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.io.SequenceOutcomeReader;
-import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
+import org.dkpro.tc.examples.util.DemoUtils
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
+import org.dkpro.tc.io.SequenceOutcomeReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
-import org.dkpro.tc.examples.util.DemoUtils
+
 import weka.classifiers.bayes.NaiveBayes
-import weka.classifiers.functions.SMO
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureSet
 /**
  * This is an example for German NER as unit classification (groovy setup). Each Entity is treated as a classification
  * unit. This is only a showcase of the concept.
@@ -58,7 +55,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, new TcFeatureSet(
-        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
+        TcFeatureFactory.create(TokenRatioPerDocument.class),
         TcFeatureFactory.create(InitialCharacterUpperCase.class)
     ))
     
