@@ -187,6 +187,8 @@ public class SVMHMMSaveAndLoadModelTest
         possibleOutcome.add("IN");
         possibleOutcome.add("VBD");
         possibleOutcome.add("VB");
+        possibleOutcome.add("BEDZ");
+        possibleOutcome.add("VBN");
         possibleOutcome.add("RB");
         possibleOutcome.add("NNS");
 

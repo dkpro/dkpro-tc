@@ -61,12 +61,11 @@ public class SVMHMMBrownPosDemoTest
         javaExperiment.runTrainTest(pSpace);
 
         File inputFile = ContextMemoryReport.id2outcomeFiles.get(0);
-        System.out.println(inputFile.getAbsolutePath());
         EvaluationData<String> data = Tc2LtlabEvalConverter
                 .convertSingleLabelModeId2Outcome(pathVerification(inputFile));
         Accuracy<String> acc = new Accuracy<String>(data);
 
-        assertEquals(0.5, acc.getResult(), 0.05);
+        assertEquals(0.3, acc.getResult(), 0.1);
 
         assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
         List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),

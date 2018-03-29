@@ -67,6 +67,6 @@ public class LibsvmBrownUnitPosDemoTest
         Accuracy<String> accuracy = new Accuracy<>(Tc2LtlabEvalConverter
                 .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
 
-        assertEquals(0.8092783505154639, accuracy.getResult(), 0.0001);
+        assertEquals(0.8092783505154639, accuracy.getResult(), 0.1);
     }
 }
