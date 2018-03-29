@@ -32,15 +32,15 @@
     </license>
   </licenses>
   <dependencies>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-<!--     <dependency> -->
-<!-- 	<groupId>org.apache.commons</groupId> -->
-<!-- 	<artifactId>commons-collections4</artifactId> -->
-<!-- </dependency> -->
-      <dependency>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-collections4</artifactId>
+	</dependency>
+	<dependency>
       <groupId>org.dkpro.tc</groupId>
       <artifactId>dkpro-tc-api</artifactId>
     </dependency>
