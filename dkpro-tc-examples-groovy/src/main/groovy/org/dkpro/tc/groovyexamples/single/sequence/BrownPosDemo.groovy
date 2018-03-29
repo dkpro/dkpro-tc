@@ -20,7 +20,6 @@ package org.dkpro.tc.groovyexamples.single.sequence
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
 import org.apache.uima.fit.component.NoOpAnnotator
@@ -29,18 +28,16 @@ import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.tc.api.features.TcFeatureFactory
+import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation
+import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.apache.uima.fit.factory.CollectionReaderFactory
-import org.dkpro.tc.api.features.TcFeatureFactory
-import org.dkpro.tc.api.features.TcFeatureSet
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
@@ -56,8 +53,8 @@ implements Constants {
     BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
     BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
     BrownCorpusReader.PARAM_PATTERNS, [
-        INCLUDE_PREFIX + "*.xml",
-        INCLUDE_PREFIX + "*.xml.gz"]
+        "*.xml",
+        "*.xml.gz"]
     );
 
     def dimReaders = Dimension.createBundle("readers", [
@@ -74,9 +71,12 @@ implements Constants {
 									CharacterNGram.PARAM_NGRAM_MAX_N, 3 )
 							 ))
 	
-	def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-		[new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR])
-	
+    def config  = [
+        (DIM_CLASSIFICATION_ARGS) : [new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR],
+        (DIM_DATA_WRITER) : new CrfSuiteAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new CrfSuiteAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config)
 
     // ##### CV #####
     protected void runCrossValidation()
@@ -92,7 +92,7 @@ implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimFeatureSets,
-				dimClassificationArgs
+				mlas
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [

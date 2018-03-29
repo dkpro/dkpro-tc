@@ -19,31 +19,25 @@
 package org.dkpro.tc.groovyexamples.single.unit
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription
-import org.apache.uima.fit.component.NoOpAnnotator
 import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ExternalResourceDescription
-import org.apache.uima.resource.ResourceInitializationException
 import org.dkpro.lab.Lab
 import org.dkpro.lab.task.Dimension
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy
+import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
+import org.dkpro.tc.examples.util.DemoUtils
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
-import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.dkpro.tc.api.features.TcFeatureFactory;
-import org.dkpro.tc.api.features.TcFeatureSet
 /**
  * This example is the same as {@link BrownUnitPosDemo}, except that it demonstrates how to
  * pass an external resource to the feature extractor.  (In this case we pass a dummy
@@ -76,9 +70,18 @@ implements Constants {
     DIM_FEATURE_SET, new TcFeatureSet(
         TcFeatureFactory.create(TokenRatioPerDocument.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
-    def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [new WekaAdapter(), NaiveBayes.name],
-	[new WekaAdapter(), SMO.name])
+
+    def config1  = [
+        (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), NaiveBayes.name],
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
+    ]
+    def config2  = [
+        (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), SMO.name],
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config1, config2)
 
     // ##### CV #####
     protected void runCrossValidation()
@@ -93,7 +96,7 @@ implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimFeatureSets,
-                dimClassificationArgs
+                mlas
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [

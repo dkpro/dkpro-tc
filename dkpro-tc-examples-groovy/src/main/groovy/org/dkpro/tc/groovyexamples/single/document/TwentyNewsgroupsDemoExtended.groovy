@@ -92,9 +92,12 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
 
-    def dimClassificationArgs =
-    Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [ new WekaAdapter(), SMO.class.name])
+    def config  = [
+        (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), SMO.class.name],
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config)
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
@@ -181,7 +184,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimClassificationArgs,
+                mlas,
                 dimFeatureSets
             ],
             tasks:           [

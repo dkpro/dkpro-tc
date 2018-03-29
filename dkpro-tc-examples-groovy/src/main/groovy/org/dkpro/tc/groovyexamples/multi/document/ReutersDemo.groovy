@@ -20,6 +20,10 @@ package org.dkpro.tc.groovyexamples.multi.document
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription
+
+import java.util.HashMap
+import java.util.Map
+
 import meka.classifiers.multilabel.BR
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription
@@ -37,6 +41,7 @@ import org.dkpro.tc.features.ngram.WordNGram
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
+import org.dkpro.tc.ml.liblinear.LiblinearAdapter
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.ml.weka.MekaAdapter
@@ -86,10 +91,12 @@ public class ReutersDemo implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT)
     def dimThreshold = Dimension.create(DIM_BIPARTITION_THRESHOLD, threshold)
 
-    def dimClassificationArgs =
-    Dimension.create(
-    DIM_CLASSIFICATION_ARGS,
-     [new MekaAdapter(), BR.name, "-W", NaiveBayes.name])
+    def config  = [
+        (DIM_CLASSIFICATION_ARGS) : [new MekaAdapter(), BR.name, "-W", NaiveBayes.name],
+        (DIM_DATA_WRITER) : new MekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new MekaAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config)
 
     def dimFeatureSelection = Dimension.createBundle("featureSelection", [
         labelTransformationMethod: "BinaryRelevanceAttributeEvaluator",
@@ -101,15 +108,15 @@ public class ReutersDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-        new TcFeatureSet(
-            TcFeatureFactory.create(TokenRatioPerDocument.class),
-            TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
-        )
+    new TcFeatureSet(
+    TcFeatureFactory.create(TokenRatioPerDocument.class),
+    TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
+    )
     ,
-        new TcFeatureSet(
-            TcFeatureFactory.create(TokenRatioPerDocument.class),
-            TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
-        )    
+    new TcFeatureSet(
+    TcFeatureFactory.create(TokenRatioPerDocument.class),
+    TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
+    )
     )
 
 
@@ -133,7 +140,7 @@ public class ReutersDemo implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimThreshold,
-                dimClassificationArgs,
+                mlas,
                 dimFeatureSelection,
                 dimFeatureSets,
             ],
@@ -161,7 +168,7 @@ public class ReutersDemo implements Constants {
                 dimLearningMode,
                 dimFeatureMode,
                 dimThreshold,
-                dimClassificationArgs,
+                mlas,
                 dimFeatureSelection,
                 dimFeatureSets
             ],

@@ -70,8 +70,13 @@ implements Constants {
     def dimReaders = Dimension.createBundle("readers", [
         readerTrain: trainreader,
         ])
-    def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-    [new WekaAdapter(), NaiveBayes.name])
+    
+    def config  = [
+        (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), NaiveBayes.name],
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config)
 
     public static void main(String[] args)
     throws Exception {
@@ -92,7 +97,7 @@ implements Constants {
                 dimFeatureMode,
                 dimLearningMode,
                 dimFeatureSets,
-                dimClassificationArgs
+                mlas
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [

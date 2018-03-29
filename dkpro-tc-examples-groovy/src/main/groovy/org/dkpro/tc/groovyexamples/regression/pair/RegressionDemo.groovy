@@ -79,8 +79,12 @@ public class RegressionDemo implements Constants {
     def dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION)
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_PAIR)
 
-    def dimClassificationArgs =
-    Dimension.create(DIM_CLASSIFICATION_ARGS, [new WekaAdapter(), SMOreg.name])
+    def config  = [
+        (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), SMOreg.name],
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
+    ]
+    def mlas = Dimension.createBundle("mlas", config)
 
     // yields really bad results. To improve the performance, use a string similarity
     // based feature extractor
@@ -108,7 +112,7 @@ public class RegressionDemo implements Constants {
                 dimReaders,
                 dimFeatureMode,
                 dimLearningMode,
-                dimClassificationArgs,
+                mlas,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
@@ -137,7 +141,7 @@ public class RegressionDemo implements Constants {
                 dimReaders,
                 dimLearningMode,
                 dimFeatureMode,
-                dimClassificationArgs,
+                mlas,
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,

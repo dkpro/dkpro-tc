@@ -19,9 +19,12 @@
 package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.Dimension;
@@ -38,7 +41,7 @@ import org.junit.Test;
  * This test just ensures that the experiment runs without throwing any exception.
  */
 public class CRFSuiteBrownPosDemoTest
-    extends TestCaseSuperClass
+    extends TestCaseSuperClass implements Constants
 {
     CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
 
@@ -49,18 +52,19 @@ public class CRFSuiteBrownPosDemoTest
         javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void runTrainTestNoFilter() throws Exception
     {
-        // Random parameters for demonstration!
-        // Number of iterations is set to an extreme low value (remove --> default: 100 iterations,
-        // or set accordingly)
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5" }));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] {new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5" });
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+        
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, null);
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, null);
 
         javaExperiment.runTrainTest(pSpace);
 
@@ -91,16 +95,19 @@ public class CRFSuiteBrownPosDemoTest
     @Test
     public void runTrainTestFilter() throws Exception
     {
-        // Random parameters for demonstration!
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] {new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR });
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
                 asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
 
         ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, dimClassificationArgs, dimFilter);
+                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, dimFilter);
 
         javaExperiment.runTrainTest(pSpace);
 
