@@ -110,25 +110,27 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         ParameterSpace pSpace;
         if (useParametrizedArgs) {
 
-            @SuppressWarnings("unchecked")
-            Dimension<List<Object>> dimClassificationArguments = Dimension.create(
-                    DIM_CLASSIFICATION_ARGS,
-                    Arrays.asList(new XgboostAdapter(), "objective=multi:softmax"));
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS,
+                    new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
+            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments,
-                    dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), mlas, dimFeatureSets);
         }
         else {
-            @SuppressWarnings("unchecked")
-            Dimension<List<Object>> dimClassificationArguments = Dimension
-                    .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
+            config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                    dimClassificationArguments);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
         }
         return pSpace;
     }

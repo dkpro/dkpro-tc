@@ -96,9 +96,11 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "100"));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "100" });
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -110,19 +112,19 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
         if (useClassificationArguments) {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments,
-                    dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), mlas, dimFeatureSets);
         }
         else {
 
-            @SuppressWarnings("unchecked")
-            Dimension<List<Object>> dimClassArguments = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                    Arrays.asList(new LibsvmAdapter()));
+            config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter() });
+            config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+            mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                    dimClassArguments);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
         }
         return pSpace;
     }
@@ -255,9 +257,11 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LibsvmAdapter(), "-c", "1000"));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "1000" });
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -265,8 +269,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets,
-                dimClassificationArguments);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
         return pSpace;
     }

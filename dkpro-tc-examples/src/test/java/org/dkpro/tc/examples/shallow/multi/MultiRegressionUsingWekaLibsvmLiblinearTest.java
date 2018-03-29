@@ -88,6 +88,8 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
         // values
         assertEquals(1.4, getMeanSquaredErrorCrossValidation(
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
+        assertEquals(3.2, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.3);
         assertEquals(1.3, getMeanSquaredErrorCrossValidation(
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
         assertEquals(4.1, getMeanSquaredErrorCrossValidation(
@@ -116,15 +118,12 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 4; // 2 x FeatExtract Train/Test
-        sum += 2; // 2 x Meta
-
-        sum += 4; // 2 x Facade + 2x ML Adapter
-        sum += 1; // 1 x Crossvalidation
-
-        sum *= 3; // 3 adapter in the setup
-        sum += 1; // 1 x Init
-        sum += 1; // 1 x Outcome
+        sum += 8 * 2; // Feature Extraction * num_folds
+        sum += 4 * 2; // meta collection
+        sum += 8 * 2; // MLA tasks + facade tasks
+        sum += 4; // CV tasks
+        sum += 1; // Init
+        sum += 1; // Outcome
 
         return sum;
     }
@@ -231,7 +230,7 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
 
         sum += 2; // 1 x Facade + 1x ML Adapter
         sum *= 4; // 3 adapter in setup
-        
+
         sum += 2; // 2 x FeatExtract shared by Xgboost/Liblinear/Libsvm
         sum += 2; // 2 x FeatExtract for Weka
         sum += 2; // 2 x Init

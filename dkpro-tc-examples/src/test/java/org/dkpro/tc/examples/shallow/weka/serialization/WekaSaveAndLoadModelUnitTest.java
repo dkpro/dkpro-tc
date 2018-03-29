@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -139,10 +138,13 @@ public class WekaSaveAndLoadModelUnitTest
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
                 Arrays.asList("*.xml"));
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
+        
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), SMO.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class,
@@ -150,7 +152,7 @@ public class WekaSaveAndLoadModelUnitTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
         return pSpace;
     }
