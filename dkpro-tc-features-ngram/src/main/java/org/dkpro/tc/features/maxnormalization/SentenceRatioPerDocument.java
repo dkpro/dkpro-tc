@@ -32,19 +32,19 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
-import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxSentLenOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfSentencesOverAllDocumentsMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 /**
- * Extracts the number of sentences in this classification unit
+ * Ratio of the number of sentences in a document with respect to the longest document in the
+ * training data
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence" })
-public class AvgSentenceLengthRatioPerDocument
+public class SentenceRatioPerDocument
     extends MaximumNormalizationExtractorBase
 {
-    public static final String FEATURE_NAME = "LuceneAvgSentenceLength";
+    public static final String FEATURE_NAME = "sentencesRatioPerDocument";
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
@@ -53,17 +53,9 @@ public class AvgSentenceLengthRatioPerDocument
 
         long maxLen = getMax();
 
-        double avgLength = 0.0;
-
         List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
-        for (Sentence s : sentences) {
-            List<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, s);
-            avgLength += getRatio(tokens.size(), maxLen);
-        }
-
-        avgLength /= sentences.size();
-
-        return new Feature(FEATURE_NAME, avgLength, FeatureType.NUMERIC).asSet();
+        double ratio = getRatio(sentences.size(), maxLen);
+        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
     }
 
     @Override
@@ -72,28 +64,23 @@ public class AvgSentenceLengthRatioPerDocument
         throws ResourceInitializationException
     {
 
-        return Arrays.asList(new MetaCollectorConfiguration(MaxSentLenOverAllDocumentsMC.class,
-                parameterSettings).addStorageMapping(
-                        MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION,
-                        AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION,
-                        MaxSentLenOverAllDocumentsMC.LUCENE_DIR));
+        return Arrays
+                .asList(new MetaCollectorConfiguration(MaxNrOfSentencesOverAllDocumentsMC.class,
+                        parameterSettings).addStorageMapping(
+                                MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                                SentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
+                                MaxNrOfSentencesOverAllDocumentsMC.LUCENE_DIR));
     }
 
     @Override
     protected String getFieldName()
     {
-        return MaxSentLenOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
-    }
-
-    @Override
-    protected int getTopN()
-    {
-        return 1;
+        return MaxNrOfSentencesOverAllDocumentsMC.LUCENE_FIELD + featureExtractorName;
     }
 
     @Override
     protected String getFeaturePrefix()
     {
-        return getClass().getName();
+        return getClass().getSimpleName();
     }
 }

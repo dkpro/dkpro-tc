@@ -47,8 +47,8 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.AvgSentenceRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
@@ -158,9 +158,9 @@ public class LiblinearSaveAndLoadModelDocumentRegression
                 Arrays.asList(new Object[] { new LiblinearAdapter(), "-s", "6" }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgSentenceRatioPerDocument.class),
+                new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class),
-                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),

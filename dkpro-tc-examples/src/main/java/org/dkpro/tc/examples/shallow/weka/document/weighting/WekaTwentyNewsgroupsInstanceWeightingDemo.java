@@ -38,7 +38,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.WeightedTwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerSentence;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
@@ -133,7 +133,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerSentence.class),
-                        TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                        TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 2, WordNGram.PARAM_NGRAM_MAX_N,
                                 3)));

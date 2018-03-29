@@ -22,19 +22,18 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.features.maxnormalization.AvgSentenceLengthRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
-import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxSentLenOverAllDocumentsMC;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfSentencesOverAllDocumentsMC;
 import org.junit.Before;
 
-public class AvgSentenceLengthPerDocumentTest
+public class SentenceRatioPerDocumentTest
     extends LuceneMetaCollectionBasedFeatureTestBase
 {
 
@@ -45,8 +44,8 @@ public class AvgSentenceLengthPerDocumentTest
     {
         super.setup();
 
-        featureClass = AvgSentenceLengthRatioPerDocument.class;
-        metaCollectorClass = MaxSentLenOverAllDocumentsMC.class;
+        featureClass = SentenceRatioPerDocument.class;
+        metaCollectorClass = MaxNrOfSentencesOverAllDocumentsMC.class;
     }
 
     protected void evaluateMetaCollection(File luceneFolder) throws Exception
@@ -54,8 +53,8 @@ public class AvgSentenceLengthPerDocumentTest
         List<String> entries = new ArrayList<String>(getEntriesFromIndex(luceneFolder));
         Collections.sort(entries);
 
-        assertEquals("4", entries.get(0).split("_")[0]);
-        assertEquals("6", entries.get(1).split("_")[0]);
+        assertEquals(1, entries.size());
+        assertEquals("3", entries.get(0).split("_")[0]);
     }
 
     @Override
@@ -63,21 +62,10 @@ public class AvgSentenceLengthPerDocumentTest
     {
         List<Instance> instances = readInstances(output);
         assertEquals(1, instances.size());
-        Iterator<Instance> iterator = instances.iterator();
-        double val = -1;
-        while (iterator.hasNext()) {
-            Instance next = iterator.next();
-            List<Feature> arrayList = new ArrayList<Feature>(next.getFeatures());
-            assertEquals(1, arrayList.size());
-
-            Object value = arrayList.get(0).getValue();
-
-            val = Double.valueOf(value.toString());
-        }
-
-        double expected = (4.0 / 6 + 6 / 6) / 2;
-
-        assertEquals(expected, val, 0.01);
+        assertEquals(1, instances.get(0).getFeatures().size());
+        Double actual = (Double) new ArrayList<Feature>(instances.get(0).getFeatures()).get(0)
+                .getValue();
+        assertEquals(0.666, actual, 0.01);
     }
 
     @Override
@@ -86,34 +74,33 @@ public class AvgSentenceLengthPerDocumentTest
         return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
                 TestReaderSingleLabel.PARAM_LANGUAGE, "en",
                 TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
-                "src/test/resources/sentAvg/text4.txt");
+                "src/test/resources/sentAvg/text5.txt");
     }
 
     @Override
     protected CollectionReaderDescription getFeatureReader() throws Exception
     {
-        return getMetaReader();
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
+                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sentAvg/text4.txt");
     }
 
     @Override
     protected Object[] getMetaCollectorParameters(File luceneFolder)
     {
-        return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
-                EXTRACTOR_NAME, AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, 1,
-                AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
-                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, 1,
-                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, 1 };
+        return new Object[] { SentenceRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, SentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
     }
 
     @Override
     protected Object[] getFeatureExtractorParameters(File luceneFolder)
     {
-        return new Object[] { AvgSentenceLengthRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
-                EXTRACTOR_NAME, AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
-                AvgSentenceLengthRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                MaxSentLenOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
-                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-                AvgSentenceLengthRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+        return new Object[] { SentenceRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME,
+                EXTRACTOR_NAME, SentenceRatioPerDocument.PARAM_SOURCE_LOCATION,
+                luceneFolder.toString(), MaxNrOfSentencesOverAllDocumentsMC.PARAM_TARGET_LOCATION,
+                luceneFolder.toString() };
     }
 }

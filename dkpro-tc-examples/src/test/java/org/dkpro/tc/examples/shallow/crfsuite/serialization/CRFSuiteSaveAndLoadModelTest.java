@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
@@ -208,7 +208,7 @@ public class CRFSuiteSaveAndLoadModelTest
                         TcFeatureFactory.create(BrownClusterFeature.class,
                                 BrownClusterFeature.PARAM_BROWN_CLUSTERS_LOCATION,
                                 "src/test/resources/brownCluster/enTweetBrownC1000F40"),
-                        TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class)));
+                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),

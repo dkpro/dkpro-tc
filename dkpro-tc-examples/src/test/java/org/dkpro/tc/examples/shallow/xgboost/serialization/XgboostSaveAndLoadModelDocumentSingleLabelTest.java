@@ -52,8 +52,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
@@ -103,7 +102,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenLengthRatioPerDocument.class),
+                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
                                 3)));
@@ -221,7 +220,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
 
         if (evaluateWithClassificationArgs) {
             assertEquals(4, outcomes.size());
-            assertEquals("neutral", outcomes.get(0).getOutcome());
+            assertEquals("emotional", outcomes.get(0).getOutcome());
             assertEquals("neutral", outcomes.get(1).getOutcome());
             assertEquals("neutral", outcomes.get(2).getOutcome());
             assertEquals("neutral", outcomes.get(3).getOutcome());
@@ -269,7 +268,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
                 .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
+                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class,
                                 CharacterNGram.PARAM_NGRAM_LOWER_CASE, false)));
 

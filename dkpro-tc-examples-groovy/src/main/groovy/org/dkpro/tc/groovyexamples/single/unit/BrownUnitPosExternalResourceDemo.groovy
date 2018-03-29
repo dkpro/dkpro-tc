@@ -37,7 +37,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.examples.util.DemoUtils
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 
 import weka.classifiers.bayes.NaiveBayes
 import weka.classifiers.functions.SMO
@@ -74,7 +74,7 @@ implements Constants {
     def dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_UNIT)
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET, new TcFeatureSet(
-        TcFeatureFactory.create(AvgTokenRatioPerDocument.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
+        TcFeatureFactory.create(TokenRatioPerDocument.class, NrOfTokensExternalResource.PARAM_DUMMY_RESOURCE, dummyResource)
     ))
     def dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
     [new WekaAdapter(), NaiveBayes.name],

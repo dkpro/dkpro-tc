@@ -39,7 +39,7 @@ import org.dkpro.tc.core.task.OutcomeCollectionTask
 import org.dkpro.tc.io.FolderwiseDataReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.ml.report.BatchTrainTestReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport
@@ -99,7 +99,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
     new TcFeatureSet(
-        TcFeatureFactory.create(AvgTokenRatioPerDocument.class)
+        TcFeatureFactory.create(TokenRatioPerDocument.class)
     )
     )
 

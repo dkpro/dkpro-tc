@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.AvgTokenLengthRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerDocument
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
