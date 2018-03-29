@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.svmhmm.serialization;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -139,14 +138,15 @@ public class SVMHMMSaveAndLoadModelTest
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
                         TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new SvmHmmAdapter() }));
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter() });
+        wekaConfig.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets, mlas);
         return pSpace;
     }
 

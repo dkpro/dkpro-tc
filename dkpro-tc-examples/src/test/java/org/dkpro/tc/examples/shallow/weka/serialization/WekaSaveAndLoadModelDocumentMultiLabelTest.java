@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,11 +95,13 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
                 documentGoldLabelsReuters, ReutersCorpusReader.PARAM_LANGUAGE, "en",
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S",
-                        "RAkEL2", "-W", RandomForest.class.getName() }));
+        
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] {  new MekaAdapter(), MULAN.class.getName(), "-S",
+                "RAkEL2", "-W", RandomForest.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(
@@ -111,7 +112,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"), dimClassificationArgs);
+                Dimension.create(DIM_BIPARTITION_THRESHOLD, "0.5"), mlas);
         return pSpace;
     }
 
