@@ -39,7 +39,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.WeightedTwentyNewsgroupsCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.AvgTokenRatioPerSentence;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -132,7 +131,7 @@ public class WekaTwentyNewsgroupsInstanceWeightingDemo
                 Arrays.asList(new Object[] { new WekaAdapter(), SMO.class.getName() }));
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(AvgTokenRatioPerSentence.class),
+                new TcFeatureSet(
                         TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 2, WordNGram.PARAM_NGRAM_MAX_N,
