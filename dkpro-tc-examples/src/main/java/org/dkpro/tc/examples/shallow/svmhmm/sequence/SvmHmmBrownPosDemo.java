@@ -18,9 +18,7 @@
  */
 package org.dkpro.tc.examples.shallow.svmhmm.sequence;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -49,6 +47,7 @@ import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
  * Tests SVMhmm on POS tagging of one file in Brown corpus
  */
 public class SvmHmmBrownPosDemo
+    implements Constants
 {
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
@@ -87,15 +86,18 @@ public class SvmHmmBrownPosDemo
                                 CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 CharacterNGram.PARAM_NGRAM_MAX_N, 3)));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0"));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new SvmHmmAdapter(), "-c", "5.0", "-t", "1", "-m", "0" });
+        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,

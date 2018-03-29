@@ -21,9 +21,7 @@ package org.dkpro.tc.examples.shallow.liblinear.unit;
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -133,13 +131,15 @@ public class LiblinearUnitDemo
                         TcFeatureFactory.create(CharacterNGram.class,
                                 CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
+        config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
         return pSpace;
     }

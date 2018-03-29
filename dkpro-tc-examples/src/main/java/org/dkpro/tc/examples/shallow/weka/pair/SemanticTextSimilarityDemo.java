@@ -20,9 +20,7 @@ package org.dkpro.tc.examples.shallow.weka.pair;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -99,19 +97,21 @@ public class SemanticTextSimilarityDemo
                 STSReader.PARAM_GOLD_FILE, goldFileTest);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
-
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), SMOreg.class.getName() });
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         ParameterSpace pSpace = new ParameterSpace(
                 Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),
                 Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_PAIR),
                 Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION),
-                dimFeatureSets, dimClassificationArgs);
+                dimFeatureSets, mlas);
         return pSpace;
     }
 

@@ -22,9 +22,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAException;
@@ -88,7 +86,6 @@ public class MekaSaveAndApplyModelMultilabelDemo
         experiment.applyStoredModel("An example sentence. And another one.");
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -110,9 +107,12 @@ public class MekaSaveAndApplyModelMultilabelDemo
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new MekaAdapter(), MULAN.class.getName(), "-S",
-                        "RAkEL2", "-W", RandomForest.class.getName() }));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(), MULAN.class.getName(),
+                "-S", "RAkEL2", "-W", RandomForest.class.getName() });
+        config.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -124,7 +124,7 @@ public class MekaSaveAndApplyModelMultilabelDemo
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
 
         return pSpace;
     }

@@ -22,7 +22,6 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,19 +71,23 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         // the setup
         // instructions first :)
         DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
+        
+        
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter() });
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
-        List<Object> o = new ArrayList<>();
-        o.add(new CrfSuiteAdapter());
-        @SuppressWarnings("unchecked")
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
-                Dimension.create(DIM_CLASSIFICATION_ARGS, o), null);
+                mlas, null);
 
         CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
         experiment.runTrainTest(pSpace);
     }
 
     public static ParameterSpace getParameterSpace(String featureMode, String learningMode,
-            Dimension<List<Object>> dimClassificationArgs, Dimension<List<String>> dimFilters)
+            Dimension<Map<String, Object>> config, Dimension<List<String>> dimFilters)
         throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -105,18 +108,19 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
                 TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
                         50)));
+        
         ParameterSpace pSpace;
         if (dimFilters != null) {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, learningMode),
                     Dimension.create(DIM_FEATURE_MODE, featureMode), dimFilters, dimFeatureSets,
-                    dimClassificationArgs);
+                    config);
         }
         else {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, learningMode),
                     Dimension.create(DIM_FEATURE_MODE, featureMode), dimFeatureSets,
-                    dimClassificationArgs);
+                    config);
         }
 
         return pSpace;

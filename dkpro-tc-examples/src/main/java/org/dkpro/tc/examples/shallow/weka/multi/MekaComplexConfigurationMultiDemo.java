@@ -22,7 +22,6 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -86,7 +85,6 @@ public class MekaComplexConfigurationMultiDemo
         experiment.runTrainTest(pSpace);
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -106,17 +104,27 @@ public class MekaComplexConfigurationMultiDemo
                 ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        // We configure 3 different classifiers, which will be swept, each with a special
-        // configuration.
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                // Config1: "-W" is used to set a base classifer
-                asList(new Object[] { new MekaAdapter(), BR.class.getName(), "-W",
-                        NaiveBayes.class.getName() }),
-                // Config2: "-P" sets the downsampling ratio
-                asList(new Object[] { new MekaAdapter(), CCq.class.getName(), "-P", "0.9" }),
-                // Config3: "-B": buffer size, "-S": max. num. of combs.
-                asList(new Object[] { new MekaAdapter(), PSUpdateable.class.getName(), "-B", "900",
-                        "-S", "9" }));
+        // Config 1
+        Map<String, Object> config1 = new HashMap<>();
+        config1.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(), BR.class.getName(),
+                "-W", NaiveBayes.class.getName() });
+        config1.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config1.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
+
+        Map<String, Object> config2 = new HashMap<>();
+        config2.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new MekaAdapter(), CCq.class.getName(), "-P", "0.9" });
+        config2.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config2.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
+
+        Map<String, Object> config3 = new HashMap<>();
+        config3.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(),
+                PSUpdateable.class.getName(), "-B", "900", "-S", "9" });
+        config3.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config3.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config1, config2,
+                config3);
 
         // We configure 2 sets of feature extractors, one consisting of 2 extractors, and one with
         // only one
@@ -139,8 +147,7 @@ public class MekaComplexConfigurationMultiDemo
                 Dimension.create(DIM_LEARNING_MODE, LM_MULTI_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
                 Dimension.create(DIM_BIPARTITION_THRESHOLD, BIPARTITION_THRESHOLD), dimFeatureSets,
-                dimClassificationArgs,
-                Dimension.createBundle("featureSelection", dimFeatureSelection));
+                mlas, Dimension.createBundle("featureSelection", dimFeatureSelection));
 
         return pSpace;
     }

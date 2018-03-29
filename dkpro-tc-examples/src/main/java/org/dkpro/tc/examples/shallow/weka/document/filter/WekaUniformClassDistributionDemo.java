@@ -105,9 +105,6 @@ public class WekaUniformClassDistributionDemo
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
-
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
@@ -116,11 +113,18 @@ public class WekaUniformClassDistributionDemo
 
         Dimension<List<String>> dimFeatureFilters = Dimension.create(DIM_FEATURE_FILTERS,
                 Arrays.asList(new String[] { UniformClassDistributionFilter.class.getName() }));
+        
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), NaiveBayes.class.getName()});
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, dimFeatureFilters,
-                dimClassificationArgs);
+                mlas);
 
         return pSpace;
     }

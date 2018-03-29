@@ -20,9 +20,7 @@ package org.dkpro.tc.examples.shallow.weka.document;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -83,7 +81,6 @@ public class WekaAblationDemo
         experiment.runCrossValidation(pSpace);
     }
 
-    @SuppressWarnings("unchecked")
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
     {
         // configure training and test data reader dimension
@@ -103,8 +100,13 @@ public class WekaAblationDemo
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<TcFeatureSet> dimFeatureSets = ExperimentUtil.getAblationTestFeatures(
                 TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -113,8 +115,7 @@ public class WekaAblationDemo
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
 
         return pSpace;
     }

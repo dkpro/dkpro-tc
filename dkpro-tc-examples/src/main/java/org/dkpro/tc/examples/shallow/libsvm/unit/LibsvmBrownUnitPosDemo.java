@@ -19,11 +19,9 @@
 package org.dkpro.tc.examples.shallow.libsvm.unit;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -45,6 +43,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -123,20 +122,22 @@ public class LibsvmBrownUnitPosDemo
                 new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new Object[] { new LibsvmAdapter(), "-c", "10" }));
-
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class,
                                 CharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
                                 CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "10" });
+        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
         return pSpace;
     }

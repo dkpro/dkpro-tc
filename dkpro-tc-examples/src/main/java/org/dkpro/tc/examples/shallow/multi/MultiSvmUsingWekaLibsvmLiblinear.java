@@ -92,17 +92,17 @@ public class MultiSvmUsingWekaLibsvmLiblinear
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        ExperimentBuilder x = new ExperimentBuilder();
-        x.setReaders(dimReaders);
-        x.addAdapterConfiguration(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3");
-        x.addAdapterConfiguration(new LiblinearAdapter(),  "-s", "4", "-c", "100");
-        x.addAdapterConfiguration(new WekaAdapter(),  SMO.class.getName(), "-C", "1.0",
+        ExperimentBuilder expBuilder = new ExperimentBuilder();
+        expBuilder.setReaders(dimReaders);
+        expBuilder.addAdapterConfiguration(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3");
+        expBuilder.addAdapterConfiguration(new LiblinearAdapter(),  "-s", "4", "-c", "100");
+        expBuilder.addAdapterConfiguration(new WekaAdapter(),  SMO.class.getName(), "-C", "1.0",
                 "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2");
-        x.setFeatureMode(FM_DOCUMENT);
-        x.setLearningMode(LM_SINGLE_LABEL);
-        x.addFeatureSet(getFeatureSet());
+        expBuilder.setFeatureMode(FM_DOCUMENT);
+        expBuilder.setLearningMode(LM_SINGLE_LABEL);
+        expBuilder.addFeatureSet(getFeatureSet());
         
-        ParameterSpace ps = x.build();
+        ParameterSpace ps = expBuilder.build();
         return ps;
     }
 

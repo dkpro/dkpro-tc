@@ -20,9 +20,7 @@ package org.dkpro.tc.examples.shallow.weka.document;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -88,18 +86,22 @@ public class WekaManualFoldCrossValidation
                 BrownCorpusReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), NaiveBayes.class.getName() }));
-
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class,
                         CharacterNGram.PARAM_NGRAM_MIN_N, 2, CharacterNGram.PARAM_NGRAM_MAX_N, 3,
                         CharacterNGram.PARAM_NGRAM_USE_TOP_K, 750)));
 
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, dimClassificationArgs,
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas,
                 /*
                  * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used
                  * as is to make folds
