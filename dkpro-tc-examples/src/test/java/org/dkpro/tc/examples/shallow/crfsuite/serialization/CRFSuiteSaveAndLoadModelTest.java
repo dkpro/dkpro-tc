@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.crfsuite.serialization;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -54,6 +53,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -125,15 +125,15 @@ public class CRFSuiteSaveAndLoadModelTest
     @Test
     public void saveModel() throws Exception
     {
-        @SuppressWarnings("unchecked")
-        // increase number of iterations for real setups (default is 100 or not
-        // providing this parameters)
-        Dimension<List<Object>> dimClassificationArgs = Dimension
-                .create(Constants.DIM_CLASSIFICATION_ARGS, asList(new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2"));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+                "max_iterations=2"});
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         File modelFolder = folder.newFolder();
-        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
+        ParameterSpace pSpace = getParameterSpace(mlas);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
         File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
@@ -175,7 +175,7 @@ public class CRFSuiteSaveAndLoadModelTest
 
     }
 
-    private ParameterSpace getParameterSpace(Dimension<List<Object>> dimClassificationArgs)
+    private ParameterSpace getParameterSpace(Dimension<Map<String, Object>> mlas)
         throws ResourceInitializationException
     {
         DemoUtils.setDkproHome(this.getClass().getName());
@@ -213,7 +213,7 @@ public class CRFSuiteSaveAndLoadModelTest
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
         return pSpace;
     }
 
@@ -221,16 +221,16 @@ public class CRFSuiteSaveAndLoadModelTest
     public void loadModelArow() throws Exception
     {
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                asList(new Object[] { new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                        "max_iterations=2" }));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+                "max_iterations=2"});
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         // create a model
         File modelFolder = folder.newFolder();
-        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
+        ParameterSpace pSpace = getParameterSpace(mlas);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
         JCas jcas = JCasFactory.createJCas();
@@ -260,14 +260,16 @@ public class CRFSuiteSaveAndLoadModelTest
     public void loadModelArowParameters() throws Exception
     {
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS, asList(new Object[] { new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=2" }));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
+                "max_iterations=2"});
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         // create a model
         File modelFolder = folder.newFolder();
-        ParameterSpace pSpace = getParameterSpace(dimClassificationArgs);
+        ParameterSpace pSpace = getParameterSpace(mlas);
         executeSaveModelIntoTemporyFolder(pSpace, modelFolder);
 
         JCas jcas = JCasFactory.createJCas();

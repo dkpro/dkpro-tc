@@ -109,24 +109,27 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
         ParameterSpace pSpace;
         if (useParametrizedArgs) {
 
-            @SuppressWarnings("unchecked")
-            Dimension<List<Object>> dimClassificationArguments = Dimension.create(
-                    DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter(), "-s", "6"));
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter(), "-s", "6" });
+            config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimClassificationArguments,
-                    dimFeatureSets);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), mlas, dimFeatureSets);
         }
         else {
-            @SuppressWarnings("unchecked")
-            Dimension<List<Object>> dimClassificationArguments = Dimension
-                    .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
+
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter(), "-s", "6" });
+            config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                    dimClassificationArguments);
+                    Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
         }
         return pSpace;
     }
@@ -215,21 +218,10 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
         }
 
         assertEquals(4, outcomes.size());
-
-        if (evaluateWithClassificationArgs) {
-            assertEquals(4, outcomes.size());
-            assertEquals("neutral", outcomes.get(0).getOutcome());
-            assertEquals("neutral", outcomes.get(1).getOutcome());
-            assertEquals("neutral", outcomes.get(2).getOutcome());
-            assertEquals("neutral", outcomes.get(3).getOutcome());
-        }
-        else {
-            assertEquals(4, outcomes.size());
-            assertEquals("emotional", outcomes.get(0).getOutcome());
-            assertEquals("emotional", outcomes.get(1).getOutcome());
-            assertEquals("emotional", outcomes.get(2).getOutcome());
-            assertEquals("emotional", outcomes.get(3).getOutcome());
-        }
+        assertEquals("neutral", outcomes.get(0).getOutcome());
+        assertEquals("neutral", outcomes.get(1).getOutcome());
+        assertEquals("neutral", outcomes.get(2).getOutcome());
+        assertEquals("neutral", outcomes.get(3).getOutcome());
     }
 
     @Test
@@ -261,9 +253,11 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArguments = Dimension
-                .create(DIM_CLASSIFICATION_ARGS, Arrays.asList(new LiblinearAdapter()));
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
+        config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -272,8 +266,7 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets,
-                dimClassificationArguments);
+                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
         return pSpace;
     }

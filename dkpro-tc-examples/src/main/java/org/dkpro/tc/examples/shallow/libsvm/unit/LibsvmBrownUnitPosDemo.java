@@ -43,7 +43,6 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -130,8 +129,8 @@ public class LibsvmBrownUnitPosDemo
 
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "10" });
-        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
-        config.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
