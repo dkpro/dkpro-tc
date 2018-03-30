@@ -143,7 +143,7 @@ public abstract class LuceneMC
     private void documentSizeControll() throws IOException
     {
         entryCounter++;
-        if (entryCounter > 1000) {
+        if (entryCounter > 10000) {
             writeToIndex();
             indexWriter.commit();
             entryCounter = 0;
