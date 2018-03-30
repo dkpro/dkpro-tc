@@ -79,6 +79,7 @@ public class BatchTrainTestReport
                 Map<String, String> discriminatorsMap = getDiscriminators(store, subId);
                 discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(
                         discriminatorsMap, discriminatorsToExclude);
+                discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
                 // add the results into the discriminator map
                 File id2o = getId2Outcome(subId);

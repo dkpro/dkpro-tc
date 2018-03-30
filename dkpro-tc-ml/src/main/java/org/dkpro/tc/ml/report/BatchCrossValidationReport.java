@@ -66,6 +66,7 @@ public class BatchCrossValidationReport
 
             Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id,
                     Task.DISCRIMINATORS_KEY);
+            discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
             Map<String, String> values = new HashMap<String, String>();
             values.putAll(discriminatorsMap);

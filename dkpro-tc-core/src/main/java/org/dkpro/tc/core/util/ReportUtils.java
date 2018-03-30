@@ -85,4 +85,32 @@ public class ReportUtils
         return cleanedDiscriminatorsMap;
     }
 
+    /**
+     * Iterates all entries in a map and cuts off the key value before a pipe (|) symbol, i.e.
+     * several tasks might use the same discriminator. The task-specific and the actual key are
+     * separated by a pipe. The task-name leads to many redundant entries that clutter the output
+     * file, e.g. the feature mode occurs for each task that imports this variable. This method
+     * cleans up the keys and removes this redundancy.
+     * 
+     * @param discriminatorsMap
+     *            the map for which the keys are shortened
+     * @return
+     *          a cleaned map.
+     */
+    public static Map<String, String> removeKeyRedundancy(Map<String, String> discriminatorsMap)
+    {
+        Map<String, String> outMap = new HashMap<>();
+        
+        for(Entry<String,String> e : discriminatorsMap.entrySet()) {
+            String key = e.getKey();
+            if(key.contains("|")) {
+                String[] split = key.split("\\|");
+                key = split[1];
+            }
+            outMap.put(key, e.getValue());
+        }
+        
+        return outMap;
+    }
+
 }
