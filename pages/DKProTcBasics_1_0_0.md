@@ -31,10 +31,22 @@ Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new Tc
 				TcFeatureFactory.create(AvgTokenRatioPerDocument.class),
 				TcFeatureFactory.create(WordNGram.class, 
 							WordNGram.PARAM_NGRAM_USE_TOP_K, 50)));
-/* The classification arguments specify which classifier we want to use, one can specify several 
+/* The configuration specifies which classifier we want to use, one can specify several 
    classifiers or confirgurations of the same classifier; TC will automatically execute them all */
-Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-				  Arrays.asList(new LiblinearAdapter()));
+Map<String, Object> libsvmConfig = new HashMap<>();
+libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LibsvmAdapter(), "-s", "0", "-c", "100" });
+libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+	
+Map<String, Object> liblinearConfig = new HashMap<>();
+liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LiblinearAdapter(), "-s", "1"});
+liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());	
+ 
+Dimension<Map<String, Object>> configs = Dimension.createBundle("config", libsvmConfig, liblinearConfig);
+	
 // Wire everything in a parameter space
 ParameterSpace pSpace = new ParameterSpace(
 	dimLearningModem,
