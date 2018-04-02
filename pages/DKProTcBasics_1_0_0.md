@@ -53,7 +53,7 @@ ParameterSpace pSpace = new ParameterSpace(
 	dimFeatureMode,
         readersDimension,
 	dimFeatureSet, 
-        dimClassificationArgs
+        configs
  );
 /* Sets the output-folder to which all data is written that is created by DKPro TC, 
    this includes the results of the experiments. 
