@@ -33,13 +33,13 @@ Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new Tc
 							WordNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 /* The configuration specifies which classifier we want to use, one can specify several 
    classifiers or confirgurations of the same classifier; TC will automatically execute them all */
-Map<String, Object> libsvmConfig = new HashMap<>();
+Map<String, Object> libsvmConfig = new HashMap<String, Object>();
 libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LibsvmAdapter(), "-s", "0", "-c", "100" });
 libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
 libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 	
-Map<String, Object> liblinearConfig = new HashMap<>();
+Map<String, Object> liblinearConfig = new HashMap<String, Object>();
 liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LiblinearAdapter(), "-s", "1"});
 liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
