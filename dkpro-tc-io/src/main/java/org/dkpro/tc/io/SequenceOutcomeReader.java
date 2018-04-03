@@ -84,7 +84,7 @@ public class SequenceOutcomeReader
     protected Integer outcomeIdx;
 
     public static final String PARAM_SEQUENCES_PER_CAS = "PARAM_SEQUENCES_PER_CAS";
-    @ConfigurationParameter(name = PARAM_SEQUENCES_PER_CAS, mandatory = true, defaultValue = "3")
+    @ConfigurationParameter(name = PARAM_SEQUENCES_PER_CAS, mandatory = true, defaultValue = "100")
     protected Integer sequencesPerCas;
 
     protected BufferedReader reader;
