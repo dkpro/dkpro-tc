@@ -27,7 +27,7 @@ import java.util.Set;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
 import org.dkpro.tc.features.ngram.meta.PhoneticNGramMC;
 import org.junit.Before;
 
@@ -73,9 +73,9 @@ public class PhoneticNGramTest
     @Override
     protected CollectionReaderDescription getMetaReader() throws Exception
     {
-        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelDocumentReader.class,
+                TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION, "src/test/resources/data/text*.txt");
     }
 
     @Override

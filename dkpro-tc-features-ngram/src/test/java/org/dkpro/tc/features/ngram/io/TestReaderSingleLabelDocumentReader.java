@@ -32,7 +32,7 @@ import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-public class TestReaderSingleLabel
+public class TestReaderSingleLabelDocumentReader
     extends TextReader
     implements TCReaderSingleLabel
 {

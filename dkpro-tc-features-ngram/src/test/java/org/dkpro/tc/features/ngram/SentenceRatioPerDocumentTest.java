@@ -29,7 +29,7 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
 import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfSentencesOverAllDocumentsMC;
 import org.junit.Before;
 
@@ -71,18 +71,18 @@ public class SentenceRatioPerDocumentTest
     @Override
     protected CollectionReaderDescription getMetaReader() throws Exception
     {
-        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelDocumentReader.class,
+                TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sentAvg/text5.txt");
     }
 
     @Override
     protected CollectionReaderDescription getFeatureReader() throws Exception
     {
-        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-                TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelDocumentReader.class,
+                TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sentAvg/text4.txt");
     }
 

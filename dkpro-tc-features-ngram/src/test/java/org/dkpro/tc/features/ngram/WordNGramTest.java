@@ -40,7 +40,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
 import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,8 +87,8 @@ public class WordNGramTest
     @Override
     protected CollectionReaderDescription getMetaReader() throws Exception
     {
-        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabel.class,
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/*.txt");
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelDocumentReader.class,
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/*.txt");
     }
 
     @Override

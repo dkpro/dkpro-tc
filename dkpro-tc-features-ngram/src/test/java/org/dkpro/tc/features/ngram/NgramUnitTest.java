@@ -50,7 +50,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
 import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.dkpro.tc.features.ngram.util.EachTokenAsUnitAnnotator;
 import org.junit.Rule;
@@ -131,9 +131,9 @@ public class NgramUnitTest
         fes.add(featureExtractor);
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt",
-                TestReaderSingleLabel.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, true);
+                TestReaderSingleLabelDocumentReader.class, TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt",
+                TestReaderSingleLabelDocumentReader.PARAM_SUPPRESS_DOCUMENT_ANNOTATION, true);
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);
@@ -182,8 +182,8 @@ public class NgramUnitTest
         List<Object> parameterList = new ArrayList<Object>(Arrays.asList(parameters));
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabel.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt");
+                TestReaderSingleLabelDocumentReader.class, TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/text3.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory
                 .createEngineDescription(BreakIteratorSegmenter.class);

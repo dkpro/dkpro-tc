@@ -168,7 +168,7 @@ public abstract class LuceneMetaCollectionBasedFeatureTestBase
         return token;
     }
 
-    private List<ExternalResourceDescription> makeResource(
+    protected List<ExternalResourceDescription> makeResource(
             Class<? extends Resource_ImplBase> class1, Object[] parameters)
     {
         ExternalResourceDescription featureExtractor = ExternalResourceFactory

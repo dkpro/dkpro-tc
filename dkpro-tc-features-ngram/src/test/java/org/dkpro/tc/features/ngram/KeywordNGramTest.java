@@ -39,7 +39,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.JsonDataWriter;
 import org.dkpro.tc.core.util.TaskUtils;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabel;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
 import org.dkpro.tc.features.ngram.meta.KeywordNGramMC;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class KeywordNGramTest
                 KeywordNGram.PARAM_KEYWORD_NGRAM_INCLUDE_COMMAS, includeComma };
 
         CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-                TestReaderSingleLabel.class, TestReaderSingleLabel.PARAM_SOURCE_LOCATION,
+                TestReaderSingleLabelDocumentReader.class, TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/ngrams/trees.txt");
 
         AnalysisEngineDescription segmenter = AnalysisEngineFactory

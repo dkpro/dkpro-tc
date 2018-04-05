@@ -25,29 +25,36 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ExternalResourceDescription;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.Resource_ImplBase;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelDocumentReader;
-import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxNrOfTokensOverAllDocumentsMC;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.io.JsonDataWriter;
+import org.dkpro.tc.core.util.TaskUtils;
+import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
+import org.dkpro.tc.features.ngram.io.TestReaderSingleLabelUnitReader;
+import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxTokenLenMC;
 import org.junit.Before;
 
 import com.google.common.collect.Lists;
 
-public class TokenRatioPerDocumentTest
+public class TokenLenTest
     extends LuceneMetaCollectionBasedFeatureTestBase
 {
-    private static String EXTRACTOR_NAME = "5646534431";
+    private static String EXTRACTOR_NAME = "5646536754431";
 
     @Before
     public void setup()
     {
         super.setup();
 
-        featureClass = TokenRatioPerDocument.class;
-        metaCollectorClass = MaxNrOfTokensOverAllDocumentsMC.class;
+        featureClass = TokenLengthRatio.class;
+        metaCollectorClass = MaxTokenLenMC.class;
     }
 
     @Override
@@ -66,8 +73,8 @@ public class TokenRatioPerDocumentTest
         });
         entries = Lists.reverse(entries);
 
-        assertEquals(3, entries.size());
-        assertEquals("15", entries.get(0).split("_")[0]);
+        assertEquals(35, entries.size());
+        assertEquals("5", entries.get(0).split("_")[0]);
     }
 
     @Override
@@ -88,26 +95,38 @@ public class TokenRatioPerDocumentTest
 
         instances = Lists.reverse(instances);
 
-        assertEquals(3, instances.size());
+        assertEquals(33, instances.size());
 
-        double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0)
-                .getValue());
-        assertEquals(1.0, r, 0.01);
+        Double r = (Double) (new ArrayList<Feature>(instances.get(0).getFeatures()).get(0).getValue());
+        assertEquals(1, r, 0.01);
+        
+        r = (Double) (new ArrayList<Feature>(instances.get(32).getFeatures()).get(0).getValue());
+        assertEquals(0.2, r, 0.01);
 
-        r = (Double) (new ArrayList<Feature>(instances.get(1).getFeatures()).get(0).getValue());
-        assertEquals(0.8, r, 0.01);
+    }
+    
+    @Override
+    protected AnalysisEngineDescription prepareFeatureExtractor(File outputPath,
+            Class<? extends Resource_ImplBase> class1, Object[] parameters)
+        throws ResourceInitializationException
+    {
+        List<ExternalResourceDescription> fes = makeResource(class1, parameters);
 
-        r = (Double) (new ArrayList<Feature>(instances.get(2).getFeatures()).get(0).getValue());
-        assertEquals(0.53, r, 0.01);
+        AnalysisEngineDescription featExtractorConnector = TaskUtils.getFeatureExtractorConnector(
+                outputPath.getAbsolutePath(), JsonDataWriter.class.getName(),
+                Constants.LM_SINGLE_LABEL, Constants.FM_UNIT, false, false, false, false,
+                Collections.emptyList(), fes, new String[] {});
+
+        return featExtractorConnector;
     }
 
     @Override
     protected CollectionReaderDescription getMetaReader() throws Exception
     {
-        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelDocumentReader.class,
-                TestReaderSingleLabelDocumentReader.PARAM_LANGUAGE, "en",
-                TestReaderSingleLabelDocumentReader.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
-                TestReaderSingleLabelDocumentReader.PARAM_PATTERNS, "text*");
+        return CollectionReaderFactory.createReaderDescription(TestReaderSingleLabelUnitReader.class,
+                TestReaderSingleLabelUnitReader.PARAM_LANGUAGE, "en",
+                TestReaderSingleLabelUnitReader.PARAM_SOURCE_LOCATION, "src/test/resources/ngrams/",
+                TestReaderSingleLabelUnitReader.PARAM_PATTERNS, "text*");
     }
 
     @Override
@@ -119,19 +138,19 @@ public class TokenRatioPerDocumentTest
     @Override
     protected Object[] getMetaCollectorParameters(File luceneFolder)
     {
-        return new Object[] { TokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-                TokenRatioPerDocument.PARAM_NGRAM_USE_TOP_K, "1",
-                TokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
-                TokenRatioPerDocument.PARAM_NGRAM_MIN_N, "1",
-                TokenRatioPerDocument.PARAM_NGRAM_MAX_N, "1", };
+        return new Object[] { TokenLengthRatio.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                TokenLengthRatio.PARAM_NGRAM_USE_TOP_K, "1",
+                TokenLengthRatio.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxTokenLenMC.PARAM_TARGET_LOCATION, luceneFolder.toString(),
+                TokenLengthRatio.PARAM_NGRAM_MIN_N, "1",
+                TokenLengthRatio.PARAM_NGRAM_MAX_N, "1", };
     }
 
     @Override
     protected Object[] getFeatureExtractorParameters(File luceneFolder)
     {
-        return new Object[] { TokenRatioPerDocument.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
-                TokenRatioPerDocument.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
-                MaxNrOfTokensOverAllDocumentsMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
+        return new Object[] { MaxTokenLenMC.PARAM_UNIQUE_EXTRACTOR_NAME, EXTRACTOR_NAME,
+                TokenLengthRatio.PARAM_SOURCE_LOCATION, luceneFolder.toString(),
+                MaxTokenLenMC.PARAM_TARGET_LOCATION, luceneFolder.toString() };
     }
 }
