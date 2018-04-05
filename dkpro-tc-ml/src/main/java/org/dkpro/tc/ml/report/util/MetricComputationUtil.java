@@ -28,7 +28,6 @@ import org.dkpro.tc.core.Constants;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
-import de.unidue.ltl.evaluation.measures.categorial.Fscore;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 import de.unidue.ltl.evaluation.measures.multilabel.ExactMatchRatio;
@@ -57,10 +56,6 @@ public class MetricComputationUtil
 
             Accuracy<String> acc = new Accuracy<>(data);
             map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
-
-            Fscore<String> fmeasure = new Fscore<>(data);
-            map.put("Micro FScore", "" + getMicroFscore(fmeasure));
-            map.put("Macro FScore", "" + getMacroFscore(fmeasure));
 
         }
         else if (mode.equals(Constants.LM_REGRESSION)) {
@@ -161,36 +156,6 @@ public class MetricComputationUtil
         }
 
         return val;
-    }
-
-    private static String getMicroFscore(Fscore<String> fmeasure)
-    {
-        String retVal = "";
-
-        try {
-            retVal = fmeasure.getMicroFscore() + "";
-        }
-        catch (Exception e) {
-            String stackTrace = ExceptionUtils.getStackTrace(e);
-            return "Exception occurred with following stack trace: [" + stackTrace + "]";
-        }
-
-        return retVal;
-    }
-
-    private static String getMacroFscore(Fscore<String> fmeasure)
-    {
-        String retVal = "";
-
-        try {
-            retVal = fmeasure.getMacroFscore() + "";
-        }
-        catch (Exception e) {
-            String stackTrace = ExceptionUtils.getStackTrace(e);
-            return "Exception occurred with following stack trace: [" + stackTrace + "]";
-        }
-
-        return retVal;
     }
 
 }
