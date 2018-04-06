@@ -46,11 +46,6 @@ public class CrfSuiteAdapter
         return new CrfSuiteAdapter();
     }
 
-    public static String getOutcomeMappingFilename()
-    {
-        return "outcome-mapping.txt";
-    }
-
     @Override
     public ExecutableTaskBase getTestTask()
     {

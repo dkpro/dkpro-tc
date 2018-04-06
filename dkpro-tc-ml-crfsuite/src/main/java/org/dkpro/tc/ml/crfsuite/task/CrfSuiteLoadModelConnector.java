@@ -18,16 +18,11 @@
 
 package org.dkpro.tc.ml.crfsuite.task;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -46,6 +41,7 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredict;
 import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
@@ -61,15 +57,12 @@ public class CrfSuiteLoadModelConnector
 
     private File model = null;
 
-    private File executablePath;
-
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
 
         try {
-            executablePath = CrfSuiteTestTask.getExecutable();
             model = new File(tcModelLocation, MODEL_CLASSIFIER);
             verifyTcVersion(tcModelLocation, getClass());
         }
@@ -111,8 +104,8 @@ public class CrfSuiteLoadModelConnector
                     }
                 }
 
-                List<String> command = buildCommand();
-                StringBuilder out = runCommand(command, buffer.toString());
+                CrfSuitePredict predict = new CrfSuitePredict();
+                String out = predict.predict(buffer.toString(), model);
                 output.append(out);
             }
 
@@ -122,36 +115,6 @@ public class CrfSuiteLoadModelConnector
             throw new AnalysisEngineProcessException(e);
         }
 
-    }
-
-    private StringBuilder runCommand(List<String> command, String buffer) throws IOException
-    {
-        ProcessBuilder pb = new ProcessBuilder();
-        pb.redirectError(Redirect.INHERIT);
-        pb.command(command);
-        Process process = pb.start();
-
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
-            writer.write(buffer.toString());
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
-        }
-        return CrfSuiteTestTask.captureProcessOutput(process);
-    }
-
-    private List<String> buildCommand() throws Exception
-    {
-        List<String> command = new ArrayList<String>();
-        command.add(executablePath.getAbsolutePath());
-        command.add("tag");
-        command.add("-m");
-        command.add(model.getAbsolutePath());
-        command.add("-"); // Read from STDIN
-
-        return command;
     }
 
     private void setPredictedOutcome(JCas jcas, String aLabels)

@@ -43,13 +43,13 @@ import org.junit.Test;
 public class CRFSuiteBrownPosDemoTest
     extends TestCaseSuperClass implements Constants
 {
-    CRFSuiteBrownPosDemoSimpleDkproReader javaExperiment;
+    CRFSuiteBrownPosDemo javaExperiment;
 
     @Before
     public void setup() throws Exception
     {
         super.setup();
-        javaExperiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
+        javaExperiment = new CRFSuiteBrownPosDemo();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class CRFSuiteBrownPosDemoTest
         config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
         
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(
                 Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, null);
 
         javaExperiment.runTrainTest(pSpace);
@@ -106,7 +106,7 @@ public class CRFSuiteBrownPosDemoTest
         Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
                 asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
 
-        ParameterSpace pSpace = CRFSuiteBrownPosDemoSimpleDkproReader.getParameterSpace(
+        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(
                 Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, dimFilter);
 
         javaExperiment.runTrainTest(pSpace);

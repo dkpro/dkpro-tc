@@ -30,6 +30,8 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrain;
 
 public class CrfSuiteSerializeModelConnector
     extends ModelSerializationTask
@@ -82,15 +84,12 @@ public class CrfSuiteSerializeModelConnector
     {
         File model = new File(outputFolder, MODEL_CLASSIFIER);
 
-        File executable = CrfSuiteTestTask.getExecutable();
+        File executable = CrfSuite.getExecutable();
         File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext,
                 executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-        List<String> commandTrainModel = CrfSuiteTestTask.getTrainCommand(executable, model, train,
-                algoName, algoParameters);
-
-        Process process = new ProcessBuilder().inheritIO().command(commandTrainModel).start();
-        process.waitFor();
+        CrfSuiteTrain trainer = new CrfSuiteTrain();
+        trainer.train(algoName, algoParameters, train,model);
     }
 
     private void processParameters(List<Object> classificationArguments) throws Exception

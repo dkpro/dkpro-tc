@@ -24,22 +24,22 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredict;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrain;
 import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class CrfSuiteTestTask
     extends ExecutableTaskBase
@@ -51,12 +51,8 @@ public class CrfSuiteTestTask
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     private List<Object> classificationArguments;
 
-    private File model = null;
     private String algoName;
     private List<String> algoParameters;
-
-    private static RuntimeProvider runtimeProvider = null;
-    private static PlatformDetector detector = new PlatformDetector();
 
     @Override
     public void execute(TaskContext aContext) throws Exception
@@ -70,8 +66,8 @@ public class CrfSuiteTestTask
 
         processParameters(classificationArguments);
 
-        model = trainModel(aContext);
-        String rawTextOutput = testModel(aContext);
+        File model = trainModel(aContext);
+        String rawTextOutput = testModel(aContext, model);
 
         writePredictions2File(aContext, rawTextOutput);
 
@@ -136,93 +132,38 @@ public class CrfSuiteTestTask
 
     private static boolean isWindows()
     {
-        return detector.getPlatformId().startsWith(PlatformDetector.OS_WINDOWS);
+        return CrfSuite.getPlatformDetector().getPlatformId()
+                .startsWith(PlatformDetector.OS_WINDOWS);
     }
 
     private File trainModel(TaskContext aContext) throws Exception
     {
-        File executable = getExecutable();
+        CrfSuiteTrain trainer = new CrfSuiteTrain();
+
+        File executable = CrfSuiteTrain.getExecutable();
         File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
-
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
 
-        List<String> command = getTrainCommand(executable, modelLocation, train, algoName,
-                algoParameters);
-        runTrain(command);
+        trainer.train(algoName, algoParameters, train, modelLocation);
 
         deleteTmpFeatureFileIfCreated(aContext, train, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
         return writeModel(aContext, modelLocation);
     }
 
-    private String testModel(TaskContext aContext) throws Exception
+    private String testModel(TaskContext aContext, File model) throws Exception
     {
-
-        File executable = getExecutable();
+        File executable = CrfSuite.getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        List<String> command = getTestCommand(executable, testFile, model);
-        String output = runTest(command).toString();
+        CrfSuitePredict crfPredict = new CrfSuitePredict();
+        String prediction = crfPredict.predict(testFile, model);
 
         deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        return output;
-    }
-
-    public static List<String> getTestCommand(File anExecutable, File aTestFile, File aModel)
-    {
-        List<String> commandTestModel = new ArrayList<String>();
-        commandTestModel.add(anExecutable.getAbsolutePath());
-        commandTestModel.add("tag");
-        commandTestModel.add("-r");
-        commandTestModel.add("-m");
-        commandTestModel.add(aModel.getAbsolutePath());
-        commandTestModel.add(aTestFile.getAbsolutePath());
-        return commandTestModel;
-    }
-
-    public static List<String> getTrainCommand(File executable, File model, File train,
-            String algorithm, List<String> algoParameter)
-        throws Exception
-    {
-        List<String> commandTrainModel = new ArrayList<String>();
-        commandTrainModel.add(executable.getAbsolutePath());
-        commandTrainModel.add("learn");
-        commandTrainModel.add("-m");
-        commandTrainModel.add(model.getAbsolutePath());
-
-        commandTrainModel.add("-a");
-        commandTrainModel.add(algorithm);
-
-        for (String p : algoParameter) {
-            commandTrainModel.add(p.replaceAll(" ", ""));
-        }
-
-        commandTrainModel.add(train.getAbsolutePath());
-
-        return commandTrainModel;
-    }
-
-    public static StringBuilder runTest(List<String> aTestModelCommand) throws Exception
-    {
-        Process process = new ProcessBuilder().command(aTestModelCommand).start();
-        StringBuilder output = captureProcessOutput(process);
-        return output;
-    }
-
-    public static StringBuilder captureProcessOutput(Process aProcess)
-    {
-        InputStream src = aProcess.getInputStream();
-        Scanner sc = new Scanner(src, "utf-8");
-        StringBuilder dest = new StringBuilder();
-        while (sc.hasNextLine()) {
-            String l = sc.nextLine();
-            dest.append(l + "\n");
-        }
-        sc.close();
-        return dest;
+        return prediction;
     }
 
     private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
@@ -233,12 +174,6 @@ public class CrfSuiteTestTask
         if (f.getAbsolutePath().length() >= 254 && isWindows()) {
             FileUtils.deleteQuietly(input);
         }
-    }
-
-    private void runTrain(List<String> aModelTrainCommand) throws Exception
-    {
-        Process process = new ProcessBuilder().inheritIO().command(aModelTrainCommand).start();
-        process.waitFor();
     }
 
     private File writeModel(TaskContext aContext, File model) throws Exception
@@ -263,17 +198,4 @@ public class CrfSuiteTestTask
         algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
     }
 
-    public static File getExecutable() throws Exception
-    {
-
-        if (runtimeProvider == null) {
-            String platform = detector.getPlatformId();
-            LogFactory.getLog(CrfSuiteTestTask.class.getName())
-                    .info("Load binary for platform: [" + platform + "]");
-
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/crfsuite/");
-        }
-
-        return runtimeProvider.getFile("crfsuite");
-    }
 }

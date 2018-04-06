@@ -40,7 +40,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.io.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
@@ -53,7 +53,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This a pure Java-based experiment setup of POS tagging as sequence tagging.
  */
-public class CRFSuiteBrownPosDemoSimpleDkproReader
+public class CRFSuiteBrownPosDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -70,7 +70,7 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         // Ensures that people can run the experiments even if they haven't read
         // the setup
         // instructions first :)
-        DemoUtils.setDkproHome(CRFSuiteBrownPosDemoSimpleDkproReader.class.getSimpleName());
+        DemoUtils.setDkproHome(CRFSuiteBrownPosDemo.class.getSimpleName());
         
         
         Map<String, Object> config = new HashMap<>();
@@ -82,7 +82,7 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
                 mlas, null);
 
-        CRFSuiteBrownPosDemoSimpleDkproReader experiment = new CRFSuiteBrownPosDemoSimpleDkproReader();
+        CRFSuiteBrownPosDemo experiment = new CRFSuiteBrownPosDemo();
         experiment.runTrainTest(pSpace);
     }
 
@@ -104,7 +104,7 @@ public class CRFSuiteBrownPosDemoSimpleDkproReader
         dimReaders.put(DIM_READER_TEST, test);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(TokenRatioPerDocument.class),
+                TcFeatureFactory.create(TokenLengthRatio.class),
                 TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
                         50)));

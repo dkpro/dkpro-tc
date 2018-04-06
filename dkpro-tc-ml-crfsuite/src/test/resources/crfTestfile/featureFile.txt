@@ -1,0 +1,167 @@
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_0_0_The	TokLenRatio=0.17647058823529413	__BOS__
+NP	CharacterNGram_er=1	CharacterNGram_te=1	CharacterNGram_to=1	DKProTCInstanceID=0_0_1_September-October	TokLenRatio=1.0
+NN	CharacterNGram_er=1	CharacterNGram_te=1	DKProTCInstanceID=0_0_2_term	TokLenRatio=0.23529411764705882
+NN	CharacterNGram_ur=1	DKProTCInstanceID=0_0_3_jury	TokLenRatio=0.23529411764705882
+HVD	CharacterNGram_ha=1	DKProTCInstanceID=0_0_4_had	TokLenRatio=0.17647058823529413
+BEN	CharacterNGram_en=1	DKProTCInstanceID=0_0_5_been	TokLenRatio=0.23529411764705882
+VBN	CharacterNGram_ar=1	CharacterNGram_ed=1	CharacterNGram_ha=1	DKProTCInstanceID=0_0_6_charged	TokLenRatio=0.4117647058823529
+IN	DKProTCInstanceID=0_0_7_by	TokLenRatio=0.11764705882352941
+NP	CharacterNGram_on=1	CharacterNGram_to=1	DKProTCInstanceID=0_0_8_Fulton	TokLenRatio=0.35294117647058826
+JJ	CharacterNGram_er=1	CharacterNGram_or=1	DKProTCInstanceID=0_0_9_Superior	TokLenRatio=0.47058823529411764
+NN	CharacterNGram_ur=1	DKProTCInstanceID=0_0_10_Court	TokLenRatio=0.29411764705882354
+NN	DKProTCInstanceID=0_0_11_Judge	TokLenRatio=0.29411764705882354
+NP	CharacterNGram_ur=1	DKProTCInstanceID=0_0_12_Durwood	TokLenRatio=0.4117647058823529
+NP	DKProTCInstanceID=0_0_13_Pye	TokLenRatio=0.17647058823529413
+TO	CharacterNGram_to=1	DKProTCInstanceID=0_0_14_to	TokLenRatio=0.11764705882352941
+VB	CharacterNGram_at=1	CharacterNGram_es=1	CharacterNGram_in=1	CharacterNGram_te=1	CharacterNGram_ti=1	DKProTCInstanceID=0_0_15_investigate	TokLenRatio=0.6470588235294118
+NNS	CharacterNGram_or=1	CharacterNGram_re=1	DKProTCInstanceID=0_0_16_reports	TokLenRatio=0.4117647058823529
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_0_17_of	TokLenRatio=0.11764705882352941
+JJ	DKProTCInstanceID=0_0_18_possible	TokLenRatio=0.47058823529411764
+pct	DKProTCInstanceID=0_0_19_``	TokLenRatio=0.11764705882352941
+NNS	CharacterNGram_ar=1	CharacterNGram_es=1	CharacterNGram_re=1	CharacterNGram_ti=1	DKProTCInstanceID=0_0_20_irregularities	TokLenRatio=0.8235294117647058
+pct	DKProTCInstanceID=0_0_21_''	TokLenRatio=0.11764705882352941
+IN	CharacterNGram_in=1	DKProTCInstanceID=0_0_22_in	TokLenRatio=0.11764705882352941
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_0_23_the	TokLenRatio=0.17647058823529413
+JJ	CharacterNGram_ar=1	CharacterNGram_ha=1	DKProTCInstanceID=0_0_24_hard-fought	TokLenRatio=0.6470588235294118
+NN	CharacterNGram_ar=1	DKProTCInstanceID=0_0_25_primary	TokLenRatio=0.4117647058823529
+WDT	DKProTCInstanceID=0_0_26_which	TokLenRatio=0.29411764705882354
+BEDZ	DKProTCInstanceID=0_0_27_was	TokLenRatio=0.17647058823529413
+VBN	CharacterNGram_on=1	DKProTCInstanceID=0_0_28_won	TokLenRatio=0.17647058823529413
+IN	DKProTCInstanceID=0_0_29_by	TokLenRatio=0.11764705882352941
+NN	CharacterNGram_at=1	CharacterNGram_in=1	CharacterNGram_or=1	CharacterNGram_te=1	DKProTCInstanceID=0_0_30_Mayor-nominate	TokLenRatio=0.8235294117647058
+NP	CharacterNGram_an=1	DKProTCInstanceID=0_0_31_Ivan	TokLenRatio=0.23529411764705882
+NP	CharacterNGram_en=1	DKProTCInstanceID=0_0_32_Allen	TokLenRatio=0.29411764705882354
+NP	DKProTCInstanceID=0_0_33_Jr.	TokLenRatio=0.17647058823529413
+pct	DKProTCInstanceID=0_0_34_.	TokLenRatio=0.058823529411764705	__EOS__
+
+pct	DKProTCInstanceID=0_1_0_``	TokLenRatio=0.11764705882352941	__BOS__
+RB	CharacterNGram_on=1	DKProTCInstanceID=0_1_1_Only	TokLenRatio=0.23529411764705882
+AT	DKProTCInstanceID=0_1_2_a	TokLenRatio=0.058823529411764705
+JJ	CharacterNGram_at=1	CharacterNGram_re=1	CharacterNGram_ti=1	DKProTCInstanceID=0_1_3_relative	TokLenRatio=0.47058823529411764
+NN	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_ha=1	CharacterNGram_nd=1	DKProTCInstanceID=0_1_4_handful	TokLenRatio=0.4117647058823529
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_1_5_of	TokLenRatio=0.11764705882352941
+JJ	DKProTCInstanceID=0_1_6_such	TokLenRatio=0.23529411764705882
+NNS	CharacterNGram_or=1	CharacterNGram_re=1	DKProTCInstanceID=0_1_7_reports	TokLenRatio=0.4117647058823529
+BEDZ	DKProTCInstanceID=0_1_8_was	TokLenRatio=0.17647058823529413
+VBN	CharacterNGram_ed=1	CharacterNGram_re=1	DKProTCInstanceID=0_1_9_received	TokLenRatio=0.47058823529411764
+pct	DKProTCInstanceID=0_1_10_''	TokLenRatio=0.11764705882352941
+pct	DKProTCInstanceID=0_1_11_,	TokLenRatio=0.058823529411764705
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_1_12_the	TokLenRatio=0.17647058823529413
+NN	CharacterNGram_ur=1	DKProTCInstanceID=0_1_13_jury	TokLenRatio=0.23529411764705882
+VBD	DKProTCInstanceID=0_1_14_said	TokLenRatio=0.23529411764705882
+pct	DKProTCInstanceID=0_1_15_,	TokLenRatio=0.058823529411764705
+pct	DKProTCInstanceID=0_1_16_``	TokLenRatio=0.11764705882352941
+IN	CharacterNGram_er=1	CharacterNGram_in=1	CharacterNGram_on=1	DKProTCInstanceID=0_1_17_considering	TokLenRatio=0.6470588235294118
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_1_18_the	TokLenRatio=0.17647058823529413
+JJ	CharacterNGram_es=1	CharacterNGram_re=1	DKProTCInstanceID=0_1_19_widespread	TokLenRatio=0.5882352941176471
+NN	CharacterNGram_er=1	CharacterNGram_es=1	CharacterNGram_in=1	CharacterNGram_re=1	CharacterNGram_te=1	DKProTCInstanceID=0_1_20_interest	TokLenRatio=0.47058823529411764
+IN	CharacterNGram_in=1	DKProTCInstanceID=0_1_21_in	TokLenRatio=0.11764705882352941
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_1_22_the	TokLenRatio=0.17647058823529413
+NN	CharacterNGram_on=1	CharacterNGram_ti=1	DKProTCInstanceID=0_1_23_election	TokLenRatio=0.47058823529411764
+pct	DKProTCInstanceID=0_1_24_,	TokLenRatio=0.058823529411764705
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_1_25_the	TokLenRatio=0.17647058823529413
+NN	CharacterNGram_er=1	DKProTCInstanceID=0_1_26_number	TokLenRatio=0.35294117647058826
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_1_27_of	TokLenRatio=0.11764705882352941
+NNS	CharacterNGram_er=1	CharacterNGram_te=1	DKProTCInstanceID=0_1_28_voters	TokLenRatio=0.35294117647058826
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_1_29_and	TokLenRatio=0.17647058823529413
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_1_30_the	TokLenRatio=0.17647058823529413
+NN	DKProTCInstanceID=0_1_31_size	TokLenRatio=0.23529411764705882
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_1_32_of	TokLenRatio=0.11764705882352941
+DT	CharacterNGram_th=1	DKProTCInstanceID=0_1_33_this	TokLenRatio=0.23529411764705882
+NN	DKProTCInstanceID=0_1_34_city	TokLenRatio=0.23529411764705882
+pct	DKProTCInstanceID=0_1_35_''	TokLenRatio=0.11764705882352941
+pct	DKProTCInstanceID=0_1_36_.	TokLenRatio=0.058823529411764705	__EOS__
+
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_2_0_The	TokLenRatio=0.17647058823529413	__BOS__
+NN	CharacterNGram_ur=1	DKProTCInstanceID=0_2_1_jury	TokLenRatio=0.23529411764705882
+VBD	DKProTCInstanceID=0_2_2_said	TokLenRatio=0.23529411764705882
+PPS	DKProTCInstanceID=0_2_3_it	TokLenRatio=0.11764705882352941
+DOD	DKProTCInstanceID=0_2_4_did	TokLenRatio=0.17647058823529413
+VB	CharacterNGram_in=1	CharacterNGram_nd=1	DKProTCInstanceID=0_2_5_find	TokLenRatio=0.23529411764705882
+CS	CharacterNGram_at=1	CharacterNGram_ha=1	CharacterNGram_th=1	DKProTCInstanceID=0_2_6_that	TokLenRatio=0.23529411764705882
+AP	CharacterNGram_an=1	DKProTCInstanceID=0_2_7_many	TokLenRatio=0.23529411764705882
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_2_8_of	TokLenRatio=0.11764705882352941
+NPg	CharacterNGram_or=1	DKProTCInstanceID=0_2_9_Georgia's	TokLenRatio=0.5294117647058824
+NN	CharacterNGram_at=1	CharacterNGram_on=1	CharacterNGram_re=1	CharacterNGram_ti=1	DKProTCInstanceID=0_2_10_registration	TokLenRatio=0.7058823529411765
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_2_11_and	TokLenRatio=0.17647058823529413
+NN	CharacterNGram_on=1	CharacterNGram_ti=1	DKProTCInstanceID=0_2_12_election	TokLenRatio=0.47058823529411764
+NNS	DKProTCInstanceID=0_2_13_laws	TokLenRatio=0.23529411764705882
+pct	DKProTCInstanceID=0_2_14_``	TokLenRatio=0.11764705882352941
+BER	CharacterNGram_ar=1	CharacterNGram_re=1	DKProTCInstanceID=0_2_15_are	TokLenRatio=0.17647058823529413
+JJ	CharacterNGram_ed=1	DKProTCInstanceID=0_2_16_outmoded	TokLenRatio=0.47058823529411764
+CC	CharacterNGram_or=1	DKProTCInstanceID=0_2_17_or	TokLenRatio=0.11764705882352941
+JJ	CharacterNGram_at=1	CharacterNGram_in=1	CharacterNGram_te=1	DKProTCInstanceID=0_2_18_inadequate	TokLenRatio=0.5882352941176471
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_2_19_and	TokLenRatio=0.17647058823529413
+RB	CharacterNGram_en=1	CharacterNGram_of=1	CharacterNGram_te=1	DKProTCInstanceID=0_2_20_often	TokLenRatio=0.29411764705882354
+JJ	DKProTCInstanceID=0_2_21_ambiguous	TokLenRatio=0.5294117647058824
+pct	DKProTCInstanceID=0_2_22_''	TokLenRatio=0.11764705882352941
+pct	DKProTCInstanceID=0_2_23_.	TokLenRatio=0.058823529411764705	__EOS__
+
+PPS	DKProTCInstanceID=0_3_0_It	TokLenRatio=0.11764705882352941	__BOS__
+VBD	CharacterNGram_ed=1	CharacterNGram_en=1	CharacterNGram_nd=1	CharacterNGram_re=1	DKProTCInstanceID=0_3_1_recommended	TokLenRatio=0.6470588235294118
+CS	CharacterNGram_at=1	CharacterNGram_ha=1	CharacterNGram_th=1	DKProTCInstanceID=0_3_2_that	TokLenRatio=0.23529411764705882
+NP	CharacterNGram_on=1	CharacterNGram_to=1	DKProTCInstanceID=0_3_3_Fulton	TokLenRatio=0.35294117647058826
+NNS	CharacterNGram_at=1	CharacterNGram_or=1	CharacterNGram_to=1	DKProTCInstanceID=0_3_4_legislators	TokLenRatio=0.6470588235294118
+VB	DKProTCInstanceID=0_3_5_act	TokLenRatio=0.17647058823529413
+pct	DKProTCInstanceID=0_3_6_``	TokLenRatio=0.11764705882352941
+TO	CharacterNGram_to=1	DKProTCInstanceID=0_3_7_to	TokLenRatio=0.11764705882352941
+HV	CharacterNGram_ha=1	DKProTCInstanceID=0_3_8_have	TokLenRatio=0.23529411764705882
+DTS	CharacterNGram_es=1	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_3_9_these	TokLenRatio=0.29411764705882354
+NNS	DKProTCInstanceID=0_3_10_laws	TokLenRatio=0.23529411764705882
+VBN	CharacterNGram_ed=1	DKProTCInstanceID=0_3_11_studied	TokLenRatio=0.4117647058823529
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_3_12_and	TokLenRatio=0.17647058823529413
+VBN	CharacterNGram_ed=1	CharacterNGram_re=1	DKProTCInstanceID=0_3_13_revised	TokLenRatio=0.4117647058823529
+IN	CharacterNGram_to=1	DKProTCInstanceID=0_3_14_to	TokLenRatio=0.11764705882352941
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_3_15_the	TokLenRatio=0.17647058823529413
+NN	CharacterNGram_en=1	CharacterNGram_nd=1	DKProTCInstanceID=0_3_16_end	TokLenRatio=0.17647058823529413
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_3_17_of	TokLenRatio=0.11764705882352941
+VBG	CharacterNGram_er=1	CharacterNGram_in=1	DKProTCInstanceID=0_3_18_modernizing	TokLenRatio=0.6470588235294118
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_3_19_and	TokLenRatio=0.17647058823529413
+VBG	CharacterNGram_in=1	DKProTCInstanceID=0_3_20_improving	TokLenRatio=0.5294117647058824
+PPO	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_3_21_them	TokLenRatio=0.23529411764705882
+pct	DKProTCInstanceID=0_3_22_''	TokLenRatio=0.11764705882352941
+pct	DKProTCInstanceID=0_3_23_.	TokLenRatio=0.058823529411764705	__EOS__
+
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_4_0_The	TokLenRatio=0.17647058823529413	__BOS__
+JJ	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_4_1_grand	TokLenRatio=0.29411764705882354
+NN	CharacterNGram_ur=1	DKProTCInstanceID=0_4_2_jury	TokLenRatio=0.23529411764705882
+VBD	CharacterNGram_ed=1	CharacterNGram_en=1	CharacterNGram_te=1	DKProTCInstanceID=0_4_3_commented	TokLenRatio=0.5294117647058824
+IN	CharacterNGram_on=1	DKProTCInstanceID=0_4_4_on	TokLenRatio=0.11764705882352941
+AT	DKProTCInstanceID=0_4_5_a	TokLenRatio=0.058823529411764705
+NN	CharacterNGram_er=1	DKProTCInstanceID=0_4_6_number	TokLenRatio=0.35294117647058826
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_4_7_of	TokLenRatio=0.11764705882352941
+AP	CharacterNGram_er=1	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_4_8_other	TokLenRatio=0.29411764705882354
+NNS	CharacterNGram_to=1	DKProTCInstanceID=0_4_9_topics	TokLenRatio=0.35294117647058826
+pct	DKProTCInstanceID=0_4_10_,	TokLenRatio=0.058823529411764705
+IN	CharacterNGram_on=1	DKProTCInstanceID=0_4_11_among	TokLenRatio=0.29411764705882354
+PPO	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_4_12_them	TokLenRatio=0.23529411764705882
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_4_13_the	TokLenRatio=0.17647058823529413
+NP	CharacterNGram_an=1	CharacterNGram_at=1	DKProTCInstanceID=0_4_14_Atlanta	TokLenRatio=0.4117647058823529
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_4_15_and	TokLenRatio=0.17647058823529413
+NP	CharacterNGram_on=1	CharacterNGram_to=1	DKProTCInstanceID=0_4_16_Fulton	TokLenRatio=0.35294117647058826
+NN	DKProTCInstanceID=0_4_17_County	TokLenRatio=0.35294117647058826
+VBG	CharacterNGram_ha=1	CharacterNGram_in=1	CharacterNGram_ur=1	DKProTCInstanceID=0_4_18_purchasing	TokLenRatio=0.5882352941176471
+NNS	CharacterNGram_ar=1	CharacterNGram_en=1	DKProTCInstanceID=0_4_19_departments	TokLenRatio=0.6470588235294118
+WDT	DKProTCInstanceID=0_4_20_which	TokLenRatio=0.29411764705882354
+PPS	DKProTCInstanceID=0_4_21_it	TokLenRatio=0.11764705882352941
+VBD	DKProTCInstanceID=0_4_22_said	TokLenRatio=0.23529411764705882
+pct	DKProTCInstanceID=0_4_23_``	TokLenRatio=0.11764705882352941
+BER	CharacterNGram_ar=1	CharacterNGram_re=1	DKProTCInstanceID=0_4_24_are	TokLenRatio=0.17647058823529413
+QL	DKProTCInstanceID=0_4_25_well	TokLenRatio=0.23529411764705882
+VBN	CharacterNGram_at=1	CharacterNGram_ed=1	CharacterNGram_er=1	CharacterNGram_te=1	DKProTCInstanceID=0_4_26_operated	TokLenRatio=0.47058823529411764
+CC	CharacterNGram_an=1	CharacterNGram_and=1	CharacterNGram_nd=1	DKProTCInstanceID=0_4_27_and	TokLenRatio=0.17647058823529413
+VB	DKProTCInstanceID=0_4_28_follow	TokLenRatio=0.35294117647058826
+RB	CharacterNGram_en=1	CharacterNGram_er=1	DKProTCInstanceID=0_4_29_generally	TokLenRatio=0.5294117647058824
+VBN	CharacterNGram_ed=1	CharacterNGram_te=1	DKProTCInstanceID=0_4_30_accepted	TokLenRatio=0.47058823529411764
+NNS	CharacterNGram_es=1	CharacterNGram_ti=1	DKProTCInstanceID=0_4_31_practices	TokLenRatio=0.5294117647058824
+WDT	DKProTCInstanceID=0_4_32_which	TokLenRatio=0.29411764705882354
+VB	CharacterNGram_in=1	CharacterNGram_re=1	CharacterNGram_ur=1	DKProTCInstanceID=0_4_33_inure	TokLenRatio=0.29411764705882354
+IN	CharacterNGram_to=1	DKProTCInstanceID=0_4_34_to	TokLenRatio=0.11764705882352941
+AT	CharacterNGram_he=1	CharacterNGram_th=1	CharacterNGram_the=1	DKProTCInstanceID=0_4_35_the	TokLenRatio=0.17647058823529413
+JJT	CharacterNGram_es=1	DKProTCInstanceID=0_4_36_best	TokLenRatio=0.23529411764705882
+NN	CharacterNGram_er=1	CharacterNGram_es=1	CharacterNGram_in=1	CharacterNGram_re=1	CharacterNGram_te=1	DKProTCInstanceID=0_4_37_interest	TokLenRatio=0.47058823529411764
+IN	CharacterNGram_of=1	DKProTCInstanceID=0_4_38_of	TokLenRatio=0.11764705882352941
+ABX	CharacterNGram_th=1	DKProTCInstanceID=0_4_39_both	TokLenRatio=0.23529411764705882
+NNS	CharacterNGram_en=1	CharacterNGram_er=1	DKProTCInstanceID=0_4_40_governments	TokLenRatio=0.6470588235294118
+pct	DKProTCInstanceID=0_4_41_''	TokLenRatio=0.11764705882352941
+pct	DKProTCInstanceID=0_4_42_.	TokLenRatio=0.058823529411764705	__EOS__
