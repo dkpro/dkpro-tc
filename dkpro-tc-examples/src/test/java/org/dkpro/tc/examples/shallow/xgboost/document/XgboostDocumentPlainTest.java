@@ -23,9 +23,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.weka.document.WekaDocumentPlain;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +35,6 @@ public class XgboostDocumentPlainTest
     extends TestCaseSuperClass
 {
     XgboostDocumentPlain javaExperiment;
-    ParameterSpace pSpace;
 
     @Before
     public void setup() throws Exception
@@ -45,13 +42,12 @@ public class XgboostDocumentPlainTest
         super.setup();
 
         javaExperiment = new XgboostDocumentPlain();
-        pSpace = WekaDocumentPlain.getParameterSpace();
     }
 
     @Test
     public void runTest() throws Exception
     {
-        javaExperiment.runTrainTest(pSpace);
+        javaExperiment.runTrainTest(XgboostDocumentPlain.getParameterSpace());
 
         assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 

@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.xgboost.serialization;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -253,7 +252,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "a01.xml" });
+                BrownCorpusReader.PARAM_PATTERNS, new String[] { "a01.xml" });
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
