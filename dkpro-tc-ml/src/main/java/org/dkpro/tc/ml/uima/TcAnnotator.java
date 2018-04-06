@@ -87,7 +87,7 @@ public class TcAnnotator
      */
     public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
     @ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = false)
-    private String nameUnit;
+    private String theName;
 
     /**
      * This parameter allows to remove the created {@link TextClassificationTarget} annotation after
@@ -215,7 +215,7 @@ public class TcAnnotator
         switch (featureMode) {
 
         case Constants.FM_UNIT: {
-            boolean unitAnno = nameUnit != null && !nameUnit.isEmpty();
+            boolean unitAnno = theName != null && !theName.isEmpty();
 
             if (unitAnno) {
                 return;
@@ -226,7 +226,7 @@ public class TcAnnotator
 
         case Constants.FM_SEQUENCE: {
             boolean seqAnno = nameSequence != null && !nameSequence.isEmpty();
-            boolean unitAnno = nameUnit != null && !nameUnit.isEmpty();
+            boolean unitAnno = theName != null && !theName.isEmpty();
 
             if (seqAnno && unitAnno) {
                 return;
@@ -336,19 +336,19 @@ public class TcAnnotator
 
     private void processUnit(JCas aJCas) throws AnalysisEngineProcessException
     {
-        Type type = aJCas.getCas().getTypeSystem().getType(nameUnit);
-        Collection<AnnotationFS> select = CasUtil.select(aJCas.getCas(), type);
-        List<AnnotationFS> unitAnnotation = new ArrayList<AnnotationFS>(select);
+        Type type = aJCas.getCas().getTypeSystem().getType(theName);
+        Collection<AnnotationFS> typeSelection = CasUtil.select(aJCas.getCas(), type);
+        List<AnnotationFS> targetAnnotation = new ArrayList<AnnotationFS>(typeSelection);
         TextClassificationOutcome tco = null;
         List<String> outcomes = new ArrayList<String>();
 
         // iterate the units and set on each a prepared dummy outcome
-        for (AnnotationFS unit : unitAnnotation) {
-            TextClassificationTarget tcs = new TextClassificationTarget(aJCas, unit.getBegin(),
-                    unit.getEnd());
+        for (AnnotationFS target : targetAnnotation) {
+            TextClassificationTarget tcs = new TextClassificationTarget(aJCas, target.getBegin(),
+                    target.getEnd());
             tcs.addToIndexes();
 
-            tco = new TextClassificationOutcome(aJCas, unit.getBegin(), unit.getEnd());
+            tco = new TextClassificationOutcome(aJCas, target.getBegin(), target.getEnd());
             tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
             tco.addToIndexes();
 
@@ -361,9 +361,9 @@ public class TcAnnotator
         }
 
         // iterate again to set for each unit the outcome
-        for (int i = 0; i < unitAnnotation.size(); i++) {
-            AnnotationFS unit = unitAnnotation.get(i);
-            tco = new TextClassificationOutcome(aJCas, unit.getBegin(), unit.getEnd());
+        for (int i = 0; i < targetAnnotation.size(); i++) {
+            AnnotationFS target = targetAnnotation.get(i);
+            tco = new TextClassificationOutcome(aJCas, target.getBegin(), target.getEnd());
             tco.setOutcome(outcomes.get(i));
             tco.addToIndexes();
         }
@@ -382,7 +382,7 @@ public class TcAnnotator
 
     private void addTCUnitAndOutcomeAnnotation(JCas aJCas)
     {
-        Type type = aJCas.getCas().getTypeSystem().getType(nameUnit);
+        Type type = aJCas.getCas().getTypeSystem().getType(theName);
 
         Collection<AnnotationFS> unitAnnotation = CasUtil.select(aJCas.getCas(), type);
         for (AnnotationFS unit : unitAnnotation) {
