@@ -17,22 +17,22 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.bwaldvogel.liblinear.InvalidInputDataException;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearTrainingTest
+public class LiblinearBackendTest
 {
     File data;
     File model;
@@ -45,18 +45,24 @@ public class LiblinearTrainingTest
     }
 
     @Test
-    public void testTraining() throws IOException, InvalidInputDataException
+    public void testTraining() throws Exception
     {
 
-        long before = model.length();
-
         LiblinearTrain trainer = new LiblinearTrain();
+        long modelBefore = model.length();
         Model liblinearModel = trainer.train(SolverType.L2R_L2LOSS_SVC, 100.0, 0.01, data, model);
+        long modelAfter = model.length();
+        assertTrue(modelBefore < modelAfter);
 
-        long after = model.length();
+        LiblinearPredict predicter = new LiblinearPredict();
+        List<Double[]> predict = predicter.predict(data, liblinearModel);
 
-        assertNotNull(liblinearModel);
-        assertTrue(before < after);
+        // make sure that predicted and gold value is within the range of values found in the data
+        // file
+        for (Double[] v : predict) {
+            assertTrue(v[0] >= 0 && v[0] < 32);
+            assertTrue(v[1] >= 0 && v[1] < 32);
+        }
 
     }
 
