@@ -18,42 +18,28 @@
 package org.dkpro.tc.ml.xgboost;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.uima.UimaContext;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.ml.xgboost.core.XgboostPredict;
 
 public class XgboostLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
 {
 
     @Override
-    public void initialize(UimaContext context) throws ResourceInitializationException
-    {
-        super.initialize(context);
-
-        // SvmHmm doesn't like negative values or zeros as dummy outcomes
-        OUTCOME_PLACEHOLDER = "1";
-    }
-
-    @Override
     protected File runPrediction(File testFile) throws Exception
     {
 
         File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
-        File prediction = XgboostTestTask.createTemporaryPredictionFile();
-        File executable = XgboostTestTask.getExecutable();
-        String content = XgboostTestTask.buildTestConfigFile(testFile, (File) model, prediction);
-        File file = XgboostTestTask.writeConfigFile(executable.getParentFile(), "predict.conf",
-                content);
-
-        List<String> predictionCommand = new ArrayList<>();
-        predictionCommand.add(executable.getAbsolutePath());
-        predictionCommand.add(file.getAbsolutePath());
-        XgboostTestTask.runCommand(predictionCommand);
+//        File prediction = XgboostTestTask.createTemporaryPredictionFile();
+//        File executable = XgboostTestTask.getExecutable();
+//        String content = XgboostTestTask.buildTestConfigFile(testFile, (File) model, prediction);
+//        File file = XgboostTestTask.writeConfigFile(executable.getParentFile(), "predict.conf",
+//                content);
+        
+        XgboostPredict predictor = new XgboostPredict();
+        File prediction = predictor.predict(testFile, model);
 
         return prediction;
     }

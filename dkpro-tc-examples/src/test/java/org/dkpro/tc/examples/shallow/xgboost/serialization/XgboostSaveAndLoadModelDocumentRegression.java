@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +83,6 @@ public class XgboostSaveAndLoadModelDocumentRegression
         DemoUtils.setDkproHome(XgboostSaveAndLoadModelDocumentRegression.class.getSimpleName());
     }
 
-    /**
-     * This test case trains a regression model on scored essay texts
-     */
     @Test
     public void documentRoundTripXgboost() throws Exception
     {
@@ -152,11 +148,16 @@ public class XgboostSaveAndLoadModelDocumentRegression
                 "src/main/resources/data/essays/train/essay_train.txt",
                 LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        
+        
+        Map<String, Object> xgboostConfig = new HashMap<>();
+        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new XgboostAdapter(), "booster=gblinear", "reg:logistic" });
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+        
 
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(
-                        new Object[] { new XgboostAdapter(), "booster=gblinear", "reg:logistic" }));
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("mla", xgboostConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
@@ -166,7 +167,7 @@ public class XgboostSaveAndLoadModelDocumentRegression
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
 
         return pSpace;
     }

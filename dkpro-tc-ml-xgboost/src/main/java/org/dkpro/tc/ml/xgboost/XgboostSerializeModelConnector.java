@@ -19,13 +19,12 @@
 package org.dkpro.tc.ml.xgboost;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.ml.xgboost.core.XgboostTrain;
 
 public class XgboostSerializeModelConnector
     extends LibsvmDataFormatSerializeModelConnector
@@ -39,18 +38,9 @@ public class XgboostSerializeModelConnector
         File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
         List<String> parameter = XgboostTestTask.getClassificationParameters(aContext,
                 classificationArguments, learningMode);
-        String content = XgboostTestTask.buildTrainConfigFile(fileTrain, model, parameter);
-
-        File executable = XgboostTestTask.getExecutable();
-        File configFile = XgboostTestTask.writeConfigFile(executable.getParentFile(), "train.conf",
-                content);
-
-        List<String> trainCommand = new ArrayList<>();
-        trainCommand.add(executable.getAbsolutePath());
-        trainCommand.add(configFile.getAbsolutePath());
-        XgboostTestTask.runCommand(trainCommand);
-
-        FileUtils.deleteQuietly(configFile);
+        
+        XgboostTrain trainer = new XgboostTrain();
+        trainer.train(parameter, fileTrain, model);
     }
 
     @Override

@@ -25,40 +25,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
+import org.dkpro.tc.ml.xgboost.core.XgboostPredict;
+import org.dkpro.tc.ml.xgboost.core.XgboostTrain;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class XgboostTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
 {
-
-    private static RuntimeProvider runtimeProvider = null;
-
-    public static File getExecutable() throws Exception
-    {
-
-        if (runtimeProvider == null) {
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/xgboost/");
-        }
-
-        return runtimeProvider.getFile("xgboost");
-    }
 
     static List<String> getClassificationParameters(TaskContext aContext,
             List<Object> classificationArguments, String learningMode)
@@ -94,18 +78,9 @@ public class XgboostTestTask
 
         List<String> parameters = getClassificationParameters(aContext, classificationArguments,
                 learningMode);
-        String content = buildTrainConfigFile(fileTrain, model, parameters);
-        File executable = getExecutable();
-
-        File file = writeConfigFile(executable.getParentFile(), "train.conf", content);
-
-        List<String> command = new ArrayList<>();
-        command.add(flipBackslash(executable.getAbsolutePath()));
-        command.add(flipBackslash(file.getAbsolutePath()));
-
-        runCommand(command);
-
-        FileUtils.deleteQuietly(file);
+        
+        XgboostTrain trainer = new XgboostTrain();
+        trainer.train(parameters, fileTrain, model);
 
         return model;
     }
@@ -120,68 +95,15 @@ public class XgboostTestTask
         }
     }
 
-    private static String flipBackslash(String s)
-    {
-        // flip backslash to be a forwards-slash instead otherwise this might lead to issues on Windows OS
-        return s.replaceAll("\\\\", "/");
-    }
-
-    static File writeConfigFile(File parentFile, String fileName, String content) throws Exception
-    {
-        File config = new File(parentFile, fileName);
-        FileUtils.writeStringToFile(config, content, "utf-8");
-        return config;
-    }
-
-    static void runCommand(List<String> aCommand) throws Exception
-    {
-        Process process = new ProcessBuilder().inheritIO().command(aCommand).start();
-        process.waitFor();
-    }
-
-    public static String buildTrainConfigFile(File train, File model, List<String> parameter)
-        throws Exception
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("task=train" + "\n");
-        sb.append("data=\"" + flipBackslash(train.getAbsolutePath()) + "\"" + "\n");
-        sb.append("model_out=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
-
-        for (String p : parameter) {
-            sb.append(p + "\n");
-        }
-
-        return sb.toString();
-    }
-
     @Override
     protected void runPrediction(TaskContext aContext, Object model) throws Exception
     {
-
         File testFile = getTestFile(aContext);
-        File prediction = createTemporaryPredictionFile();
-        File executable = getExecutable();
-        String content = buildTestConfigFile(testFile, (File) model, prediction);
-
-        File file = writeConfigFile(executable.getParentFile(), "predict.conf", content);
-
-        List<String> command = new ArrayList<>();
-        command.add(flipBackslash(executable.getAbsolutePath()));
-        command.add(flipBackslash(file.getAbsolutePath()));
-
-        runCommand(command);
-
-        mergePredictionWithGold(aContext, prediction);
-    }
-
-    static String buildTestConfigFile(File data, File model, File predictionOut) throws Exception
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("task=pred" + "\n");
-        sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + "\n");
-        sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
-        sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + "\n");
-        return sb.toString();
+        
+        XgboostPredict predictor = new XgboostPredict();
+        File predict = predictor.predict(testFile, (File) model);
+        
+        mergePredictionWithGold(aContext, predict);
     }
 
     private void mergePredictionWithGold(TaskContext aContext, File tmpPrediction) throws Exception
@@ -245,14 +167,4 @@ public class XgboostTestTask
         return goldValues;
     }
 
-    static File createTemporaryPredictionFile() throws IOException
-    {
-        DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
-        Date today = Calendar.getInstance().getTime();
-        String now = df.format(today);
-
-        File createTempFile = FileUtil.createTempFile("xgboostPrediction" + now, ".txt");
-        createTempFile.deleteOnExit();
-        return createTempFile;
-    }
 }
