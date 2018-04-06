@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.crfsuite.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 
 import org.apache.uima.pear.util.FileUtil;
@@ -28,13 +28,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CrfSuiteTrainingTest
+public class CrfSuiteBackendTest
 {
     File data;
     File modelOut;
 
     @Before
-    public void setup() throws IOException
+    public void setup() throws Exception
     {
         data = new File("src/test/resources/crfTestfile/featureFile.txt");
         modelOut = FileUtil.createTempFile("crfsuiteModelOut", ".txt");
@@ -47,31 +47,39 @@ public class CrfSuiteTrainingTest
     }
 
     @Test
-    public void testTrain() throws Exception
+    public void testPrediction() throws Exception
     {
-        train("ap");
-        train("lbfgs");
-        train("l2sgd");
-        train("arow");
+        trainModel();
+
+        CrfSuitePredict predict = new CrfSuitePredict();
+        String predictions = predict.predict(data, modelOut);
+
+        assertTrue(predictions != null && !predictions.isEmpty());
+
+        String[] split = predictions.split("\n");
+        assertEquals(167, split.length);
+
+        for (String s : split) {
+            if(s.isEmpty()) {
+                continue;
+            }
+            assertTrue(s.matches("[A-Za-z]+\t[A-Za-z]+"));
+        }
 
     }
-    
-    private void train(String algo) throws Exception
+
+    private void trainModel() throws Exception
     {
-        long before = modelOut.length();
-
-        CrfSuiteTrain trainer = new CrfSuiteTrain();
-        trainer.train(algo, Collections.emptyList(), data, modelOut);
-
-        long after = modelOut.length();
-
-        assertTrue(after > before);
-        modelOut.delete();
+        
+        long modelBefore = modelOut.length();
+        
+        CrfSuiteTrain train = new CrfSuiteTrain();
+        train.train(CrfSuiteAlgo.ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTORS.toString(),
+                Collections.emptyList(), data, modelOut);
+        
+        long modelAfter = modelOut.length();
+        
+        assertTrue(modelBefore < modelAfter);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testTrainUnknownAlgo() throws Exception {
-        CrfSuiteTrain trainer = new CrfSuiteTrain();
-        trainer.train("abc", Collections.emptyList(), data, modelOut);
-    }
 }
