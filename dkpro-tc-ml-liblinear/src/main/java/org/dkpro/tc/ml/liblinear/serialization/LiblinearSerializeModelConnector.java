@@ -24,12 +24,9 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
-import de.bwaldvogel.liblinear.Linear;
-import de.bwaldvogel.liblinear.Model;
-import de.bwaldvogel.liblinear.Parameter;
-import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearSerializeModelConnector
@@ -51,12 +48,9 @@ public class LiblinearSerializeModelConnector
         double C = LiblinearUtils.getParameterC(classificationArguments);
         double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
-        Linear.setDebugOutput(null);
-
-        Parameter parameter = new Parameter(solver, C, eps);
-        Problem train = Problem.readFromFile(fileTrain, 1.0);
-        Model model = Linear.train(train, parameter);
-        model.save(new File(outputFolder, MODEL_CLASSIFIER));
+        File modelLocation = new File(outputFolder, MODEL_CLASSIFIER);
+        LiblinearTrain trainer = new LiblinearTrain();
+        trainer.train(solver, C, eps, fileTrain, modelLocation);
     }
 
     @Override

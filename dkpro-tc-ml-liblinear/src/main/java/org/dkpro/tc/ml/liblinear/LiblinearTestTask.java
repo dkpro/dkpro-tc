@@ -21,18 +21,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
+import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
-import de.bwaldvogel.liblinear.Feature;
-import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import de.bwaldvogel.liblinear.Parameter;
-import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearTestTask
@@ -40,29 +40,20 @@ public class LiblinearTestTask
     implements Constants
 {
 
-    public static final String SEPARATOR_CHAR = ";";
-    public static final double EPISILON_DEFAULT = 0.01;
-    public static final double PARAM_C_DEFAULT = 1.0;
-
     @Override
     protected Object trainModel(TaskContext aContext) throws Exception
     {
 
         File fileTrain = getTrainFile(aContext);
 
-        // default for bias is -1, documentation says to set it to 1 in order to
-        // get results closer
-        // to libsvm
-        // writer adds bias, so if we de-activate that here for some reason, we
-        // need to also
-        // deactivate it there
-        Problem train = Problem.readFromFile(fileTrain, 1.0);
         SolverType solver = LiblinearUtils.getSolver(classificationArguments);
         double C = LiblinearUtils.getParameterC(classificationArguments);
         double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
-        Linear.setDebugOutput(null);
-        Parameter parameter = new Parameter(solver, C, eps);
-        Model model = Linear.train(train, parameter);
+
+        File modelTarget = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
+
+        LiblinearTrain trainer = new LiblinearTrain();
+        Model model = trainer.train(solver, C, eps, fileTrain, modelTarget);
         return model;
     }
 
@@ -73,24 +64,41 @@ public class LiblinearTestTask
         Model model = (Model) trainedModel;
 
         File fileTest = getTestFile(aContext);
+
+        LiblinearPredict predicter = new LiblinearPredict();
+        List<Double []> predWithGold = predicter.predict(fileTest, model);
+
         File predFolder = aContext.getFolder("", AccessMode.READWRITE);
         File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 
-        BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
-        writer.append("#PREDICTION;GOLD" + "\n");
+        writePredictions(predictionsFile, predWithGold, true);
 
-        Problem test = Problem.readFromFile(fileTest, 1.0);
-        Feature[][] testInstances = test.x;
-        for (int i = 0; i < testInstances.length; i++) {
-            Feature[] instance = testInstances[i];
-            Double prediction = Linear.predict(model, instance);
+    }
 
-            writer.write(prediction + SEPARATOR_CHAR + new Double(test.y[i]));
-            writer.write("\n");
+    public static void writePredictions(File predictionsFile, List<Double[]> predictions, boolean writeGold) throws Exception
+    {
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
+            writer.append("#PREDICTION;GOLD" + "\n");
+
+            for (Double [] p : predictions) {
+                writer.write(p[0].toString());
+                
+                if(writeGold) {
+                    writer.write(";");
+                    writer.write(p[1].toString());
+                }
+                
+                writer.write("\n");
+            }
+
         }
-
-        writer.close();
+        finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
 }

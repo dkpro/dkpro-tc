@@ -18,20 +18,17 @@
 
 package org.dkpro.tc.ml.liblinear.serialization;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
 
-import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import de.bwaldvogel.liblinear.Problem;
 
 public class LiblinearLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
@@ -56,26 +53,28 @@ public class LiblinearLoadModelConnector
     protected File runPrediction(File infile) throws Exception
     {
 
-        Problem predictionProblem = Problem.readFromFile(infile, 1.0);
-
         File tmp = File.createTempFile("libLinearePrediction", ".txt");
-
-        BufferedWriter writer = null;
-
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
-            Feature[][] testInstances = predictionProblem.x;
-            for (int i = 0; i < testInstances.length; i++) {
-                Feature[] instance = testInstances[i];
-                Double prediction = Linear.predict(liblinearModel, instance);
-                writer.write(prediction.toString() + "\n");
-            }
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
-        }
-
         tmp.deleteOnExit();
+        
+        LiblinearPredict predicter = new LiblinearPredict();
+        List<Double[]> predict = predicter.predict(infile, liblinearModel);
+        LiblinearTestTask.writePredictions(tmp, predict, false);
+        
+//        BufferedWriter writer = null;
+//
+//        try {
+//            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
+//            Feature[][] testInstances = predictionProblem.x;
+//            for (int i = 0; i < testInstances.length; i++) {
+//                Feature[] instance = testInstances[i];
+//                Double prediction = Linear.predict(liblinearModel, instance);
+//                writer.write(prediction.toString() + "\n");
+//            }
+//        }
+//        finally {
+//            IOUtils.closeQuietly(writer);
+//        }
+
         return tmp;
     }
 

@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear.util;
 
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.EPISILON_DEFAULT;
-import static org.dkpro.tc.ml.liblinear.LiblinearTestTask.PARAM_C_DEFAULT;
-
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +25,10 @@ import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearUtils
 {
+    
+    public static final double EPISILON_DEFAULT = 0.01;
+    public static final double PARAM_C_DEFAULT = 1.0;
+    
     public static SolverType getSolver(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
