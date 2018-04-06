@@ -87,6 +87,8 @@ public class BatchCrossValidationReport
             addMajorityBaslineResults(learningMode, id, store, values);
             addRandomBaselineResults(learningMode, id, store, values);
 
+            values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_VALIDATION, "<OMITTED>");
+            values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_TRAINING, "<OMITTED>");
             table.addRow(getContextLabel(id), values);
         }        
         
