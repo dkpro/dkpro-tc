@@ -74,15 +74,15 @@ public class ReutersDemo implements Constants {
     ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
     ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
     ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
-    ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+    ReutersCorpusReader.PARAM_PATTERNS, "*.txt");
 
     def trainreader = CollectionReaderFactory.createReaderDescription(ReutersCorpusReader.class,
     ReutersCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
     ReutersCorpusReader.PARAM_GOLD_LABEL_FILE, goldLabelFilePath,
     ReutersCorpusReader.PARAM_LANGUAGE, languageCode,
-    ReutersCorpusReader.PARAM_PATTERNS, ReutersCorpusReader.INCLUDE_PREFIX + "*.txt");
+    ReutersCorpusReader.PARAM_PATTERNS, "*.txt");
 
-    def dimReaders = Dimension.createBundle("readers", [
+    def dimReaders = Dimension.createBundle(DIM_READERS, [
         readerTest: testreader,
         readerTrain: trainreader,
     ])
@@ -108,12 +108,7 @@ public class ReutersDemo implements Constants {
 
     def dimFeatureSets = Dimension.create(
     DIM_FEATURE_SET,
-    new TcFeatureSet(
-    TcFeatureFactory.create(TokenRatioPerDocument.class),
-    TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
-    )
-    ,
-    new TcFeatureSet(
+    new TcFeatureSet("Feature-set1",
     TcFeatureFactory.create(TokenRatioPerDocument.class),
     TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 10, WordNGram.PARAM_NGRAM_MIN_N, 1,WordNGram.PARAM_NGRAM_MIN_N, 2 )
     )

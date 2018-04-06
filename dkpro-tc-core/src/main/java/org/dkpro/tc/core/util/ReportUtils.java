@@ -113,4 +113,20 @@ public class ReportUtils
         return outMap;
     }
 
+    public static Map<String, String> replaceKeyWithConstant(Map<String, String> discriminatorsMap,
+            String key, String replacement)
+    {
+        Map<String,String> map = new HashMap<>();
+        
+        for(Entry<String,String> e : discriminatorsMap.entrySet()) {
+            String v = e.getValue();
+            if(e.getKey().equals(key)) {
+                v = replacement;
+            }
+            map.put(e.getKey(), v);
+        }
+        
+        return map;
+    }
+
 }

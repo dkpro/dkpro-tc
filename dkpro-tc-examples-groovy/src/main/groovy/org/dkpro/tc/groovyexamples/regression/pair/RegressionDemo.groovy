@@ -71,7 +71,7 @@ public class RegressionDemo implements Constants {
          STSReader.PARAM_GOLD_FILE, goldFileTest
         );
 
-    def dimReaders = Dimension.createBundle("readers", [
+    def dimReaders = Dimension.createBundle(DIM_READERS, [
         readerTrain: trainreader,
         readerTest: testreader,
     ])

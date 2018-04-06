@@ -124,10 +124,12 @@ public class BatchCrossValidationReport
             Map<String, String> results = MetricComputationUtil.getResults(foldId2Outcome,
                     learningMode);
             values.putAll(results);
-
             addMajorityBaslineResults(learningMode, id, store, values);
             addRandomBaselineResults(learningMode, id, store, values);
 
+            //This key might have arbitrary long file path as values which easily exceed the limit of 32k characers
+            values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_VALIDATION, "<OMITTED>");
+            values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_TRAINING, "<OMITTED>");
             table.addRow(getContextLabel(id), values);
     }
         ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME_PER_FOLD,
