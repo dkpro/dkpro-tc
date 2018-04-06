@@ -43,6 +43,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -74,9 +75,9 @@ public class LiblinearUnitDemo
         // explained there.
         DemoUtils.setDkproHome(LiblinearUnitDemo.class.getSimpleName());
 
-        new LiblinearUnitDemo().runTrainTest(getParameterSpace());
+//        new LiblinearUnitDemo().runTrainTest(getParameterSpace());
         // new
-        // LiblinearBrownUnitPosDemo().runCrossValidation(getParameterSpace());
+        new LiblinearUnitDemo().runCrossValidation(getParameterSpace());
     }
 
     // ##### CV #####
@@ -88,6 +89,7 @@ public class LiblinearUnitDemo
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(experiment);

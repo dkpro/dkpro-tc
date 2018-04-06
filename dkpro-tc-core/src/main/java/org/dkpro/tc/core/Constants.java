@@ -70,9 +70,10 @@ public interface Constants
     /*
      * Discriminators
      */
-    
+
     /**
-     * Name of the discriminator that stores a map containing either both (train and test) readers or only the train reader (i.e. cross-validation mode)
+     * Name of the discriminator that stores a map containing either both (train and test) readers
+     * or only the train reader (i.e. cross-validation mode)
      */
     String DIM_READERS = "readers";
 
@@ -143,7 +144,7 @@ public interface Constants
      * Flag to use sparse features during feature extraction
      */
     String DIM_FEATURE_USE_SPARSE = "useSparseFeatures";
-    
+
     /**
      * Name of the class that implements the data writer for a machine learning adapter
      */
@@ -234,6 +235,12 @@ public interface Constants
      * Name of the file that holds the evaluation results
      */
     String EVAL_FILE_NAME = "evaluation_results";
+
+    /**
+     * Name of the file that holds the evaluation results
+     */
+    String EVAL_FILE_NAME_PER_FOLD = "evaluation_results_fold";
+
     /**
      * File suffix for EXCEL files
      */
