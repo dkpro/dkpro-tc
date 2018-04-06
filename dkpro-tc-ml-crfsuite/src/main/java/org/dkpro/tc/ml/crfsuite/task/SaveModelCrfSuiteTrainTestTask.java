@@ -40,9 +40,6 @@ public class SaveModelCrfSuiteTrainTestTask
     {/* needed for Groovy */
     }
 
-    /**
-     * Preconfigured train-test setup that also stores the trained classifier.
-     */
     public SaveModelCrfSuiteTrainTestTask(String aExperimentName, File outputFolder)
         throws TextClassificationException
     {

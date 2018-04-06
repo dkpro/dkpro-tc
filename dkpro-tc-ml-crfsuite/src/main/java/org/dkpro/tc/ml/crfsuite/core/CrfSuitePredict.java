@@ -78,8 +78,6 @@ public class CrfSuitePredict
      * Builds a command that can be executed with a {@link ProcessBuilder}, which calls CrfSuite
      * with the provided model
      * 
-     * @param anExecutable
-     *            The Crf binary
      * @param aModel
      *            The model to be used
      * @return The command as list
@@ -137,6 +135,7 @@ public class CrfSuitePredict
      * @return
      *      The assembled test command
      * @throws Exception 
+     *          In case of an exception
      */
     public static List<String> getTestCommand(File aTestFile, File aModel) throws Exception
     {
