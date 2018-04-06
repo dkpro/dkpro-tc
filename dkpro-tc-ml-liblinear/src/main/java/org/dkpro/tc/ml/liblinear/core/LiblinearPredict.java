@@ -32,19 +32,19 @@ public class LiblinearPredict
     public List<Double[]> predict(File data, Model model) throws Exception
     {
         List<Double[]> predWithGold = new ArrayList<>();
-        
+
         Problem test = Problem.readFromFile(data, 1.0);
         Feature[][] testInstances = test.x;
         for (int i = 0; i < testInstances.length; i++) {
             Feature[] instance = testInstances[i];
             Double prediction = Linear.predict(model, instance);
-            predWithGold.add(new Double [] {prediction, test.y[i]});
+            predWithGold.add(new Double[] { prediction, test.y[i] });
         }
-       
+
         return predWithGold;
     }
-    
-    public List<Double []> predict(File data, File model) throws Exception
+
+    public List<Double[]> predict(File data, File model) throws Exception
     {
         Model loadModel = Linear.loadModel(model);
         return predict(data, loadModel);

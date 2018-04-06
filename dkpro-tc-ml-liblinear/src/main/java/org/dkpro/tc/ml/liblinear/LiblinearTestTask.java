@@ -66,32 +66,35 @@ public class LiblinearTestTask
         File fileTest = getTestFile(aContext);
 
         LiblinearPredict predicter = new LiblinearPredict();
-        List<Double []> predWithGold = predicter.predict(fileTest, model);
+        List<Double[]> predWithGold = predicter.predict(fileTest, model);
 
         File predFolder = aContext.getFolder("", AccessMode.READWRITE);
         File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 
-        writePredictions(predictionsFile, predWithGold, true);
+        writePredictions(predictionsFile, predWithGold, true, true);
 
     }
 
-    public static void writePredictions(File predictionsFile, List<Double[]> predictions, boolean writeGold) throws Exception
+    public static void writePredictions(File predictionsFile, List<Double[]> predictions,
+            boolean writeHeader, boolean writeGold)
+        throws Exception
     {
         BufferedWriter writer = null;
 
         try {
             writer = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
-            writer.append("#PREDICTION;GOLD" + "\n");
+            if (writeHeader) {
+                writer.append("#PREDICTION;GOLD" + "\n");
+            }
 
-            for (Double [] p : predictions) {
+            for (Double[] p : predictions) {
                 writer.write(p[0].toString());
-                
-                if(writeGold) {
+                if (writeGold) {
                     writer.write(";");
                     writer.write(p[1].toString());
                 }
-                
+
                 writer.write("\n");
             }
 

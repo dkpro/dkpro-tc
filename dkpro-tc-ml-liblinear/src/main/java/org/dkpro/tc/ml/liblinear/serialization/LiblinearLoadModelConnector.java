@@ -58,23 +58,8 @@ public class LiblinearLoadModelConnector
         
         LiblinearPredict predicter = new LiblinearPredict();
         List<Double[]> predict = predicter.predict(infile, liblinearModel);
-        LiblinearTestTask.writePredictions(tmp, predict, false);
+        LiblinearTestTask.writePredictions(tmp, predict, false, false);
         
-//        BufferedWriter writer = null;
-//
-//        try {
-//            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), "utf-8"));
-//            Feature[][] testInstances = predictionProblem.x;
-//            for (int i = 0; i < testInstances.length; i++) {
-//                Feature[] instance = testInstances[i];
-//                Double prediction = Linear.predict(liblinearModel, instance);
-//                writer.write(prediction.toString() + "\n");
-//            }
-//        }
-//        finally {
-//            IOUtils.closeQuietly(writer);
-//        }
-
         return tmp;
     }
 

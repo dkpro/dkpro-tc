@@ -58,7 +58,6 @@ import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.junit.Before;
@@ -123,9 +122,9 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         }
         else {
             Map<String, Object> config = new HashMap<>();
-            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
-            config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
-            config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
+            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+            config.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
             Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -266,9 +265,9 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Map<String, Object> wekaConfig = new HashMap<>();
-        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
-        wekaConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
-        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
+        wekaConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
