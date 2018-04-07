@@ -26,8 +26,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
-import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
-import org.dkpro.tc.ml.svmhmm.util.SvmHmmUtils;
+import org.dkpro.tc.ml.svmhmm.core.SvmHmmTrainer;
 
 public class SvmhmmSerializeModelConnector
     extends LibsvmDataFormatSerializeModelConnector
@@ -49,25 +48,17 @@ public class SvmhmmSerializeModelConnector
             stringArgs.add((String) classificationArguments.get(i));
         }
 
-        double paramC = SvmHmmUtils.getParameterC(stringArgs);
-        double paramEpsilon = SvmHmmUtils.getParameterEpsilon(stringArgs);
-        int paramOrderE = SvmHmmUtils.getParameterOrderE_dependencyOfEmissions(stringArgs);
-        int paramOrderT = SvmHmmUtils.getParameterOrderT_dependencyOfTransitions(stringArgs);
-        int paramB = SvmHmmUtils.getParameterBeamWidth(stringArgs);
-
         File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 
-        File trainBinary = SvmHmmTestTask.resolveSvmHmmLearnCommand();
-
-        File newTrainFileLocation = new File(trainBinary.getParentFile(), fileTrain.getName());
+        File newTrainFileLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
+                fileTrain.getName());
         FileUtils.copyFile(fileTrain, newTrainFileLocation);
 
-        File tmpModelLocation = new File(trainBinary.getParentFile(), "model.tmp");
+        File tmpModelLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
+                "model.tmp");
 
-        List<String> buildTrainCommand = SvmHmmTestTask.buildTrainCommand(trainBinary,
-                newTrainFileLocation, tmpModelLocation, paramC, paramOrderE, paramOrderT,
-                paramEpsilon, paramB);
-        SvmHmmTestTask.runCommand(buildTrainCommand);
+        SvmHmmTrainer trainer = new SvmHmmTrainer();
+        trainer.train(newTrainFileLocation, tmpModelLocation, stringArgs.toArray(new String[0]));
 
         FileUtils.copyFile(tmpModelLocation, model);
 

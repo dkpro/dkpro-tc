@@ -18,7 +18,6 @@
 package org.dkpro.tc.ml.svmhmm.task.serialization;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -27,7 +26,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
-import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
+import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
 
 public class SvmhmmLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
@@ -45,24 +44,22 @@ public class SvmhmmLoadModelConnector
     @Override
     protected File runPrediction(File testFile) throws Exception
     {
-
-        File prediction = FileUtil.createTempFile("svmHmmPrediction", ".svmhmm");
-        prediction.deleteOnExit();
-
         File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
-        File binary = SvmHmmTestTask.resolveSvmHmmPredictionCommand();
-
         // SvmHmm struggles with paths longer than 255 characters to circumvent this
         // issue, we copy all files together into a local directory to ensure short path
         // names that are below this threshold
-        File localModel = new File(binary.getParentFile(), "model.tmp");
+        File localModel = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
+                "model.tmp");
         FileUtils.copyFile(model, localModel);
-        File localTestFile = new File(binary.getParentFile(), "testfile.txt");
+        File localTestFile = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
+                "testfile.txt");
         FileUtils.copyFile(testFile, localTestFile);
 
-        List<String> command = SvmHmmTestTask.buildPredictionCommand(binary, localTestFile,
-                localModel, prediction);
-        SvmHmmTestTask.runCommand(command);
+        File prediction = FileUtil.createTempFile("svmHmmTmpFile", ".txt");
+        prediction.delete();
+
+        SvmHmmPredictor predictor = new SvmHmmPredictor();
+        predictor.predict(localTestFile, model, prediction);
 
         FileUtils.deleteQuietly(localModel);
         FileUtils.deleteQuietly(localTestFile);
