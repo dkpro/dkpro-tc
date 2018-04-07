@@ -431,6 +431,8 @@ public interface Constants
      * name of the prediction map file
      */
     String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
+    
+    String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
 
     /*
      * Misc

@@ -79,7 +79,7 @@ public class BasicResultReport
                 ID_OUTCOME_KEY);
 
         MetricComputationUtil.writeConfusionMatrix(id2outcomeFile,
-                new File(id2outcomeFile.getParentFile(), "confusionMatrix.txt"));
+                new File(id2outcomeFile.getParentFile(), FILE_CONFUSION_MATRIX));
     }
 
     private Properties addPredictedResults(Properties pa, String learningMode) throws Exception

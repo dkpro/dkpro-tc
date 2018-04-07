@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
@@ -90,6 +91,11 @@ public class BatchCrossValidationReport
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_VALIDATION, "<OMITTED>");
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_TRAINING, "<OMITTED>");
             table.addRow(getContextLabel(id), values);
+            
+            
+            //write additionally a confusion matrix over the combined file
+            File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX, AccessMode.READWRITE);
+            MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
         }        
         
         /*
