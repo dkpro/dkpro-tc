@@ -85,12 +85,12 @@ public class LibsvmTestTask
         File fileTest = getTestFile(aContext);
         
         LibsvmPredictor predicter = new LibsvmPredictor();
-        File prediction = predicter.prediction(fileTest, theModel);
-        mergePredictionWithGold(aContext, prediction);
+        List<String> predictions = predicter.prediction(fileTest, theModel);
+        mergePredictionWithGold(aContext, predictions);
         
     }
 
-    private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception
+    private void mergePredictionWithGold(TaskContext aContext, List<String> pred) throws Exception
     {
 
         File fileTest = getTestFile(aContext);
@@ -101,7 +101,6 @@ public class LibsvmTestTask
                     new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
 
             List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
-            List<String> pred = FileUtils.readLines(predFile, "utf-8");
             bw.write("#PREDICTION;GOLD" + "\n");
             for (int i = 0; i < gold.size(); i++) {
                 String p = pred.get(i);

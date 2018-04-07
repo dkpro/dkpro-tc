@@ -23,8 +23,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.libsvm.api._Prediction;
 
@@ -34,7 +36,7 @@ import libsvm.svm_model;
 public class LibsvmPredictor
 {
 
-    public File prediction(File fileTest, File theModel) throws Exception
+    public List<String> prediction(File fileTest, File theModel) throws Exception
     {
         File predTmp = FileUtil.createTempFile("libsvmPrediction", ".txt");
         predTmp.deleteOnExit();
@@ -56,6 +58,8 @@ public class LibsvmPredictor
             IOUtils.closeQuietly(output);
         }
         
-        return predTmp;
+        List<String> predictions = FileUtils.readLines(predTmp, "utf-8");
+        
+        return predictions;
     }
 }

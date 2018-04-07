@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -58,11 +57,9 @@ public class LibsvmBackendTest
         assertTrue(modelSizeBefore < modelSizeAfter);
         
         LibsvmPredictor prediction = new LibsvmPredictor();
-        File predictionFile = prediction.prediction(data, train);
+        List<String> predictions = prediction.prediction(data, train);
 
-        List<String> readLines = FileUtils.readLines(predictionFile, "utf-8");
-        
-        assertEquals(163, readLines.size());
+        assertEquals(163, predictions.size());
 
     }
 
