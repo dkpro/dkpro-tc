@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Collections;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -33,14 +32,12 @@ public class CrfSuiteBackendTest
 {
     File data;
     File modelOut;
-    File predictionOut;
 
     @Before
     public void setup() throws Exception
     {
         data = new File("src/test/resources/crfTestfile/featureFile.txt");
         modelOut = FileUtil.createTempFile("crfsuiteModelOut", ".txt");
-        predictionOut = FileUtil.createTempFile("crfsuitePredictionOut", ".txt");
     }
 
     @After
@@ -55,9 +52,7 @@ public class CrfSuiteBackendTest
         trainModel();
 
         CrfSuitePredictor predict = new CrfSuitePredictor();
-        predict.predict(data, modelOut, predictionOut);
-        
-        String predictions = FileUtils.readFileToString(predictionOut, "utf-8");
+        String predictions = predict.predict(data, modelOut);
 
         assertTrue(predictions != null && !predictions.isEmpty());
 

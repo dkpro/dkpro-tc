@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
 
 public class CrfSuitePredictor
     extends CrfSuite
@@ -45,13 +44,15 @@ public class CrfSuitePredictor
      *            The feature file
      * @param model
      *            The model to be used
+     * @return The predictions as string
      * @throws Exception
      *             In case of errors
      */
-    public void predict(File data, File model, File predictionOut) throws Exception
+    public String predict(File data, File model) throws Exception
     {
         List<String> testingCommand = getTestCommand(data, model);
-        executePrediction(testingCommand, predictionOut);
+        String predictions = executePrediction(testingCommand);
+        return predictions;
     }
 
     /**
@@ -153,16 +154,15 @@ public class CrfSuitePredictor
      * 
      * @param command
      *            The command for execution
-     * @param predictionOut
-     *            The target file to which the prediction is written
+     * @return The output as string
      * @throws Exception
      *             In case of errors
      */
-    public static void executePrediction(List<String> command, File predictionOut) throws Exception
+    public static String executePrediction(List<String> command) throws Exception
     {
         Process process = new ProcessBuilder().command(command).start();
         String output = captureProcessOutput(process);
-        FileUtils.writeStringToFile(predictionOut, output, "utf-8");
+        return output;
     }
 
     /**
