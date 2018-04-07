@@ -100,7 +100,7 @@ public class CrfSuiteTestTask
 
     }
 
-    static File loadAndPrepareFeatureDataFile(TaskContext aContext, File tmpLocation,
+    public static File loadAndPrepareFeatureDataFile(TaskContext aContext, File tmpLocation,
             String sourceFolder)
         throws Exception
     {
