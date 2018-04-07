@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
@@ -158,12 +159,15 @@ public class CrfSuiteTestTask
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 
+        File prediction = FileUtil.createTempFile("crfPrediction", ".txt");
+        prediction.deleteOnExit();
+        
         CrfSuitePredictor crfPredict = new CrfSuitePredictor();
-        String prediction = crfPredict.predict(testFile, model);
+        crfPredict.predict(testFile, model, prediction);
 
         deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        return prediction;
+        return FileUtils.readFileToString(prediction, "utf-8");
     }
 
     private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
