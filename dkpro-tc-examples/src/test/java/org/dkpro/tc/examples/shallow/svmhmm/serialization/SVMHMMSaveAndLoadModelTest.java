@@ -24,10 +24,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -175,27 +173,11 @@ public class SVMHMMSaveAndLoadModelTest
         List<TextClassificationOutcome> outcomes = new ArrayList<>(
                 JCasUtil.select(jcas, TextClassificationOutcome.class));
 
-        Set<String> possibleOutcome = new HashSet<>();
-        possibleOutcome.add("NN");
-        possibleOutcome.add("AT");
-        possibleOutcome.add("DT");
-        possibleOutcome.add("JJ");
-        possibleOutcome.add("pct");
-        possibleOutcome.add("NP");
-        possibleOutcome.add("PPS");
-        possibleOutcome.add("VBG");
-        possibleOutcome.add("DOD");
-        possibleOutcome.add("IN");
-        possibleOutcome.add("VBD");
-        possibleOutcome.add("VB");
-        possibleOutcome.add("BEDZ");
-        possibleOutcome.add("VBN");
-        possibleOutcome.add("RB");
-        possibleOutcome.add("NNS");
-
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
-            assertTrue(possibleOutcome.contains(o.getOutcome()));
+            String outcome = o.getOutcome();
+            //tags should be alpha and be rather short
+            assertTrue(outcome.matches("[A-Za-z]+") && outcome.length() < 5);
         }
 
     }
