@@ -181,6 +181,7 @@ public class SVMHMMSaveAndLoadModelTest
         possibleOutcome.add("DT");
         possibleOutcome.add("JJ");
         possibleOutcome.add("pct");
+        possibleOutcome.add("NP");
         possibleOutcome.add("PPS");
         possibleOutcome.add("VBG");
         possibleOutcome.add("DOD");
@@ -194,7 +195,6 @@ public class SVMHMMSaveAndLoadModelTest
 
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
-            System.out.println(o.getOutcome());
             assertTrue(possibleOutcome.contains(o.getOutcome()));
         }
 
