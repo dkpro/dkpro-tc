@@ -31,7 +31,7 @@ public class XgboostPredictor extends Xgboost
         //Groovy
     }
 
-    public File predict(File data, File model) throws Exception
+    public List<String> predict(File data, File model) throws Exception
     {
         File tmpPredictionOut = FileUtil.createTempFile("xgboostPredictionOut", ".txt");
         tmpPredictionOut.deleteOnExit();
@@ -44,7 +44,9 @@ public class XgboostPredictor extends Xgboost
         
         runCommand(command);
         
-        return tmpPredictionOut;
+        List<String> predictions = FileUtils.readLines(tmpPredictionOut, "utf-8");
+        
+        return predictions;
     }
 
  

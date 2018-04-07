@@ -101,30 +101,27 @@ public class XgboostTestTask
         File testFile = getTestFile(aContext);
         
         XgboostPredictor predictor = new XgboostPredictor();
-        File predict = predictor.predict(testFile, (File) model);
+        List<String> prediction = predictor.predict(testFile, (File) model);
         
-        mergePredictionWithGold(aContext, predict);
+        mergePredictionWithGold(aContext, prediction);
     }
 
-    private void mergePredictionWithGold(TaskContext aContext, File tmpPrediction) throws Exception
+    private void mergePredictionWithGold(TaskContext aContext, List<String> prediction) throws Exception
     {
 
         File fileTest = getTestFile(aContext);
-        File prediction = getPredictionFile(aContext);
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
+                    new OutputStreamWriter(new FileOutputStream(aContext.getFile(FILENAME_PREDICTIONS, AccessMode.READWRITE)), "utf-8"));
 
             List<String> gold = readGoldValues(fileTest);
-            List<String> pred = FileUtils.readLines(tmpPrediction, "utf-8");
 
-            checkNoDataCondition(pred, tmpPrediction);
             checkNoDataCondition(gold, fileTest);
 
             bw.write("#PREDICTION;GOLD" + "\n");
             for (int i = 0; i < gold.size(); i++) {
-                String p = pred.get(i);
+                String p = prediction.get(i);
                 String g = gold.get(i);
                 bw.write(p + ";" + g);
                 bw.write("\n");

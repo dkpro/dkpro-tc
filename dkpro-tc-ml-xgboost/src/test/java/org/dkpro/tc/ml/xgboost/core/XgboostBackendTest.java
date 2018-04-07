@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -58,13 +57,11 @@ public class XgboostBackendTest
     private void predict() throws Exception
     {
         XgboostPredictor predictor = new XgboostPredictor();
-        File predict = predictor.predict(data, model);
+        List<String> predict = predictor.predict(data, model);
 
-        assertTrue(predict != null && predict.exists() && predict.length() > 0);
+        assertTrue(!predict.isEmpty());
 
-        List<String> lines = FileUtils.readLines(predict, "utf-8");
-
-        for (String l : lines) {
+        for (String l : predict) {
             int parseInt = Integer.parseInt(l);
             assertTrue(parseInt >= 0 && parseInt <= 31);
         }

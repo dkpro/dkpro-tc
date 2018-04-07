@@ -18,7 +18,10 @@
 package org.dkpro.tc.ml.xgboost;
 
 import java.io.File;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
@@ -32,16 +35,15 @@ public class XgboostLoadModelConnector
     {
 
         File model = new File(tcModelLocation, Constants.MODEL_CLASSIFIER);
-//        File prediction = XgboostTestTask.createTemporaryPredictionFile();
-//        File executable = XgboostTestTask.getExecutable();
-//        String content = XgboostTestTask.buildTestConfigFile(testFile, (File) model, prediction);
-//        File file = XgboostTestTask.writeConfigFile(executable.getParentFile(), "predict.conf",
-//                content);
         
         XgboostPredictor predictor = new XgboostPredictor();
-        File prediction = predictor.predict(testFile, model);
+        List<String> predict = predictor.predict(testFile, model);
+        
+        File predictions = FileUtil.createTempFile("xgboostPrediction", ".txt");
+        FileUtils.writeLines(predictions, "utf-8", predict);
 
-        return prediction;
+        predictions.deleteOnExit();
+        return predictions;
     }
 
 }
