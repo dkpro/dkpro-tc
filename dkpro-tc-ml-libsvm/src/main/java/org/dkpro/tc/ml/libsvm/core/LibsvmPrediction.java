@@ -15,8 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-package org.dkpro.tc.ml.libsvm.serialization;
+package org.dkpro.tc.ml.libsvm.core;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -25,43 +24,38 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 
-import org.apache.uima.UimaContext;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.uima.pear.util.FileUtil;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.libsvm.api._Prediction;
 
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
+public class LibsvmPrediction
+{
 
-	private svm_model model;
+    public File prediction(File fileTest, File theModel) throws Exception
+    {
+        File predTmp = FileUtil.createTempFile("libsvmPrediction", ".txt");
+        predTmp.deleteOnExit();
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		
-		try {
-			model = svm.svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
+        DataOutputStream output = null;
+        BufferedReader input = null;
+        try {
+            input = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+            output = new DataOutputStream(new FileOutputStream(predTmp));
+            
+            svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
 
-	}
-
-	@Override
-	protected File runPrediction(File tempFile) throws Exception {
-		File prediction = FileUtil.createTempFile("libsvmPrediction", ".libsvm");
-		prediction.deleteOnExit();
-		
-		_Prediction predictor = new _Prediction();
-		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
-
-		DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
-		predictor.predict(r, output, model, 0);
-		output.close();
-
-		return prediction;
-	}
+            _Prediction predictor = new _Prediction();
+            predictor.predict(input, output, svmModel, 0);
+        }
+        finally {
+            IOUtils.closeQuietly(input);
+            IOUtils.closeQuietly(output);
+        }
+        
+        return predTmp;
+    }
 }

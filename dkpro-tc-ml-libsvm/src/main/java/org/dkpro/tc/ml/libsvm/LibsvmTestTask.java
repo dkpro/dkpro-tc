@@ -17,41 +17,28 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.libsvm;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
-import org.dkpro.tc.ml.libsvm.api.LibsvmPredict;
-import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
-
-import libsvm.svm;
-import libsvm.svm_model;
+import org.dkpro.tc.ml.libsvm.core.LibsvmPrediction;
+import org.dkpro.tc.ml.libsvm.core.LibsvmTrain;
 
 public class LibsvmTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
 {
 
-    private String[] buildParameters(File fileTrain, File model)
+    private String[] buildParameters()
     {
         List<String> parameters = new ArrayList<>();
         if (classificationArguments != null) {
@@ -60,8 +47,6 @@ public class LibsvmTestTask
                 parameters.add(a);
             }
         }
-        parameters.add(fileTrain.getAbsolutePath());
-        parameters.add(model.getAbsolutePath());
         return parameters.toArray(new String[0]);
     }
 
@@ -79,26 +64,16 @@ public class LibsvmTestTask
         return gold;
     }
 
-    private File createTemporaryPredictionFile() throws IOException
-    {
-        DateFormat df = new SimpleDateFormat("yyyyddMMHHmmss");
-        Date today = Calendar.getInstance().getTime();
-        String now = df.format(today);
-
-        File createTempFile = FileUtil.createTempFile("libsvmPrediction" + now, ".libsvm");
-        createTempFile.deleteOnExit();
-        return createTempFile;
-    }
 
     @Override
     protected Object trainModel(TaskContext aContext) throws Exception
     {
-
         File fileTrain = getTrainFile(aContext);
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
                 Constants.MODEL_CLASSIFIER);
-        LibsvmTrainModel ltm = new LibsvmTrainModel();
-        ltm.run(buildParameters(fileTrain, model));
+        
+        LibsvmTrain trainer = new LibsvmTrain();
+        trainer.train(fileTrain, model, buildParameters());
 
         return model;
     }
@@ -106,8 +81,13 @@ public class LibsvmTestTask
     @Override
     protected void runPrediction(TaskContext aContext, Object model) throws Exception
     {
-        File predFile = executeLibsvm(aContext, model);
-        mergePredictionWithGold(aContext, predFile);
+        File theModel = (File) model;
+        File fileTest = getTestFile(aContext);
+        
+        LibsvmPrediction predicter = new LibsvmPrediction();
+        File prediction = predicter.prediction(fileTest, theModel);
+        mergePredictionWithGold(aContext, prediction);
+        
     }
 
     private void mergePredictionWithGold(TaskContext aContext, File predFile) throws Exception
@@ -133,28 +113,6 @@ public class LibsvmTestTask
         finally {
             IOUtils.closeQuietly(bw);
         }
-    }
-
-    private File executeLibsvm(TaskContext aContext, Object model) throws Exception
-    {
-        File theModel = (File) model;
-        File fileTest = getTestFile(aContext);
-        BufferedReader r = new BufferedReader(
-                new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-        LibsvmPredict predictor = new LibsvmPredict();
-        File predTmp = createTemporaryPredictionFile();
-
-        DataOutputStream output = null;
-        try {
-            output = new DataOutputStream(new FileOutputStream(predTmp));
-            svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
-            predictor.predict(r, output, svmModel, 0);
-        }
-        finally {
-            IOUtils.closeQuietly(output);
-        }
-
-        return predTmp;
     }
 
 }

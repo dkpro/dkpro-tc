@@ -23,7 +23,7 @@ import java.util.*;
 
 import org.apache.commons.logging.LogFactory;
 
-public class LibsvmPredict
+public class _Prediction
 {
     private svm_print_interface svm_print_null = new svm_print_interface()
     {

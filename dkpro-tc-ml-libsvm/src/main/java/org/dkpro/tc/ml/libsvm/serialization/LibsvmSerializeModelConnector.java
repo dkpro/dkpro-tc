@@ -26,13 +26,13 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.libsvm.api.LibsvmTrainModel;
+import org.dkpro.tc.ml.libsvm.api._Training;
 
 public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeModelConnector implements Constants {
 
 	@Override
 	protected void trainModel(TaskContext aContext, File fileTrain) throws Exception {
-		LibsvmTrainModel ltm = new LibsvmTrainModel();
+		_Training ltm = new _Training();
 		File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 		ltm.run(buildParameters(fileTrain, model));
 	}

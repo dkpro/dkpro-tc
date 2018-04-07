@@ -31,7 +31,7 @@ import libsvm.svm_parameter;
 import libsvm.svm_print_interface;
 import libsvm.svm_problem;
 
-public class LibsvmTrainModel
+public class _Training
 {
     private svm_parameter param; // set by parse_command_line
     private svm_problem prob; // set by read_problem
