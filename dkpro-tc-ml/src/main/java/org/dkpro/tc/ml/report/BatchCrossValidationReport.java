@@ -57,16 +57,17 @@ public class BatchCrossValidationReport
         String learningMode = determineLearningMode(store, idPool);
 
         writeOverallResuls(learningMode, store, idPool);
-        writeResultsPerFold(learningMode, store,idPool);
+        writeResultsPerFold(learningMode, store, idPool);
+
     }
 
-    private void writeOverallResuls(String learningMode, StorageService store, Set<String> idPool) throws Exception
+    private void writeOverallResuls(String learningMode, StorageService store, Set<String> idPool)
+        throws Exception
     {
 
         TcFlexTable<String> table = TcFlexTable.forClass(String.class);
         table.setDefaultValue("");
 
-        
         for (String id : idPool) {
             if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
                 continue;
@@ -91,13 +92,16 @@ public class BatchCrossValidationReport
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_VALIDATION, "<OMITTED>");
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_TRAINING, "<OMITTED>");
             table.addRow(getContextLabel(id), values);
-            
-            
-            //write additionally a confusion matrix over the combined file
-            File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX, AccessMode.READWRITE);
-            MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
-        }        
-        
+
+            if (isSingleLabelMode(learningMode)) {
+                // write additionally a confusion matrix over the combined file
+                File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX,
+                        AccessMode.READWRITE);
+                MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
+            }
+
+        }
+
         /*
          * TODO: make rows to columns e.g. create a new table and set columns to rows of old table
          * and rows to columns but than must be class FlexTable in this case adapted accordingly:
@@ -108,13 +112,19 @@ public class BatchCrossValidationReport
                 SUFFIX_EXCEL, SUFFIX_CSV);
     }
 
-    private void writeResultsPerFold(String learningMode, StorageService store, Set<String> idPool) throws Exception
+    private boolean isSingleLabelMode(String learningMode)
+    {
+        return learningMode.equals(Constants.LM_SINGLE_LABEL);
+    }
+
+    private void writeResultsPerFold(String learningMode, StorageService store, Set<String> idPool)
+        throws Exception
     {
         TcFlexTable<String> table = TcFlexTable.forClass(String.class);
         table.setDefaultValue("");
-        
+
         Set<String> allTasks = collectTasks(idPool);
-        
+
         for (String id : allTasks) {
             if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
                 continue;
@@ -135,14 +145,15 @@ public class BatchCrossValidationReport
             addMajorityBaslineResults(learningMode, id, store, values);
             addRandomBaselineResults(learningMode, id, store, values);
 
-            //This key might have arbitrary long file path as values which easily exceed the limit of 32k characers
+            // This key might have arbitrary long file path as values which easily exceed the limit
+            // of 32k characers
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_VALIDATION, "<OMITTED>");
             values = ReportUtils.replaceKeyWithConstant(values, DIM_FILES_TRAINING, "<OMITTED>");
             table.addRow(getContextLabel(id), values);
+        }
+        ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table,
+                EVAL_FILE_NAME_PER_FOLD, SUFFIX_EXCEL, SUFFIX_CSV);
     }
-        ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME_PER_FOLD,
-                SUFFIX_EXCEL, SUFFIX_CSV);
-}
 
     private void addRandomBaselineResults(String learningMode, String id, StorageService store,
             Map<String, String> values)
