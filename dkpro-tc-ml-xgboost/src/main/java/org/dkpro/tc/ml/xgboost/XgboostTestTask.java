@@ -34,8 +34,8 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
-import org.dkpro.tc.ml.xgboost.core.XgboostPredict;
-import org.dkpro.tc.ml.xgboost.core.XgboostTrain;
+import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
+import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 
@@ -79,7 +79,7 @@ public class XgboostTestTask
         List<String> parameters = getClassificationParameters(aContext, classificationArguments,
                 learningMode);
         
-        XgboostTrain trainer = new XgboostTrain();
+        XgboostTrainer trainer = new XgboostTrainer();
         trainer.train(parameters, fileTrain, model);
 
         return model;
@@ -100,7 +100,7 @@ public class XgboostTestTask
     {
         File testFile = getTestFile(aContext);
         
-        XgboostPredict predictor = new XgboostPredict();
+        XgboostPredictor predictor = new XgboostPredictor();
         File predict = predictor.predict(testFile, (File) model);
         
         mergePredictionWithGold(aContext, predict);

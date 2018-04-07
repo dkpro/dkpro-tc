@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.dkpro.tc.ml.libsvm.api._Training;
 
-public class LibsvmTrain
+public class LibsvmTrainer
 {
     public File train(File data, File model, String... parameters) throws Exception
     {

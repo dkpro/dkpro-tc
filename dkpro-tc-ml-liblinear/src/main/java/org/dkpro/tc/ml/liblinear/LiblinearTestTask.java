@@ -28,8 +28,8 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
-import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
-import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
+import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Model;
@@ -52,7 +52,7 @@ public class LiblinearTestTask
 
         File modelTarget = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
 
-        LiblinearTrain trainer = new LiblinearTrain();
+        LiblinearTrainer trainer = new LiblinearTrainer();
         Model model = trainer.train(solver, C, eps, fileTrain, modelTarget);
         return model;
     }
@@ -65,7 +65,7 @@ public class LiblinearTestTask
 
         File fileTest = getTestFile(aContext);
 
-        LiblinearPredict predicter = new LiblinearPredict();
+        LiblinearPredictor predicter = new LiblinearPredictor();
         List<Double[]> predWithGold = predicter.predict(fileTest, model);
 
         File predFolder = aContext.getFolder("", AccessMode.READWRITE);

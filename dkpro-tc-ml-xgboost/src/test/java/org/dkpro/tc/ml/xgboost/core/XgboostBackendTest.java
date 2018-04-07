@@ -57,7 +57,7 @@ public class XgboostBackendTest
 
     private void predict() throws Exception
     {
-        XgboostPredict predictor = new XgboostPredict();
+        XgboostPredictor predictor = new XgboostPredictor();
         File predict = predictor.predict(data, model);
 
         assertTrue(predict != null && predict.exists() && predict.length() > 0);
@@ -72,7 +72,7 @@ public class XgboostBackendTest
 
     private void train() throws Exception
     {
-        XgboostTrain trainer = new XgboostTrain();
+        XgboostTrainer trainer = new XgboostTrainer();
         long sizeBefore = model.length();
         File train = trainer.train(
                 Arrays.asList(new String[] { "objective=multi:softmax", "num_class=32" }), data,

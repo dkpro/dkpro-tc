@@ -30,8 +30,8 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
-import org.dkpro.tc.ml.libsvm.core.LibsvmPrediction;
-import org.dkpro.tc.ml.libsvm.core.LibsvmTrain;
+import org.dkpro.tc.ml.libsvm.core.LibsvmPredictor;
+import org.dkpro.tc.ml.libsvm.core.LibsvmTrainer;
 
 public class LibsvmTestTask
     extends LibsvmDataFormatTestTask
@@ -72,7 +72,7 @@ public class LibsvmTestTask
         File model = new File(aContext.getFolder("", AccessMode.READWRITE),
                 Constants.MODEL_CLASSIFIER);
         
-        LibsvmTrain trainer = new LibsvmTrain();
+        LibsvmTrainer trainer = new LibsvmTrainer();
         trainer.train(fileTrain, model, buildParameters());
 
         return model;
@@ -84,7 +84,7 @@ public class LibsvmTestTask
         File theModel = (File) model;
         File fileTest = getTestFile(aContext);
         
-        LibsvmPrediction predicter = new LibsvmPrediction();
+        LibsvmPredictor predicter = new LibsvmPredictor();
         File prediction = predicter.prediction(fileTest, theModel);
         mergePredictionWithGold(aContext, prediction);
         

@@ -34,8 +34,8 @@ import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
-import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredict;
-import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrain;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
 import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
@@ -138,9 +138,9 @@ public class CrfSuiteTestTask
 
     private File trainModel(TaskContext aContext) throws Exception
     {
-        CrfSuiteTrain trainer = new CrfSuiteTrain();
+        CrfSuiteTrainer trainer = new CrfSuiteTrainer();
 
-        File executable = CrfSuiteTrain.getExecutable();
+        File executable = CrfSuiteTrainer.getExecutable();
         File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
@@ -158,7 +158,7 @@ public class CrfSuiteTestTask
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        CrfSuitePredict crfPredict = new CrfSuitePredict();
+        CrfSuitePredictor crfPredict = new CrfSuitePredictor();
         String prediction = crfPredict.predict(testFile, model);
 
         deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);

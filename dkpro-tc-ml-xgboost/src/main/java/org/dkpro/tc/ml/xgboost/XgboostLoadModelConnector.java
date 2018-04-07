@@ -21,7 +21,7 @@ import java.io.File;
 
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
-import org.dkpro.tc.ml.xgboost.core.XgboostPredict;
+import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
 
 public class XgboostLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
@@ -38,7 +38,7 @@ public class XgboostLoadModelConnector
 //        File file = XgboostTestTask.writeConfigFile(executable.getParentFile(), "predict.conf",
 //                content);
         
-        XgboostPredict predictor = new XgboostPredict();
+        XgboostPredictor predictor = new XgboostPredictor();
         File prediction = predictor.predict(testFile, model);
 
         return prediction;

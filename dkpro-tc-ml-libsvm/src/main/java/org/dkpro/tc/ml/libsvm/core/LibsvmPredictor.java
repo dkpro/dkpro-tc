@@ -31,7 +31,7 @@ import org.dkpro.tc.ml.libsvm.api._Prediction;
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmPrediction
+public class LibsvmPredictor
 {
 
     public File prediction(File fileTest, File theModel) throws Exception

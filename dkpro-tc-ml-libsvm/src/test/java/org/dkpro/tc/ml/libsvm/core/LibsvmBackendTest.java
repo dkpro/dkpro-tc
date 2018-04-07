@@ -50,14 +50,14 @@ public class LibsvmBackendTest
     @Test
     public void testTraining() throws Exception
     {
-        LibsvmTrain trainer = new LibsvmTrain();
+        LibsvmTrainer trainer = new LibsvmTrainer();
         
         long modelSizeBefore = model.length();
         File train = trainer.train(data, model, SvmType.C_SVM, KernelType.RadialBasis);
         long modelSizeAfter = model.length();
         assertTrue(modelSizeBefore < modelSizeAfter);
         
-        LibsvmPrediction prediction = new LibsvmPrediction();
+        LibsvmPredictor prediction = new LibsvmPredictor();
         File predictionFile = prediction.prediction(data, train);
 
         List<String> readLines = FileUtils.readLines(predictionFile, "utf-8");

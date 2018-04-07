@@ -41,7 +41,7 @@ import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
-import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredict;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
 import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
@@ -104,7 +104,7 @@ public class CrfSuiteLoadModelConnector
                     }
                 }
 
-                CrfSuitePredict predict = new CrfSuitePredict();
+                CrfSuitePredictor predict = new CrfSuitePredictor();
                 String out = predict.predict(buffer.toString(), model);
                 output.append(out);
             }

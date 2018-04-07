@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
-import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
-import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
+import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,13 +48,13 @@ public class LiblinearBackendTest
     public void testTraining() throws Exception
     {
 
-        LiblinearTrain trainer = new LiblinearTrain();
+        LiblinearTrainer trainer = new LiblinearTrainer();
         long modelBefore = model.length();
         Model liblinearModel = trainer.train(SolverType.L2R_L2LOSS_SVC, 100.0, 0.01, data, model);
         long modelAfter = model.length();
         assertTrue(modelBefore < modelAfter);
 
-        LiblinearPredict predicter = new LiblinearPredict();
+        LiblinearPredictor predicter = new LiblinearPredictor();
         List<Double[]> predict = predicter.predict(data, liblinearModel);
 
         // make sure that predicted and gold value is within the range of values found in the data

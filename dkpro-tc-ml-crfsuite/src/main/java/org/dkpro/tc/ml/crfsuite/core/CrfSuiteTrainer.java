@@ -21,11 +21,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrfSuiteTrain
+public class CrfSuiteTrainer
     extends CrfSuite
 {
 
-    public CrfSuiteTrain()
+    public CrfSuiteTrainer()
     {
         //
     }

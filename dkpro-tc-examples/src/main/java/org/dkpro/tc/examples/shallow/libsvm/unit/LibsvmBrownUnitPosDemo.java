@@ -43,6 +43,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -71,7 +72,7 @@ public class LibsvmBrownUnitPosDemo
         // explained there.
         DemoUtils.setDkproHome(LibsvmBrownUnitPosDemo.class.getSimpleName());
 
-        new LibsvmBrownUnitPosDemo().runTrainTest(getParameterSpace());
+//        new LibsvmBrownUnitPosDemo().runTrainTest(getParameterSpace());
         new LibsvmBrownUnitPosDemo().runCrossValidation(getParameterSpace());
     }
 
@@ -85,6 +86,7 @@ public class LibsvmBrownUnitPosDemo
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(BatchCrossValidationReport.class);
 
         // Run
         Lab.getInstance().run(experiment);

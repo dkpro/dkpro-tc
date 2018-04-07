@@ -18,27 +18,36 @@
 package org.dkpro.tc.ml.liblinear.core;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import de.bwaldvogel.liblinear.InvalidInputDataException;
+import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
-import de.bwaldvogel.liblinear.SolverType;
 
-public class LiblinearTrain
+public class LiblinearPredictor
 {
 
-    public Model train(SolverType solver, double c, double eps, File data, File model)
-        throws IOException, InvalidInputDataException
+    public List<Double[]> predict(File data, Model model) throws Exception
     {
-        Problem train = Problem.readFromFile(data, 1.0);
-        Linear.setDebugOutput(null);
-        Parameter parameter = new Parameter(solver, c, eps);
-        Model trainedModel = Linear.train(train, parameter);
-        trainedModel.save(model);
-        return trainedModel;
+        List<Double[]> predWithGold = new ArrayList<>();
+
+        Problem test = Problem.readFromFile(data, 1.0);
+        Feature[][] testInstances = test.x;
+        for (int i = 0; i < testInstances.length; i++) {
+            Feature[] instance = testInstances[i];
+            Double prediction = Linear.predict(model, instance);
+            predWithGold.add(new Double[] { prediction, test.y[i] });
+        }
+
+        return predWithGold;
+    }
+
+    public List<Double[]> predict(File data, File model) throws Exception
+    {
+        Model loadModel = Linear.loadModel(model);
+        return predict(data, loadModel);
     }
 
 }

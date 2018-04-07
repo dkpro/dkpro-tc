@@ -51,7 +51,7 @@ public class CrfSuiteBackendTest
     {
         trainModel();
 
-        CrfSuitePredict predict = new CrfSuitePredict();
+        CrfSuitePredictor predict = new CrfSuitePredictor();
         String predictions = predict.predict(data, modelOut);
 
         assertTrue(predictions != null && !predictions.isEmpty());
@@ -73,7 +73,7 @@ public class CrfSuiteBackendTest
         
         long modelBefore = modelOut.length();
         
-        CrfSuiteTrain train = new CrfSuiteTrain();
+        CrfSuiteTrainer train = new CrfSuiteTrainer();
         train.train(CrfSuiteAlgo.ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTORS.toString(),
                 Collections.emptyList(), data, modelOut);
         

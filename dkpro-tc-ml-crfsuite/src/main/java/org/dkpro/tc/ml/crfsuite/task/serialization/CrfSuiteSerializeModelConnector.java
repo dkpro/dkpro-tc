@@ -31,7 +31,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
-import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrain;
+import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
 
@@ -90,7 +90,7 @@ public class CrfSuiteSerializeModelConnector
         File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext,
                 executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-        CrfSuiteTrain trainer = new CrfSuiteTrain();
+        CrfSuiteTrainer trainer = new CrfSuiteTrainer();
         trainer.train(algoName, algoParameters, train,model);
     }
 

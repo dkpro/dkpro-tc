@@ -24,7 +24,7 @@ import java.util.List;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
-import org.dkpro.tc.ml.xgboost.core.XgboostTrain;
+import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;
 
 public class XgboostSerializeModelConnector
     extends LibsvmDataFormatSerializeModelConnector
@@ -39,7 +39,7 @@ public class XgboostSerializeModelConnector
         List<String> parameter = XgboostTestTask.getClassificationParameters(aContext,
                 classificationArguments, learningMode);
         
-        XgboostTrain trainer = new XgboostTrain();
+        XgboostTrainer trainer = new XgboostTrainer();
         trainer.train(parameter, fileTrain, model);
     }
 

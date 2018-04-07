@@ -25,7 +25,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
-import org.dkpro.tc.ml.liblinear.core.LiblinearPredict;
+import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -56,7 +56,7 @@ public class LiblinearLoadModelConnector
         File tmp = File.createTempFile("libLinearePrediction", ".txt");
         tmp.deleteOnExit();
         
-        LiblinearPredict predicter = new LiblinearPredict();
+        LiblinearPredictor predicter = new LiblinearPredictor();
         List<Double[]> predict = predicter.predict(infile, liblinearModel);
         LiblinearTestTask.writePredictions(tmp, predict, false, false);
         

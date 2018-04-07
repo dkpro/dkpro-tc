@@ -22,55 +22,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.pear.util.FileUtil;
 
-public class XgboostTrain extends Xgboost
+public class XgboostPredictor extends Xgboost
 {
-    public XgboostTrain()
+    public XgboostPredictor()
     {
         //Groovy
     }
 
-    /**
-     * Trains a model with Xgboost
-     * 
-     * @param parameters
-     *          The parametrization
-     * @param data
-     *          The training data file
-     * @param model
-     *         File descriptor for the location at which the model shall be stored
-     * @return
-     *         file path to the trained model
-     * @throws Exception
-     *      In case of an error
-     */
-    public File train(List<String> parameters, File data,
-            File model)
-        throws Exception
+    public File predict(File data, File model) throws Exception
     {
-        File trainConfiguration = writeTrainConfigurationFile(parameters, data, model);
+        File tmpPredictionOut = FileUtil.createTempFile("xgboostPredictionOut", ".txt");
+        tmpPredictionOut.deleteOnExit();
+        
+        File config = buildTestConfigFile(data, model, tmpPredictionOut);
         
         List<String> command = new ArrayList<>();
         command.add(flipBackslash(getExecutable().getAbsolutePath()));
-        command.add(flipBackslash(trainConfiguration.getAbsolutePath()));
-
-        runCommand(command);
-
-        return model;
-    }
-    
-    public File writeTrainConfigurationFile(List<String> parameters, File data, File model) throws Exception
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("task=train" + "\n");
-        sb.append("data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + "\n");
-        sb.append("model_out=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
-
-        for (String p : parameters) {
-            sb.append(p + "\n");
-        }
+        command.add(flipBackslash(config.getAbsolutePath()));
         
-        File config = new File(getExecutable().getParentFile(), "train.conf");
+        runCommand(command);
+        
+        return tmpPredictionOut;
+    }
+
+ 
+    public File buildTestConfigFile(File data, File model, File predictionOut) throws Exception
+    {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("task=pred" + "\n");
+        sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + "\n");
+        sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
+        sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + "\n");
+        
+        File config = new File(getExecutable().getParentFile(), "test.conf");
         config.deleteOnExit();
         FileUtils.writeStringToFile(config, sb.toString(), "utf-8");
         return config;

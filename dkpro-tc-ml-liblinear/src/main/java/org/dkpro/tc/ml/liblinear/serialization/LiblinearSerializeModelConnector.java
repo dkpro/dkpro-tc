@@ -24,7 +24,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
-import org.dkpro.tc.ml.liblinear.core.LiblinearTrain;
+import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.SolverType;
@@ -49,7 +49,7 @@ public class LiblinearSerializeModelConnector
         double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
 
         File modelLocation = new File(outputFolder, MODEL_CLASSIFIER);
-        LiblinearTrain trainer = new LiblinearTrain();
+        LiblinearTrainer trainer = new LiblinearTrainer();
         trainer.train(solver, C, eps, fileTrain, modelLocation);
     }
 

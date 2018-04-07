@@ -28,11 +28,11 @@ import java.util.Scanner;
 
 import org.apache.commons.compress.utils.IOUtils;
 
-public class CrfSuitePredict
+public class CrfSuitePredictor
     extends CrfSuite
 {
 
-    public CrfSuitePredict()
+    public CrfSuitePredictor()
     {
         //
     }
