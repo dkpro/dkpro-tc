@@ -24,14 +24,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import meka.classifiers.multilabel.BR;
-import meka.core.Result;
-
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.weka.core._eka;
 import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.core.Result;
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.SMOreg;
@@ -79,22 +81,22 @@ public class WekaResultsTest
             throw new IOException(e);
         }
 
-        singleLabelTrainData = WekaUtils.getInstances(singleLabelTrainFile, false);
-        singleLabelTestData = WekaUtils.getInstances(singleLabelTestFile, false);
-        multiLabelTrainData = WekaUtils.getInstances(multiLabelTrainFile, true);
-        multiLabelTestData = WekaUtils.getInstances(multiLabelTestFile, true);
-        regressionTrainData = WekaUtils.getInstances(regressionTrainFile, false);
-        regressionTestData = WekaUtils.getInstances(regressionTestFile, false);
+        singleLabelTrainData = _eka.getInstances(singleLabelTrainFile, false);
+        singleLabelTestData = _eka.getInstances(singleLabelTestFile, false);
+        multiLabelTrainData = _eka.getInstances(multiLabelTrainFile, true);
+        multiLabelTestData = _eka.getInstances(multiLabelTestFile, true);
+        regressionTrainData = _eka.getInstances(regressionTrainFile, false);
+        regressionTestData = _eka.getInstances(regressionTestFile, false);
     }
 
     @Test
     public void testWekaResultsRegression() throws Exception
     {
         SMOreg cl = new SMOreg();
-        Instances trainData = WekaUtils.removeInstanceId(regressionTrainData, false);
-        Instances testData = WekaUtils.removeInstanceId(regressionTestData, false);
+        Instances trainData = _eka.removeInstanceId(regressionTrainData, false);
+        Instances testData = _eka.removeInstanceId(regressionTestData, false);
         cl.buildClassifier(trainData);
-        Evaluation eval = WekaUtils.getEvaluationSinglelabel(cl, trainData, testData);
+        Evaluation eval = getEvaluationSinglelabel(cl, trainData, testData);
         assertEquals(0.45, eval.correlationCoefficient(), 0.01);
     }
 
@@ -103,13 +105,13 @@ public class WekaResultsTest
     {
         SMO cl = new SMO();
         WekaOutcomeHarmonizer woh = new WekaOutcomeHarmonizer(singleLabelTrainData,
-                singleLabelTestData, false);
+                singleLabelTestData, Constants.LM_SINGLE_LABEL);
         Instances testData = woh.harmonize();
-        
-        Instances trainData = WekaUtils.removeInstanceId(singleLabelTrainData, false);
-        testData = WekaUtils.removeInstanceId(testData, false);
+
+        Instances trainData = _eka.removeInstanceId(singleLabelTrainData, false);
+        testData = _eka.removeInstanceId(testData, false);
         cl.buildClassifier(trainData);
-        Evaluation eval = WekaUtils.getEvaluationSinglelabel(cl, trainData, testData);
+        Evaluation eval = getEvaluationSinglelabel(cl, trainData, testData);
         assertEquals(7.0, eval.correct(), 0.01);
     }
 
@@ -119,14 +121,31 @@ public class WekaResultsTest
         BR cl = new BR();
         cl.setOptions(new String[] { "-W", J48.class.getName() });
         WekaOutcomeHarmonizer woh = new WekaOutcomeHarmonizer(multiLabelTrainData,
-                multiLabelTestData, true);
+                multiLabelTestData, Constants.LM_MULTI_LABEL);
         Instances testData = woh.harmonize();
-        Instances trainData = WekaUtils.removeInstanceId(multiLabelTrainData, true);
-        testData = WekaUtils.removeInstanceId(testData, true);
+        Instances trainData = _eka.removeInstanceId(multiLabelTrainData, true);
+        testData = _eka.removeInstanceId(testData, true);
         cl.buildClassifier(trainData);
-        Result eval = WekaUtils.getEvaluationMultilabel(cl, trainData, testData, "0.2");
+        Result eval = getEvaluationMultilabel(cl, trainData, testData, "0.2");
         assertEquals(16.0, eval.L, 0.01);
         assertEquals(0.0, (Double) Result.getStats(eval, "1").get("Exact match"), 0.01);
     }
 
+    public Evaluation getEvaluationSinglelabel(Classifier cl, Instances trainData,
+            Instances testData)
+        throws Exception
+    {
+        Evaluation eval = new Evaluation(trainData);
+        eval.evaluateModel(cl, testData);
+        return eval;
+    }
+
+    public Result getEvaluationMultilabel(Classifier cl, Instances trainData,
+            Instances testData, String threshold)
+        throws Exception
+    {
+        Result r = meka.classifiers.multilabel.Evaluation.evaluateModel((MultiLabelClassifier) cl,
+                trainData, testData, threshold);
+        return r;
+    }
 }

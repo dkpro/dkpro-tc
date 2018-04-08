@@ -41,7 +41,6 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import com.google.gson.Gson;
 
@@ -58,6 +57,8 @@ import weka.core.converters.Saver;
 public class MekaDataWriter
     implements DataWriter, Constants
 {
+    public static final String RELATION_NAME = "dkpro-tc-generated";
+    
     BufferedWriter bw = null;
     Gson gson = new Gson();
     private boolean useSparse;
@@ -298,7 +299,7 @@ public class MekaDataWriter
 
         // for Meka-internal use
         masterInstance = new Instances(
-                WekaUtils.RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
+                RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
                 attributeStore.getAttributes(), instances.size());
         masterInstance.setClassIndex(outcomeAttributes.size());
         saver.setInstances(masterInstance);

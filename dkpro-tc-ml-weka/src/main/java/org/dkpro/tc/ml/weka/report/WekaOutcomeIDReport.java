@@ -19,7 +19,9 @@
 package org.dkpro.tc.ml.weka.report;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
@@ -32,12 +34,14 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.StringUtils;
+import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
+import org.dkpro.tc.ml.weka.core._eka;
+import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -78,18 +82,17 @@ public class WekaOutcomeIDReport
 
         init();
 
-        File arff = WekaUtils.getFile(getContext(), "", FILENAME_PREDICTIONS, AccessMode.READONLY);
-        mlResults = WekaUtils.getFile(getContext(), "", WekaTestTask.evaluationBin,
-                AccessMode.READONLY);
+        File arff = getFile(getContext(), "", FILENAME_PREDICTIONS, AccessMode.READONLY);
+        mlResults = getFile(getContext(), "", WekaTestTask.evaluationBin, AccessMode.READONLY);
 
-        Instances predictions = WekaUtils.getInstances(arff, isMultiLabel);
+        Instances predictions = _eka.getInstances(arff, isMultiLabel);
 
         List<String> labels = getLabels(isMultiLabel, isRegression);
 
         Properties props;
 
         if (isMultiLabel) {
-            MultilabelResult r = WekaUtils.readMlResultFromFile(mlResults);
+            MultilabelResult r = readMlResultFromFile(mlResults);
             props = generateMlProperties(predictions, labels, r);
         }
         else {
@@ -191,7 +194,7 @@ public class WekaOutcomeIDReport
             Double gold;
             try {
                 gold = new Double(inst.value(predictions
-                        .attribute(CLASS_ATTRIBUTE_NAME + WekaUtils.COMPATIBLE_OUTCOME_CLASS)));
+                        .attribute(CLASS_ATTRIBUTE_NAME + WekaOutcomeHarmonizer.COMPATIBLE_OUTCOME_CLASS)));
             }
             catch (NullPointerException e) {
                 // if train and test data have not been balanced
@@ -267,5 +270,22 @@ public class WekaOutcomeIDReport
         }
 
         return documentIdMap;
+    }
+
+    private MultilabelResult readMlResultFromFile(File file)
+        throws IOException, ClassNotFoundException
+    {
+        ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
+        MultilabelResult result = (MultilabelResult) stream.readObject();
+        stream.close();
+        return result;
+    }
+
+    private File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
+    {
+        String path = aContext.getFolder(key, mode).getPath();
+        String pathToArff = path + "/" + entry;
+
+        return new File(pathToArff);
     }
 }

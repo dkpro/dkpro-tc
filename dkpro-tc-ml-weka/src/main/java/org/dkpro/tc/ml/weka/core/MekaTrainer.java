@@ -19,51 +19,37 @@
 package org.dkpro.tc.ml.weka.core;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.dkpro.tc.ml.base.TcTrainer;
 
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class WekaTrainer extends _eka
+public class MekaTrainer extends _eka
     implements TcTrainer
 {
 
     @Override
     public void train(File data, File model, List<String> parameters) throws Exception
     {
-        sanityCheckParameters(parameters);
-
-        Instances wekaData = toWeka(data);
-        train(wekaData, model, parameters);
+        train(toWeka(data), model, parameters);
     }
-
+    
     public Classifier train(Instances data, File model, List<String> parameters) throws Exception
     {
-        String algoName = parameters.get(0);
-        List<String> algoParameters = parameters.subList(1, parameters.size());
-
-        // build classifier
-        Classifier cl = AbstractClassifier.forName(algoName, algoParameters.toArray(new String[0]));
+        List<String> mlArgs = Arrays.asList(parameters
+                .subList(1, parameters.size()).toArray(new String[0]));
+        MultiLabelClassifier cl = (MultiLabelClassifier) AbstractClassifier.forName((String) parameters.get(0),
+                new String[] {});
+        cl.setOptions(mlArgs.toArray(new String[0]));
         cl.buildClassifier(data);
-
-        weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
         
         return cl;
     }
-
-    private void sanityCheckParameters(List<String> parameters)
-    {
-        if (parameters == null) {
-            throw new NullPointerException("The provided parameters are null");
-        }
-
-        if (parameters.size() == 0) {
-            throw new IllegalArgumentException(
-                    "At least the name (.getClass().getName()) of the Weka classifier has to be provided");
-        }
-    }
+ 
 
 }

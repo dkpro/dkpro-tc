@@ -36,7 +36,9 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.weka.WekaAdapter;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
+import org.dkpro.tc.ml.weka.core.MekaTrainer;
+import org.dkpro.tc.ml.weka.core.WekaTrainer;
+import org.dkpro.tc.ml.weka.core._eka;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -125,8 +127,8 @@ public class WekaSerliazeModelConnector
                 aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY).getPath()
                         + "/" + Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        Instances trainData = WekaUtils.getInstances(arffFileTrain, isMultiLabel);
-        trainData = WekaUtils.removeInstanceId(trainData, isMultiLabel);
+        Instances trainData = _eka.getInstances(arffFileTrain, isMultiLabel);
+        trainData = _eka.removeInstanceId(trainData, isMultiLabel);
 
         // FEATURE SELECTION
         if (!isMultiLabel) {
@@ -160,9 +162,9 @@ public class WekaSerliazeModelConnector
         outT.close();
 
         // write model file
-        Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
-        cl.buildClassifier(trainData);
         File model = new File(outputFolder, MODEL_CLASSIFIER);
+        Classifier cl = getClassifier(trainData, model, learningMode, classificationArguments);
+        cl.buildClassifier(trainData);
         mkdir(model.getParentFile());
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
 
@@ -175,6 +177,27 @@ public class WekaSerliazeModelConnector
                     classLabelsString, "utf-8");
         }
 
+    }
+
+    private Classifier getClassifier(Instances trainData, File model, String learningMode, List<Object> args) throws Exception
+    {
+        if(learningMode.equals(LM_MULTI_LABEL)) {
+            MekaTrainer trainer = new MekaTrainer();
+            return trainer.train(trainData, model, toString(args.subList(1, args.size())));
+        }else {
+            WekaTrainer trainer = new WekaTrainer();
+            return trainer.train(trainData, model, toString(args.subList(1, args.size())));
+        }
+    }
+
+    private List<String> toString(List<Object> subList)
+    {
+        List<String> o = new ArrayList<>();
+        for(Object x : subList) {
+            o.add(x.toString());
+        }
+        
+        return o;
     }
 
     private void mkdir(File f)

@@ -36,6 +36,7 @@ public class WekaOutcomeHarmonizer
     private Instances trainData;
     private Instances testData;
     private boolean multiLabel;
+    private boolean isRegression;
 
     /**
      * Suffix for class label names in the test data that have been adapted to match the training
@@ -44,15 +45,20 @@ public class WekaOutcomeHarmonizer
      */
     public static final String COMPATIBLE_OUTCOME_CLASS = "_Comp";
 
-    public WekaOutcomeHarmonizer(Instances train, Instances test, boolean multiLabel)
+    public WekaOutcomeHarmonizer(Instances train, Instances test, String learningMode)
     {
         this.trainData = train;
         this.testData = test;
-        this.multiLabel = multiLabel;
+        this.multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+        this.isRegression = learningMode.equals(Constants.LM_REGRESSION);
     }
 
     public Instances harmonize() throws Exception
     {
+        if(isRegression) {
+            return testData;
+        }
+    
 
         // ================ SINGLE LABEL BRANCH ======================
         if (!multiLabel) {

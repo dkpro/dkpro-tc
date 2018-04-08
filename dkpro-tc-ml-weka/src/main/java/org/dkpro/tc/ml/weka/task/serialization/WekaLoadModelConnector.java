@@ -24,7 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,6 +41,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
@@ -47,11 +50,14 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
+import org.dkpro.tc.ml.weka.core._eka;
+import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
 import weka.classifiers.Classifier;
+import weka.core.Attribute;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 
 public class WekaLoadModelConnector
     extends ModelSerialization_ImplBase
@@ -168,7 +174,7 @@ public class WekaLoadModelConnector
             // single-label
             weka.core.Instance wekaInstance = null;
             try {
-                wekaInstance = WekaUtils.tcInstanceToWekaInstance(instance, trainingData,
+                wekaInstance = new _eka().tcInstanceToWekaInstance(instance, trainingData,
                         classLabels, isRegression);
             }
             catch (Exception e) {
@@ -195,7 +201,7 @@ public class WekaLoadModelConnector
             // multi-label
             weka.core.Instance mekaInstance = null;
             try {
-                mekaInstance = WekaUtils.tcInstanceToMekaInstance(instance, trainingData,
+                mekaInstance = tcInstanceToMekaInstance(instance, trainingData,
                         classLabels);
             }
             catch (Exception e) {
@@ -269,5 +275,104 @@ public class WekaLoadModelConnector
         }
 
         return outcomes.get(0);
+    }
+    
+    private weka.core.Instance tcInstanceToMekaInstance(Instance instance,
+          Instances trainingData, List<String> allClassLabels)
+      throws Exception
+  {
+      AttributeStore attributeStore = new AttributeStore();
+      List<Attribute> outcomeAttributes = createOutcomeAttributes(allClassLabels);
+
+      // in Meka, class label attributes have to go on top
+      for (Attribute attribute : outcomeAttributes) {
+          attributeStore.addAttributeAtBegin(attribute.name(), attribute);
+      }
+
+      for (int i = outcomeAttributes.size(); i < trainingData.numAttributes(); i++) {
+          attributeStore.addAttribute(trainingData.attribute(i).name(),
+                  trainingData.attribute(i));
+      }
+
+      double[] featureValues = getFeatureValues(attributeStore, instance);
+
+      SparseInstance sparseInstance = new SparseInstance(1.0, featureValues);
+      trainingData.setClassIndex(outcomeAttributes.size());
+      sparseInstance.setDataset(trainingData);
+      return sparseInstance;
+  }
+    
+   
+    private   List<Attribute> createOutcomeAttributes(List<String> outcomeValues)
+    {
+        // make the order of the attributes predictable
+        Collections.sort(outcomeValues);
+        List<Attribute> atts = new ArrayList<Attribute>();
+
+        for (String outcome : outcomeValues) {
+            String name = outcome.contains(CLASS_ATTRIBUTE_PREFIX) ? outcome
+                    : CLASS_ATTRIBUTE_PREFIX + outcome;
+            atts.add(new Attribute(name, Arrays.asList(new String[] { "0", "1" })));
+        }
+        return atts;
+    }
+
+    private  double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
+    {
+        double[] featureValues = new double[attributeStore.getAttributes().size()];
+
+        for (Feature feature : instance.getFeatures()) {
+
+            try {
+                Attribute attribute = attributeStore.getAttribute(feature.getName());
+                Object featureValue = feature.getValue();
+
+                double attributeValue;
+                if (featureValue instanceof Number) {
+                    // numeric attribute
+                    attributeValue = ((Number) feature.getValue()).doubleValue();
+                }
+                else if (featureValue instanceof Boolean) {
+                    // boolean attribute
+                    attributeValue = (Boolean) featureValue ? 1.0d : 0.0d;
+                }
+                else if (featureValue == null) {
+                    // null
+                    throw new IllegalArgumentException(
+                            "You have an instance which doesn't specify a value for the feature "
+                                    + feature.getName());
+                }
+                else {
+                    // nominal or string
+                    Object stringValue = feature.getValue();
+                    if (!attribute.isNominal() && !attribute.isString()) {
+                        throw new IllegalArgumentException(
+                                "Attribute neither nominal nor string: " + stringValue);
+                    }
+
+                    int valIndex = attribute.indexOfValue(stringValue.toString());
+                    if (valIndex == -1) {
+                        if (attribute.isNominal()) {
+                            throw new IllegalArgumentException(
+                                    "Value not defined for given nominal attribute!");
+                        }
+                        else {
+                            attribute.addStringValue(stringValue.toString());
+                            valIndex = attribute.indexOfValue(stringValue.toString());
+                        }
+                    }
+                    attributeValue = valIndex;
+                }
+                int offset = attributeStore.getAttributeOffset(attribute.name());
+
+                if (offset != -1) {
+                    featureValues[offset] = attributeValue;
+                }
+            }
+            catch (NullPointerException e) {
+                // ignore unseen attributes
+            }
+        }
+        return featureValues;
     }
 }

@@ -20,7 +20,7 @@ package org.dkpro.tc.ml.weka;
 
 import java.io.File;
 
-import org.dkpro.tc.ml.weka.util.WekaUtils;
+import org.dkpro.tc.ml.weka.core._eka;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -42,8 +42,8 @@ public class WekaArffTest
         File train = new File("src/main/resources/arff/manyInstances/train.arff.gz");
         File test = new File("src/main/resources/arff/manyInstances/test.arff.gz");
 
-        Instances trainData = WekaUtils.getInstances(train, false);
-        Instances testData = WekaUtils.getInstances(test, false);
+        Instances trainData = _eka.getInstances(train, false);
+        Instances testData = _eka.getInstances(test, false);
 
         Classifier cl = new NaiveBayes();
 

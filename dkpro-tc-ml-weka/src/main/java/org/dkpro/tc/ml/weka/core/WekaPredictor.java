@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.tc.ml.base.TcPredictor;
-import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class WekaPredictor
+public class WekaPredictor extends _eka
     implements TcPredictor
 {
 
@@ -43,13 +42,6 @@ public class WekaPredictor
     {
         Classifier cls = (Classifier) SerializationHelper.read(model.getAbsolutePath());
         return performPrediction(cls, data);
-    }
-
-    private Instances toWeka(File data) throws Exception
-    {
-        Instances train = WekaUtils.getInstances(data, false);
-        Instances wekaData = WekaUtils.removeInstanceId(train, false);
-        return wekaData;
     }
 
     public List<String> performPrediction(Classifier cl, Instances data) throws Exception
