@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -167,7 +169,7 @@ public class WekaSerliazeModelConnector
         // write class labels file
         List<String> classLabels;
         if (!isRegression) {
-            classLabels = WekaUtils.getClassLabels(trainData, isMultiLabel);
+            classLabels = getClassLabels(trainData, isMultiLabel);
             String classLabelsString = StringUtils.join(classLabels, "\n");
             FileUtils.writeStringToFile(new File(outputFolder, MODEL_CLASS_LABELS),
                     classLabelsString, "utf-8");
@@ -190,5 +192,23 @@ public class WekaSerliazeModelConnector
     protected void writeAdapter() throws Exception
     {
         writeModelAdapterInformation(outputFolder, WekaAdapter.class.getName());
+    }
+
+    private List<String> getClassLabels(Instances data, boolean isMultilabel)
+    {
+        List<String> classLabelList = new ArrayList<String>();
+        if (!isMultilabel) {
+            Enumeration<Object> classLabels = data.classAttribute().enumerateValues();
+            while (classLabels.hasMoreElements()) {
+                classLabelList.add((String) classLabels.nextElement());
+            }
+        }
+        else {
+            int numLabels = data.classIndex();
+            for (int i = 0; i < numLabels; i++) {
+                classLabelList.add(data.attribute(i).name());
+            }
+        }
+        return classLabelList;
     }
 }

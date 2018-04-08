@@ -28,24 +28,31 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class WekaTrainer implements TcTrainer
+public class WekaTrainer
+    implements TcTrainer
 {
 
+    @Override
     public void train(File data, File model, List<String> parameters) throws Exception
     {
-
         sanityCheckParameters(parameters);
 
         Instances wekaData = toWeka(data);
+        train(wekaData, model, parameters);
+    }
 
+    public Classifier train(Instances data, File model, List<String> parameters) throws Exception
+    {
         String algoName = parameters.get(0);
         List<String> algoParameters = parameters.subList(1, parameters.size());
 
         // build classifier
         Classifier cl = AbstractClassifier.forName(algoName, algoParameters.toArray(new String[0]));
-        cl.buildClassifier(wekaData);
-        
+        cl.buildClassifier(data);
+
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
+        
+        return cl;
     }
 
     private Instances toWeka(File data) throws Exception

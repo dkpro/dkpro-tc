@@ -27,6 +27,7 @@ import java.net.URISyntaxException;
 import meka.classifiers.multilabel.BR;
 import meka.core.Result;
 
+import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,8 +102,10 @@ public class WekaResultsTest
     public void testWekaResultsSingleLabel() throws Exception
     {
         SMO cl = new SMO();
-        Instances testData = WekaUtils.makeOutcomeClassesCompatible(singleLabelTrainData,
+        WekaOutcomeHarmonizer woh = new WekaOutcomeHarmonizer(singleLabelTrainData,
                 singleLabelTestData, false);
+        Instances testData = woh.harmonize();
+        
         Instances trainData = WekaUtils.removeInstanceId(singleLabelTrainData, false);
         testData = WekaUtils.removeInstanceId(testData, false);
         cl.buildClassifier(trainData);
@@ -115,8 +118,9 @@ public class WekaResultsTest
     {
         BR cl = new BR();
         cl.setOptions(new String[] { "-W", J48.class.getName() });
-        Instances testData = WekaUtils.makeOutcomeClassesCompatible(multiLabelTrainData,
+        WekaOutcomeHarmonizer woh = new WekaOutcomeHarmonizer(multiLabelTrainData,
                 multiLabelTestData, true);
+        Instances testData = woh.harmonize();
         Instances trainData = WekaUtils.removeInstanceId(multiLabelTrainData, true);
         testData = WekaUtils.removeInstanceId(testData, true);
         cl.buildClassifier(trainData);

@@ -19,24 +19,28 @@
 package org.dkpro.tc.ml.weka.task;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import meka.core.Result;
-import weka.attributeSelection.AttributeSelection;
 import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.core.Attribute;
 import weka.core.Instances;
+import weka.core.SelectedTag;
 import weka.core.converters.ConverterUtils.DataSink;
-import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Add;
 
 /**
  * Base class for test task and save model tasks
@@ -90,48 +94,26 @@ public class WekaTestTask
         Instances trainData = WekaUtils.getInstances(arffFileTrain, multiLabel);
         Instances testData = WekaUtils.getInstances(arffFileTest, multiLabel);
 
-        // do not balance in regression experiments
-        if (!learningMode.equals(Constants.LM_REGRESSION)) {
-            testData = WekaUtils.makeOutcomeClassesCompatible(trainData, testData, multiLabel);
-        }
+        WekaOutcomeHarmonizer harmonizer = new WekaOutcomeHarmonizer(trainData, testData,
+                multiLabel);
+        testData = harmonizer.harmonize();
 
         Instances copyTestData = new Instances(testData);
         trainData = WekaUtils.removeInstanceId(trainData, multiLabel);
         testData = WekaUtils.removeInstanceId(testData, multiLabel);
 
-        // FEATURE SELECTION
-        if (!learningMode.equals(Constants.LM_MULTI_LABEL)) {
-            if (featureSearcher != null && attributeEvaluator != null) {
-                AttributeSelection attSel = WekaUtils.featureSelectionSinglelabel(aContext,
-                        trainData, featureSearcher, attributeEvaluator);
-                File file = WekaUtils.getFile(aContext, "", WekaTestTask.featureSelectionFile,
-                        AccessMode.READWRITE);
-                FileUtils.writeStringToFile(file, attSel.toResultsString(), "utf-8");
-                if (applySelection) {
-                    Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
-                    trainData = attSel.reduceDimensionality(trainData);
-                    testData = attSel.reduceDimensionality(testData);
-                }
-            }
-        }
-        else {
-            if (attributeEvaluator != null && labelTransformationMethod != null
-                    && numLabelsToKeep > 0) {
-                Remove attSel = WekaUtils.featureSelectionMultilabel(aContext, trainData,
-                        attributeEvaluator, labelTransformationMethod, numLabelsToKeep);
-                if (applySelection) {
-                    Logger.getLogger(getClass()).info("APPLYING FEATURE SELECTION");
-                    trainData = WekaUtils.applyAttributeSelectionFilter(trainData, attSel);
-                    testData = WekaUtils.applyAttributeSelectionFilter(testData, attSel);
-                }
-            }
-        }
+        WekaFeatureSelector selector = new WekaFeatureSelector(trainData, testData, multiLabel,
+                attributeEvaluator, featureSearcher, labelTransformationMethod, numLabelsToKeep,
+                aContext.getFile("featureSelection", AccessMode.READWRITE));
+        selector.apply();
+        trainData = selector.getTrainingInstances();
+        testData = selector.getTestingInstances();
 
         // build classifier
         Classifier cl = WekaUtils.getClassifier(learningMode, classificationArguments);
 
         // file to hold prediction results
-        File evalOutput = WekaUtils.getFile(aContext, "", evaluationBin, AccessMode.READWRITE);
+        File evalOutput = getFile(aContext, "", evaluationBin, AccessMode.READWRITE);
 
         // evaluation & prediction generation
         if (multiLabel) {
@@ -146,12 +128,15 @@ public class WekaTestTask
             testData = WekaUtils.addInstanceId(testData, copyTestData, true);
         }
         else {
-            // train the classifier on the train set split - not necessary in multilabel setup, but
-            // in single label setup
-            cl.buildClassifier(trainData);
-            weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(),
-                    WekaUtils.getEvaluationSinglelabel(cl, trainData, testData));
-            testData = WekaUtils.getPredictionInstancesSingleLabel(testData, cl);
+
+            WekaTrainer trainer = new WekaTrainer();
+            File model = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
+            Classifier classifier = trainer.train(trainData, model,
+                    getParameters(classificationArguments));
+
+            createWekaEvaluationObject(classifier, evalOutput, trainData, testData);
+            
+            testData = getPredictionInstancesSingleLabel(testData, classifier);
             testData = WekaUtils.addInstanceId(testData, copyTestData, false);
         }
 
@@ -164,4 +149,69 @@ public class WekaTestTask
         FileUtils.moveFile(arffDummy, predictionFile);
     }
 
+    private void createWekaEvaluationObject(Classifier classifier, File evalOutput, Instances trainData,
+            Instances testData)
+        throws Exception
+    {
+        Evaluation eval = new Evaluation(trainData);
+        eval.evaluateModel(classifier, testData);
+        
+        weka.core.SerializationHelper.write(evalOutput.getAbsolutePath(), eval);
+        
+    }
+
+    private List<String> getParameters(List<Object> classificationArguments)
+    {
+        List<String> o = new ArrayList<>();
+
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            o.add((String) classificationArguments.get(i));
+        }
+
+        return o;
+    }
+
+    private File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
+    {
+        String path = aContext.getFolder(key, mode).getPath();
+        String pathToArff = path + "/" + entry;
+
+        return new File(pathToArff);
+    }
+    
+    public Instances getPredictionInstancesSingleLabel(Instances testData, Classifier cl)
+        throws Exception
+    {
+
+        StringBuffer classVals = new StringBuffer();
+        for (int i = 0; i < testData.classAttribute().numValues(); i++) {
+            if (classVals.length() > 0) {
+                classVals.append(",");
+            }
+            classVals.append(testData.classAttribute().value(i));
+        }
+
+        // get predictions
+        List<Double> labelPredictionList = new ArrayList<Double>();
+        for (int i = 0; i < testData.size(); i++) {
+            labelPredictionList.add(cl.classifyInstance(testData.instance(i)));
+        }
+
+        // add an attribute with the predicted values at the end off the attributes
+        Add filter = new Add();
+        filter.setAttributeName(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
+        if (classVals.length() > 0) {
+            filter.setAttributeType(new SelectedTag(Attribute.NOMINAL, Add.TAGS_TYPE));
+            filter.setNominalLabels(classVals.toString());
+        }
+        filter.setInputFormat(testData);
+        testData = Filter.useFilter(testData, filter);
+
+        // fill predicted values for each instance
+        for (int i = 0; i < labelPredictionList.size(); i++) {
+            testData.instance(i).setValue(testData.classIndex() + 1, labelPredictionList.get(i));
+        }
+        return testData;
+    }
+    
 }

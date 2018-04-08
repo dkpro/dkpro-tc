@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
+import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
 import org.junit.Test;
 
 import weka.core.Attribute;
@@ -265,10 +266,10 @@ public class WekaUtilTest
                 false);
         Instances test = WekaUtils.getInstances(new File("src/test/resources/utils/test.arff"),
                 false);
+        
+        WekaOutcomeHarmonizer woh = new WekaOutcomeHarmonizer(train, test, false);
+        Instances testCompatible = woh.harmonize();
 
-        Instances testCompatible = WekaUtils.makeOutcomeClassesCompatible(train, test, false);
-
-        System.out.println(WekaUtils.getClassLabels(testCompatible, false));
         assertEquals(2, WekaUtils.getClassLabels(testCompatible, false).size());
     }
 }

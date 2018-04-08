@@ -29,15 +29,20 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class WekaPredictor implements TcPredictor
+public class WekaPredictor
+    implements TcPredictor
 {
 
     public List<String> predict(File data, File model) throws Exception
     {
         Instances weka = toWeka(data);
-        Classifier cls = (Classifier) SerializationHelper.read(model.getAbsolutePath());
+        return predict(weka, model);
+    }
 
-        return performPrediction(cls, weka);
+    public List<String> predict(Instances data, File model) throws Exception
+    {
+        Classifier cls = (Classifier) SerializationHelper.read(model.getAbsolutePath());
+        return performPrediction(cls, data);
     }
 
     private Instances toWeka(File data) throws Exception
