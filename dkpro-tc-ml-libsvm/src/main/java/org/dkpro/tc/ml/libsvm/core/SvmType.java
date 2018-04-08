@@ -37,4 +37,15 @@ public enum SvmType
     {
         return name;
     }
+
+    public static SvmType getByName(String name)
+    {
+        for (SvmType t : SvmType.values()) {
+            if (t.toString().equals(name)) {
+                return t;
+            }
+        }
+
+        throw new IllegalArgumentException("Name [" + name + "] unknown");
+    }
 }

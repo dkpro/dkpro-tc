@@ -24,33 +24,71 @@ import java.util.List;
 import org.dkpro.tc.ml.base.TcTrainer;
 import org.dkpro.tc.ml.libsvm.api._Training;
 
-public class LibsvmTrainer implements TcTrainer
+public class LibsvmTrainer
+    implements TcTrainer
 {
     @Override
     public void train(File data, File model, List<String> parameters) throws Exception
     {
-        List<String> l = new ArrayList<>();
-        for (String p : parameters) {
-            l.add(p);
+        if (parameters == null) {
+            parameters = new ArrayList<>();
         }
-        l.add(data.getAbsolutePath());
-        l.add(model.getAbsolutePath());
 
-        _Training ltm = new _Training();
-        ltm.run(l.toArray(new String[0]));
+        SvmType svm = getSVMType(parameters);
+        KernelType kernel = getKernelType(parameters);
+
+        List<String> miscParameters = getRemaininParameters(parameters);
+
+        train(data, model, svm, kernel, miscParameters);
+    }
+
+    private List<String> getRemaininParameters(List<String> parameters)
+    {
+        List<String> out = new ArrayList<>();
+        for (int i = 0; i < parameters.size(); i += 2) {
+            if (parameters.get(i).equals("-s") || parameters.get(i).equals("-t")) {
+                continue;
+            }
+            out.add(parameters.get(i));
+            out.add(parameters.get(i + 1));
+        }
+
+        return out;
+    }
+
+    private KernelType getKernelType(List<String> parameters)
+    {
+        for (int i = 0; i < parameters.size(); i += 2) {
+            if (parameters.get(i).equals("-t")) {
+                return KernelType.getByName(parameters.get(i + 1));
+            }
+        }
+
+        return KernelType.getByName("2");
+    }
+
+    private SvmType getSVMType(List<String> parameters)
+    {
+        for (int i = 0; i < parameters.size(); i += 2) {
+            if (parameters.get(i).equals("-s")) {
+                return SvmType.getByName(parameters.get(i + 1));
+            }
+        }
+
+        return SvmType.getByName("0");
     }
 
     public void train(File data, File model, SvmType type, KernelType kernel,
-            String... miscParameters)
+            List<String> miscParameters)
         throws Exception
     {
         List<String> l = new ArrayList<>();
-        
+
         l.add("-s");
         l.add(type.toString());
         l.add("-t");
         l.add(kernel.toString());
-        
+
         for (String p : miscParameters) {
             l.add(p);
         }

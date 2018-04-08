@@ -23,21 +23,24 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class SvmHmmPredictor
     extends SvmHmm
+    implements TcPredictor
 {
     private static RuntimeProvider runtimeProvider;
 
+    @Override
     public List<String> predict(File data, File model) throws Exception
     {
         File predOut = FileUtil.createTempFile("svmhmmPrediction", ".txt");
-        
+
         List<String> command = buildPredictionCommand(data, model, predOut);
         runCommand(command);
-        
+
         List<String> predictions = FileUtils.readLines(predOut, "utf-8");
         return predictions;
     }

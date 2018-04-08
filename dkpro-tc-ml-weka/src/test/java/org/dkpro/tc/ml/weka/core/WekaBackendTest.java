@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.dkpro.tc.ml.weka.core.WekaPredictor;
 import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.junit.After;
@@ -38,13 +40,13 @@ public class WekaBackendTest
     @Test
     public void testWeka() throws Exception
     {
-        WekaTrainer trainer = new WekaTrainer();
+        TcTrainer trainer = new WekaTrainer();
 
         List<String> parameters = new ArrayList<>();
         parameters.add(SMO.class.getName());
         trainer.train(data, model, parameters);
 
-        WekaPredictor predictor = new WekaPredictor();
+        TcPredictor predictor = new WekaPredictor();
         List<String> predictions = predictor.predict(data, model);
 
         assertTrue(predictions != null && !predictions.isEmpty());

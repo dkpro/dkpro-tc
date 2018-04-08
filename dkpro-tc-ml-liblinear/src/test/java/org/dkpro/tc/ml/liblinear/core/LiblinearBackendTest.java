@@ -21,16 +21,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
-import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
-import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.bwaldvogel.liblinear.Linear;
-import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearBackendTest
 {
@@ -48,14 +46,19 @@ public class LiblinearBackendTest
     public void testTraining() throws Exception
     {
 
-        LiblinearTrainer trainer = new LiblinearTrainer();
+        TcTrainer trainer = new LiblinearTrainer();
         long modelBefore = model.length();
-        trainer.train(SolverType.L2R_L2LOSS_SVC, 100.0, 0.01, data, model);
+        
+        List<String> parameters = new ArrayList<>();
+        parameters.add("-c");
+        parameters.add("100.0");
+        
+        trainer.train(data, model, parameters);
         long modelAfter = model.length();
         assertTrue(modelBefore < modelAfter);
 
-        LiblinearPredictor predicter = new LiblinearPredictor();
-        List<String> predict = predicter.predict(data, Linear.loadModel(model));
+        TcPredictor predicter = new LiblinearPredictor();
+        List<String> predict = predicter.predict(data, model);
 
         // make sure that predicted and gold value is within the range of values found in the data
         // file

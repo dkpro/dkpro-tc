@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +54,7 @@ public class CrfSuiteBackendTest
     {
         trainModel();
 
-        CrfSuitePredictor predict = new CrfSuitePredictor();
+        TcPredictor predict = new CrfSuitePredictor();
         List<String> predictions = predict.predict(data, modelOut);
 
         assertTrue(predictions != null && !predictions.isEmpty());
@@ -73,7 +75,7 @@ public class CrfSuiteBackendTest
         
         long modelBefore = modelOut.length();
         
-        CrfSuiteTrainer train = new CrfSuiteTrainer();
+        TcTrainer train = new CrfSuiteTrainer();
         
         List<String> parameters = new ArrayList<>();
         parameters.add(CrfSuiteAlgo.ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTORS.toString());

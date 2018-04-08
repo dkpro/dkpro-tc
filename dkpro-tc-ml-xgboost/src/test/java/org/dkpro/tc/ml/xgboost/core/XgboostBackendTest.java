@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +58,7 @@ public class XgboostBackendTest
 
     private void predict() throws Exception
     {
-        XgboostPredictor predictor = new XgboostPredictor();
+        TcPredictor predictor = new XgboostPredictor();
         List<String> predict = predictor.predict(data, model);
 
         assertTrue(!predict.isEmpty());
@@ -69,7 +71,7 @@ public class XgboostBackendTest
 
     private void train() throws Exception
     {
-        XgboostTrainer trainer = new XgboostTrainer();
+        TcTrainer trainer = new XgboostTrainer();
         long sizeBefore = model.length();
         trainer.train(data, model,
                 Arrays.asList(new String[] { "objective=multi:softmax", "num_class=32" }));

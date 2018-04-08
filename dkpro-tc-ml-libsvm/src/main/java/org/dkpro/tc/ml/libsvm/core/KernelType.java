@@ -51,4 +51,15 @@ public enum KernelType
     {
         return name;
     }
+    
+    public static KernelType getByName(String name)
+    {
+        for (KernelType t : KernelType.values()) {
+            if (t.toString().equals(name)) {
+                return t;
+            }
+        }
+
+        throw new IllegalArgumentException("Name [" + name + "] unknown");
+    }
 }

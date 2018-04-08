@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +53,7 @@ public class SvmHmmBackendTest
     @Test(expected = IllegalArgumentException.class)
     public void testSvmHmmException() throws Exception
     {
-        SvmHmmTrainer trainer = new SvmHmmTrainer();
+        TcTrainer trainer = new SvmHmmTrainer();
         List<String> parameters = new ArrayList<>();
         parameters.add("-x");
         parameters.add("30");
@@ -66,10 +68,10 @@ public class SvmHmmBackendTest
         parameters.add("-c");
         parameters.add("1000");
         
-        SvmHmmTrainer trainer = new SvmHmmTrainer();
+        TcTrainer trainer = new SvmHmmTrainer();
 
         long before = model.length();
-        File trainModel = trainer.train(data, model, parameters);
+        trainer.train(data, model, parameters);
         long after = model.length();
 
         assertTrue(before < after);
@@ -77,8 +79,8 @@ public class SvmHmmBackendTest
         File tmpFile = FileUtil.createTempFile("svmHmm", ".txt");
         tmpFile.deleteOnExit();
         
-        SvmHmmPredictor predictor = new SvmHmmPredictor();
-        List<String> predictions = predictor.predict(data, trainModel);
+        TcPredictor predictor = new SvmHmmPredictor();
+        List<String> predictions = predictor.predict(data, model);
         assertEquals(31, predictions.size());
     }
 

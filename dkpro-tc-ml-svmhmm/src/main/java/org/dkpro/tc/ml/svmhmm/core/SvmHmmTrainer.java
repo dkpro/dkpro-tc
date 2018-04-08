@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcTrainer;
+
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 /**
@@ -51,17 +53,17 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
  * </pre>
  */
 public class SvmHmmTrainer
-    extends SvmHmm
+    extends SvmHmm implements TcTrainer
 {
     private static RuntimeProvider runtimeProvider;
 
     private static final String[] switches = new String[] { "-c", "--e", "--t", "-e", "-b", "-m" };
 
-    public File train(File data, File model, List<String> parameters) throws Exception
+    @Override
+    public void train(File data, File model, List<String> parameters) throws Exception
     {
         List<String> command = buildTrainCommand(data, model, parameters);
         runCommand(command);
-        return model;
     }
 
     public static File getTrainExecutable() throws Exception

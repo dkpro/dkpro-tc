@@ -22,9 +22,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,14 +52,21 @@ public class LibsvmBackendTest
     @Test
     public void testTraining() throws Exception
     {
-        LibsvmTrainer trainer = new LibsvmTrainer();
+        TcTrainer trainer = new LibsvmTrainer();
         
         long modelSizeBefore = model.length();
-        trainer.train(data, model, SvmType.C_SVM, KernelType.RadialBasis);
+        
+        List<String> parameters = new ArrayList<>();
+        parameters.add("-s");
+        parameters.add(SvmType.C_SVM.toString());
+        parameters.add("-t");
+        parameters.add(KernelType.RadialBasis.toString());
+        
+        trainer.train(data, model, parameters);
         long modelSizeAfter = model.length();
         assertTrue(modelSizeBefore < modelSizeAfter);
         
-        LibsvmPredictor prediction = new LibsvmPredictor();
+        TcPredictor prediction = new LibsvmPredictor();
         List<String> predictions = prediction.predict(data, model);
 
         assertEquals(163, predictions.size());

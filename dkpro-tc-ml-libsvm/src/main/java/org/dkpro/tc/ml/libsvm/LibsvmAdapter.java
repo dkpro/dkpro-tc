@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.libsvm.serialization.LibsvmSerializeModelConnector;
  * values in this class with more detail explanations.
  * 
  * <pre>
- * -s svm_type (default o)
+ * -s svm_type (default 0)
  * 		0 -- C-SVC
  * 		1 -- nu-SVC
  *		2 -- one-class SVM
