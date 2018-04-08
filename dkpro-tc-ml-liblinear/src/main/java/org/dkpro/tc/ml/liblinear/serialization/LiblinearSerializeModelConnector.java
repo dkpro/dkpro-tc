@@ -22,7 +22,7 @@ import java.io.File;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;

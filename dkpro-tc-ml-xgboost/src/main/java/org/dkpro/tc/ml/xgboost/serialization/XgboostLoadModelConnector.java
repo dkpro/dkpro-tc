@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
 
 public class XgboostLoadModelConnector

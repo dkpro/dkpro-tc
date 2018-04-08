@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.io.libsvm;
+package org.dkpro.tc.io.libsvm.serialization;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +29,7 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
+import org.dkpro.tc.io.libsvm.AdapterFormat;
 
 public abstract class LibsvmDataFormatSerializeModelConnector
     extends ModelSerializationTask

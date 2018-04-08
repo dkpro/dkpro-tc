@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostTestTask;
 import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;

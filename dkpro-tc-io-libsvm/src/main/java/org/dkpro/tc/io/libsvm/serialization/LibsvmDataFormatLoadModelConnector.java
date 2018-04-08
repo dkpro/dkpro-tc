@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.io.libsvm;
+package org.dkpro.tc.io.libsvm.serialization;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,6 +44,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
+import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 
 public abstract class LibsvmDataFormatLoadModelConnector

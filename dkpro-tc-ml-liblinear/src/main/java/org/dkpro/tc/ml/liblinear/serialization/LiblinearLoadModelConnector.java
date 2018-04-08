@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.liblinear.LiblinearTestTask;
 import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 

@@ -26,7 +26,7 @@ import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
 
 public class SvmhmmLoadModelConnector

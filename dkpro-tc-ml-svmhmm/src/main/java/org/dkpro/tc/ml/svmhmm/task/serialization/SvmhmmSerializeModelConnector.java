@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmTrainer;
 
