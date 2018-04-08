@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.xgboost;
+package org.dkpro.tc.ml.xgboost.serialization;
 
 import java.io.File;
 import java.util.List;
@@ -24,6 +24,8 @@ import java.util.List;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatSerializeModelConnector;
+import org.dkpro.tc.ml.xgboost.XgboostAdapter;
+import org.dkpro.tc.ml.xgboost.XgboostTestTask;
 import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;
 
 public class XgboostSerializeModelConnector

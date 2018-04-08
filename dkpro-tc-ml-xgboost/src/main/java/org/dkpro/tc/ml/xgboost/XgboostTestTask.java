@@ -44,7 +44,7 @@ public class XgboostTestTask
     implements Constants
 {
 
-    static List<String> getClassificationParameters(TaskContext aContext,
+    public static List<String> getClassificationParameters(TaskContext aContext,
             List<Object> classificationArguments, String learningMode)
         throws IOException
     {

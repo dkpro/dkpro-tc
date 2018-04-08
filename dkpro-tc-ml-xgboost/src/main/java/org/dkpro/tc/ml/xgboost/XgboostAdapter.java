@@ -31,6 +31,8 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineMajorityClassIdReport;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
+import org.dkpro.tc.ml.xgboost.serialization.XgboostLoadModelConnector;
+import org.dkpro.tc.ml.xgboost.serialization.XgboostSerializeModelConnector;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
 
 /**

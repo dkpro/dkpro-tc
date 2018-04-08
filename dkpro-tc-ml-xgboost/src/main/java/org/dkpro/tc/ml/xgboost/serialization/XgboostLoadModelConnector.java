@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dkpro.tc.ml.xgboost;
+package org.dkpro.tc.ml.xgboost.serialization;
 
 import java.io.File;
 import java.util.List;
