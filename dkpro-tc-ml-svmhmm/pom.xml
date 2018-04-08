@@ -29,6 +29,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-ml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>org.dkpro.tc.ml.svmhmm-bin</artifactId>
 		</dependency>
 		<dependency>
