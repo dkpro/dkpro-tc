@@ -16,21 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.ml.weka.task.core;
+package org.dkpro.tc.ml.weka.core;
 
 import java.io.File;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class WekaTrainer
+public class WekaTrainer implements TcTrainer
 {
 
-    public File train(File data, File model, List<String> parameters) throws Exception
+    public void train(File data, File model, List<String> parameters) throws Exception
     {
 
         sanityCheckParameters(parameters);
@@ -45,9 +46,6 @@ public class WekaTrainer
         cl.buildClassifier(wekaData);
         
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
-
-        return model;
-        
     }
 
     private Instances toWeka(File data) throws Exception

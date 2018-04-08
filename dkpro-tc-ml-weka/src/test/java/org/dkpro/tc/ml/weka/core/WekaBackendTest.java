@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
-import org.dkpro.tc.ml.weka.task.core.WekaPredictor;
-import org.dkpro.tc.ml.weka.task.core.WekaTrainer;
+import org.dkpro.tc.ml.weka.core.WekaPredictor;
+import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -16,19 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.ml.weka.task.core;
+package org.dkpro.tc.ml.weka.core;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcPredictor;
 import org.dkpro.tc.ml.weka.util.WekaUtils;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class WekaPredictor
+public class WekaPredictor implements TcPredictor
 {
 
     public List<String> predict(File data, File model) throws Exception
