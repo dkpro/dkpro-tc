@@ -22,5 +22,18 @@ import java.util.List;
 
 public interface TcPredictor
 {
+    /**
+     * Instantiates a classifier using the provided file path to the model and returns the
+     * prediction on the provided dataset.
+     * 
+     * @param data
+     *          The data that shall be predicted
+     * @param model
+     *          The model that shall be loaded
+     * @return
+     *          the predictions of the data
+     * @throws Exception
+     *          In case of an error
+     */
     List<String> predict(File data, File model) throws Exception;
 }

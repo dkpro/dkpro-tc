@@ -35,6 +35,11 @@ public class MekaTrainer
 
     private boolean serializeModel;
 
+    /**
+     * Trains a Meka classifier
+     * @param serializeModel
+     *            if the model shall be serialized. Some weka models are not serializable.
+     */
     public MekaTrainer(boolean serializeModel)
     {
         this.serializeModel = serializeModel;

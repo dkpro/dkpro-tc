@@ -22,5 +22,17 @@ import java.util.List;
 
 public interface TcTrainer
 {
+    /**
+     * Trains a classifier
+     * 
+     * @param data
+     *          File to the training data in the classifier's data format
+     * @param model
+     *          Location to which the model is written
+     * @param parameters
+     *          The classifier-specific parametrisation
+     * @throws Exception
+     *          In case an error occurs
+     */
     void train(File data, File model, List<String> parameters) throws Exception;
 }
