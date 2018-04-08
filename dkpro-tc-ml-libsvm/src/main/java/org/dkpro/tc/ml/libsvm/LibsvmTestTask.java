@@ -38,7 +38,7 @@ public class LibsvmTestTask
     implements Constants
 {
 
-    private String[] buildParameters()
+    private List<String> buildParameters()
     {
         List<String> parameters = new ArrayList<>();
         if (classificationArguments != null) {
@@ -47,7 +47,7 @@ public class LibsvmTestTask
                 parameters.add(a);
             }
         }
-        return parameters.toArray(new String[0]);
+        return parameters;
     }
 
     private List<String> pickGold(List<String> readLines)

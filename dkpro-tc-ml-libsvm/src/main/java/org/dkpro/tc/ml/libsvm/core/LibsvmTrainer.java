@@ -25,7 +25,7 @@ import org.dkpro.tc.ml.libsvm.api._Training;
 
 public class LibsvmTrainer
 {
-    public File train(File data, File model, String... parameters) throws Exception
+    public File train(File data, File model, List<String> parameters) throws Exception
     {
         List<String> l = new ArrayList<>();
         for (String p : parameters) {
