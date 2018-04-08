@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.crfsuite;
+package org.dkpro.tc.ml.crfsuite.reports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +31,7 @@ import java.util.Properties;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 

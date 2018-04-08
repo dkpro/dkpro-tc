@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
-import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;

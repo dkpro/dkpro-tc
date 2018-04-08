@@ -16,28 +16,31 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.crfsuite;
+package org.dkpro.tc.ml.crfsuite.reports;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  */
-public class CrfSuiteBaselineMajorityClassIdReport
+public class CrfSuiteBaselineRandomIdReport
     extends CrfSuiteOutcomeIDReport
 {
-    private String majorityClass;
+    private Random random = new Random(42);
+    private List<String> pool = new ArrayList<>();
 
-    public CrfSuiteBaselineMajorityClassIdReport()
+    public CrfSuiteBaselineRandomIdReport()
     {
         // requried by groovy
     }
@@ -58,7 +61,7 @@ public class CrfSuiteBaselineMajorityClassIdReport
     @Override
     protected File getTargetFile()
     {
-        return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
+        return getContext().getFile(BASELINE_RANDOM_ID_OUTCOME_KEY, AccessMode.READWRITE);
     }
 
     @Override
@@ -67,19 +70,17 @@ public class CrfSuiteBaselineMajorityClassIdReport
         File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
         File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        determineMajorityClass(file);
+        buildPool(file);
     }
 
     @Override
     protected String getPrediction(Map<String, Integer> map, String s)
     {
-        return map.get(majorityClass).toString();
+        return "" + random.nextInt(pool.size() - 1);
     }
 
-    private void determineMajorityClass(File file) throws Exception
+    private void buildPool(File file) throws Exception
     {
-
-        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
         BufferedReader reader = null;
         try {
@@ -92,14 +93,15 @@ public class CrfSuiteBaselineMajorityClassIdReport
                 }
 
                 String[] split = line.split("\t");
-                fd.addSample(split[0], 1);
+                if (!pool.contains(split[0])) {
+                    pool.add(split[0]);
+                }
             }
 
         }
         finally {
             IOUtils.closeQuietly(reader);
         }
-
-        majorityClass = fd.getSampleWithMaxFreq();
+        Collections.sort(pool);
     }
 }

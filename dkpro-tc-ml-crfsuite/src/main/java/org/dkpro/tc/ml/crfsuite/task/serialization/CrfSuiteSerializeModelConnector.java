@@ -31,9 +31,9 @@ import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
+import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
-import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
 
 public class CrfSuiteSerializeModelConnector
     extends ModelSerializationTask
