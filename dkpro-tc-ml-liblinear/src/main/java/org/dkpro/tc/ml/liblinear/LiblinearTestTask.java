@@ -28,13 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
-import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -44,6 +44,9 @@ public class LiblinearTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
 {
+    
+    public static final double EPISILON_DEFAULT = 0.01;
+    public static final double PARAM_C_DEFAULT = 1.0;
 
     @Override
     protected Object trainModel(TaskContext aContext) throws Exception
@@ -51,9 +54,9 @@ public class LiblinearTestTask
 
         File fileTrain = getTrainFile(aContext);
 
-        SolverType solver = LiblinearUtils.getSolver(classificationArguments);
-        double C = LiblinearUtils.getParameterC(classificationArguments);
-        double eps = LiblinearUtils.getParameterEpsilon(classificationArguments);
+        SolverType solver = getSolver(classificationArguments);
+        double C = getParameterC(classificationArguments);
+        double eps = getParameterEpsilon(classificationArguments);
 
         File modelTarget = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
 
@@ -132,5 +135,138 @@ public class LiblinearTestTask
             IOUtils.closeQuietly(writer);
         }
     }
+    
+    public static SolverType getSolver(List<Object> classificationArguments)
+    {
+        if (classificationArguments == null) {
+            return SolverType.L2R_LR;
+        }
+
+        SolverType type = null;
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
+            if (e.equals("-s")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-s] but no solver type was specified");
+                }
+
+                String algo = (String) classificationArguments.get(i + 1);
+                switch (algo) {
+                case "0":
+                    type = SolverType.L2R_LR;
+                    break;
+                case "1":
+                    type = SolverType.L2R_L2LOSS_SVC_DUAL;
+                    break;
+                case "2":
+                    type = SolverType.L2R_L2LOSS_SVC;
+                    break;
+                case "3":
+                    type = SolverType.L2R_L1LOSS_SVC_DUAL;
+                    break;
+                case "4":
+                    type = SolverType.MCSVM_CS;
+                    break;
+                case "5":
+                    type = SolverType.L1R_L2LOSS_SVC;
+                    break;
+                case "6":
+                    type = SolverType.L1R_LR;
+                    break;
+                case "7":
+                    type = SolverType.L2R_LR_DUAL;
+                    break;
+                case "11":
+                    type = SolverType.L2R_L2LOSS_SVR;
+                    break;
+                case "12":
+                    type = SolverType.L2R_L2LOSS_SVR_DUAL;
+                    break;
+                case "13":
+                    type = SolverType.L2R_L1LOSS_SVR_DUAL;
+                    break;
+                default:
+                    throw new IllegalArgumentException("An unknown solver was specified [" + algo
+                            + "] which is unknown i.e. check parameter [-s] in your configuration");
+                }
+
+            }
+        }
+
+        if (type == null) {
+            // parameter -s was not specified in the parameters so we set a default value
+            type = SolverType.L2R_LR;
+        }
+
+        LogFactory.getLog(LiblinearTestTask.class).info("Will use solver " + type.toString() + ")");
+        return type;
+    }
+
+    public static double getParameterC(List<Object> classificationArguments)
+    {
+        if (classificationArguments == null) {
+            return PARAM_C_DEFAULT;
+        }
+
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
+            if (e.equals("-c")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-c] but no value was specified");
+                }
+
+                Double value;
+                try {
+                    value = Double.valueOf((String) classificationArguments.get(i + 1));
+                }
+                catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(
+                            "The value of parameter -c has to be a floating point value but was ["
+                                    + classificationArguments.get(i + 1) + "]",
+                            ex);
+                }
+                return value;
+            }
+        }
+
+        LogFactory.getLog(LiblinearTestTask.class)
+                .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
+        return PARAM_C_DEFAULT;
+    }
+
+    public static double getParameterEpsilon(List<Object> classificationArguments)
+    {
+        if (classificationArguments == null) {
+            return EPISILON_DEFAULT;
+        }
+
+        for (int i = 1; i < classificationArguments.size(); i++) {
+            String e = (String) classificationArguments.get(i);
+            if (e.equals("-e")) {
+                if (i + 1 >= classificationArguments.size()) {
+                    throw new IllegalArgumentException(
+                            "Found parameter [-e] but no value was specified");
+                }
+
+                Double value;
+                try {
+                    value = Double.valueOf((String) classificationArguments.get(i + 1));
+                }
+                catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(
+                            "The value of parameter -e has to be a floating point value but was ["
+                                    + classificationArguments.get(i + 1) + "]",
+                            ex);
+                }
+                return value;
+            }
+        }
+
+        LogFactory.getLog(LiblinearTestTask.class).info("Parameter epsilon is set to [0.01]");
+        return EPISILON_DEFAULT;
+    }
+
 
 }

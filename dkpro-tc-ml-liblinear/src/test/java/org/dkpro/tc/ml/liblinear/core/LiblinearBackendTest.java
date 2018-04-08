@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.liblinear;
+package org.dkpro.tc.ml.liblinear.core;
 
 import static org.junit.Assert.assertTrue;
 
