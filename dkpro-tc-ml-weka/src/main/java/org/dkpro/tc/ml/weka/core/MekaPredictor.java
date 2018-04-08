@@ -35,6 +35,12 @@ public class MekaPredictor
     extends _eka
     implements TcPredictor
 {
+    
+    private double threshold;
+
+    public MekaPredictor(double threshold) {
+        this.threshold = threshold;
+    }
 
     @Override
     public List<String> predict(File data, File model) throws Exception
@@ -64,7 +70,7 @@ public class MekaPredictor
             }
             List<String> outcomes = new ArrayList<String>();
             for (int i = 0; i < vals.length; i++) {
-                if (vals[i] >= Double.valueOf(0.5)) {
+                if (vals[i] >= threshold) {
                     String label = data.instance(j).attribute(i).name();
                     outcomes.add(label);
                 }

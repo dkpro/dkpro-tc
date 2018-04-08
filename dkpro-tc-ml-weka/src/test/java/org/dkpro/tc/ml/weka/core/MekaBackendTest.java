@@ -66,7 +66,7 @@ public class MekaBackendTest
         
         trainer.train(data, model, parameters);
         
-        TcPredictor predictor = new MekaPredictor();
+        TcPredictor predictor = new MekaPredictor(0.5);
         List<String> predict = predictor.predict(data, model);
         assertEquals(26, predict.size());
 
