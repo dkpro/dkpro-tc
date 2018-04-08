@@ -41,17 +41,6 @@ public class CrfSuiteTrainer
         executeTrainingCommand(trainCommand);
     }
 
-    // public void train(String algoName, List<String> parameters, File aData,
-    // File aModel)
-    // throws Exception
-    // {
-    // CrfSuiteAlgo algo = getAlgorithm(algoName);
-    //
-    // List<String> trainCommand = getTrainCommand(algo.toString(), parameters, getExecutable(),
-    // aData, aModel);
-    // executeTrainingCommand(trainCommand);
-    // }
-
     public static List<String> getTrainCommand(String algorithm, List<String> algoParameter,
             File crfBinary, File trainingData, File model)
         throws Exception
