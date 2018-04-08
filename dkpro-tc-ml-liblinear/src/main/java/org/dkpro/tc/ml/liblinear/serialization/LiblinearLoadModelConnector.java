@@ -57,8 +57,8 @@ public class LiblinearLoadModelConnector
         tmp.deleteOnExit();
         
         LiblinearPredictor predicter = new LiblinearPredictor();
-        List<Double[]> predict = predicter.predict(infile, liblinearModel);
-        LiblinearTestTask.writePredictions(tmp, predict, false, false);
+        List<String> predict = predicter.predict(infile, liblinearModel);
+        LiblinearTestTask.writePredictions(tmp, predict, false);
         
         return tmp;
     }

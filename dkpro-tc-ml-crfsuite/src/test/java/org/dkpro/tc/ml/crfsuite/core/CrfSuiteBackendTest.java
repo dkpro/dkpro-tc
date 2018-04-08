@@ -53,14 +53,13 @@ public class CrfSuiteBackendTest
         trainModel();
 
         CrfSuitePredictor predict = new CrfSuitePredictor();
-        String predictions = predict.predict(data, modelOut);
+        List<String> predictions = predict.predict(data, modelOut);
 
         assertTrue(predictions != null && !predictions.isEmpty());
 
-        String[] split = predictions.split("\n");
-        assertEquals(167, split.length);
+        assertEquals(167, predictions.size());
 
-        for (String s : split) {
+        for (String s : predictions) {
             if(s.isEmpty()) {
                 continue;
             }

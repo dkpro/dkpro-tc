@@ -21,11 +21,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.dkpro.tc.ml.libsvm.api._Training;
 
-public class LibsvmTrainer
+public class LibsvmTrainer implements TcTrainer
 {
-    public File train(File data, File model, List<String> parameters) throws Exception
+    @Override
+    public void train(File data, File model, List<String> parameters) throws Exception
     {
         List<String> l = new ArrayList<>();
         for (String p : parameters) {
@@ -36,11 +38,9 @@ public class LibsvmTrainer
 
         _Training ltm = new _Training();
         ltm.run(l.toArray(new String[0]));
-
-        return model;
     }
 
-    public File train(File data, File model, SvmType type, KernelType kernel,
+    public void train(File data, File model, SvmType type, KernelType kernel,
             String... miscParameters)
         throws Exception
     {
@@ -59,7 +59,5 @@ public class LibsvmTrainer
 
         _Training ltm = new _Training();
         ltm.run(l.toArray(new String[0]));
-
-        return model;
     }
 }

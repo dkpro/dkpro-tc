@@ -29,7 +29,7 @@ import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.bwaldvogel.liblinear.Model;
+import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearBackendTest
@@ -50,18 +50,18 @@ public class LiblinearBackendTest
 
         LiblinearTrainer trainer = new LiblinearTrainer();
         long modelBefore = model.length();
-        Model liblinearModel = trainer.train(SolverType.L2R_L2LOSS_SVC, 100.0, 0.01, data, model);
+        trainer.train(SolverType.L2R_L2LOSS_SVC, 100.0, 0.01, data, model);
         long modelAfter = model.length();
         assertTrue(modelBefore < modelAfter);
 
         LiblinearPredictor predicter = new LiblinearPredictor();
-        List<Double[]> predict = predicter.predict(data, liblinearModel);
+        List<String> predict = predicter.predict(data, Linear.loadModel(model));
 
         // make sure that predicted and gold value is within the range of values found in the data
         // file
-        for (Double[] v : predict) {
-            assertTrue(v[0] >= 0 && v[0] < 32);
-            assertTrue(v[1] >= 0 && v[1] < 32);
+        for (String v : predict) {
+            Double d = Double.parseDouble(v);
+            assertTrue(d >= 0 && d < 32);
         }
 
     }

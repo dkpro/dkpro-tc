@@ -85,7 +85,7 @@ public class LibsvmTestTask
         File fileTest = getTestFile(aContext);
         
         LibsvmPredictor predicter = new LibsvmPredictor();
-        List<String> predictions = predicter.prediction(fileTest, theModel);
+        List<String> predictions = predicter.predict(fileTest, theModel);
         mergePredictionWithGold(aContext, predictions);
         
     }

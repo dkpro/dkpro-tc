@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcTrainer;
+
 import de.bwaldvogel.liblinear.InvalidInputDataException;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -29,16 +31,17 @@ import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
 
 public class LiblinearTrainer
+    implements TcTrainer
 {
-
-    public Model train(File data, File model, List<String> parameters)
+    @Override
+    public void train(File data, File model, List<String> parameters)
         throws IOException, InvalidInputDataException
     {
         SolverType s = getSolverFromParameters(parameters);
         double c = getCvalue(parameters);
         double eps = getEps(s, parameters);
 
-        return train(s, c, eps, data, model);
+        train(s, c, eps, data, model);
     }
 
     private double getEps(SolverType s, List<String> parameters)
@@ -83,7 +86,7 @@ public class LiblinearTrainer
         return SolverType.getById(1);
     }
 
-    public Model train(SolverType solver, double c, double eps, File data, File model)
+    public void train(SolverType solver, double c, double eps, File data, File model)
         throws IOException, InvalidInputDataException
     {
         Problem train = Problem.readFromFile(data, 1.0);
@@ -91,7 +94,6 @@ public class LiblinearTrainer
         Parameter parameter = new Parameter(solver, c, eps);
         Model trainedModel = Linear.train(train, parameter);
         trainedModel.save(model);
-        return trainedModel;
     }
 
 }

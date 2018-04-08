@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -32,6 +36,7 @@ import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
 import org.dkpro.tc.ml.liblinear.util.LiblinearUtils;
 
+import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.SolverType;
 
@@ -53,8 +58,9 @@ public class LiblinearTestTask
         File modelTarget = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READWRITE);
 
         LiblinearTrainer trainer = new LiblinearTrainer();
-        Model model = trainer.train(solver, C, eps, fileTrain, modelTarget);
-        return model;
+        trainer.train(solver, C, eps, fileTrain, modelTarget);
+
+        return Linear.loadModel(modelTarget);
     }
 
     @Override
@@ -66,17 +72,45 @@ public class LiblinearTestTask
         File fileTest = getTestFile(aContext);
 
         LiblinearPredictor predicter = new LiblinearPredictor();
-        List<Double[]> predWithGold = predicter.predict(fileTest, model);
+        List<String> predictions = predicter.predict(fileTest, model);
 
         File predFolder = aContext.getFolder("", AccessMode.READWRITE);
         File predictionsFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
 
-        writePredictions(predictionsFile, predWithGold, true, true);
+        List<String> predWithGold = mergeWithGold(predictions, fileTest);
+        writePredictions(predictionsFile, predWithGold, true);
 
     }
 
-    public static void writePredictions(File predictionsFile, List<Double[]> predictions,
-            boolean writeHeader, boolean writeGold)
+    private List<String> mergeWithGold(List<String> predictions, File fileTest) throws Exception
+    {
+        List<String> gold = new ArrayList<>();
+
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+
+            String l = null;
+            while ((l = reader.readLine()) != null) {
+                gold.add(l.split("\t")[0]);
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        List<String> merge = new ArrayList<>();
+        for (int i = 0; i < predictions.size(); i++) {
+            merge.add(predictions.get(i) + ";" + gold.get(i));
+        }
+
+        return merge;
+    }
+
+    public static void writePredictions(File predictionsFile, List<String> data,
+            boolean writeHeader)
         throws Exception
     {
         BufferedWriter writer = null;
@@ -88,13 +122,8 @@ public class LiblinearTestTask
                 writer.append("#PREDICTION;GOLD" + "\n");
             }
 
-            for (Double[] p : predictions) {
-                writer.write(p[0].toString());
-                if (writeGold) {
-                    writer.write(";");
-                    writer.write(p[1].toString());
-                }
-
+            for (String s : data) {
+                writer.write(s);
                 writer.write("\n");
             }
 

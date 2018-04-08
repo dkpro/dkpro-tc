@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -62,17 +61,10 @@ public class CrfSuiteTestTask
         }
 
         File model = trainModel(aContext);
-        String rawTextOutput = testModel(aContext, model);
+        List<String> predictionValues = testModel(aContext, model);
 
-        writePredictions2File(aContext, rawTextOutput);
-
-    }
-
-    private void writePredictions2File(TaskContext aContext, String aRawTextOutput) throws Exception
-    {
-        List<String> predictionValues = new ArrayList<String>(
-                Arrays.asList(aRawTextOutput.split("\n")));
         writeFileWithPredictedLabels(aContext, predictionValues);
+
     }
 
     private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
@@ -160,14 +152,14 @@ public class CrfSuiteTestTask
         return s;
     }
 
-    private String testModel(TaskContext aContext, File model) throws Exception
+    private List<String> testModel(TaskContext aContext, File model) throws Exception
     {
         File executable = CrfSuite.getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 
         CrfSuitePredictor crfPredict = new CrfSuitePredictor();
-        String prediction = crfPredict.predict(testFile, model);
+        List<String> prediction = crfPredict.predict(testFile, model);
 
         deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
 

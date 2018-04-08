@@ -23,14 +23,16 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
 
-public class XgboostPredictor extends Xgboost
+public class XgboostPredictor extends Xgboost implements TcPredictor
 {
     public XgboostPredictor()
     {
         //Groovy
     }
 
+    @Override
     public List<String> predict(File data, File model) throws Exception
     {
         File tmpPredictionOut = FileUtil.createTempFile("xgboostPredictionOut", ".txt");

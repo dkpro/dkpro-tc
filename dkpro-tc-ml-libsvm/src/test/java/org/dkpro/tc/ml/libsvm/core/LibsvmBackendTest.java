@@ -52,12 +52,12 @@ public class LibsvmBackendTest
         LibsvmTrainer trainer = new LibsvmTrainer();
         
         long modelSizeBefore = model.length();
-        File train = trainer.train(data, model, SvmType.C_SVM, KernelType.RadialBasis);
+        trainer.train(data, model, SvmType.C_SVM, KernelType.RadialBasis);
         long modelSizeAfter = model.length();
         assertTrue(modelSizeBefore < modelSizeAfter);
         
         LibsvmPredictor prediction = new LibsvmPredictor();
-        List<String> predictions = prediction.prediction(data, train);
+        List<String> predictions = prediction.predict(data, model);
 
         assertEquals(163, predictions.size());
 

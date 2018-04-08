@@ -22,44 +22,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.tc.ml.base.TcTrainer;
 
-public class XgboostTrainer extends Xgboost
+public class XgboostTrainer
+    extends Xgboost
+    implements TcTrainer
 {
     public XgboostTrainer()
     {
-        //Groovy
+        // Groovy
     }
 
     /**
      * Trains a model with Xgboost
      * 
      * @param data
-     *          The training data file
+     *            The training data file
      * @param model
-     *         File descriptor for the location at which the model shall be stored
+     *            File descriptor for the location at which the model shall be stored
      * @param parameters
-     *          The parametrization
-     * @return
-     *         file path to the trained model
+     *            The parametrization
      * @throws Exception
-     *      In case of an error
+     *             In case of an error
      */
-    public File train(File data,
-            File model, List<String> parameters)
-        throws Exception
+    @Override
+    public void train(File data, File model, List<String> parameters) throws Exception
     {
         File trainConfiguration = writeTrainConfigurationFile(parameters, data, model);
-        
+
         List<String> command = new ArrayList<>();
         command.add(flipBackslash(getExecutable().getAbsolutePath()));
         command.add(flipBackslash(trainConfiguration.getAbsolutePath()));
 
         runCommand(command);
-
-        return model;
     }
-    
-    public File writeTrainConfigurationFile(List<String> parameters, File data, File model) throws Exception
+
+    public File writeTrainConfigurationFile(List<String> parameters, File data, File model)
+        throws Exception
     {
         StringBuilder sb = new StringBuilder();
         sb.append("task=train" + "\n");
@@ -69,7 +68,7 @@ public class XgboostTrainer extends Xgboost
         for (String p : parameters) {
             sb.append(p + "\n");
         }
-        
+
         File config = new File(getExecutable().getParentFile(), "train.conf");
         config.deleteOnExit();
         FileUtils.writeStringToFile(config, sb.toString(), "utf-8");

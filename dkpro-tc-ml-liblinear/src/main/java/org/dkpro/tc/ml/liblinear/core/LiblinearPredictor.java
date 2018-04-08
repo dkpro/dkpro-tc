@@ -21,30 +21,32 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcPredictor;
+
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LiblinearPredictor
+public class LiblinearPredictor implements TcPredictor
 {
-
-    public List<Double[]> predict(File data, Model model) throws Exception
+    public List<String> predict(File data, Model model) throws Exception
     {
-        List<Double[]> predWithGold = new ArrayList<>();
+        List<String> predictions = new ArrayList<>();
 
         Problem test = Problem.readFromFile(data, 1.0);
         Feature[][] testInstances = test.x;
         for (int i = 0; i < testInstances.length; i++) {
             Feature[] instance = testInstances[i];
             Double prediction = Linear.predict(model, instance);
-            predWithGold.add(new Double[] { prediction, test.y[i] });
+            predictions.add(prediction.toString());
         }
 
-        return predWithGold;
+        return predictions;
     }
 
-    public List<Double[]> predict(File data, File model) throws Exception
+    @Override
+    public List<String> predict(File data, File model) throws Exception
     {
         Model loadModel = Linear.loadModel(model);
         return predict(data, loadModel);

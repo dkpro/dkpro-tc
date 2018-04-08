@@ -21,15 +21,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dkpro.tc.ml.base.TcTrainer;
+
 public class CrfSuiteTrainer
-    extends CrfSuite
+    extends CrfSuite implements TcTrainer
 {
 
     public CrfSuiteTrainer()
     {
         //
     }
-
+    
+    @Override
     public void train(File aData, File aModel, List<String> parameters) throws Exception
     {
         sanityCheckParameters(parameters);

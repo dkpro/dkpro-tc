@@ -23,13 +23,15 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.dkpro.tc.ml.base.TcPredictor;
 
 public class CrfSuitePredictor
-    extends CrfSuite
+    extends CrfSuite implements TcPredictor
 {
 
     public CrfSuitePredictor()
@@ -48,11 +50,15 @@ public class CrfSuitePredictor
      * @throws Exception
      *             In case of errors
      */
-    public String predict(File data, File model) throws Exception
+    @Override
+    public List<String> predict(File data, File model) throws Exception
     {
         List<String> testingCommand = getTestCommand(data, model);
         String predictions = executePrediction(testingCommand);
-        return predictions;
+        
+        List<String> asList = Arrays.asList(predictions.split("\n"));
+        
+        return asList;
     }
 
     /**

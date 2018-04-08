@@ -28,15 +28,16 @@ import java.util.List;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
 import org.dkpro.tc.ml.libsvm.api._Prediction;
 
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmPredictor
+public class LibsvmPredictor implements TcPredictor
 {
-
-    public List<String> prediction(File fileTest, File theModel) throws Exception
+    @Override
+    public List<String> predict(File data, File model) throws Exception
     {
         File predTmp = FileUtil.createTempFile("libsvmPrediction", ".txt");
         predTmp.deleteOnExit();
@@ -45,10 +46,10 @@ public class LibsvmPredictor
         BufferedReader input = null;
         try {
             input = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+                    new InputStreamReader(new FileInputStream(data), "utf-8"));
             output = new DataOutputStream(new FileOutputStream(predTmp));
             
-            svm_model svmModel = svm.svm_load_model(theModel.getAbsolutePath());
+            svm_model svmModel = svm.svm_load_model(model.getAbsolutePath());
 
             _Prediction predictor = new _Prediction();
             predictor.predict(input, output, svmModel, 0);
@@ -62,4 +63,5 @@ public class LibsvmPredictor
         
         return predictions;
     }
+
 }
