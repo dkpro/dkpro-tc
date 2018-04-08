@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
@@ -51,17 +52,24 @@ public class SvmHmmBackendTest
     public void testSvmHmmException() throws Exception
     {
         SvmHmmTrainer trainer = new SvmHmmTrainer();
-        trainer.train(data, model, "-x", "30");
+        List<String> parameters = new ArrayList<>();
+        parameters.add("-x");
+        parameters.add("30");
+        trainer.train(data, model, parameters);
 
     }
 
     @Test
     public void testSvmHmm() throws Exception
     {
+        List<String> parameters = new ArrayList<>();
+        parameters.add("-c");
+        parameters.add("1000");
+        
         SvmHmmTrainer trainer = new SvmHmmTrainer();
 
         long before = model.length();
-        File trainModel = trainer.train(data, model, "-c", "1000");
+        File trainModel = trainer.train(data, model, parameters);
         long after = model.length();
 
         assertTrue(before < after);

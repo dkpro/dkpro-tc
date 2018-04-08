@@ -106,14 +106,14 @@ public class SvmHmmTestTask
         return modelFile;
     }
 
-    private String[] getParameters()
+    private List<String> getParameters()
     {
         List<String> stringArgs = new ArrayList<>();
         for (int i = 1; i < classificationArguments.size(); i++) {
             stringArgs.add((String) classificationArguments.get(i));
         }
 
-        return stringArgs.toArray(new String[0]);
+        return stringArgs;
     }
 
     @Override

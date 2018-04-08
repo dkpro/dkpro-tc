@@ -58,7 +58,7 @@ public class SvmhmmSerializeModelConnector
                 "model.tmp");
 
         SvmHmmTrainer trainer = new SvmHmmTrainer();
-        trainer.train(newTrainFileLocation, tmpModelLocation, stringArgs.toArray(new String[0]));
+        trainer.train(newTrainFileLocation, tmpModelLocation, stringArgs);
 
         FileUtils.copyFile(tmpModelLocation, model);
 

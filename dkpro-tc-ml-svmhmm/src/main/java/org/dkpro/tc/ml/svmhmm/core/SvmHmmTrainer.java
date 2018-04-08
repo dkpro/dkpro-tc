@@ -55,7 +55,9 @@ public class SvmHmmTrainer
 {
     private static RuntimeProvider runtimeProvider;
 
-    public File train(File data, File model, String... parameters) throws Exception
+    private static final String[] switches = new String[] { "-c", "--e", "--t", "-e", "-b", "-m" };
+
+    public File train(File data, File model, List<String> parameters) throws Exception
     {
         List<String> command = buildTrainCommand(data, model, parameters);
         runCommand(command);
@@ -73,11 +75,11 @@ public class SvmHmmTrainer
     }
 
     public static List<String> buildTrainCommand(File trainingFile, File targetModelLocation,
-            String[] parameters)
+            List<String> parameters)
         throws Exception
     {
 
-        if (parameters.length % 2 != 0) {
+        if (parameters.size() % 2 != 0) {
             throw new IllegalStateException(
                     "Parameter number must be even provided as two separate values, e.g \"-c\", \"5.0\" ");
         }
@@ -87,22 +89,9 @@ public class SvmHmmTrainer
         List<String> result = new ArrayList<>();
         result.add(getTrainExecutable().getAbsolutePath());
 
-        for (String s : new String[] { "-c", "--e", "--t", "-e", "-b", "-m" }) {
+        for (String s : switches) {
             result.addAll(processForSwitch(s, parameters));
         }
-
-        // // svm struct params
-        // result.add("-c");
-        // result.add();
-        // result.add(String.format(Locale.ENGLISH, "%f", paramC));
-        // result.add("--e");
-        // result.add(Integer.toString(paramOrderE));
-        // result.add("--t");
-        // result.add(Integer.toString(paramOrderT));
-        // result.add("-e");
-        // result.add(String.format(Locale.ENGLISH, "%f", paramEpsilon));
-        // result.add("--b");
-        // result.add(Integer.toString(paramB));
 
         // training file
         result.add(trainingFile.getAbsolutePath());
@@ -113,26 +102,26 @@ public class SvmHmmTrainer
         return result;
     }
 
-    private static void areSwitchsKnwon(String[] parameters)
+    private static void areSwitchsKnwon(List<String> parameters)
     {
 
-        List<String> asList = Arrays.asList(new String[] { "-c", "--e", "--t", "-e", "-b", "-m" });
-        for (int i = 0; i < parameters.length; i += 2) {
-            if (!asList.contains(parameters[i])) {
-                throw new IllegalArgumentException("Unknonw switch [" + parameters[i] + "]");
+        List<String> asList = Arrays.asList(switches);
+        for (int i = 0; i < parameters.size(); i += 2) {
+            if (!asList.contains(parameters.get(i))) {
+                throw new IllegalArgumentException("Unknonw switch [" + parameters.get(i) + "]");
             }
         }
 
     }
 
-    private static Collection<? extends String> processForSwitch(String s, String[] parameters)
+    private static Collection<? extends String> processForSwitch(String s, List<String> parameters)
     {
         List<String> out = new ArrayList<>();
 
-        for (int i = 0; i < parameters.length; i += 2) {
-            if (parameters[i].equals(s)) {
+        for (int i = 0; i < parameters.size(); i += 2) {
+            if (parameters.get(i).equals(s)) {
                 out.add(s);
-                out.add(parameters[i + 1]);
+                out.add(parameters.get(i+1));
                 return out;
             }
         }
