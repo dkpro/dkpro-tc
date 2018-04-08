@@ -16,9 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.weka.unit;
+package org.dkpro.tc.examples.shallow.multi;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.util.List;
 
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
@@ -33,10 +36,10 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaBrownUnitPosDemoTest
+public class MultiUnit
     extends TestCaseSuperClass
 {
-    WekaBrownUnitPosDemo javaExperiment;
+    UniDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -44,8 +47,8 @@ public class WekaBrownUnitPosDemoTest
     {
         super.setup();
 
-        javaExperiment = new WekaBrownUnitPosDemo();
-        pSpace = WekaBrownUnitPosDemo.getParameterSpace();
+        javaExperiment = new UniDemo();
+        pSpace = UniDemo.getParameterSpace();
     }
 
     @Test
@@ -53,10 +56,25 @@ public class WekaBrownUnitPosDemoTest
     {
         javaExperiment.runTrainTest(pSpace);
 
-        EvaluationData<String> data = Tc2LtlabEvalConverter
-                .convertSingleLabelModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0));
-        Accuracy<String> acc = new Accuracy<String>(data);
+        assertEquals(0.74, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.37, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(0.75, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
+        assertEquals(0.79, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.1);
+    }
+    
+    private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
+    {
 
-        assertEquals(0.744, acc.getResult(), 0.0001);
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
+
+                EvaluationData<String> data = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                Accuracy<String> acc = new Accuracy<>(data);
+                return acc.getResult();
+            }
+        }
+
+        return -1;
     }
 }

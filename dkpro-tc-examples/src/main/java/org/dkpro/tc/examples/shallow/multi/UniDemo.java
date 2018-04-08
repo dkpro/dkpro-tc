@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.xgboost.unit;
+package org.dkpro.tc.examples.shallow.multi;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
@@ -26,6 +25,7 @@ import java.util.Map;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -35,23 +35,26 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.anno.UnitOutcomeAnnotator;
+import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.report.BatchRuntimeReport;
+import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
-import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * This is an example for POS tagging as unit classification. Each POS is treated as a
  * classification unit, but unlike sequence tagging the decision for each POS is taken
  * independently. This will usually give worse results, so this is only to showcase the concept.
- * 
  */
-public class XgboostUnit
+public class UniDemo
     implements Constants
 {
 
@@ -66,20 +69,21 @@ public class XgboostUnit
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(XgboostUnit.class.getSimpleName());
+        DemoUtils.setDkproHome(UniDemo.class.getSimpleName());
 
-        new XgboostUnit().runTrainTest(getParameterSpace());
+        new UniDemo().runTrainTest(getParameterSpace());
     }
 
     // ##### Train Test #####
     public void runTrainTest(ParameterSpace pSpace) throws Exception
     {
 
-        ExperimentTrainTest experiment = new ExperimentTrainTest("LibsvmTrainTestBrownPosDemo");
+        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(BatchRuntimeReport.class);
 
         // Run
         Lab.getInstance().run(experiment);
@@ -91,32 +95,49 @@ public class XgboostUnit
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
-                new String[] { INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz" });
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS, "*.xml");
+
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
-                new String[] { "*.xml", "*.xml.gz" });
+                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
+                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                BrownCorpusReader.PARAM_PATTERNS, "*.xml");
+
         dimReaders.put(DIM_READER_TEST, readerTest);
+
+        Map<String, Object> weka = new HashMap<>();
+        weka.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
+        weka.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        weka.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Map<String, Object> libsvm = new HashMap<>();
+        libsvm.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter() });
+        libsvm.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        libsvm.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+
+        Map<String, Object> liblinear = new HashMap<>();
+        liblinear.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
+        liblinear.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        liblinear.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+
+        Map<String, Object> xgboost = new HashMap<>();
+        xgboost.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
+        xgboost.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboost.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", weka, libsvm,
+                liblinear, xgboost);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class,
-                                CharacterNGram.PARAM_NGRAM_LOWER_CASE, false,
                                 CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
 
-        Map<String, Object> xgboostConfig = new HashMap<>();
-        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
-        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
-        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
-
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(DIM_READERS, dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
 
@@ -125,6 +146,6 @@ public class XgboostUnit
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
-        return createEngineDescription(UnitOutcomeAnnotator.class);
+        return createEngineDescription(NoOpAnnotator.class);
     }
 }

@@ -46,6 +46,7 @@ import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
+import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
@@ -109,9 +110,15 @@ public class MultiSvmUsingWekaLibsvmLiblinear
                 new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" });
         config3.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
         config3.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+        
+        Map<String, Object> config4 = new HashMap<>();
+        config4.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
+        config4.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        config4.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config, config2,
-                config3);
+                config3, config4);
 
         Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
         Dimension<String> dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
@@ -154,7 +161,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear
         ExperimentTrainTest experiment = new ExperimentTrainTest("SvmDemo");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.setExecutionPolicy(ExecutionPolicy.USE_EXISTING);
         experiment.addReport(BatchTrainTestReport.class);
         experiment.addReport(new ContextMemoryReport());
 

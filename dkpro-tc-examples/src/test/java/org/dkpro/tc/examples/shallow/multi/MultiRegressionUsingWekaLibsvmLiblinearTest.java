@@ -72,6 +72,40 @@ public class MultiRegressionUsingWekaLibsvmLiblinearTest
         assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
         assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
                 0.2);
+        
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
+    }
+    
+    private void verifyId2Outcome(File id2outcomeFile) throws IOException
+    {
+        List<String> lines = FileUtils.readLines(id2outcomeFile, "utf-8");
+        
+        assertEquals(53, lines.size());
+
+        // line-wise compare
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals("#labels", lines.get(1).trim());
+        assertTrue(lines.get(3).matches("0=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(4).matches("1=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(5).matches("10=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(6).matches("11=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(7).matches("12=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(8).matches("13=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(9).matches("14=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(10).matches("15=[0-9\\.]+;[0-9\\.]+;.*"));        
+    }
+
+    private File getId2outcomeFile(List<File> id2outcomeFiles, String k)
+    {
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().toLowerCase().contains(k.toLowerCase())) {
+                return f;
+            }
+        }
+        return null;
     }
 
     @Test

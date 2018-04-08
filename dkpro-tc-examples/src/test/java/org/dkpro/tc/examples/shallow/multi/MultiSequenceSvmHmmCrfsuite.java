@@ -16,14 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.liblinear.document;
+package org.dkpro.tc.examples.shallow.multi;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
@@ -37,10 +36,10 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class LiblinearDocumentPlainTest
+public class MultiSequenceSvmHmmCrfsuite
     extends TestCaseSuperClass
 {
-    LiblinearDocumentPlain javaExperiment;
+    SequenceDemo javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -48,37 +47,19 @@ public class LiblinearDocumentPlainTest
     {
         super.setup();
 
-        javaExperiment = new LiblinearDocumentPlain();
-        pSpace = LiblinearDocumentPlain.getParameterSpace();
+        javaExperiment = new SequenceDemo();
+        pSpace = SequenceDemo.getParameterSpace();
     }
 
     @Test
-    public void testJavaTrainTest() throws Exception
+    public void testTrainTestWithResults() throws Exception
     {
         javaExperiment.runTrainTest(pSpace);
-        assertEquals(0.75, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.01);
 
-        assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
-
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
-                "utf-8");
-        assertEquals(11, lines.size());
-
-        // line-wise compare
-        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-        assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
-        // line 2 is a time-stamp
-        assertEquals("alt.atheism/53068.txt=1;0;-1", lines.get(3));
-        assertEquals("alt.atheism/53257.txt=0;0;-1", lines.get(4));
-        assertEquals("alt.atheism/53260.txt=0;0;-1", lines.get(5));
-        assertEquals("alt.atheism/53261.txt=0;0;-1", lines.get(6));
-        assertEquals("comp.graphics/38758.txt=0;1;-1", lines.get(7));
-        assertEquals("comp.graphics/38761.txt=1;1;-1", lines.get(8));
-        assertEquals("comp.graphics/38762.txt=1;1;-1", lines.get(9));
-        assertEquals("comp.graphics/38763.txt=1;1;-1", lines.get(10));
-
+        assertEquals(0.95833, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Crfsuite"), 0.1);
+        assertEquals(0.8333, getAccuracy(ContextMemoryReport.id2outcomeFiles, "SvmHmm"), 0.1);
     }
-
+    
     private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
     {
 
@@ -94,5 +75,4 @@ public class LiblinearDocumentPlainTest
 
         return -1;
     }
-
 }

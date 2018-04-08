@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.crfsuite.sequence;
+package org.dkpro.tc.examples.shallow.multi;
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -47,11 +47,12 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 
 /**
  * Example for NER as sequence classification.
  */
-public class CRFSuiteNERSequenceDemo
+public class SequenceDemo
     implements Constants
 {
 
@@ -73,9 +74,9 @@ public class CRFSuiteNERSequenceDemo
         // instructions first :)
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
         // explained there.
-        DemoUtils.setDkproHome(CRFSuiteNERSequenceDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(SequenceDemo.class.getSimpleName());
 
-        CRFSuiteNERSequenceDemo demo = new CRFSuiteNERSequenceDemo();
+        SequenceDemo demo = new SequenceDemo();
         // demo.runCrossValidation(getParameterSpace());
         demo.runTrainTest(getParameterSpace());
     }
@@ -83,15 +84,15 @@ public class CRFSuiteNERSequenceDemo
     // ##### CV #####
     protected void runCrossValidation(ParameterSpace pSpace) throws Exception
     {
-        ExperimentCrossValidation batch = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
                 NUM_FOLDS);
-        batch.setPreprocessing(getPreprocessing());
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        experiment.addReport(BatchCrossValidationReport.class);
 
         // Run
-        Lab.getInstance().run(batch);
+        Lab.getInstance().run(experiment);
     }
 
     // ##### Train Test #####
@@ -132,12 +133,20 @@ public class CRFSuiteNERSequenceDemo
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
+        Map<String, Object> crfsuite = new HashMap<>();
+        crfsuite.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
                 CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5" });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
-        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+        crfsuite.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        crfsuite.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        
+        
+        Map<String, Object> svmHmm = new HashMap<>();
+        svmHmm.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter(),
+                "-c", "1000" });
+        svmHmm.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        svmHmm.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+        
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", crfsuite, svmHmm);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),

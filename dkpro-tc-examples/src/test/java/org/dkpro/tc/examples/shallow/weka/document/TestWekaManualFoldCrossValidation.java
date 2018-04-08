@@ -39,7 +39,7 @@ public class TestWekaManualFoldCrossValidation
 
     /*
      * We request more folds than we have files (2) without 'manualModel' thus the CAS should be
-     * split up and create sufficient many CAS to be distributed into the fold
+     * split up and create sufficient many CAS to be distributed into the folds
      */
     @Test
     public void testManualFoldCrossValdiation() throws Exception
