@@ -127,7 +127,7 @@ public class WekaTestTask
             // we don't need to build the classifier - meka does this
             // internally
 
-            MekaTrainer trainer = new MekaTrainer();
+            MekaTrainer trainer = new MekaTrainer(false);
             Classifier cl = trainer.train(trainData, model, getParameters(classificationArguments));
 
             Result r = getEvaluationMultilabel(cl, trainData, testData, threshold);

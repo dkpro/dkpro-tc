@@ -28,30 +28,39 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class MekaTrainer extends _eka
+public class MekaTrainer
+    extends _eka
     implements TcTrainer
 {
+
+    private boolean serializeModel;
+
+    public MekaTrainer(boolean serializeModel)
+    {
+        this.serializeModel = serializeModel;
+    }
 
     @Override
     public void train(File data, File model, List<String> parameters) throws Exception
     {
         train(toWekaInstances(data, true), model, parameters);
     }
-    
+
     public Classifier train(Instances data, File model, List<String> parameters) throws Exception
     {
         List<String> mlArgs = parameters.subList(1, parameters.size());
-        MultiLabelClassifier cl = (MultiLabelClassifier) AbstractClassifier.forName((String) parameters.get(0),
-                new String[] {});
+        MultiLabelClassifier cl = (MultiLabelClassifier) AbstractClassifier
+                .forName((String) parameters.get(0), new String[] {});
         if (!mlArgs.isEmpty()) {
             cl.setOptions(mlArgs.toArray(new String[0]));
         }
         cl.buildClassifier(data);
-        
-        weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
-        
+
+        if (serializeModel) {
+            weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
+        }
+
         return cl;
     }
- 
 
 }

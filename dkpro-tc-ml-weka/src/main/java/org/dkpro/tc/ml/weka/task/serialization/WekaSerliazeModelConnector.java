@@ -182,7 +182,7 @@ public class WekaSerliazeModelConnector
     private Classifier getClassifier(Instances trainData, File model, String learningMode, List<Object> args) throws Exception
     {
         if(learningMode.equals(LM_MULTI_LABEL)) {
-            MekaTrainer trainer = new MekaTrainer();
+            MekaTrainer trainer = new MekaTrainer(true);
             return trainer.train(trainData, model, toString(args.subList(1, args.size())));
         }else {
             WekaTrainer trainer = new WekaTrainer();

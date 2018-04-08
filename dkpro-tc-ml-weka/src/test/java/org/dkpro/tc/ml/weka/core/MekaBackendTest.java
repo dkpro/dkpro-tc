@@ -55,7 +55,7 @@ public class MekaBackendTest
     @Test
     public void testMeka() throws Exception
     {
-        TcTrainer trainer = new MekaTrainer();
+        TcTrainer trainer = new MekaTrainer(true);
         
         List<String> parameters = new ArrayList<>();
         parameters.add(PSUpdateable.class.getName());
