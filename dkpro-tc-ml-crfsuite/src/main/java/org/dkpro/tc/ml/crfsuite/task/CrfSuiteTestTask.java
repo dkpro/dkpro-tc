@@ -51,9 +51,6 @@ public class CrfSuiteTestTask
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
     private List<Object> classificationArguments;
 
-    private String algoName;
-    private List<String> algoParameters;
-
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
@@ -63,8 +60,6 @@ public class CrfSuiteTestTask
             throw new TextClassificationException(
                     "Multi-label requested, but CRFSuite only supports single label setups.");
         }
-
-        processParameters(classificationArguments);
 
         File model = trainModel(aContext);
         String rawTextOutput = testModel(aContext, model);
@@ -145,11 +140,24 @@ public class CrfSuiteTestTask
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
 
-        trainer.train(algoName, algoParameters, train, modelLocation);
+        List<String> parameters = getParameters(classificationArguments.subList(1, classificationArguments.size()));
+        
+        trainer.train(train, modelLocation, parameters);
 
         deleteTmpFeatureFileIfCreated(aContext, train, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
         return writeModel(aContext, modelLocation);
+    }
+
+    private List<String> getParameters(List<Object> subList)
+    {
+        List<String> s = new ArrayList<>();
+        
+        for(Object o : subList) {
+            s.add(o.toString());
+        }
+        
+        return s;
     }
 
     private String testModel(TaskContext aContext, File model) throws Exception
@@ -190,12 +198,6 @@ public class CrfSuiteTestTask
         File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
         FileUtils.deleteQuietly(model);
         return modelLocation;
-    }
-
-    private void processParameters(List<Object> classificationArguments) throws Exception
-    {
-        algoName = CrfUtil.getAlgorithm(classificationArguments);
-        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
     }
 
 }

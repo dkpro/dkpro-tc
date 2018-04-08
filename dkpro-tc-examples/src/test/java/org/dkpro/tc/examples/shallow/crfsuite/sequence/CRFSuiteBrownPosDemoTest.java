@@ -58,7 +58,7 @@ public class CRFSuiteBrownPosDemoTest
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] {new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_LBFGS, "-p", "max_iterations=5" });
+                        CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5" });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
         config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);

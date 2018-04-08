@@ -21,7 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.After;
@@ -74,8 +75,11 @@ public class CrfSuiteBackendTest
         long modelBefore = modelOut.length();
         
         CrfSuiteTrainer train = new CrfSuiteTrainer();
-        train.train(CrfSuiteAlgo.ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTORS.toString(),
-                Collections.emptyList(), data, modelOut);
+        
+        List<String> parameters = new ArrayList<>();
+        parameters.add(CrfSuiteAlgo.ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTORS.toString());
+        
+        train.train(data, modelOut, parameters);
         
         long modelAfter = modelOut.length();
         

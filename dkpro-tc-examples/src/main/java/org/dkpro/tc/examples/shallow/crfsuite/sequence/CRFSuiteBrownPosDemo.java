@@ -18,8 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
 import java.util.HashMap;
@@ -71,8 +69,7 @@ public class CRFSuiteBrownPosDemo
         // the setup
         // instructions first :)
         DemoUtils.setDkproHome(CRFSuiteBrownPosDemo.class.getSimpleName());
-        
-        
+
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter() });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
@@ -95,12 +92,12 @@ public class CRFSuiteBrownPosDemo
 
         CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a01.xml");
         dimReaders.put(DIM_READER_TRAIN, train);
 
         CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a02.xml"));
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a02.xml");
         dimReaders.put(DIM_READER_TEST, test);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
@@ -108,7 +105,7 @@ public class CRFSuiteBrownPosDemo
                 TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
                         50)));
-        
+
         ParameterSpace pSpace;
         if (dimFilters != null) {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
@@ -119,8 +116,7 @@ public class CRFSuiteBrownPosDemo
         else {
             pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                     Dimension.create(DIM_LEARNING_MODE, learningMode),
-                    Dimension.create(DIM_FEATURE_MODE, featureMode), dimFeatureSets,
-                    config);
+                    Dimension.create(DIM_FEATURE_MODE, featureMode), dimFeatureSets, config);
         }
 
         return pSpace;

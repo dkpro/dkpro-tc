@@ -30,16 +30,27 @@ public class CrfSuiteTrainer
         //
     }
 
-    public void train(String algoName, List<String> parameters, File trainingData,
-            File modelTargetLocation)
-        throws Exception
+    public void train(File aData, File aModel, List<String> parameters) throws Exception
     {
-        CrfSuiteAlgo algo = getAlgorithm(algoName);
-        
-        List<String> trainCommand = getTrainCommand(algo.toString(), parameters, getExecutable(),
-                trainingData, modelTargetLocation);
+        sanityCheckParameters(parameters);
+
+        CrfSuiteAlgo algo = getAlgorithm(parameters.get(0));
+
+        List<String> trainCommand = getTrainCommand(algo.toString(),
+                parameters.subList(1, parameters.size()), getExecutable(), aData, aModel);
         executeTrainingCommand(trainCommand);
     }
+
+    // public void train(String algoName, List<String> parameters, File aData,
+    // File aModel)
+    // throws Exception
+    // {
+    // CrfSuiteAlgo algo = getAlgorithm(algoName);
+    //
+    // List<String> trainCommand = getTrainCommand(algo.toString(), parameters, getExecutable(),
+    // aData, aModel);
+    // executeTrainingCommand(trainCommand);
+    // }
 
     public static List<String> getTrainCommand(String algorithm, List<String> algoParameter,
             File crfBinary, File trainingData, File model)
@@ -54,6 +65,13 @@ public class CrfSuiteTrainer
         parameterList.add(algorithm);
 
         for (String p : algoParameter) {
+
+            if (p.equals("-p")) {
+                // legacy support - the switch had to be provided manually since 0.9.0
+                continue;
+            }
+
+            parameterList.add("-p");
             parameterList.add(p.replaceAll(" ", ""));
         }
 
@@ -65,5 +83,17 @@ public class CrfSuiteTrainer
     {
         Process process = new ProcessBuilder().inheritIO().command(aCommand).start();
         process.waitFor();
+    }
+
+    private void sanityCheckParameters(List<String> parameters)
+    {
+        if (parameters == null) {
+            throw new NullPointerException("The provided parameters are null");
+        }
+
+        if (parameters.size() == 0) {
+            throw new IllegalArgumentException(
+                    "At least the name of the Crfsuite Algorithm has to be provided");
+        }
     }
 }

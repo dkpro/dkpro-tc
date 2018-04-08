@@ -21,6 +21,7 @@ package org.dkpro.tc.ml.crfsuite.task.serialization;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -33,7 +34,6 @@ import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
 import org.dkpro.tc.ml.crfsuite.task.CrfSuiteTestTask;
-import org.dkpro.tc.ml.crfsuite.task.CrfUtil;
 
 public class CrfSuiteSerializeModelConnector
     extends ModelSerializationTask
@@ -45,16 +45,11 @@ public class CrfSuiteSerializeModelConnector
 
     boolean trainModel = true;
 
-    private String algoName;
-
-    private List<String> algoParameters;
-
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
 
         if (trainModel) {
-            processParameters(classificationArguments);
             trainAndStoreModel(aContext);
         }
         else {
@@ -91,13 +86,22 @@ public class CrfSuiteSerializeModelConnector
                 executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
         CrfSuiteTrainer trainer = new CrfSuiteTrainer();
-        trainer.train(algoName, algoParameters, train,model);
+
+        List<Object> subList = classificationArguments.subList(1, classificationArguments.size());
+        List<String> parameters = getParameters(subList);
+
+        trainer.train(train, model, parameters);
     }
 
-    private void processParameters(List<Object> classificationArguments) throws Exception
+    private List<String> getParameters(List<Object> subList)
     {
-        algoName = CrfUtil.getAlgorithm(classificationArguments);
-        algoParameters = CrfUtil.getAlgorithmConfigurationParameter(classificationArguments);
+        List<String> s = new ArrayList<>();
+
+        for (Object o : subList) {
+            s.add(o.toString());
+        }
+
+        return s;
     }
 
     public void trainModel(boolean b)

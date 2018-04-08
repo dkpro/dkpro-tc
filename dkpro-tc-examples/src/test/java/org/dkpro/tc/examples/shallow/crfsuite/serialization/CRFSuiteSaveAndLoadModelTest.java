@@ -126,8 +126,10 @@ public class CRFSuiteSaveAndLoadModelTest
     public void saveModel() throws Exception
     {
         Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                "max_iterations=2"});
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
+                        "max_iterations=2" });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
@@ -212,8 +214,7 @@ public class CRFSuiteSaveAndLoadModelTest
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets,
-                mlas);
+                Dimension.create(DIM_FEATURE_MODE, FM_SEQUENCE), dimFeatureSets, mlas);
         return pSpace;
     }
 
@@ -222,8 +223,10 @@ public class CRFSuiteSaveAndLoadModelTest
     {
 
         Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                "max_iterations=2"});
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
+                        "max_iterations=2" });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
@@ -261,8 +264,10 @@ public class CRFSuiteSaveAndLoadModelTest
     {
 
         Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "-p",
-                "max_iterations=2"});
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new CrfSuiteAdapter(),
+                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
+                        "max_iterations=2" });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);

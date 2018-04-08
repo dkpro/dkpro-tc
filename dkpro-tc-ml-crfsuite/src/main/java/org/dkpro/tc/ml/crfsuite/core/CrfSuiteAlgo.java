@@ -27,8 +27,6 @@ public enum CrfSuiteAlgo
     * algorithm improves feature weights very slowly at the beginning of a training process, but
     * converges to the optimal feature weights quickly in the end.
     * 
-    * Parameters (provided each individually by [-p] switch):
-    * 
     * <pre>
         float feature.minfreq = 0.000000;
         The minimum frequency of features.
@@ -83,8 +81,6 @@ public enum CrfSuiteAlgo
      * distance between the Viterbi label sequence (y') and the reference label sequence (y). If the
      * item suffers from a non-negative loss, the algorithm updates the model based on the loss.
      * 
-     * Parameters (provided each individually by [-p] switch):
-     * 
      * <pre>
          float feature.minfreq = 0.000000;
          The minimum frequency of features.
@@ -108,8 +104,6 @@ public enum CrfSuiteAlgo
      * Given an item sequence (x, y) in the training data, the algorithm computes the loss: s(x, y')
      * - s(x, y), where s(x, y') is the score of the Viterbi label sequence, and s(x, y) is the
      * score of the label sequence of the training data.
-     * 
-     * Parameters (provided each individually by [-p] switch):
      * 
      * <pre>
          float feature.minfreq = 0.000000;
@@ -140,8 +134,6 @@ public enum CrfSuiteAlgo
      * Maximize the logarithm of the likelihood of the training data with L2 regularization term(s)
      * using Stochastic Gradient Descent (SGD) with batch size 1. This algorithm usually approaches
      * to the optimal feature weights quite rapidly, but shows slow convergences at the end.
-     * 
-     * Parameters (provided each individually by [-p] switch):
      * 
      * <pre>
         float feature.minfreq = 0.000000;
