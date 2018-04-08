@@ -124,6 +124,8 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
         assertEquals(0.8, getAccuracyCrossValidation(
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
+        assertEquals(0.62, getAccuracyCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.1);
     }
 
     private Integer getSumOfExpectedTasksForCrossValidation()
@@ -134,11 +136,11 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
         sum += 4; // 2 x FeatExtract Train/Test
         sum += 4; // 2 x Facade + 2x ML Adapter
         sum += 2; // 2 x Meta
-        sum *= 3; // 3 adapter in the setup
+        sum *= 4; // 4 adapter in the setup
 
         sum += 1; // 1 x Init
         sum += 1; // 1 x Outcome
-        sum += 3; // 3 x Crossvalidation
+        sum += 4; // 4 x Crossvalidation
 
         return sum;
     }
