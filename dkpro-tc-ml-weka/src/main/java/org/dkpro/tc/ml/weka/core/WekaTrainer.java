@@ -36,7 +36,7 @@ public class WekaTrainer extends _eka
     {
         sanityCheckParameters(parameters);
 
-        Instances wekaData = toWeka(data);
+        Instances wekaData = toWekaInstances(data, false);
         train(wekaData, model, parameters);
     }
 

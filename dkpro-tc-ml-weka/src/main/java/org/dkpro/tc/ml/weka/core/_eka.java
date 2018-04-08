@@ -53,10 +53,10 @@ import weka.filters.unsupervised.attribute.Remove;
 public class _eka implements Constants
 {
 
-    protected Instances toWeka(File data) throws Exception
+    protected Instances toWekaInstances(File data, boolean isMultilabel) throws Exception
     {
-        Instances train = getInstances(data, false);
-        Instances wekaData = removeInstanceId(train, false);
+        Instances train = getInstances(data, isMultilabel);
+        Instances wekaData = removeInstanceId(train, isMultilabel);
         return wekaData;
     }
 

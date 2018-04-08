@@ -22,48 +22,57 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.ml.base.TcPredictor;
 
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class WekaPredictor extends _eka
+public class MekaPredictor
+    extends _eka
     implements TcPredictor
 {
 
     @Override
     public List<String> predict(File data, File model) throws Exception
     {
-        Instances weka = toWekaInstances(data, false);
-        return predict(weka, model);
+        Instances meka = toWekaInstances(data, true);
+        return predict(meka, model);
     }
 
     public List<String> predict(Instances data, File model) throws Exception
     {
-        Classifier cls = (Classifier) SerializationHelper.read(model.getAbsolutePath());
+        MultiLabelClassifier cls = (MultiLabelClassifier) SerializationHelper
+                .read(model.getAbsolutePath());
         return performPrediction(cls, data);
     }
 
     public List<String> performPrediction(Classifier cl, Instances data) throws Exception
     {
+        List<String> results = new ArrayList<>();
+        for (int j = 0; j < data.size(); j++) {
 
-        StringBuffer classVals = new StringBuffer();
-        for (int i = 0; i < data.classAttribute().numValues(); i++) {
-            if (classVals.length() > 0) {
-                classVals.append(",");
+            double[] vals = null;
+            try {
+                vals = cl.distributionForInstance(data.instance(j));
             }
-            classVals.append(data.classAttribute().value(i));
-        }
+            catch (Exception e) {
+                throw new AnalysisEngineProcessException(e);
+            }
+            List<String> outcomes = new ArrayList<String>();
+            for (int i = 0; i < vals.length; i++) {
+                if (vals[i] >= Double.valueOf(0.5)) {
+                    String label = data.instance(j).attribute(i).name();
+                    outcomes.add(label);
+                }
+            }
 
-        // get predictions
-        List<String> predictions = new ArrayList<String>();
-        for (int i = 0; i < data.size(); i++) {
-            Double pred = cl.classifyInstance(data.instance(i));
-            predictions.add(pred.toString());
+            results.add(StringUtils.join(outcomes, ","));
         }
-
-        return predictions;
+        return results;
     }
 
 }

@@ -19,7 +19,6 @@
 package org.dkpro.tc.ml.weka.core;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import org.dkpro.tc.ml.base.TcTrainer;
@@ -36,17 +35,20 @@ public class MekaTrainer extends _eka
     @Override
     public void train(File data, File model, List<String> parameters) throws Exception
     {
-        train(toWeka(data), model, parameters);
+        train(toWekaInstances(data, true), model, parameters);
     }
     
     public Classifier train(Instances data, File model, List<String> parameters) throws Exception
     {
-        List<String> mlArgs = Arrays.asList(parameters
-                .subList(1, parameters.size()).toArray(new String[0]));
+        List<String> mlArgs = parameters.subList(1, parameters.size());
         MultiLabelClassifier cl = (MultiLabelClassifier) AbstractClassifier.forName((String) parameters.get(0),
                 new String[] {});
-        cl.setOptions(mlArgs.toArray(new String[0]));
+        if (!mlArgs.isEmpty()) {
+            cl.setOptions(mlArgs.toArray(new String[0]));
+        }
         cl.buildClassifier(data);
+        
+        weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
         
         return cl;
     }
