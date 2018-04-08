@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.pear.util.FileUtil;
+import org.dkpro.tc.ml.base.TcPredictor;
+import org.dkpro.tc.ml.base.TcTrainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +55,7 @@ public class MekaBackendTest
     @Test
     public void testMeka() throws Exception
     {
-        MekaTrainer trainer = new MekaTrainer();
+        TcTrainer trainer = new MekaTrainer();
         
         List<String> parameters = new ArrayList<>();
         parameters.add(PSUpdateable.class.getName());
@@ -64,7 +66,7 @@ public class MekaBackendTest
         
         trainer.train(data, model, parameters);
         
-        MekaPredictor predictor = new MekaPredictor();
+        TcPredictor predictor = new MekaPredictor();
         List<String> predict = predictor.predict(data, model);
         assertEquals(26, predict.size());
 
