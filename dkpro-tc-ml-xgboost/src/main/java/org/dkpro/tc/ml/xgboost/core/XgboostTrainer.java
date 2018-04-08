@@ -33,19 +33,19 @@ public class XgboostTrainer extends Xgboost
     /**
      * Trains a model with Xgboost
      * 
-     * @param parameters
-     *          The parametrization
      * @param data
      *          The training data file
      * @param model
      *         File descriptor for the location at which the model shall be stored
+     * @param parameters
+     *          The parametrization
      * @return
      *         file path to the trained model
      * @throws Exception
      *      In case of an error
      */
-    public File train(List<String> parameters, File data,
-            File model)
+    public File train(File data,
+            File model, List<String> parameters)
         throws Exception
     {
         File trainConfiguration = writeTrainConfigurationFile(parameters, data, model);

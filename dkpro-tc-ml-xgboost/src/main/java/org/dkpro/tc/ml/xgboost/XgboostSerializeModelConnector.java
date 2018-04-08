@@ -36,11 +36,11 @@ public class XgboostSerializeModelConnector
     {
 
         File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
-        List<String> parameter = XgboostTestTask.getClassificationParameters(aContext,
+        List<String> parameters = XgboostTestTask.getClassificationParameters(aContext,
                 classificationArguments, learningMode);
-        
+
         XgboostTrainer trainer = new XgboostTrainer();
-        trainer.train(parameter, fileTrain, model);
+        trainer.train(fileTrain, model, parameters);
     }
 
     @Override

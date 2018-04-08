@@ -80,7 +80,7 @@ public class XgboostTestTask
                 learningMode);
         
         XgboostTrainer trainer = new XgboostTrainer();
-        trainer.train(parameters, fileTrain, model);
+        trainer.train(fileTrain, model, parameters);
 
         return model;
     }

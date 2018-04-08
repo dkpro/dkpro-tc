@@ -71,9 +71,8 @@ public class XgboostBackendTest
     {
         XgboostTrainer trainer = new XgboostTrainer();
         long sizeBefore = model.length();
-        File train = trainer.train(
-                Arrays.asList(new String[] { "objective=multi:softmax", "num_class=32" }), data,
-                model);
+        File train = trainer.train(data, model,
+                Arrays.asList(new String[] { "objective=multi:softmax", "num_class=32" }));
         long sizeAfter = model.length();
 
         assertTrue(train != null && train.exists());
