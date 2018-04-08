@@ -18,16 +18,15 @@
 
 package org.dkpro.tc.ml.svmhmm.task;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -41,44 +40,40 @@ public class SvmHmmTestTask
     implements Constants
 {
 
-    private void combinePredictionAndExpectedGoldLabels(File fileTest, File predictionsFile)
+    private void combinePredictionAndExpectedGoldLabels(List<String> dataWithGoldLabel,
+            List<String> predictions, File predictionOutFile)
         throws Exception
     {
 
-        BufferedReader readerPrediction = new BufferedReader(
-                new InputStreamReader(new FileInputStream(predictionsFile), "utf-8"));
-        BufferedReader readerGold = new BufferedReader(
-                new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
-
-        File createTempFile = File.createTempFile("svmhmm", ".txt");
-        BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(createTempFile), "utf-8"));
-
-        String prediction = null;
-        String gold = null;
-
-        writer.write("#PREDICTION;GOLD" + "\n");
-        do {
-
-            prediction = readerPrediction.readLine();
-            gold = readerGold.readLine();
-
-            if (prediction == null || gold == null) {
-                break;
-            }
-
-            gold = gold.split("\t")[0];
-            writer.write(prediction + ";" + gold + "\n");
-
+        if (dataWithGoldLabel.size() != predictions.size()) {
+            throw new IllegalStateException("Number of predictions is wrong. Expected ["
+                    + dataWithGoldLabel.size() + "] but got [" + predictions.size() + "]");
         }
-        while (true);
 
-        writer.close();
-        readerGold.close();
-        readerPrediction.close();
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(predictionOutFile), "utf-8"));
 
-        FileUtils.deleteQuietly(predictionsFile);
-        FileUtils.moveFile(createTempFile, predictionsFile);
+            merge(dataWithGoldLabel, predictions, writer);
+        }
+        finally {
+            IOUtils.closeQuietly(writer);
+        }
+
+    }
+
+    private void merge(List<String> dataWithGoldLabel, List<String> predictions,
+            BufferedWriter writer)
+        throws IOException
+    {
+        writer.write("#PREDICTION;GOLD" + "\n");
+        for (int i = 0; i < dataWithGoldLabel.size(); i++) {
+            String p = predictions.get(i);
+            String g = dataWithGoldLabel.get(i).split("\t")[0];
+
+            writer.write(p + ";" + g + "\n");
+        }
     }
 
     @Override
@@ -94,13 +89,15 @@ public class SvmHmmTestTask
                 fileTrain.getName());
         File tmpModelLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
                 "model.tmp");
+        tmpModelLocation.deleteOnExit();
+        
         FileUtils.copyFile(fileTrain, newTrainFileLocation);
 
         SvmHmmTrainer trainer = new SvmHmmTrainer();
         trainer.train(newTrainFileLocation, tmpModelLocation, getParameters());
 
         File modelFile = new File(aContext.getFolder("", AccessMode.READWRITE),
-                Constants.MODEL_CLASSIFIER);
+                MODEL_CLASSIFIER);
         FileUtils.copyFile(tmpModelLocation, modelFile);
 
         FileUtils.deleteQuietly(newTrainFileLocation);
@@ -136,16 +133,16 @@ public class SvmHmmTestTask
                 "testfile.txt");
         FileUtils.copyFile(fileTest, localTestFile);
 
-        File predictions = new File(aContext.getFolder("", AccessMode.READWRITE),
-                Constants.FILENAME_PREDICTIONS);
-
         SvmHmmPredictor predictor = new SvmHmmPredictor();
-        predictor.predict(localTestFile, localModel, predictions);
+        List<String> predictions = predictor.predict(localTestFile, localModel);
 
         FileUtils.deleteQuietly(localModel);
         FileUtils.deleteQuietly(localTestFile);
 
-        combinePredictionAndExpectedGoldLabels(fileTest, predictions);
+        File predictionOutFile = new File(aContext.getFolder("", AccessMode.READWRITE),
+                FILENAME_PREDICTIONS);
+        combinePredictionAndExpectedGoldLabels(FileUtils.readLines(fileTest, "utf-8"), predictions,
+                predictionOutFile);
     }
 
 }

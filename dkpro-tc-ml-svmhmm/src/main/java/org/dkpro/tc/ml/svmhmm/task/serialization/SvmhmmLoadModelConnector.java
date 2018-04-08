@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.svmhmm.task.serialization;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
@@ -55,11 +56,12 @@ public class SvmhmmLoadModelConnector
                 "testfile.txt");
         FileUtils.copyFile(testFile, localTestFile);
 
-        File prediction = FileUtil.createTempFile("svmHmmTmpFile", ".txt");
-        prediction.delete();
-
         SvmHmmPredictor predictor = new SvmHmmPredictor();
-        predictor.predict(localTestFile, model, prediction);
+        List<String> predictions = predictor.predict(localTestFile, model);
+        
+        File prediction = FileUtil.createTempFile("svmHmmTmpFile", ".txt");
+        prediction.deleteOnExit();
+        FileUtils.writeLines(prediction, "utf-8", predictions);
 
         FileUtils.deleteQuietly(localModel);
         FileUtils.deleteQuietly(localTestFile);

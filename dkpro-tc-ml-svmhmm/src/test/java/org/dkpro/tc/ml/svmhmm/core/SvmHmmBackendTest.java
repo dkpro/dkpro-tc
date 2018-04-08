@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -67,13 +66,12 @@ public class SvmHmmBackendTest
 
         assertTrue(before < after);
 
-        SvmHmmPredictor predictor = new SvmHmmPredictor();
-
         File tmpFile = FileUtil.createTempFile("svmHmm", ".txt");
         tmpFile.deleteOnExit();
-        predictor.predict(data, trainModel, tmpFile);
-        List<String> readLines = FileUtils.readLines(tmpFile, "utf-8");
-        assertEquals(31, readLines.size());
+        
+        SvmHmmPredictor predictor = new SvmHmmPredictor();
+        List<String> predictions = predictor.predict(data, trainModel);
+        assertEquals(31, predictions.size());
     }
 
 }

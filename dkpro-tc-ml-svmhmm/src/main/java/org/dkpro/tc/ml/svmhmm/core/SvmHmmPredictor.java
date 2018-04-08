@@ -21,6 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.uima.pear.util.FileUtil;
+
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class SvmHmmPredictor
@@ -28,10 +31,15 @@ public class SvmHmmPredictor
 {
     private static RuntimeProvider runtimeProvider;
 
-    public void predict(File data, File model, File predictionOutput) throws Exception
+    public List<String> predict(File data, File model) throws Exception
     {
-        List<String> command = buildPredictionCommand(data, model, predictionOutput);
+        File predOut = FileUtil.createTempFile("svmhmmPrediction", ".txt");
+        
+        List<String> command = buildPredictionCommand(data, model, predOut);
         runCommand(command);
+        
+        List<String> predictions = FileUtils.readLines(predOut, "utf-8");
+        return predictions;
     }
 
     public static File getPredictionExecutable() throws Exception
