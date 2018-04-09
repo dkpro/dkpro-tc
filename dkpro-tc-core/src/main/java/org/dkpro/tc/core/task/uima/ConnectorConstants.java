@@ -77,4 +77,10 @@ public interface ConnectorConstants
      */
     String PARAM_REQUIRED_TYPES = "requiredTypes";
 
+    /**
+     * If the matching of features in training and testing phase shall be enforced - this will slow
+     * down experiment execution considerably if activated
+     */
+    String PARAM_ENFORCE_MATCHING_FEATURES = "enforceMatchingFeatures";
+
 }

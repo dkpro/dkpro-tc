@@ -97,6 +97,9 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
     private Set<String> requiredTypes;
+    
+    @ConfigurationParameter(name = PARAM_ENFORCE_MATCHING_FEATURES, mandatory = false)
+    private boolean enforceMatchinFeatures;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -166,11 +169,15 @@ public class ExtractFeaturesConnector
         }
 
         List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
-        /*
-         * filter-out feature names which did not occur during training if we are in the testing
-         * stage
-         */
-        instances = enforceMatchingFeatures(instances);
+        
+        if(enforceMatchinFeatures) {
+            /*
+             * filter-out feature names which did not occur during training if we are in the testing
+             * stage
+             */
+            instances = enforceMatchingFeatures(instances);
+        }
+        
 
         if (isFilteringRequestedOrNoStreamingAvailable()) {
             dsw.writeGenericFormat(instances);

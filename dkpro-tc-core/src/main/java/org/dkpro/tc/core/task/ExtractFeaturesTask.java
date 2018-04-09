@@ -102,6 +102,9 @@ public class ExtractFeaturesTask
 
     @Discriminator(name = DIM_FEATURE_SET)
     private TcFeatureSet featureExtractors;
+    
+    @Discriminator(name = DIM_ENFORCE_MATCHING_FEATURES_DURING_TESTING)
+    private boolean enforceMatchingFeatures;
 
     private boolean isTesting = false;
 
@@ -168,7 +171,8 @@ public class ExtractFeaturesTask
                     PARAM_FEATURE_MODE, featureMode, PARAM_LEARNING_MODE, learningMode,
                     PARAM_IS_TESTING, isTesting, PARAM_USE_SPARSE_FEATURES,
                     useSparse, PARAM_OUTCOMES, outcomes, PARAM_FEATURE_EXTRACTORS,
-                    featureExtractorDescriptions, PARAM_REQUIRED_TYPES, requiredTypes));
+                    featureExtractorDescriptions, PARAM_REQUIRED_TYPES, requiredTypes,
+                    PARAM_ENFORCE_MATCHING_FEATURES, enforceMatchingFeatures));
 
             return AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                     parameters.toArray());

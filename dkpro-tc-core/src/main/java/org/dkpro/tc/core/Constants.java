@@ -183,6 +183,8 @@ public interface Constants
     String DIM_FILES_TRAINING = "files_training";
 
     String DIM_FILES_VALIDATION = "files_validation";
+    
+    String DIM_ENFORCE_MATCHING_FEATURES_DURING_TESTING = "enforceMatchingFeatures";
 
     /*
      * Learning modes
