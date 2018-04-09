@@ -184,6 +184,11 @@ public interface Constants
 
     String DIM_FILES_VALIDATION = "files_validation";
     
+    /**
+     * Enforces that during writing of the test feature file only features are written that did
+     * occur during training. This enforcement is computational extremely expensive and will
+     * increase testing time considerably.
+     */
     String DIM_ENFORCE_MATCHING_FEATURES_DURING_TESTING = "enforceMatchingFeatures";
 
     /*
