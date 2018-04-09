@@ -52,9 +52,6 @@ public class ValidityCheckConnectorPost
     @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
     private String featureMode;
 
-    @ConfigurationParameter(name = Constants.DIM_SKIP_SANITY_CHECKS, mandatory = true, defaultValue = "False")
-    private boolean skipSanityChecks;
-
     private int featureModeI;
     private int learningModeI;
 
@@ -62,31 +59,23 @@ public class ValidityCheckConnectorPost
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
 
-        if (runSanityCheck()) {
-
-            if (featureModeI == 0) {
-                featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
-            }
-
-            if (learningModeI == 0) {
-                learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
-            }
-
-            List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                    JCasUtil.select(aJCas, TextClassificationOutcome.class));
-            List<TextClassificationTarget> targets = new ArrayList<>(
-                    JCasUtil.select(aJCas, TextClassificationTarget.class));
-
-            // whether outcome annotation are present at all
-            checkErrorConditionZeroOutcomes(outcomes);
-            checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(aJCas, outcomes);
-            checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(targets, outcomes);
+        if (featureModeI == 0) {
+            featureModeI = ValidityCheckUtils.featureModeLabel2int(featureMode);
         }
-    }
 
-    private boolean runSanityCheck()
-    {
-        return skipSanityChecks == false;
+        if (learningModeI == 0) {
+            learningModeI = ValidityCheckUtils.learningModeLabel2int(learningMode);
+        }
+
+        List<TextClassificationOutcome> outcomes = new ArrayList<>(
+                JCasUtil.select(aJCas, TextClassificationOutcome.class));
+        List<TextClassificationTarget> targets = new ArrayList<>(
+                JCasUtil.select(aJCas, TextClassificationTarget.class));
+
+        // whether outcome annotation are present at all
+        checkErrorConditionZeroOutcomes(outcomes);
+        checkErrorConditionMoreThanOneOutcomeInSingleLabelDocumentMode(aJCas, outcomes);
+        checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(targets, outcomes);
     }
 
     private void checkErrorConditionMissingOutcomeForTargetIfUnitOrSequenceMode(

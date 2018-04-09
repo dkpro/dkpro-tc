@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -73,6 +74,9 @@ public class InitTask
 
     @Discriminator(name = DIM_FEATURE_SET)
     protected TcFeatureSet featureExtractors;
+    
+    @Discriminator(name = DIM_SKIP_SANITY_CHECKS)
+    protected boolean skipSanityChecks;
 
     protected boolean isTesting = false;
 
@@ -177,6 +181,10 @@ public class InitTask
     private AnalysisEngineDescription getPreValidityCheckEngine()
         throws ResourceInitializationException
     {
+        if(skipSanityChecks) {
+            return createEngineDescription(NoOpAnnotator.class);
+        }
+        
         // check mandatory dimensions
         if (featureExtractors == null) {
             throw new ResourceInitializationException(new TextClassificationException(
@@ -220,6 +228,10 @@ public class InitTask
     private AnalysisEngineDescription getPostValidityCheckEngine()
         throws ResourceInitializationException
     {
+        if(skipSanityChecks) {
+            return createEngineDescription(NoOpAnnotator.class);
+        }
+        
         List<Object> parameters = new ArrayList<Object>();
 
         parameters.add(ValidityCheckConnector.PARAM_LEARNING_MODE);
