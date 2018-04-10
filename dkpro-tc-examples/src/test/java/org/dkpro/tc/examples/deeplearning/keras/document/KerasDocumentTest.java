@@ -48,6 +48,8 @@ public class KerasDocumentTest
         if (testConditon) {
             ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
             KerasDocumentTrainTest.runTrainTest(ps);
+            
+            System.err.println(ContextMemoryReport.id2outcomeFiles);
 
             assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 

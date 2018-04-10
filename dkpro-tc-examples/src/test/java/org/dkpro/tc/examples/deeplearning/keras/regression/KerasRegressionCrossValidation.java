@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
@@ -36,9 +35,6 @@ public class KerasRegressionCrossValidation
     @Test
     public void runTest() throws Exception
     {
-
-        DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
-
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();

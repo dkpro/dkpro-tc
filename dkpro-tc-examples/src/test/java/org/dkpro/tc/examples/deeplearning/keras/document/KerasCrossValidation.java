@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
 public class KerasCrossValidation
@@ -33,9 +32,6 @@ public class KerasCrossValidation
     @Test
     public void runTest() throws Exception
     {
-
-        DemoUtils.setDkproHome(KerasDocumentCrossValidation.class.getSimpleName());
-
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
