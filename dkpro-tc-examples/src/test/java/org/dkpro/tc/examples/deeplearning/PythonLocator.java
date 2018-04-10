@@ -52,6 +52,8 @@ public class PythonLocator
                 output.add(l);
             }
             r.close();
+            
+            System.out.println(output);
 
             boolean keras = output.isEmpty();
 
