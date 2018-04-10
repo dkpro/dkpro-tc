@@ -19,6 +19,7 @@
 package org.dkpro.tc.examples.deeplearning;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -35,6 +36,12 @@ public class PythonLocator
 
         for (String pathCandidate : new String[] { "/usr/local/bin/python3", "/usr/bin/python3" }) {
             try {
+                
+                if(!new File(pathCandidate).exists()) {
+                    System.err.println("No python found at ["+pathCandidate+"]");
+                    continue;
+                }
+                
                 List<String> command = new ArrayList<>();
                 command.add(pathCandidate);
                 command.add("-c");
@@ -52,8 +59,6 @@ public class PythonLocator
                     output.add(l);
                 }
                 r.close();
-
-                System.err.println(output);
 
                 boolean keras = output.isEmpty();
 
