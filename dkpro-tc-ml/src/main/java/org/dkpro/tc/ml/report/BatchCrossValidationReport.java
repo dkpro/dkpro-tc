@@ -98,6 +98,12 @@ public class BatchCrossValidationReport
                 File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX,
                         AccessMode.READWRITE);
                 MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
+                
+                
+                File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
+                        FILE_FSCORES_PER_LABEL);
+                FscoreResultsIO r = new FscoreResultsIO(combinedId2outcome, learningMode);
+                r.writeResults(fscoreFile);
             }
 
         }
@@ -110,6 +116,8 @@ public class BatchCrossValidationReport
 
         ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME,
                 SUFFIX_EXCEL, SUFFIX_CSV);
+        
+        
     }
 
     private boolean isSingleLabelMode(String learningMode)

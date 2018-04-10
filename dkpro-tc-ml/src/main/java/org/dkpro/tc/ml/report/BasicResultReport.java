@@ -38,7 +38,7 @@ public class BasicResultReport
     implements Constants
 {
 
-    static String OUTPUT_FILE = "results.txt";
+    private static String OUTPUT_FILE = "results.txt";
 
     @Override
     public void execute() throws Exception
@@ -52,8 +52,25 @@ public class BasicResultReport
         pa = addRandomBaselineResult(pa, learningMode);
 
         writeConfusionMatrixForSingleLabel(learningMode);
+        writeFScoreForSingleLabel(learningMode);
 
         writeToDisk(pa);
+    }
+
+    private void writeFScoreForSingleLabel(String learningMode) throws Exception
+    {
+        if (!learningMode.equals(LM_SINGLE_LABEL)) {
+            return;
+        }
+
+        File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
+                FILE_FSCORES_PER_LABEL);
+
+        File id2o = getContext().getStorageService().locateKey(getContext().getId(),
+                ID_OUTCOME_KEY);
+
+        FscoreResultsIO r = new FscoreResultsIO(id2o, learningMode);
+        r.writeResults(fscoreFile);
     }
 
     private void writeToDisk(Properties pa) throws Exception
@@ -67,7 +84,7 @@ public class BasicResultReport
         }
         finally {
             IOUtils.closeQuietly(fos);
-        }        
+        }
     }
 
     private void writeConfusionMatrixForSingleLabel(String learningMode) throws Exception
@@ -93,6 +110,7 @@ public class BasicResultReport
         for (Entry<String, String> e : resultMap.entrySet()) {
             pa.setProperty(e.getKey(), e.getValue());
         }
+
         return pa;
     }
 

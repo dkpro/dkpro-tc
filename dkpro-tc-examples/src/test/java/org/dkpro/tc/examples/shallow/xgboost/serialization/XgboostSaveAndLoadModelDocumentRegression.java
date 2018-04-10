@@ -45,7 +45,6 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -79,7 +78,6 @@ public class XgboostSaveAndLoadModelDocumentRegression
     public void documentRoundTripXgboost() throws Exception
     {
 
-        DemoUtils.setDkproHome(XgboostSaveAndLoadModelDocumentRegression.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace paramSpace = regressionGetParameterSpace();

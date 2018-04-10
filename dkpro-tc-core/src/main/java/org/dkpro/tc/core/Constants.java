@@ -440,6 +440,8 @@ public interface Constants
     String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
     
     String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
+    
+    String FILE_FSCORES_PER_LABEL = "fscoresPerLabel.txt";
 
     /*
      * Misc
