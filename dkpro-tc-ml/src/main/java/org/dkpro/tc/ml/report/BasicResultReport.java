@@ -64,7 +64,7 @@ public class BasicResultReport
         }
 
         File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
-                FILE_FSCORES_PER_LABEL);
+                FILE_SCORE_PER_CATEGORY);
 
         File id2o = getContext().getStorageService().locateKey(getContext().getId(),
                 ID_OUTCOME_KEY);

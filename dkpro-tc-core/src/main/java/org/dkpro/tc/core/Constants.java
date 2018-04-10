@@ -441,7 +441,7 @@ public interface Constants
     
     String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
     
-    String FILE_FSCORES_PER_LABEL = "fscoresPerLabel.txt";
+    String FILE_SCORE_PER_CATEGORY = "scorePerCategory.txt";
 
     /*
      * Misc

@@ -101,7 +101,7 @@ public class BatchCrossValidationReport
                 
                 
                 File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
-                        FILE_FSCORES_PER_LABEL);
+                        FILE_SCORE_PER_CATEGORY);
                 ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(combinedId2outcome, learningMode);
                 r.writeResults(fscoreFile);
             }
