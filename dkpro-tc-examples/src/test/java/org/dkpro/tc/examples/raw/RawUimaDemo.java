@@ -18,20 +18,28 @@
  */
 package org.dkpro.tc.examples.raw;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.raw.TwentyNewsgroupsRaw;
+import org.dkpro.tc.examples.shallow.raw.WekaRawDemoUIMAonly;
 import org.junit.Test;
 
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class TwentyNewsgroupsRawTest
+public class RawUimaDemo
     extends TestCaseSuperClass
 {
 
     @Test
     public void testJavaTrainTest() throws Exception
     {
-        TwentyNewsgroupsRaw.main(null);
+        WekaRawDemoUIMAonly uima = new WekaRawDemoUIMAonly();
+        List<String> run = uima.run();
+        assertTrue(run!=null);
+        assertEquals(8, run.size());
     }
 }
