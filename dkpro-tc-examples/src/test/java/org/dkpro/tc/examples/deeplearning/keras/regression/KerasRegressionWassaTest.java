@@ -27,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
 public class KerasRegressionWassaTest
@@ -36,8 +35,6 @@ public class KerasRegressionWassaTest
     @Test
     public void runTest() throws Exception
     {
-        DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
-
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
