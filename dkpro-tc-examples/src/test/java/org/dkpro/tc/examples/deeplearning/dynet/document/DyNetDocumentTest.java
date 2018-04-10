@@ -41,10 +41,9 @@ public class DyNetDocumentTest
 
         boolean testConditon = true;
         String python3 = null;
-        try {
-            python3 = getEnvironment();
-        }
-        catch (Exception e) {
+        python3 = getEnvironment();
+
+        if (python3 == null) {
             System.err.println("Failed to locate Python with Keras - will skip this test case");
             testConditon = false;
         }
