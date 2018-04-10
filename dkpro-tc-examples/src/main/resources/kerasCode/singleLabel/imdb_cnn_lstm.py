@@ -40,7 +40,7 @@ pool_size = 4
 lstm_output_size = 70
 
 # Training
-batch_size = 2
+batch_size = 32
 epochs = 2
 
 '''

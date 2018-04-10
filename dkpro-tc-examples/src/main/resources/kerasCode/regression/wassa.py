@@ -91,7 +91,7 @@ def runExperiment(seed, trainVec, trainOutcome, testVec, testOutcome, embedding,
 	model.add(Dense(1))
 	model.add(Activation('sigmoid'))
 	model.compile(loss='mean_squared_error', optimizer='adam')
-	model.fit(x_train, y_train, epochs=1, shuffle=True)
+	model.fit(x_train, y_train, epochs=1, shuffle=True, batch_size=128)
 
 	prediction = model.predict(x_test)
 

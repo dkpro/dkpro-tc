@@ -85,7 +85,7 @@ def runExperiment(seed, trainVec, trainOutcome, testVec, testOutcome, embedding,
               optimizer='rmsprop',
               metrics=['accuracy'])
 
-	model.fit(x_train, y_train, epochs=3, shuffle=True)
+	model.fit(x_train, y_train, epochs=1, shuffle=True)
 
 	prediction = model.predict_classes(x_test)
 
