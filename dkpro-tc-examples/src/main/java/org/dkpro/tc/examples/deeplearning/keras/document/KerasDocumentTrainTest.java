@@ -52,7 +52,6 @@ public class KerasDocumentTrainTest
     public static void main(String[] args) throws Exception
     {
 
-        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
         System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");

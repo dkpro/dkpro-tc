@@ -27,11 +27,13 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KerasRegressionWassaTest
     extends PythonLocator
 {
+    @Ignore
     @Test
     public void runTest() throws Exception
     {

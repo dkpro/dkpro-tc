@@ -27,11 +27,13 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KerasDocumentTest
     extends PythonLocator
 {
+    @Ignore
     @Test
     public void runTest() throws Exception
     {
@@ -49,8 +51,6 @@ public class KerasDocumentTest
             ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
             KerasDocumentTrainTest.runTrainTest(ps);
             
-            System.err.println(ContextMemoryReport.id2outcomeFiles);
-
             assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
             List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
