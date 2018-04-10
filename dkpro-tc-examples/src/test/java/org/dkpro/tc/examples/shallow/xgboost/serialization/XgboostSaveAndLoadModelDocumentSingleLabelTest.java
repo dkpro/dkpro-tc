@@ -59,7 +59,6 @@ import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -79,14 +78,6 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils
-                .setDkproHome(XgboostSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-    }
 
     private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useParametrizedArgs)
         throws ResourceInitializationException

@@ -53,7 +53,6 @@ import org.dkpro.tc.io.LinewiseTextOutcomeReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -75,13 +74,6 @@ public class XgboostSaveAndLoadModelDocumentRegression
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(XgboostSaveAndLoadModelDocumentRegression.class.getSimpleName());
-    }
 
     @Test
     public void documentRoundTripXgboost() throws Exception
