@@ -37,6 +37,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -95,6 +96,7 @@ public class KerasDocumentCrossValidation
                 "KerasCrossValidation", KerasAdapter.class, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchCrossValidationReport.class);
         experiment.addReport(ContextMemoryReport.class);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
