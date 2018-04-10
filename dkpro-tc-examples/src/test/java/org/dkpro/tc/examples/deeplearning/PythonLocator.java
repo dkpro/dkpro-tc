@@ -45,7 +45,7 @@ public class PythonLocator
                 List<String> command = new ArrayList<>();
                 command.add(pathCandidate);
                 command.add("-c");
-                command.add("import keras");
+                command.add("\"import keras\"");
 
                 ProcessBuilder pb = new ProcessBuilder(command).command(command);
                 Process start = pb.start();
