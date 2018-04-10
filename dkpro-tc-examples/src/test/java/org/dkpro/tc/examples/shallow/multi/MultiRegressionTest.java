@@ -37,15 +37,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
-import de.unidue.ltl.evaluation.measures.Accuracy;
+import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
+public class MultiRegressionTest
     extends TestCaseSuperClass
 {
-    MultiSvmUsingWekaLibsvmLiblinear javaExperiment;
+    MultiRegressionWekaLibsvmLiblinear javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -53,8 +53,8 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
     {
         super.setup();
 
-        javaExperiment = new MultiSvmUsingWekaLibsvmLiblinear();
-        pSpace = MultiSvmUsingWekaLibsvmLiblinear.getParameterSpace();
+        javaExperiment = new MultiRegressionWekaLibsvmLiblinear();
+        pSpace = MultiRegressionWekaLibsvmLiblinear.getParameterSpace();
     }
 
     @Test
@@ -64,40 +64,38 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
                 ContextMemoryReport.allIds.size());
-
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
                 ContextMemoryReport.id2outcomeFiles.size());
 
-        assertEquals(0.5, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
-        assertEquals(0.5, getAccuracy(
-                ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.5);
-        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
+        assertEquals(1.3, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.1);
+        assertEquals(0.5, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
+                0.2);
         
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
+        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
     }
-
-    private void verifyId2OutcomeReport(File wekaId2outcomeFile) throws IOException
+    
+    private void verifyId2Outcome(File id2outcomeFile) throws IOException
     {
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
-                "utf-8");
-        assertEquals(11, lines.size());
+        List<String> lines = FileUtils.readLines(id2outcomeFile, "utf-8");
+        
+        assertEquals(53, lines.size());
 
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-        assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
-        // line 2 is a time-stamp
-        assertTrue(lines.get(3).matches("alt.atheism/53068.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(4).matches("alt.atheism/53257.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(5).matches("alt.atheism/53260.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(6).matches("alt.atheism/53261.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(7).matches("comp.graphics/38758.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(8).matches("comp.graphics/38761.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(9).matches("comp.graphics/38762.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(10).matches("comp.graphics/38763.txt=[0-1];[0-1];-1"));
+        assertEquals("#labels", lines.get(1).trim());
+        assertTrue(lines.get(3).matches("0=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(4).matches("1=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(5).matches("10=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(6).matches("11=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(7).matches("12=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(8).matches("13=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(9).matches("14=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(10).matches("15=[0-9\\.]+;[0-9\\.]+;.*"));        
     }
 
     private File getId2outcomeFile(List<File> id2outcomeFiles, String k)
@@ -117,15 +115,36 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
                 ContextMemoryReport.allIds.size());
+        assertTrue(combinedId2OutcomeReportsAreDissimilar(
+                ContextMemoryReport.crossValidationCombinedIdFiles));
 
-        assertEquals(0.625, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
-        assertEquals(0.75, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
-        assertEquals(0.8, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
-        assertEquals(0.62, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.1);
+        // Larger variance is acceptable, i.e. Windows, OSX and Linux compute slightly different
+        // values
+        assertEquals(1.4, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
+        assertEquals(3.2, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.3);
+        assertEquals(1.3, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
+        assertEquals(4.1, getMeanSquaredErrorCrossValidation(
+                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
+    }
+
+    private boolean combinedId2OutcomeReportsAreDissimilar(List<File> crossValidationTaskIds)
+        throws IOException
+    {
+
+        Set<String> idset = new HashSet<>();
+
+        for (File f : crossValidationTaskIds) {
+            String idfile = FileUtils.readFileToString(f, "utf-8");
+            if (idset.contains(idfile)) {
+                return false;
+            }
+            idset.add(idfile);
+        }
+
+        return true;
     }
 
     private Integer getSumOfExpectedTasksForCrossValidation()
@@ -133,35 +152,34 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         Integer sum = 0;
 
-        sum += 4; // 2 x FeatExtract Train/Test
-        sum += 4; // 2 x Facade + 2x ML Adapter
-        sum += 2; // 2 x Meta
-        sum *= 4; // 4 adapter in the setup
-
-        sum += 1; // 1 x Init
-        sum += 1; // 1 x Outcome
-        sum += 4; // 4 x Crossvalidation
+        sum += 8 * 2; // Feature Extraction * num_folds
+        sum += 4 * 2; // meta collection
+        sum += 8 * 2; // MLA tasks + facade tasks
+        sum += 4; // CV tasks
+        sum += 1; // Init
+        sum += 1; // Outcome
 
         return sum;
     }
 
-    private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
+    private double getMeanSquaredError(List<File> id2outcomeFiles, String simpleName)
+        throws Exception
     {
 
         for (File f : id2outcomeFiles) {
-            if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
+            if (f.getAbsolutePath().contains(simpleName + "TestTask-")) {
 
-                EvaluationData<String> data = Tc2LtlabEvalConverter
-                        .convertSingleLabelModeId2Outcome(f);
-                Accuracy<String> acc = new Accuracy<>(data);
-                return acc.getResult();
+                EvaluationData<Double> data = Tc2LtlabEvalConverter
+                        .convertRegressionModeId2Outcome(f);
+                MeanSquaredError mse = new MeanSquaredError(data);
+                return mse.getResult();
             }
         }
 
         return -1;
     }
 
-    private double getAccuracyCrossValidation(List<File> id2outcomeFiles, String simpleName)
+    private double getMeanSquaredErrorCrossValidation(List<File> id2outcomeFiles, String simpleName)
         throws Exception
     {
 
@@ -169,19 +187,21 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
             File file = new File(f.getParentFile(), "ATTRIBUTES.txt");
             Set<String> readSubTasks = readSubTasks(file);
-            for (String k : readSubTasks) {
-                File file2 = new File(f.getParentFile().getParentFile() + "/" + k,
+            for (String s : readSubTasks) {
+                File file2 = new File(f.getParentFile().getParentFile() + "/" + s,
                         "ATTRIBUTES.txt");
                 if (!file2.exists()) {
                     continue;
                 }
                 Set<String> readSubTasks2 = readSubTasks(file2);
-                for (String j : readSubTasks2) {
-                    if (j.toLowerCase().contains(simpleName.toLowerCase())) {
-                        EvaluationData<String> data = Tc2LtlabEvalConverter
-                                .convertSingleLabelModeId2Outcome(f);
-                        Accuracy<String> acc = new Accuracy<>(data);
-                        return acc.getResult();
+                for (String k : readSubTasks2) {
+
+                    if (k.toLowerCase().contains(simpleName.toLowerCase())) {
+
+                        EvaluationData<Double> data = Tc2LtlabEvalConverter
+                                .convertRegressionModeId2Outcome(f);
+                        MeanSquaredError mse = new MeanSquaredError(data);
+                        return mse.getResult();
                     }
                 }
             }
@@ -244,13 +264,12 @@ public class MultiSvmDocumentClassificationUsingWekaLibsvmLiblinearTest
 
         sum += 2; // 1 x Facade + 1x ML Adapter
         sum *= 4; // 3 adapter in setup
-        
-        sum += 2; // 2 folder FeatExtract Train+Test shared by Liblinear/Libsvm/xgboost
-        sum += 2; // 2 folder FeatExtract Train+Test for Weka
-        
+
+        sum += 2; // 2 x FeatExtract shared by Xgboost/Liblinear/Libsvm
+        sum += 2; // 2 x FeatExtract for Weka
         sum += 2; // 2 x Init
-        sum += 1; // 1 x Outcome
         sum += 1; // 1 x Meta
+        sum += 1; // 1 x Outcome
 
         return sum;
     }

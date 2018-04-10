@@ -36,7 +36,7 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiSequenceSvmHmmCrfsuite
+public class MultiSequence
     extends TestCaseSuperClass
 {
     SequenceDemo javaExperiment;
