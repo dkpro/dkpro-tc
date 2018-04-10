@@ -138,14 +138,6 @@
     <dependency>
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-gpl</artifactId>
-    </dependency>
-     <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default</artifactId>
     </dependency>   
     <dependency>
     	<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -204,10 +196,6 @@
     <dependency>
       <groupId>org.dkpro.similarity</groupId>
       <artifactId>dkpro-similarity-algorithms-lexical-asl</artifactId>
-    </dependency>
-     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.deeplearning4j</groupId>
@@ -302,7 +290,6 @@
               <!-- Models not detected by byte-code analysis -->
               <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent</usedDependency>
               <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-en-maxent</usedDependency>
-              <usedDependency>de.tudarmstadt.ukp.dkpro.core:de.tudarmstadt.ukp.dkpro.core.arktools-model-tagger-en-default</usedDependency>
               <!-- Needed when running DL4j experiments -->
               <usedDependency>org.nd4j:nd4j-native-platform</usedDependency>
             </usedDependencies>
