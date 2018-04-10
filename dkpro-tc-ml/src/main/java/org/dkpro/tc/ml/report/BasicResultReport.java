@@ -69,7 +69,7 @@ public class BasicResultReport
         File id2o = getContext().getStorageService().locateKey(getContext().getId(),
                 ID_OUTCOME_KEY);
 
-        FscoreResultsIO r = new FscoreResultsIO(id2o, learningMode);
+        ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(id2o, learningMode);
         r.writeResults(fscoreFile);
     }
 

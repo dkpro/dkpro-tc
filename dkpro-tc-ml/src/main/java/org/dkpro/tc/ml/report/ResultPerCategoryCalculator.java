@@ -24,13 +24,13 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 
-public class FscoreResultsIO
+public class ResultPerCategoryCalculator
     implements Constants
 {
     private File id2o;
     private String learningMode;
 
-    public FscoreResultsIO(File id2o, String learningMode)
+    public ResultPerCategoryCalculator(File id2o, String learningMode)
     {
         this.id2o = id2o;
         this.learningMode = learningMode;
@@ -44,11 +44,17 @@ public class FscoreResultsIO
     public void writeResults(File fscoreFile) throws Exception
     {
 
-        List<String[]> computeFScores = MetricComputationUtil.computeFScores(id2o, learningMode);
+        List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
 
         StringBuilder sb = new StringBuilder();
+        sb.append("#Label\tFScore\tPrecision\tRecall\n");
         computeFScores.forEach(
-                s -> sb.append(String.format("%10s\t%.4f\n", s[0], Double.parseDouble(s[1]))));
+                s -> sb.append(String.format("%10s\t%.4f\t%.4f\t%.4f\n", 
+                        s[0],
+                        Double.parseDouble(s[1]),
+                        Double.parseDouble(s[2]),
+                        Double.parseDouble(s[3]))
+                        ));
 
         FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");
     }

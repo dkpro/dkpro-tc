@@ -34,6 +34,8 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
 import de.unidue.ltl.evaluation.measures.categorial.Fscore;
+import de.unidue.ltl.evaluation.measures.categorial.Precision;
+import de.unidue.ltl.evaluation.measures.categorial.Recall;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 import de.unidue.ltl.evaluation.measures.multilabel.ExactMatchRatio;
@@ -115,7 +117,7 @@ public class MetricComputationUtil
         return map;
     }
 
-    public static List<String[]> computeFScores(File id2o, String mode) throws Exception
+    public static List<String[]> computePerCategoryResults(File id2o, String mode) throws Exception
     {
 
         if (mode == null) {
@@ -137,10 +139,14 @@ public class MetricComputationUtil
         Collections.sort(uniqueLabels);
 
         Fscore<String> score = new Fscore<>(m);
+        Precision<String> precision = new Precision<>(m);
+        Recall<String> recall = new Recall<>(m);
 
         for (String l : uniqueLabels) {
-            Double s = score.getScoreForLabel(l);
-            fscores.add(new String[] { l, s.toString() });
+            Double f = score.getScoreForLabel(l);
+            Double p = precision.getPrecisionForLabel(l);
+            Double r = recall.getRecallForLabel(l);
+            fscores.add(new String[] { l, f.toString(), p.toString(), r.toString() });
         }
 
         return fscores;
