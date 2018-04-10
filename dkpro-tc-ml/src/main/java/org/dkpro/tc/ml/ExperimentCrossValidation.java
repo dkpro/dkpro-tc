@@ -45,7 +45,7 @@ import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.InnerBatchReport;
+import org.dkpro.tc.ml.report.shallowlearning.InnerBatchReport;
 
 /**
  * Crossvalidation setup

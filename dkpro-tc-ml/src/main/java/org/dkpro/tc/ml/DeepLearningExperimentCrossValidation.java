@@ -43,7 +43,7 @@ import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.DeepLearningInnerBatchReport;
+import org.dkpro.tc.ml.report.deeplearning.DeepLearningInnerBatchReport;
 
 /**
  * Crossvalidation setup

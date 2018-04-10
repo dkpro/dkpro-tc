@@ -16,29 +16,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.report;
+package org.dkpro.tc.ml.report.deeplearning;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
-public class DeepLearningRandomBaseline2OutcomeReport
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
+
+public class DeepLearningMajorityClass2OutcomeReport
     extends DeepLearningId2OutcomeReport
     implements DeepLearningConstants
 {
 
-    private Random random = new Random(42);
-    private List<String> pool = new ArrayList<>();
+    String majorityClass;
 
     @Override
     public void execute() throws Exception
@@ -59,22 +57,27 @@ public class DeepLearningRandomBaseline2OutcomeReport
         File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
         File file = new File(folder, FILENAME_OUTCOME_VECTOR);
-        buildPool(file);
+        determineMajorityClass(file);
     }
 
-    private void buildPool(File file) throws Exception
+    @Override
+    protected File getTargetFile()
     {
+        return getContext().getFile(BASELINE_MAJORITIY_ID_OUTCOME_KEY, AccessMode.READWRITE);
+    }
+
+    private void determineMajorityClass(File f) throws Exception
+    {
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
                 for (String v : split) {
-                    if (!pool.contains(v)) {
-                        pool.add(v);
-                    }
+                    fd.addSample(v, 1);
                 }
             }
         }
@@ -82,13 +85,7 @@ public class DeepLearningRandomBaseline2OutcomeReport
             IOUtils.closeQuietly(reader);
         }
 
-        Collections.shuffle(pool);
-    }
-
-    @Override
-    protected File getTargetFile()
-    {
-        return getContext().getFile(Constants.BASELINE_RANDOM_ID_OUTCOME_KEY, AccessMode.READWRITE);
+        majorityClass = fd.getSampleWithMaxFreq();
     }
 
     @Override
@@ -102,8 +99,7 @@ public class DeepLearningRandomBaseline2OutcomeReport
                 continue;
             }
             String[] split = p.split("\t");
-            Integer idx = random.nextInt(pool.size() - 1);
-            out.add(split[0] + "\t" + pool.get(idx));
+            out.add(split[0] + "\t" + majorityClass);
         }
 
         return out;

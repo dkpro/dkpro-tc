@@ -60,16 +60,16 @@ public class BatchTrainTestReport
 
         for (String id : idPool) {
 
-            if (!TcTaskTypeUtil.isFacadeTask(store, id)) {
+            if (!TcTaskTypeUtil.isFacadeTask(store, id) //Shallow TC uses always the facade task at this point
+                    && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) //Deep TC comes directly with the MLA 
+            {
                 continue;
             }
 
             Set<String> wrapped = new HashSet<>();
             wrapped.add(id);
             Set<String> subTaskId = collectTasks(wrapped);
-            subTaskId.remove(id);
 
-            // Should be only one anyway?
             for (String subId : subTaskId) {
 
                 if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {

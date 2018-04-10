@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.report;
+package org.dkpro.tc.ml.report.deeplearning;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +35,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 
 /**

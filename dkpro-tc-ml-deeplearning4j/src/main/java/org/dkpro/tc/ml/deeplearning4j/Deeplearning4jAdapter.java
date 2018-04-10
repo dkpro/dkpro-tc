@@ -21,9 +21,9 @@ import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jMetaReport;
-import org.dkpro.tc.ml.report.DeepLearningId2OutcomeReport;
-import org.dkpro.tc.ml.report.DeepLearningMajorityClass2OutcomeReport;
-import org.dkpro.tc.ml.report.DeepLearningRandomBaseline2OutcomeReport;
+import org.dkpro.tc.ml.report.deeplearning.DeepLearningId2OutcomeReport;
+import org.dkpro.tc.ml.report.deeplearning.DeepLearningMajorityClass2OutcomeReport;
+import org.dkpro.tc.ml.report.deeplearning.DeepLearningRandomBaseline2OutcomeReport;
 
 public class Deeplearning4jAdapter
     implements TcDeepLearningAdapter

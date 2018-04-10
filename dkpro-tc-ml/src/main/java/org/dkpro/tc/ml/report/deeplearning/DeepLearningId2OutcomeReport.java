@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml.report;
+package org.dkpro.tc.ml.report.deeplearning;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +38,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 public class DeepLearningId2OutcomeReport
