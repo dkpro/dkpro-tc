@@ -35,32 +35,37 @@ public class PythonLocator
     {
 
         for (String pathCandidate : new String[] { "/usr/local/bin/python3", "/usr/bin/python3" }) {
-            List<String> command = new ArrayList<>();
-            command.add(pathCandidate);
-            command.add("-c");
-            command.add("import keras");
+            try {
+                List<String> command = new ArrayList<>();
+                command.add(pathCandidate);
+                command.add("-c");
+                command.add("import keras");
 
-            ProcessBuilder pb = new ProcessBuilder(command).command(command);
-            Process start = pb.start();
-            start.waitFor();
+                ProcessBuilder pb = new ProcessBuilder(command).command(command);
+                Process start = pb.start();
+                start.waitFor();
 
-            InputStream inputStream = start.getInputStream();
-            List<String> output = new ArrayList<>();
-            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-            String l = null;
-            while ((l = r.readLine()) != null) {
-                output.add(l);
+                InputStream inputStream = start.getInputStream();
+                List<String> output = new ArrayList<>();
+                BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                String l = null;
+                while ((l = r.readLine()) != null) {
+                    output.add(l);
+                }
+                r.close();
+
+                System.err.println(output);
+
+                boolean keras = output.isEmpty();
+
+                if (keras) {
+                    LogFactory.getLog(PythonLocator.class.getName())
+                            .info("Use Python at [" + pathCandidate + "]");
+                    return pathCandidate;
+                }
             }
-            r.close();
-            
-            System.err.println(output);
-
-            boolean keras = output.isEmpty();
-
-            if (keras) {
-                LogFactory.getLog(PythonLocator.class.getName())
-                        .info("Use Python at [" + pathCandidate + "]");
-                return pathCandidate;
+            catch (Exception e) {
+                // ignore
             }
         }
 
