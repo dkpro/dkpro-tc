@@ -104,8 +104,8 @@ public class KerasRegressionWassa
                 "KerasRegressionWassa2017AngerTrainTest", KerasAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
         experiment.addReport(ContextMemoryReport.class);
-        experiment.addReport(new BatchTrainTestReport());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

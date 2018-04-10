@@ -102,8 +102,8 @@ public class KerasDocumentTrainTest
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(new BatchTrainTestReport());
-        experiment.addReport(new ContextMemoryReport());
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
 
         // Run
         Lab.getInstance().run(experiment);
