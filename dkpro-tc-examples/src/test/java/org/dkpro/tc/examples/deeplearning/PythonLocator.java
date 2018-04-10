@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 
 public class PythonLocator
@@ -59,8 +58,7 @@ public class PythonLocator
                 boolean keras = output.isEmpty();
 
                 if (keras) {
-                    LogFactory.getLog(PythonLocator.class.getName())
-                            .info("Use Python at [" + pathCandidate + "]");
+                   System.err.println("Use Python at [" + pathCandidate + "]");
                     return pathCandidate;
                 }
             }
