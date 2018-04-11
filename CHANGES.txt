@@ -1,5 +1,28 @@
 ************************************************
 
+DKPro-TC 1.0.0 Release
+
+== Highlights ==
+#460 - Add XGBoost as MLA
+#429 - Replace evaluation module
+#388 - Add support for deep learning frameworks
+
+== Major Version Enhancements ==
+DKPro Core 1.9.1
+Liblinear 2.20
+DKPro Lab 0.14.0
+
+== Other Issues Fixed ==
+#477 - Weka: Separate MLA code from DKPro Lab
+#476 - SvmHmm: Separate MLA code from DKPro Lab
+#473 - Xgboost: Separate MLA code from DKPro Lab
+#474 - Libsvm: Separate MLA code from DKPro Lab
+#471 - Liblinear: Separate MLA code from DKPro Lab
+#470 - CrfSuite: Separate MLA code from DKPro Lab
+
+
+************************************************
+
 DKPro-TC 0.9.0 Release
 
 == Highlights ==
