@@ -49,7 +49,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.io.LinewiseTextOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -128,10 +128,10 @@ public class WekaSaveAndLoadModelDocumentRegression
     private void regressionLoadModel(File modelFolder) throws UIMAException, IOException
     {
         CollectionReader reader = CollectionReaderFactory.createReader(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, regressionTest,
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, regressionTest,
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
 
         AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
@@ -170,11 +170,11 @@ public class WekaSaveAndLoadModelDocumentRegression
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_train.txt",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         @SuppressWarnings("unchecked")

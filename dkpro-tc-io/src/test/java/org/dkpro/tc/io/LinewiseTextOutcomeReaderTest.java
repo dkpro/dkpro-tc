@@ -39,10 +39,10 @@ public class LinewiseTextOutcomeReaderTest
     {
 
         CollectionReader reader = CollectionReaderFactory.createReader(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 2,
-                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-                "src/test/resources/semEval2017Task4/", LinewiseTextOutcomeReader.PARAM_PATTERNS,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 2,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/semEval2017Task4/", DelimiterSeparatedValuesReader.PARAM_PATTERNS,
                 "*.txt");
 
         List<String> readDocumentSpans = new ArrayList<>();

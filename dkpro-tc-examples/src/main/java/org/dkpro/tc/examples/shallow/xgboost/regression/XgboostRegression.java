@@ -37,7 +37,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.io.LinewiseTextOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -68,19 +68,19 @@ public class XgboostRegression
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_train.txt",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/test/essay_test.txt",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,

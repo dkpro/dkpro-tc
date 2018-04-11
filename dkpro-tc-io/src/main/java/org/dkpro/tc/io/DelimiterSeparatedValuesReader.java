@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * is annotated as {@link org.dkpro.tc.api.type.TextClassificationOutcome}, which are the data types
  * DKPro TC requires for processing the read data.
  */
-public class LinewiseTextOutcomeReader
+public class DelimiterSeparatedValuesReader
     extends JCasResourceCollectionReader_ImplBase
 {
 
@@ -49,9 +49,9 @@ public class LinewiseTextOutcomeReader
      * The separating character that separates textual information from its outcome, i.e. a label or
      * a numerical value. Defaults to TAB
      */
-    public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
-    @ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
-    protected String separatingChar;
+    public static final String PARAM_DELIMITER_CHAR = "PARAM_DELIMITER_CHAR";
+    @ConfigurationParameter(name = PARAM_DELIMITER_CHAR, mandatory = true, defaultValue = "\t")
+    protected String delimiter;
 
     public static final String PARAM_TEXT_INDEX = "PARAM_TEXT_INDEX";
     @ConfigurationParameter(name = PARAM_TEXT_INDEX, mandatory = true, defaultValue = "0")
@@ -79,7 +79,7 @@ public class LinewiseTextOutcomeReader
 
         StringBuilder documentText = new StringBuilder();
 
-        String[] split = nextDocument.split(separatingChar);
+        String[] split = nextDocument.split(delimiter);
 
         String text = split[textIdx].trim();
         String outcome = split[outcomeIdx].trim();
@@ -172,7 +172,7 @@ public class LinewiseTextOutcomeReader
     protected boolean skipLine()
     {
         return skipLinePrefix != null
-                && nextDocument.split(separatingChar)[textIdx].startsWith(skipLinePrefix);
+                && nextDocument.split(delimiter)[textIdx].startsWith(skipLinePrefix);
     }
 
     protected Resource getNextResource()

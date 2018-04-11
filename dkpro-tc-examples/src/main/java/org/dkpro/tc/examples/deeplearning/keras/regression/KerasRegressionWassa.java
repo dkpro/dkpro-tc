@@ -34,7 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.io.LinewiseTextOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -66,20 +66,20 @@ public class KerasRegressionWassa
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/wassa2017/train/",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt",
-                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt",
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 3,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/wassa2017/dev/", LinewiseTextOutcomeReader.PARAM_LANGUAGE,
-                "en", LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt",
-                LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 3,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1);
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/wassa2017/dev/", DelimiterSeparatedValuesReader.PARAM_LANGUAGE,
+                "en", DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt",
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 3,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

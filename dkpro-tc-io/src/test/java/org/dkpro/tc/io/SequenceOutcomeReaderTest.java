@@ -43,10 +43,10 @@ public class SequenceOutcomeReaderTest
     public void testReader() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
-                SequenceOutcomeReader.PARAM_PATTERNS, "posDummy.txt",
-                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 1);
+        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "posDummy.txt",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 1);
 
         List<List<String>> readSequences = new ArrayList<>();
         List<List<String>> readOutcomes = new ArrayList<>();
@@ -133,11 +133,11 @@ public class SequenceOutcomeReaderTest
     public void testReaderIndexParameter() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
-                SequenceOutcomeReader.PARAM_PATTERNS, "otherFormat.txt",
-                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 1,
-                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 2);
+        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "otherFormat.txt",
+                DelimiterSeparatedSequenceValuesReader.PARAM_OUTCOME_INDEX, 1,
+                DelimiterSeparatedSequenceValuesReader.PARAM_TOKEN_INDEX, 2);
 
         List<List<String>> readSequences = new ArrayList<>();
         List<List<String>> readOutcomes = new ArrayList<>();
@@ -210,10 +210,10 @@ public class SequenceOutcomeReaderTest
     public void testSkipLineReader() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
-                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#");
+                DelimiterSeparatedSequenceValuesReader.PARAM_SKIP_LINES_START_WITH_STRING, "#");
 
         List<List<String>> readSequences = new ArrayList<>();
         List<List<String>> readOutcomes = new ArrayList<>();
@@ -257,10 +257,10 @@ public class SequenceOutcomeReaderTest
     {
 
         // all in one
-        CollectionReader reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
-                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 10);
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 10);
 
         int sentCount = 0;
         int tokenCount = 0;
@@ -277,10 +277,10 @@ public class SequenceOutcomeReaderTest
         assertEquals(15, tokenCount);
 
         // one per cas
-        reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+        reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
-                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 1);
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 1);
 
         sentCount = 0;
         tokenCount = 0;
@@ -297,10 +297,10 @@ public class SequenceOutcomeReaderTest
         assertEquals(15, tokenCount);
 
         // two in first one third in second one
-        reader = CollectionReaderFactory.createReader(SequenceOutcomeReader.class,
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION,
+        reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
-                SequenceOutcomeReader.PARAM_SEQUENCES_PER_CAS, 2);
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 2);
 
         sentCount = 0;
         tokenCount = 0;

@@ -32,7 +32,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.io.LinewiseTextOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
 
@@ -72,17 +72,17 @@ public class DynetDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt");
         dimReaders.put(DIM_READER_TRAIN, train);
 
         // Careful - we need at least 2 sequences in the testing file otherwise
         // things will crash
         CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en",
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                LinewiseTextOutcomeReader.PARAM_PATTERNS, "*.txt");
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt");
         dimReaders.put(DIM_READER_TEST, test);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

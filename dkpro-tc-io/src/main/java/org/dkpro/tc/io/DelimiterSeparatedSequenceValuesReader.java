@@ -59,7 +59,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  * {@link de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence} Each sequence is read into
  * an own JCas.
  */
-public class SequenceOutcomeReader
+public class DelimiterSeparatedSequenceValuesReader
     extends JCasResourceCollectionReader_ImplBase
 {
 
@@ -67,9 +67,9 @@ public class SequenceOutcomeReader
      * The separating character that separates textual information from its outcome, i.e. a label or
      * a numerical value. Defaults to TAB
      */
-    public static final String PARAM_SEPARATING_CHAR = "PARAM_SEPARATING_CHAR";
-    @ConfigurationParameter(name = PARAM_SEPARATING_CHAR, mandatory = true, defaultValue = "\t")
-    protected String separatingChar;
+    public static final String PARAM_DELIMITER_CHAR = "PARAM_DELIMITER_CHAR";
+    @ConfigurationParameter(name = PARAM_DELIMITER_CHAR, mandatory = true, defaultValue = "\t")
+    protected String delimiter;
 
     public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
     @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
@@ -107,7 +107,7 @@ public class SequenceOutcomeReader
             int seqStart = documentText.length();
             for (int i = 0; i < sequence.size(); i++) {
                 String e = sequence.get(i);
-                String[] entry = e.split(separatingChar);
+                String[] entry = e.split(delimiter);
 
                 String token = entry[tokenIdx];
                 String outcome = entry[outcomeIdx];

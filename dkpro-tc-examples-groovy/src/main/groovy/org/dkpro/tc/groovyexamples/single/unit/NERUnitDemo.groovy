@@ -33,7 +33,7 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
-import org.dkpro.tc.io.SequenceOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedSequenceValuesReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
@@ -59,12 +59,12 @@ implements Constants {
         TcFeatureFactory.create(InitialCharacterUpperCase.class)
     ))
     
-    def trainreader = CollectionReaderFactory.createReaderDescription(SequenceOutcomeReader.class,
-       SequenceOutcomeReader.PARAM_LANGUAGE,  "de",
-	   SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
-	   SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
-       SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-       SequenceOutcomeReader.PARAM_PATTERNS, "*.txt"
+    def trainreader = CollectionReaderFactory.createReaderDescription(DelimiterSeparatedSequenceValuesReader.class,
+       DelimiterSeparatedSequenceValuesReader.PARAM_LANGUAGE,  "de",
+	   DelimiterSeparatedSequenceValuesReader.PARAM_TOKEN_INDEX, 1,
+	   DelimiterSeparatedSequenceValuesReader.PARAM_OUTCOME_INDEX, 2,
+       DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+       DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "*.txt"
     );
     
     def dimReaders = Dimension.createBundle("readers", [

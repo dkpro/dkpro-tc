@@ -41,7 +41,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
-import org.dkpro.tc.io.SequenceOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedSequenceValuesReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
@@ -114,20 +114,20 @@ public class SequenceDemo
     {
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                SequenceOutcomeReader.class, SequenceOutcomeReader.PARAM_LANGUAGE, "de",
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
-                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
-                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
-                SequenceOutcomeReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+                DelimiterSeparatedSequenceValuesReader.class, DelimiterSeparatedSequenceValuesReader.PARAM_LANGUAGE, "de",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                DelimiterSeparatedSequenceValuesReader.PARAM_TOKEN_INDEX, 1,
+                DelimiterSeparatedSequenceValuesReader.PARAM_OUTCOME_INDEX, 2,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                SequenceOutcomeReader.class, SequenceOutcomeReader.PARAM_LANGUAGE, "de",
-                SequenceOutcomeReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                SequenceOutcomeReader.PARAM_TOKEN_INDEX, 1,
-                SequenceOutcomeReader.PARAM_OUTCOME_INDEX, 2,
-                SequenceOutcomeReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
-                SequenceOutcomeReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
+                DelimiterSeparatedSequenceValuesReader.class, DelimiterSeparatedSequenceValuesReader.PARAM_LANGUAGE, "de",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                DelimiterSeparatedSequenceValuesReader.PARAM_TOKEN_INDEX, 1,
+                DelimiterSeparatedSequenceValuesReader.PARAM_OUTCOME_INDEX, 2,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SKIP_LINES_START_WITH_STRING, "#",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.txt");
 
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);

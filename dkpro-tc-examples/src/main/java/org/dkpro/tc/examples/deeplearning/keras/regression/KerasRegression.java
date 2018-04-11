@@ -34,7 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.io.LinewiseTextOutcomeReader;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -65,19 +65,19 @@ public class KerasRegression
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_train.txt",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextOutcomeReader.class, LinewiseTextOutcomeReader.PARAM_OUTCOME_INDEX, 0,
-                LinewiseTextOutcomeReader.PARAM_TEXT_INDEX, 1,
-                LinewiseTextOutcomeReader.PARAM_SOURCE_LOCATION,
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_test.txt",
-                LinewiseTextOutcomeReader.PARAM_LANGUAGE, "en");
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
