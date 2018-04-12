@@ -87,7 +87,7 @@ public class ExperimentBuilder
 
         @SuppressWarnings("unchecked")
         Map<String, Object>[] array = adapterMaps.toArray(new Map[0]);
-        Dimension<Map<String, Object>> mlaDim = Dimension.createBundle("configurations", array);
+        Dimension<Map<String, Object>> mlaDim = Dimension.createBundle(DIM_MLA_CONFIGURATIONS, array);
         return mlaDim;
     }
 

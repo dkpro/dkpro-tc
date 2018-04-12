@@ -17,18 +17,23 @@
  ******************************************************************************/
 package org.dkpro.tc.core.ml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
+import org.dkpro.tc.core.Constants;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ExperimentBuilderTest
+public class ExperimentBuilderTest implements Constants
 {
     TcShallowLearningAdapter adapter;
     TcFeatureSet tcFeatureSet;
@@ -61,8 +66,25 @@ public class ExperimentBuilderTest
         
         Dimension<?>[] dimensions = build.getDimensions();
         assertEquals(5, dimensions.length);
+        
+        Set<String> names = getNames(dimensions);
+        assertTrue(names.contains(DIM_READERS));
+        assertTrue(names.contains(DIM_FEATURE_MODE));
+        assertTrue(names.contains(DIM_LEARNING_MODE));
+        assertTrue(names.contains(DIM_FEATURE_SET));
+        assertTrue(names.contains(DIM_MLA_CONFIGURATIONS));
     }
     
+    private Set<String> getNames(Dimension<?>[] dimensions)
+    {
+        Set<String> names = new HashSet<>();
+        for(Dimension<?> d : dimensions) {
+            names.add(d.getName());
+        }
+        
+        return names;
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testErrorMissingReader() {
         ExperimentBuilder builder = new ExperimentBuilder();

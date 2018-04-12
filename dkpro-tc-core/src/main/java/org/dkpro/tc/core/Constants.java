@@ -97,6 +97,11 @@ public interface Constants
      * algorithms
      */
     String DIM_CLASSIFICATION_ARGS = "classificationArguments";
+    
+    /**
+     * Name of the discriminator that stores all machine learning adapter configurations that are being used in an experiment
+     */
+    String DIM_MLA_CONFIGURATIONS = "machineLearningAdapterConfiguration";
 
     /**
      * Name of the discriminator that stores the feature selection class and a list of arguments to
