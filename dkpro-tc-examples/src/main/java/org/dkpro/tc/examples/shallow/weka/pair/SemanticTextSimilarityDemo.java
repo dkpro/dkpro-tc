@@ -103,7 +103,7 @@ public class SemanticTextSimilarityDemo
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), SMOreg.class.getName() });
-        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

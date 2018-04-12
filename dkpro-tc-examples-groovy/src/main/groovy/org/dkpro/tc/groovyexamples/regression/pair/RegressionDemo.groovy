@@ -81,7 +81,7 @@ public class RegressionDemo implements Constants {
 
     def config  = [
         (DIM_CLASSIFICATION_ARGS) : [new WekaAdapter(), SMOreg.name],
-        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass().getName(),
+        (DIM_DATA_WRITER) : new WekaAdapter().getDataWriterClass(),
         (DIM_FEATURE_USE_SPARSE) : new WekaAdapter().useSparseFeatures()
     ]
     def mlas = Dimension.createBundle("mlas", config)

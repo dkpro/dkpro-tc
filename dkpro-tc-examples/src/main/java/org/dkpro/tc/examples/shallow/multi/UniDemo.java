@@ -111,22 +111,22 @@ public class UniDemo
         Map<String, Object> weka = new HashMap<>();
         weka.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
-        weka.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        weka.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         weka.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Map<String, Object> libsvm = new HashMap<>();
         libsvm.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter() });
-        libsvm.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        libsvm.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         libsvm.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 
         Map<String, Object> liblinear = new HashMap<>();
         liblinear.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
-        liblinear.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        liblinear.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
         liblinear.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
 
         Map<String, Object> xgboost = new HashMap<>();
         xgboost.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
-        xgboost.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboost.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
         xgboost.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", weka, libsvm,

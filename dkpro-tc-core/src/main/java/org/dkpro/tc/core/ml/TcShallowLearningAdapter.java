@@ -39,7 +39,7 @@ public interface TcShallowLearningAdapter
     /**
      * @return The data writer class that needs to be used with the corresponding ML framework
      */
-    Class<? extends DataWriter> getDataWriterClass();
+    String getDataWriterClass();
 
     /**
      * @return The class of the load model connector to be used with this ML framework

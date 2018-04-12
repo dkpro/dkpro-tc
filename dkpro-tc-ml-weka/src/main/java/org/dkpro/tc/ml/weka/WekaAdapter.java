@@ -25,13 +25,12 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
-import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.report.WekaBaselineMajorityClassIdReport;
 import org.dkpro.tc.ml.weka.report.WekaBaselineRandomIdReport;
+import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
 import org.dkpro.tc.ml.weka.task.serialization.WekaLoadModelConnector;
 import org.dkpro.tc.ml.weka.task.serialization.WekaSerliazeModelConnector;
@@ -78,9 +77,9 @@ public class WekaAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public String getDataWriterClass()
     {
-        return WekaDataWriter.class;
+        return WekaDataWriter.class.getName();
     }
 
     @Override

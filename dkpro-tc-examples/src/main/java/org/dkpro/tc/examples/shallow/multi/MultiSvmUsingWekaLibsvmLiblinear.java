@@ -96,25 +96,25 @@ public class MultiSvmUsingWekaLibsvmLiblinear
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), SMO.class.getName(),
                 "-C", "1.0", "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2" });
-        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Map<String, Object> config2 = new HashMap<>();
         config2.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LiblinearAdapter(), "-s", "4", "-c", "100" });
-        config2.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        config2.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
         config2.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
 
         Map<String, Object> config3 = new HashMap<>();
         config3.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" });
-        config3.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config3.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         config3.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
         
         Map<String, Object> config4 = new HashMap<>();
         config4.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
-        config4.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        config4.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
         config4.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config, config2,

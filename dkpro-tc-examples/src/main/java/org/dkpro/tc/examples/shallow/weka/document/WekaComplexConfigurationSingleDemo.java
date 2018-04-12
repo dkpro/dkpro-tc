@@ -98,20 +98,20 @@ public class WekaComplexConfigurationSingleDemo
         Map<String, Object> config1 = new HashMap<>();
         config1.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), SMO.class.getName(),
                 "-C", "1.0", "-K", PolyKernel.class.getName() + " " + "-C -1 -E 2" });
-        config1.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config1.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         config1.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Map<String, Object> config2 = new HashMap<>();
         config2.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), RandomForest.class.getName(), "-I", "5" });
-        config2.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config2.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         config2.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Map<String, Object> config3 = new HashMap<>();
         config3.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), Bagging.class.getName(), "-I", "2", "-W",
                         J48.class.getName(), "--", "-C", "0.5", "-M", "2" });
-        config3.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        config3.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         config3.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config1, config2,

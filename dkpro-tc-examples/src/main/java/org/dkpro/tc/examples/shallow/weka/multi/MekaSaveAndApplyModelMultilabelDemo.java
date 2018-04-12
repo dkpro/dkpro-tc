@@ -110,7 +110,7 @@ public class MekaSaveAndApplyModelMultilabelDemo
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(), MULAN.class.getName(),
                 "-S", "RAkEL2", "-W", RandomForest.class.getName() });
-        config.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

@@ -101,7 +101,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
             Map<String, Object> config = new HashMap<>();
             config.put(DIM_CLASSIFICATION_ARGS,
                     new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
-            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
             config.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
             Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
@@ -112,7 +112,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         else {
             Map<String, Object> config = new HashMap<>();
             config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
-            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+            config.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
             config.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
             Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
@@ -244,7 +244,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
 
         Map<String, Object> wekaConfig = new HashMap<>();
         wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
-        wekaConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 

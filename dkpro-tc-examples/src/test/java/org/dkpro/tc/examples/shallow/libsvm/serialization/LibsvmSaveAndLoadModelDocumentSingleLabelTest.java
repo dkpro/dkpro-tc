@@ -98,7 +98,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "100" });
-        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
@@ -118,7 +118,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
             config = new HashMap<>();
             config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter() });
-            config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+            config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
             config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
             mlas = Dimension.createBundle("config", config);
 
@@ -259,7 +259,7 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-c", "1000" });
-        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

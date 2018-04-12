@@ -89,7 +89,7 @@ public class SvmHmmBrownPosDemo
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" });
-        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);

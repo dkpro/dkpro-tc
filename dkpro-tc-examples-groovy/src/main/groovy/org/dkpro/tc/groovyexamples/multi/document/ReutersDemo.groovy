@@ -93,7 +93,7 @@ public class ReutersDemo implements Constants {
 
     def config  = [
         (DIM_CLASSIFICATION_ARGS) : [new MekaAdapter(), BR.name, "-W", NaiveBayes.name],
-        (DIM_DATA_WRITER) : new MekaAdapter().getDataWriterClass().getName(),
+        (DIM_DATA_WRITER) : new MekaAdapter().getDataWriterClass(),
         (DIM_FEATURE_USE_SPARSE) : new MekaAdapter().useSparseFeatures()
     ]
     def mlas = Dimension.createBundle("mlas", config)

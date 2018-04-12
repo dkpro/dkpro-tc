@@ -152,7 +152,7 @@ public class LibsvmSaveAndLoadModelDocumentRegression
 
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] {new LibsvmAdapter(), "-s", "3"});
-        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

@@ -102,25 +102,25 @@ public class MultiRegressionWekaLibsvmLiblinear
         Map<String, Object> xgboostConfig = new HashMap<>();
         xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
-        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
         xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
 
         Map<String, Object> liblinearConfig = new HashMap<>();
         liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LiblinearAdapter(), "-s", "6" });
-        liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
         liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
 
         Map<String, Object> libsvmConfig = new HashMap<>();
         libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" });
-        libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+        libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
         libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 
         Map<String, Object> wekaConfig = new HashMap<>();
         wekaConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), LinearRegression.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig,

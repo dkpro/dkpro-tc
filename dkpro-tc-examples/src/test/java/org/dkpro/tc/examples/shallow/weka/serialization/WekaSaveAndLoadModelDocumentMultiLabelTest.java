@@ -99,7 +99,7 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
         Map<String, Object> wekaConfig = new HashMap<>();
         wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] {  new MekaAdapter(), MULAN.class.getName(), "-S",
                 "RAkEL2", "-W", RandomForest.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 

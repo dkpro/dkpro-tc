@@ -136,14 +136,14 @@ public class SequenceDemo
         Map<String, Object> crfsuite = new HashMap<>();
         crfsuite.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
                 CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5" });
-        crfsuite.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        crfsuite.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
         crfsuite.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
         
         
         Map<String, Object> svmHmm = new HashMap<>();
         svmHmm.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter(),
                 "-c", "1000" });
-        svmHmm.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        svmHmm.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
         svmHmm.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
         
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", crfsuite, svmHmm);

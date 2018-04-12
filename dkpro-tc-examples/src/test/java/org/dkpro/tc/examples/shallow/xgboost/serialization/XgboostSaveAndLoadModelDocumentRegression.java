@@ -143,7 +143,7 @@ public class XgboostSaveAndLoadModelDocumentRegression
         Map<String, Object> xgboostConfig = new HashMap<>();
         xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new XgboostAdapter(), "booster=gblinear", "reg:logistic" });
-        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass().getName());
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
         xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
         
 

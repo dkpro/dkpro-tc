@@ -253,7 +253,7 @@ public class TcAnnotator
         parameters.addAll(Arrays.asList(PARAM_TC_MODEL_LOCATION, tcModelLocation,
                 ModelSerialization_ImplBase.PARAM_OUTPUT_DIRECTORY, outputPath,
                 ModelSerialization_ImplBase.PARAM_DATA_WRITER_CLASS,
-                adapter.getDataWriterClass().getName(),
+                adapter.getDataWriterClass(),
                 ModelSerialization_ImplBase.PARAM_LEARNING_MODE, learningMode,
                 ModelSerialization_ImplBase.PARAM_FEATURE_EXTRACTORS, featureExtractor,
                 ModelSerialization_ImplBase.PARAM_FEATURE_FILTERS, null,

@@ -130,7 +130,7 @@ public class CRFSuiteSaveAndLoadModelTest
                 new Object[] { new CrfSuiteAdapter(),
                         CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
                         "max_iterations=2" });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
@@ -227,7 +227,7 @@ public class CRFSuiteSaveAndLoadModelTest
                 new Object[] { new CrfSuiteAdapter(),
                         CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
                         "max_iterations=2" });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
@@ -268,7 +268,7 @@ public class CRFSuiteSaveAndLoadModelTest
                 new Object[] { new CrfSuiteAdapter(),
                         CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
                         "max_iterations=2" });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

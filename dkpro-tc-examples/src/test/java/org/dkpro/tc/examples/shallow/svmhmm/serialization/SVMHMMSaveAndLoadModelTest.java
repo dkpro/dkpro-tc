@@ -138,7 +138,7 @@ public class SVMHMMSaveAndLoadModelTest
 
         Map<String, Object> wekaConfig = new HashMap<>();
         wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter() });
-        wekaConfig.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 

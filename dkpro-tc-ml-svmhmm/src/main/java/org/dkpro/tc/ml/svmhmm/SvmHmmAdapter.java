@@ -25,13 +25,12 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineMajorityClassIdReport;
-import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatBaselineRandomIdReport;
+import org.dkpro.tc.io.libsvm.reports.LibsvmDataFormatOutcomeIdReport;
 import org.dkpro.tc.ml.svmhmm.task.SvmHmmTestTask;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.task.serialization.SvmhmmSerializeModelConnector;
@@ -98,9 +97,9 @@ public class SvmHmmAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public String getDataWriterClass()
     {
-        return SvmHmmDataWriter.class;
+        return SvmHmmDataWriter.class.getName();
     }
 
     @Override

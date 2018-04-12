@@ -135,7 +135,7 @@ public class LiblinearUnitDemo
 
         Map<String, Object> config = new HashMap<>();
         config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
-        config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+        config.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 

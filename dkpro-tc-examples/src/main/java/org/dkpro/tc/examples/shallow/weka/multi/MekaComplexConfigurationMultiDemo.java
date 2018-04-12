@@ -108,19 +108,19 @@ public class MekaComplexConfigurationMultiDemo
         Map<String, Object> config1 = new HashMap<>();
         config1.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(), BR.class.getName(),
                 "-W", NaiveBayes.class.getName() });
-        config1.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config1.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass());
         config1.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
 
         Map<String, Object> config2 = new HashMap<>();
         config2.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new MekaAdapter(), CCq.class.getName(), "-P", "0.9" });
-        config2.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config2.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass());
         config2.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
 
         Map<String, Object> config3 = new HashMap<>();
         config3.put(DIM_CLASSIFICATION_ARGS, new Object[] { new MekaAdapter(),
                 PSUpdateable.class.getName(), "-B", "900", "-S", "9" });
-        config3.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass().getName());
+        config3.put(DIM_DATA_WRITER, new MekaAdapter().getDataWriterClass());
         config3.put(DIM_FEATURE_USE_SPARSE, new MekaAdapter().useSparseFeatures());
 
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config1, config2,

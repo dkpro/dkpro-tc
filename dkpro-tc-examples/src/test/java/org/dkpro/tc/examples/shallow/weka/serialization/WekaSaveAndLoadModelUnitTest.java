@@ -142,7 +142,7 @@ public class WekaSaveAndLoadModelUnitTest
         Map<String, Object> wekaConfig = new HashMap<>();
         wekaConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new WekaAdapter(), SMO.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass().getName());
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 

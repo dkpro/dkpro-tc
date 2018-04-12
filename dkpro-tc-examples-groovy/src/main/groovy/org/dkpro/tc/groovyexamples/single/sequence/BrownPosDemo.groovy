@@ -73,7 +73,7 @@ implements Constants {
 	
     def config  = [
         (DIM_CLASSIFICATION_ARGS) : [new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR],
-        (DIM_DATA_WRITER) : new CrfSuiteAdapter().getDataWriterClass().getName(),
+        (DIM_DATA_WRITER) : new CrfSuiteAdapter().getDataWriterClass(),
         (DIM_FEATURE_USE_SPARSE) : new CrfSuiteAdapter().useSparseFeatures()
     ]
     def mlas = Dimension.createBundle("mlas", config)

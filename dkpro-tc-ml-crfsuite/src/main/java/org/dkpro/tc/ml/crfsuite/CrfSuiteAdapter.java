@@ -24,7 +24,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
@@ -80,9 +79,9 @@ public class CrfSuiteAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public String getDataWriterClass()
     {
-        return CrfSuiteDataWriter.class;
+        return CrfSuiteDataWriter.class.getName();
     }
 
     @Override

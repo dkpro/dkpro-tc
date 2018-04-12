@@ -25,7 +25,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
@@ -76,9 +75,9 @@ public class MekaAdapter
     }
 
     @Override
-    public Class<? extends DataWriter> getDataWriterClass()
+    public String getDataWriterClass()
     {
-        return MekaDataWriter.class;
+        return MekaDataWriter.class.getName();
     }
 
     @Override
