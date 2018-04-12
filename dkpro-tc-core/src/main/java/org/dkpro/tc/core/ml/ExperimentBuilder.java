@@ -36,12 +36,12 @@ import org.dkpro.tc.core.Constants;
 public class ExperimentBuilder
     implements Constants
 {
-    List<TcShallowLearningAdapter> adapter = new ArrayList<>();
-    List<String[]> arguments = new ArrayList<>();
-    String learningMode = LM_SINGLE_LABEL;
-    String featureMode = FM_DOCUMENT;
-    Map<String, Object> readers = null;
-    List<TcFeatureSet> featureSets = new ArrayList<>();
+    private List<TcShallowLearningAdapter> adapter = new ArrayList<>();
+    private List<String[]> arguments = new ArrayList<>();
+    private String learningMode = LM_SINGLE_LABEL;
+    private String featureMode = FM_DOCUMENT;
+    private Map<String, Object> readers = null;
+    private List<TcFeatureSet> featureSets = new ArrayList<>();
 
     /**
      * Adds a machine learning adapter configuration. Several configurations for the same adapter
@@ -148,7 +148,7 @@ public class ExperimentBuilder
 
             Map<String, Object> m = new HashedMap<>();
             m.put(DIM_CLASSIFICATION_ARGS, o);
-            m.put(DIM_DATA_WRITER, a.getDataWriterClass().getName());
+            m.put(DIM_DATA_WRITER, a.getDataWriterClass());
             m.put(DIM_FEATURE_USE_SPARSE, a.useSparseFeatures() + "");
 
             maps.add(m);
