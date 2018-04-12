@@ -93,6 +93,10 @@ public class ExperimentBuilder
 
     private Dimension<?> getAsDimensionReaders()
     {
+        if (!readers.keySet().contains(DIM_READER_TRAIN)) {
+            throw new IllegalStateException("You must provide at least a training data reader");
+        }
+        
         return Dimension.createBundle(DIM_READERS, readers);
     }
 
