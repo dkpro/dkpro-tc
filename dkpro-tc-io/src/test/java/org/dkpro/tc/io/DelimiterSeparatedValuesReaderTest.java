@@ -31,7 +31,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
-public class LinewiseTextOutcomeReaderTest
+public class DelimiterSeparatedValuesReaderTest
 {
 
     @Test

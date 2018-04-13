@@ -71,21 +71,48 @@ public class DelimiterSeparatedSequenceValuesReader
     @ConfigurationParameter(name = PARAM_DELIMITER_CHAR, mandatory = true, defaultValue = "\t")
     protected String delimiter;
 
+    /**
+     * Sets a character sequence which is checked for every read token and skips an entry if found
+     */
     public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
     @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
     protected String skipLinePrefix;
 
+    /**
+     * Each line in the file is split by the delimiter character and the token at index zero is
+     * assumed to be the token. This variable allows to change the default value.
+     */
     public static final String PARAM_TOKEN_INDEX = "PARAM_TOKEN_INDEX";
     @ConfigurationParameter(name = PARAM_TOKEN_INDEX, mandatory = true, defaultValue = "0")
     protected Integer tokenIdx;
 
+    /**
+     * Each line in the file is split by the delimiter character and the value at index one is
+     * assumed to be the label/category of the token. This variable allows to change the default
+     * value.
+     */
     public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
     @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
     protected Integer outcomeIdx;
 
+    /**
+     * Allows the alter the number of sequences that are read into a CAS. Many CAS objects with only
+     * a few sequences in it might create additional overhead for CAS creation, which will slow down
+     * the processing time. Likewise the creation of a single fat-CAS might also be expensive. This
+     * variable allows to control the number of sequences in a CAS.
+     */
     public static final String PARAM_SEQUENCES_PER_CAS = "PARAM_SEQUENCES_PER_CAS";
     @ConfigurationParameter(name = PARAM_SEQUENCES_PER_CAS, mandatory = true, defaultValue = "100")
     protected Integer sequencesPerCas;
+
+    /**
+     * The reader annotates by default the read category label as {@link TextClassificationOutcome}.
+     * When using this reader together with a trained model this behavior might be undesired. This
+     * switch turns off the automatic annotation.
+     */
+    public static final String PARAM_ANNOTATE_OUTCOME = "PARAM_ANNOTATE_OUTCOME";
+    @ConfigurationParameter(name = PARAM_ANNOTATE_OUTCOME, mandatory = true, defaultValue = "true")
+    protected boolean annotateOutcome;
 
     protected BufferedReader reader;
 
@@ -171,6 +198,10 @@ public class DelimiterSeparatedSequenceValuesReader
     protected void setTextClassificationOutcome(JCas aJCas, String outcome, int begin, int end)
         throws IOException
     {
+        if(!annotateOutcome) {
+            return;
+        }
+        
         TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, begin, end);
         tco.setOutcome(outcome);
         tco.addToIndexes();

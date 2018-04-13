@@ -36,7 +36,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class SequenceOutcomeReaderTest
+public class DelimiterSeparatedSequenceValuesReaderTest
 {
 
     @Test

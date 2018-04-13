@@ -53,17 +53,38 @@ public class DelimiterSeparatedValuesReader
     @ConfigurationParameter(name = PARAM_DELIMITER_CHAR, mandatory = true, defaultValue = "\t")
     protected String delimiter;
 
+    /**
+     * Sets a character sequence which is checked for every read token and skips an entry if found
+     */
+    public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
+    @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
+    protected String skipLinePrefix;
+
+    /**
+     * Each line in the file is split by the delimiter character and the token at index zero is
+     * assumed to be the token. This variable allows to change the default value.
+     */
     public static final String PARAM_TEXT_INDEX = "PARAM_TEXT_INDEX";
     @ConfigurationParameter(name = PARAM_TEXT_INDEX, mandatory = true, defaultValue = "0")
     protected Integer textIdx;
 
+    /**
+     * Each line in the file is split by the delimiter character and the value at index one is
+     * assumed to be the label/category of the token. This variable allows to change the default
+     * value.
+     */
     public static final String PARAM_OUTCOME_INDEX = "PARAM_OUTCOME_INDEX";
     @ConfigurationParameter(name = PARAM_OUTCOME_INDEX, mandatory = true, defaultValue = "1")
     protected Integer outcomeIdx;
-
-    public static final String PARAM_SKIP_LINES_START_WITH_STRING = "PARAM_SKIP_LINES_START_WITH_STRING";
-    @ConfigurationParameter(name = PARAM_SKIP_LINES_START_WITH_STRING, mandatory = false)
-    protected String skipLinePrefix;
+    
+    /**
+     * The reader annotates by default the read category label as {@link TextClassificationOutcome}.
+     * When using this reader together with a trained model this behavior might be undesired. This
+     * switch turns off the automatic annotation.
+     */
+    public static final String PARAM_ANNOTATE_OUTCOME = "PARAM_ANNOTATE_OUTCOME";
+    @ConfigurationParameter(name = PARAM_ANNOTATE_OUTCOME, mandatory = true, defaultValue = "true")
+    protected boolean annotateOutcome;
 
     protected BufferedReader reader;
 
