@@ -118,9 +118,9 @@ public class LiblinearAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return LiblinearSerializeModelConnector.class;
+        return new LiblinearSerializeModelConnector();
     }
 
     @Override

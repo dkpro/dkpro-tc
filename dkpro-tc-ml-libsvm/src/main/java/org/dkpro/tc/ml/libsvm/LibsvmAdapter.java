@@ -131,9 +131,9 @@ public class LibsvmAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return LibsvmSerializeModelConnector.class;
+        return new LibsvmSerializeModelConnector();
     }
 
     @Override

@@ -91,9 +91,9 @@ public class CrfSuiteAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return CrfSuiteSerializeModelConnector.class;
+        return new CrfSuiteSerializeModelConnector();
     }
 
     /**

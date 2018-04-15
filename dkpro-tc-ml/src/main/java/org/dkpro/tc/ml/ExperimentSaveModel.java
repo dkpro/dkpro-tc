@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DKProTcShallowSerializationTask;
@@ -47,7 +48,7 @@ public class ExperimentSaveModel
     private OutcomeCollectionTask collectionTask;
     private MetaInfoTask metaTask;
     private ExtractFeaturesTask featuresTrainTask;
-    private DKProTcShallowSerializationTask saveModelTask;
+    private TaskBase saveModelTask;
 
     public ExperimentSaveModel()
     {/* needed for Groovy */
@@ -109,23 +110,15 @@ public class ExperimentSaveModel
         featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
 
-        // feature extraction and prediction on test data
-        try {
-            saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
-                    collectionTask, outputFolder, experimentName);
-            saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
-            saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
-            saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                    Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-            saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                    Constants.OUTCOMES_INPUT_KEY);
-            saveModelTask.setAttribute(TC_TASK_TYPE,
-                    TcTaskType.FACADE_TASK.toString());
-
-        }
-        catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+        saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
+                collectionTask, outputFolder, experimentName);
+        saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
+        saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
+        saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+                Constants.OUTCOMES_INPUT_KEY);
+        saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTask);

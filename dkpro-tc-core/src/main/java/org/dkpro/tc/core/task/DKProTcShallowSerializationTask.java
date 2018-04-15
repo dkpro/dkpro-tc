@@ -63,22 +63,15 @@ public class DKProTcShallowSerializationTask
         super.initialize(aContext);
 
         TcShallowLearningAdapter adapter = (TcShallowLearningAdapter) classArgs.get(0);
-        ModelSerializationTask serializationTask;
-        try {
-            serializationTask = adapter.getSaveModelTask().newInstance();
-        }
-        catch (Exception e) {
-            throw new UnsupportedOperationException(
-                    "Error when instantiating model serialization task");
-        }
+        ModelSerializationTask serializationTask = adapter.getSaveModelTask();
 
         serializationTask.addImport(metaInfoTask, MetaInfoTask.META_KEY);
         serializationTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+                TEST_TASK_INPUT_KEY_TRAINING_DATA);
         serializationTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                Constants.OUTCOMES_INPUT_KEY);
+                OUTCOMES_INPUT_KEY);
         serializationTask.setOutputFolder(outputFolder);
-
+        serializationTask.setAttribute(TC_TASK_TYPE, TcTaskType.SERIALIZATION_TASK.toString());
         serializationTask.setType(serializationTask.getType() + "-" + experimentName);
         this.tasks = new HashSet<>();
         addTask(serializationTask);

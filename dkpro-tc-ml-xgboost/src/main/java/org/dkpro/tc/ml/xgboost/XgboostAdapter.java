@@ -269,9 +269,9 @@ public class XgboostAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return XgboostSerializeModelConnector.class;
+        return new XgboostSerializeModelConnector();
     }
 
     @Override

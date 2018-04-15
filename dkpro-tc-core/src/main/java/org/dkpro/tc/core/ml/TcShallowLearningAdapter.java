@@ -22,7 +22,6 @@ import java.util.Collection;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ModelSerializationTask;
 
 /**
@@ -86,7 +85,7 @@ public interface TcShallowLearningAdapter
     /**
      * @return Returns a task that deals with serializing a model
      */
-    Class<? extends ModelSerializationTask> getSaveModelTask();
+    ModelSerializationTask getSaveModelTask();
 
     /**
      * 

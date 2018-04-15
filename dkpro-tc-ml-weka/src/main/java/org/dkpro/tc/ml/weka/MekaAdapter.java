@@ -87,9 +87,9 @@ public class MekaAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return WekaSerliazeModelConnector.class;
+        return new WekaSerliazeModelConnector();
     }
 
     @Override

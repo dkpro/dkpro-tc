@@ -109,9 +109,9 @@ public class SvmHmmAdapter
     }
 
     @Override
-    public Class<? extends ModelSerializationTask> getSaveModelTask()
+    public ModelSerializationTask getSaveModelTask()
     {
-        return SvmhmmSerializeModelConnector.class;
+        return new SvmhmmSerializeModelConnector();
     }
 
     @Override
