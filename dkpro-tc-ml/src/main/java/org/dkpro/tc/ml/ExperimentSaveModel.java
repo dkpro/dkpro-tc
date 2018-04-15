@@ -22,7 +22,6 @@ import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 import java.io.File;
 import java.util.List;
 
-import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
@@ -73,9 +72,7 @@ public class ExperimentSaveModel
      */
     protected void init()
     {
-        if (experimentName == null)
-
-        {
+        if (experimentName == null) {
             throw new IllegalStateException("You must set an experiment name");
         }
 
@@ -126,13 +123,6 @@ public class ExperimentSaveModel
         addTask(metaTask);
         addTask(featuresTrainTask);
         addTask(saveModelTask);
-    }
-
-    @Override
-    public void initialize(TaskContext aContext)
-    {
-        super.initialize(aContext);
-        init();
     }
 
     public void setExperimentName(String experimentName)
