@@ -26,7 +26,6 @@ import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DKProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
@@ -148,13 +147,6 @@ public class ExperimentTrainTest
                 testTask.addReport(report);
             }
         }
-
-        testTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        testTask.addImport(featuresTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                Constants.OUTCOMES_INPUT_KEY);
 
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);

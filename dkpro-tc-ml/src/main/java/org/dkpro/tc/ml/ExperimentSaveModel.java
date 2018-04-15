@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DKProTcShallowSerializationTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
@@ -110,11 +109,6 @@ public class ExperimentSaveModel
         saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
                 collectionTask, outputFolder, experimentName);
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
-        saveModelTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        saveModelTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        saveModelTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                Constants.OUTCOMES_INPUT_KEY);
         saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         // DKPro Lab issue 38: must be added as *first* task
