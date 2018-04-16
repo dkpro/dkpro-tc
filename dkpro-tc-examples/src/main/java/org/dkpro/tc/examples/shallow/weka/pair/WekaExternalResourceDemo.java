@@ -110,7 +110,7 @@ public class WekaExternalResourceDemo
                         SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
                         gstResource));
 
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.PAIR);
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.PAIR);
         builder.addFeatureSet(tcFeatureSet);
         builder.addAdapterConfiguration( new WekaAdapter(), SMOreg.class.getName());
         builder.setReaders(dimReaders);
