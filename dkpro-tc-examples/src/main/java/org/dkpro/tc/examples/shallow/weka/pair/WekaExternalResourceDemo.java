@@ -48,7 +48,7 @@ import org.dkpro.tc.ml.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
 import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
-import weka.classifiers.functions.SMOreg;
+import weka.classifiers.functions.SMO;
 
 /**
  * Demonstrates the usage of external resources within feature extractors, i.e. nested resources in
@@ -112,7 +112,7 @@ public class WekaExternalResourceDemo
 
         ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.PAIR);
         builder.addFeatureSet(tcFeatureSet);
-        builder.addAdapterConfiguration( new WekaAdapter(), SMOreg.class.getName());
+        builder.addAdapterConfiguration( new WekaAdapter(), SMO.class.getName());
         builder.setReaders(dimReaders);
         ParameterSpace pSpace = builder.build();
 
