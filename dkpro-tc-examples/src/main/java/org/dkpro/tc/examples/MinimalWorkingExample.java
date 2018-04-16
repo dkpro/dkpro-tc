@@ -87,10 +87,18 @@ public class MinimalWorkingExample
         dimReaders.put(DIM_READER_TEST, readerTest);
 
        TcFeatureSet tcFeatureSet = new TcFeatureSet("DummyFeatureSet",
-                        TcFeatureFactory.create(TokenRatioPerDocument.class),
-                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-                                20, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-                                3));
+               
+                                        // The number of tokens in a document with respect to the document in the training
+                                        // documents that has the most tokens
+                                        TcFeatureFactory.create(TokenRatioPerDocument.class),
+                                        
+                                        // Word ngrams as features, we use the K most frequent ngrams in the range of uni,
+                                        // bi and tri grams
+                                        TcFeatureFactory.create(WordNGram.class, 
+                                                                WordNGram.PARAM_NGRAM_USE_TOP_K, 20, 
+                                                                WordNGram.PARAM_NGRAM_MIN_N, 1, 
+                                                                WordNGram.PARAM_NGRAM_MAX_N, 3)
+                                        );
 
         ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT);
         builder.addFeatureSet(tcFeatureSet);
