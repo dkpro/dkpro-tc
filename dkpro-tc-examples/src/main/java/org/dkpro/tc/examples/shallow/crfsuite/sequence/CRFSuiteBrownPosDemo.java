@@ -35,9 +35,6 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -45,6 +42,9 @@ import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
@@ -109,11 +109,13 @@ public class CRFSuiteBrownPosDemo
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
                         50));
 
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.SEQUENCE);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.SEQUENCE);
         builder.addAdapterConfiguration(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT);
         builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.build();
+        ParameterSpace pSpace = builder.buildParameterSpace();
         
         return pSpace;
     }

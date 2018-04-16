@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.ml;
+package org.dkpro.tc.ml.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,9 +29,10 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -61,13 +62,15 @@ public class ExperimentBuilderTest
     @Test
     public void testBuilder()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.DOCUMENT);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
         builder.addAdapterConfiguration(adapter);
 
-        ParameterSpace build = builder.build();
+        ParameterSpace build = builder.buildParameterSpace();
 
         Dimension<?>[] dimensions = build.getDimensions();
         assertEquals(5, dimensions.length);
@@ -84,14 +87,16 @@ public class ExperimentBuilderTest
     @Test
     public void testBuilderWithCustomUserDimensions()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.DOCUMENT);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
         builder.addAdapterConfiguration(adapter);
         builder.addAdditionalDimension(Dimension.create("ABC", String.class));
 
-        ParameterSpace build = builder.build();
+        ParameterSpace build = builder.buildParameterSpace();
 
         Dimension<?>[] dimensions = build.getDimensions();
         assertEquals(6, dimensions.length);
@@ -118,62 +123,74 @@ public class ExperimentBuilderTest
     @Test(expected = IllegalStateException.class)
     public void testErrorMissingReader()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.DOCUMENT);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setLearningMode(LearningMode.REGRESSION);
+        builder.setFeatureMode(FeatureMode.DOCUMENT);
         builder.addFeatureSet(tcFeatureSet);
         builder.addReader(readerTest, false);
         builder.addAdapterConfiguration(adapter);
-        builder.build();
+        builder.buildParameterSpace();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testErrorMissingFeatureSet()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.UNIT);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.UNIT);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
         builder.addAdapterConfiguration(adapter);
-        builder.build();
+        builder.buildParameterSpace();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testErrorEmptyFeatureSet()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.SEQUENCE);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.SEQUENCE);
         builder.addFeatureSet(new TcFeatureSet());
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
         builder.addAdapterConfiguration(adapter);
-        builder.build();
+        builder.buildParameterSpace();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testErrorMissingMachineLearningAdapter()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.PAIR);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.PAIR);
         builder.addFeatureSet(tcFeatureSet);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
-        builder.build();
+        builder.buildParameterSpace();
 
     }
     
     @Test(expected = NullPointerException.class)
     public void testErrorNullLearningMode()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(null, FeatureMode.PAIR);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setFeatureMode(FeatureMode.PAIR);
         builder.addFeatureSet(tcFeatureSet);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
-        builder.build();
+        builder.addAdapterConfiguration(adapter);
+        builder.buildParameterSpace();
     }
     
     @Test(expected = NullPointerException.class)
     public void testErrorNullFeatureMode()
     {
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, null);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
         builder.addFeatureSet(tcFeatureSet);
         builder.addReader(readerTrain, true);
         builder.addReader(readerTest, false);
-        builder.build();
+        builder.addAdapterConfiguration(adapter);
+        builder.buildParameterSpace();
     }
 }

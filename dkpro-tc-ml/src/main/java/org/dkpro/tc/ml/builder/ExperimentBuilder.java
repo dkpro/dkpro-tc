@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.ml.builder;
+package org.dkpro.tc.ml.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +39,8 @@ public class ExperimentBuilder
 {
     private List<TcShallowLearningAdapter> adapter = new ArrayList<>();
     private List<String[]> arguments = new ArrayList<>();
-    private String learningMode = LM_SINGLE_LABEL;
-    private String featureMode = FM_DOCUMENT;
+    private String learningMode;
+    private String featureMode;
     private Map<String, Object> readers = null;
     private List<TcFeatureSet> featureSets = new ArrayList<>();
     private List<Dimension<?>> additionalDimensions = new ArrayList<>();
@@ -48,19 +48,9 @@ public class ExperimentBuilder
     /**
      * Creates an experiment builder object.
      * 
-     * @param learningMode
-     *            A learning mode which can be either one of the constants: {LM_SINGLE_LABEL,
-     *            LM_REGRESSION, LM_PAIR or LM_MULTI_LABEL}
-     * @param featureMode
-     *            A feature mode which can be either one of the constants
      */
-    public ExperimentBuilder(LearningMode learningMode, FeatureMode featureMode)
+    public ExperimentBuilder()
     {
-        this.learningMode = learningMode.toString();
-        this.featureMode = featureMode.toString();
-
-        checkLearningMode();
-        checkFeatureMode();
 
     }
 
@@ -88,7 +78,7 @@ public class ExperimentBuilder
      * 
      * @return the parameter space filled with the provided information
      */
-    public ParameterSpace build()
+    public ParameterSpace buildParameterSpace()
     {
         List<Dimension<?>> dimensions = new ArrayList<>();
 
@@ -204,20 +194,6 @@ public class ExperimentBuilder
         }
     }
 
-    private void checkFeatureMode()
-    {
-        if (this.featureMode == null) {
-            throw new NullPointerException("The provided feature mode is null");
-        }
-    }
-
-    private void checkLearningMode()
-    {
-        if (this.learningMode == null) {
-            throw new NullPointerException("The provided learning mode is null");
-        }
-    }
-
     public void addFeatureSet(TcFeatureSet featureSet)
     {
         sanityCheckFeatureSet(featureSet);
@@ -289,6 +265,24 @@ public class ExperimentBuilder
                     "More than two readers have been added. Train-test experiments require two data readers, one for train, one for test. Cross-validation experiments require only one.");
         }
 
+    }
+
+    public void setLearningMode(LearningMode learningMode)
+    {
+        if (learningMode == null) {
+            throw new NullPointerException("Learning mode is null");
+        }
+
+        this.learningMode = learningMode.toString();
+    }
+    
+    public void setFeatureMode(FeatureMode featureMode)
+    {
+        if (featureMode == null) {
+            throw new NullPointerException("Feature mode is null");
+        }
+
+        this.featureMode = featureMode.toString();
     }
 
 }

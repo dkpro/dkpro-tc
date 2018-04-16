@@ -33,15 +33,15 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
@@ -88,11 +88,13 @@ public class LiblinearDocumentPlain
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
                                 3));
 
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.DOCUMENT);
         builder.addAdapterConfiguration(new LiblinearAdapter(),"-s", "4", "-c", "100");
         builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.build();
+        ParameterSpace pSpace = builder.buildParameterSpace();
 
         return pSpace;
     }

@@ -31,9 +31,6 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -41,6 +38,9 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
@@ -87,11 +87,13 @@ public class SvmHmmBrownPosDemo
                                 CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                                 CharacterNGram.PARAM_NGRAM_MAX_N, 3));
 
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.SEQUENCE);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.SEQUENCE);
         builder.addAdapterConfiguration( new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" );
         builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.build();
+        ParameterSpace pSpace = builder.buildParameterSpace();
         
         return pSpace;
     }

@@ -35,13 +35,13 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
@@ -110,11 +110,13 @@ public class WekaExternalResourceDemo
                         SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
                         gstResource));
 
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.PAIR);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.SINGLE_LABEL);
+        builder.setFeatureMode(FeatureMode.PAIR);
         builder.addAdapterConfiguration( new WekaAdapter(), SMO.class.getName());
         builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.build();
+        ParameterSpace pSpace = builder.buildParameterSpace();
 
         return pSpace;
     }

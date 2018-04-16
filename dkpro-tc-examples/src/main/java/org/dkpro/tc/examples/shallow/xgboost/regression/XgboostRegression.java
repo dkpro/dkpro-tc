@@ -32,15 +32,15 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.core.ml.builder.FeatureMode;
-import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
@@ -88,11 +88,13 @@ public class XgboostRegression
         TcFeatureSet tcFeatureSet = new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
                         TcFeatureFactory.create(TokenRatioPerDocument.class));
         
-        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.DOCUMENT);
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
+        builder.setLearningMode(LearningMode.REGRESSION);
+        builder.setFeatureMode(FeatureMode.DOCUMENT);
         builder.addAdapterConfiguration(  new XgboostAdapter(), "booster=gbtree", "reg:linear" );
         builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.build();
+        ParameterSpace pSpace = builder.buildParameterSpace();
 
         return pSpace;
     }
