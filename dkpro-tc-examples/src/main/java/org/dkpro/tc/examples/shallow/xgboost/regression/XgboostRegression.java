@@ -92,7 +92,7 @@ public class XgboostRegression
         builder.addFeatureSet(tcFeatureSet);
         builder.setLearningMode(LearningMode.REGRESSION);
         builder.setFeatureMode(FeatureMode.DOCUMENT);
-        builder.addAdapterConfiguration(  new XgboostAdapter(), "booster=gbtree", "reg:linear" );
+        builder.addAdapterConfiguration(new XgboostAdapter(), "booster=gbtree", "reg:linear" );
         builder.setReaders(dimReaders);
         ParameterSpace pSpace = builder.buildParameterSpace();
 
