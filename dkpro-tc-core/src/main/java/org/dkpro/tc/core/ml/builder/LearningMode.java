@@ -19,11 +19,31 @@ package org.dkpro.tc.core.ml.builder;
 
 import org.dkpro.tc.core.Constants;
 
-public enum LearningMode implements Constants
+public enum LearningMode
+    implements
+    Constants
 {
-    SINGLE_LABEL(LM_SINGLE_LABEL), 
+    /**
+     * The objective during prediction is determining exactly one label from a pre-defined set of
+     * labels, for instance sentiment classification with the possible labels: neutral, positive and
+     * negative, i.e. the categories are mutually exclusive and only one is correct. In case more
+     * than two labels are possible in principle, see {@link LearningMode#MULTI_LABEL}
+     */
+    SINGLE_LABEL(LM_SINGLE_LABEL),
+
+    /**
+     * The objective during prediction is determining a numeric value from a scale, for instance
+     * automatic scoring of essays on a scale that reflects the points from zero points to one
+     * hundred (or any other numeric range).
+     */
     REGRESSION(LM_REGRESSION), 
-    MULTI_LABEL(LM_MULTI_LABEL); 
+    
+    /**
+     * The objective during prediction is determining one or more labels from a pre-defined set of
+     * labels, for instance categorization of movies in which a movie can be assigned to multiple
+     * categories such as drama, thriller or mystery.
+     */
+    MULTI_LABEL(LM_MULTI_LABEL);
 
     private String name;
 
