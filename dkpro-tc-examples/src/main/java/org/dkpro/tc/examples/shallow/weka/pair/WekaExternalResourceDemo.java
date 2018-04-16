@@ -31,11 +31,13 @@ import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.core.ml.builder.FeatureMode;
+import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
@@ -46,7 +48,7 @@ import org.dkpro.tc.ml.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
 import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
-import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.SMOreg;
 
 /**
  * Demonstrates the usage of external resources within feature extractors, i.e. nested resources in
@@ -104,21 +106,15 @@ public class WekaExternalResourceDemo
                         CosineSimilarityResource.PARAM_NORMALIZATION,
                         NormalizationMode.L2.toString());
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,
+        TcFeatureSet tcFeatureSet = new TcFeatureSet(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,
                         SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
-                        gstResource)));
+                        gstResource));
 
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new WekaAdapter(), SMO.class.getName() });
-        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(DIM_READERS, dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, mlas);
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.PAIR);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addAdapterConfiguration( new WekaAdapter(), SMOreg.class.getName());
+        builder.setReaders(dimReaders);
+        ParameterSpace pSpace = builder.build();
 
         return pSpace;
     }

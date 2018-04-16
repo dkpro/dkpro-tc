@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.core.ml;
+package org.dkpro.tc.core.ml.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +28,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
 /**
  * Convenience class that builds a parameter space object that can be passed to a DKPro Lab
@@ -44,9 +45,28 @@ public class ExperimentBuilder
     private List<TcFeatureSet> featureSets = new ArrayList<>();
 
     /**
+     * Creates an experiment builder object. 
+     * @param learningMode
+     *          A learning mode which can be either one of the constants: {LM_SINGLE_LABEL, LM_REGRESSION, LM_PAIR or LM_MULTI_LABEL}
+     * @param featureMode
+     *          A feature mode which can be either one of the constants
+     */
+    public ExperimentBuilder(LearningMode learningMode, FeatureMode featureMode)
+    {
+        this.learningMode = learningMode.toString();
+        this.featureMode = featureMode.toString();
+
+        checkLearningMode();
+        checkFeatureMode();
+
+    }
+
+    /**
      * Adds a machine learning adapter configuration. Several configurations for the same adapter
-     * can be added by calling this method multiple times with other parametritzation for the
-     * adapter
+     * (or for different ones) can be added by calling this method multiple times. Each
+     * configuration is executed automatically. Using several configurations of the same adapter is
+     * furthermore quickly executed as the expensive feature extraction step is executed only once
+     * and then reused as often as there are configurations of a the same adapter.
      * 
      * @param adapter
      *            the adapter that shall be executed
@@ -87,7 +107,8 @@ public class ExperimentBuilder
 
         @SuppressWarnings("unchecked")
         Map<String, Object>[] array = adapterMaps.toArray(new Map[0]);
-        Dimension<Map<String, Object>> mlaDim = Dimension.createBundle(DIM_MLA_CONFIGURATIONS, array);
+        Dimension<Map<String, Object>> mlaDim = Dimension.createBundle(DIM_MLA_CONFIGURATIONS,
+                array);
         return mlaDim;
     }
 
@@ -96,7 +117,7 @@ public class ExperimentBuilder
         if (!readers.keySet().contains(DIM_READER_TRAIN)) {
             throw new IllegalStateException("You must provide at least a training data reader");
         }
-        
+
         return Dimension.createBundle(DIM_READERS, readers);
     }
 
@@ -174,31 +195,19 @@ public class ExperimentBuilder
 
     private void nullCheckReaderMap(Map<String, Object> readers)
     {
-        if(readers == null) {
+        if (readers == null) {
             throw new NullPointerException("The provided readers are null");
-        }        
+        }
     }
 
-    public void setFeatureMode(String featureMode)
+    private void checkFeatureMode()
     {
-        this.featureMode = featureMode;
-        nullCheckFeatureMode();
-    }
-
-    private void nullCheckFeatureMode()
-    {
-        if (this.learningMode == null) {
+        if (this.featureMode == null) {
             throw new NullPointerException("The provided feature mode is null");
         }
     }
 
-    public void setLearningMode(String learningMode)
-    {
-        this.learningMode = learningMode;
-        nullCheckLearningMode();
-    }
-
-    private void nullCheckLearningMode()
+    private void checkLearningMode()
     {
         if (this.learningMode == null) {
             throw new NullPointerException("The provided learning mode is null");

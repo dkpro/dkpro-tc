@@ -28,11 +28,13 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.core.ml.builder.FeatureMode;
+import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
@@ -83,20 +85,14 @@ public class XgboostRegression
                 DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
-                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
-
-        Map<String, Object> xgboostConfig = new HashMap<>();
-        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
-        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
-        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
+        TcFeatureSet tcFeatureSet = new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
+                        TcFeatureFactory.create(TokenRatioPerDocument.class));
+        
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.DOCUMENT);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addAdapterConfiguration(  new XgboostAdapter(), "booster=gbtree", "reg:linear" );
+        builder.setReaders(dimReaders);
+        ParameterSpace pSpace = builder.build();
 
         return pSpace;
     }

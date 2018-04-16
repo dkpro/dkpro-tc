@@ -42,10 +42,10 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiDocument
+public class MultiDocumentTest
     extends TestCaseSuperClass
 {
-    MultiSvmUsingWekaLibsvmLiblinear javaExperiment;
+    MultiDocument javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -53,8 +53,8 @@ public class MultiDocument
     {
         super.setup();
 
-        javaExperiment = new MultiSvmUsingWekaLibsvmLiblinear();
-        pSpace = MultiSvmUsingWekaLibsvmLiblinear.getParameterSpace();
+        javaExperiment = new MultiDocument();
+        pSpace = MultiDocument.getParameterSpace();
     }
 
     @Test

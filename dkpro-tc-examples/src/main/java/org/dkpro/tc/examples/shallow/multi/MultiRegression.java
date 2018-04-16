@@ -51,7 +51,7 @@ import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;
 
-public class MultiRegressionWekaLibsvmLiblinear
+public class MultiRegression
     implements Constants
 {
 
@@ -66,11 +66,11 @@ public class MultiRegressionWekaLibsvmLiblinear
         // Don't use this in real experiments! Read the documentation and set DKPRO_HOME
         // as
         // explained there.
-        DemoUtils.setDkproHome(MultiRegressionWekaLibsvmLiblinear.class.getSimpleName());
+        DemoUtils.setDkproHome(MultiRegression.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 
-        MultiRegressionWekaLibsvmLiblinear experiment = new MultiRegressionWekaLibsvmLiblinear();
+        MultiRegression experiment = new MultiRegression();
         // experiment.runTrainTest(pSpace);
         experiment.runCrossValidation(pSpace);
     }

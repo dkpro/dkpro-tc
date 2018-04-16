@@ -26,12 +26,14 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.core.ml.builder.FeatureMode;
+import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -79,25 +81,19 @@ public class SvmHmmBrownPosDemo
         // configure training and test data reader dimension
         Map<String, Object> dimReaders = getDimReaders();
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+        TcFeatureSet tcFeatureSet = new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
                         TcFeatureFactory.create(CharacterNGram.class,
                                 CharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
                                 CharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                                CharacterNGram.PARAM_NGRAM_MAX_N, 3)));
+                                CharacterNGram.PARAM_NGRAM_MAX_N, 3));
 
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" });
-        config.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
-
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-
-        return new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets,
-                mlas);
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.SEQUENCE);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addAdapterConfiguration( new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" );
+        builder.setReaders(dimReaders);
+        ParameterSpace pSpace = builder.build();
+        
+        return pSpace;
     }
 
     protected void runCrossValidation(ParameterSpace pSpace,

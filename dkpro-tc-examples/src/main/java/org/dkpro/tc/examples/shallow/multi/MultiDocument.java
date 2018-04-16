@@ -52,7 +52,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.supportVector.PolyKernel;
 
-public class MultiSvmUsingWekaLibsvmLiblinear
+public class MultiDocument
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -69,7 +69,7 @@ public class MultiSvmUsingWekaLibsvmLiblinear
 
         ParameterSpace pSpace = getParameterSpace();
 
-        MultiSvmUsingWekaLibsvmLiblinear experiment = new MultiSvmUsingWekaLibsvmLiblinear();
+        MultiDocument experiment = new MultiDocument();
         experiment.runTrainTest(pSpace);
         // experiment.runCrossValidation(pSpace);
     }

@@ -45,7 +45,7 @@ import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 public class MultiRegressionTest
     extends TestCaseSuperClass
 {
-    MultiRegressionWekaLibsvmLiblinear javaExperiment;
+    MultiRegression javaExperiment;
     ParameterSpace pSpace;
 
     @Before
@@ -53,8 +53,8 @@ public class MultiRegressionTest
     {
         super.setup();
 
-        javaExperiment = new MultiRegressionWekaLibsvmLiblinear();
-        pSpace = MultiRegressionWekaLibsvmLiblinear.getParameterSpace();
+        javaExperiment = new MultiRegression();
+        pSpace = MultiRegression.getParameterSpace();
     }
 
     @Test

@@ -29,11 +29,13 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.core.ml.builder.FeatureMode;
+import org.dkpro.tc.core.ml.builder.LearningMode;
 import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
@@ -99,21 +101,16 @@ public class WekaPairRegressionDemo
                 STSReader.PARAM_GOLD_FILE, goldFileTest);
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
-
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new WekaAdapter(), SMOreg.class.getName() });
-        config.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-
-        ParameterSpace pSpace = new ParameterSpace(
-                Dimension.createBundle(Constants.DIM_READER_TRAIN, dimReaders),
-                Dimension.create(Constants.DIM_FEATURE_MODE, Constants.FM_PAIR),
-                Dimension.create(Constants.DIM_LEARNING_MODE, Constants.LM_REGRESSION),
-                dimFeatureSets, mlas);
+        TcFeatureSet tcFeatureSet = new TcFeatureSet(
+                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class));
+        
+        
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.REGRESSION, FeatureMode.PAIR);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addAdapterConfiguration( new WekaAdapter(), SMOreg.class.getName());
+        builder.setReaders(dimReaders);
+        ParameterSpace pSpace = builder.build();
+      
         return pSpace;
     }
 

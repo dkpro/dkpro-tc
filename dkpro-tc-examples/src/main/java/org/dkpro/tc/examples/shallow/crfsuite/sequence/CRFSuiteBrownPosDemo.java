@@ -35,7 +35,10 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.core.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.core.ml.builder.FeatureMode;
+import org.dkpro.tc.core.ml.builder.LearningMode;
+import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
@@ -100,25 +103,18 @@ public class CRFSuiteBrownPosDemo
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a02.xml");
         dimReaders.put(DIM_READER_TEST, test);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
+        TcFeatureSet tcFeatureSet = new TcFeatureSet(
                 TcFeatureFactory.create(TokenLengthRatio.class),
                 TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
-                        50)));
+                        50));
 
-        ParameterSpace pSpace;
-        if (dimFilters != null) {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, learningMode),
-                    Dimension.create(DIM_FEATURE_MODE, featureMode), dimFilters, dimFeatureSets,
-                    config);
-        }
-        else {
-            pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                    Dimension.create(DIM_LEARNING_MODE, learningMode),
-                    Dimension.create(DIM_FEATURE_MODE, featureMode), dimFeatureSets, config);
-        }
-
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.SEQUENCE);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addAdapterConfiguration(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT);
+        builder.setReaders(dimReaders);
+        ParameterSpace pSpace = builder.build();
+        
         return pSpace;
     }
 
