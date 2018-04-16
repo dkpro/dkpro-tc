@@ -19,11 +19,35 @@ package org.dkpro.tc.core.ml.builder;
 
 import org.dkpro.tc.core.Constants;
 
-public enum FeatureMode implements Constants
+public enum FeatureMode
+    implements
+    Constants
 {
-    DOCUMENT(FM_DOCUMENT), 
+    /**
+     * This mode is for cases in which the classification result is based on the full text of a
+     * document such as e-mails, postings etc. Spam classification or sentiment analysis are
+     * examples for document classification.
+     */
+    DOCUMENT(FM_DOCUMENT),
+
+    /**
+     * This mode is for cases in which the classification result is based on or more relevant
+     * targets in the document. If for instance a classification on all words with a capital letter
+     * shall be performed this mode is suited.
+     */
     UNIT(FM_UNIT),
+
+    /**
+     * This mode is for cases in which one wants to utilize knowledge from a comparison of two
+     * documents.
+     */
     PAIR(FM_PAIR),
+
+    /**
+     * This mode is for cases in which a sequence of labels has to be determined where the
+     * previously predicted sequence of labels is informative for the next decision. Typical example
+     * is named entity recognition or part-of-speech tagging.
+     */
     SEQUENCE(FM_SEQUENCE);
 
     private String name;
