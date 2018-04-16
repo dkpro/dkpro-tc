@@ -54,7 +54,7 @@ public class WekaRawDemoUIMAonly
 {
     public static void main(String[] args) throws Exception
     {
-     
+      new WekaRawDemoUIMAonly().run();
     }
 
     private static File runFeatureExtraction(String train, File luceneFolder,
