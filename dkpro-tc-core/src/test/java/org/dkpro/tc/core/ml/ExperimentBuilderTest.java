@@ -79,6 +79,31 @@ public class ExperimentBuilderTest
         assertTrue(names.contains(DIM_FEATURE_SET));
         assertTrue(names.contains(DIM_MLA_CONFIGURATIONS));
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBuilderWithCustomUserDimensions()
+    {
+        ExperimentBuilder builder = new ExperimentBuilder(LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT);
+        builder.addFeatureSet(tcFeatureSet);
+        builder.addReader(readerTrain, true);
+        builder.addReader(readerTest, false);
+        builder.addAdapterConfiguration(adapter);
+        builder.addAdditionalDimension(Dimension.create("ABC", String.class));
+
+        ParameterSpace build = builder.build();
+
+        Dimension<?>[] dimensions = build.getDimensions();
+        assertEquals(6, dimensions.length);
+
+        Set<String> names = getNames(dimensions);
+        assertTrue(names.contains(DIM_READERS));
+        assertTrue(names.contains(DIM_FEATURE_MODE));
+        assertTrue(names.contains(DIM_LEARNING_MODE));
+        assertTrue(names.contains(DIM_FEATURE_SET));
+        assertTrue(names.contains(DIM_MLA_CONFIGURATIONS));
+        assertTrue(names.contains("ABC"));
+    }
 
     private Set<String> getNames(Dimension<?>[] dimensions)
     {

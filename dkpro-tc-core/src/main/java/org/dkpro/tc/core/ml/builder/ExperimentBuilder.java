@@ -43,13 +43,16 @@ public class ExperimentBuilder
     private String featureMode = FM_DOCUMENT;
     private Map<String, Object> readers = null;
     private List<TcFeatureSet> featureSets = new ArrayList<>();
+    private List<Dimension<?>> additionalDimensions = new ArrayList<>();
 
     /**
-     * Creates an experiment builder object. 
+     * Creates an experiment builder object.
+     * 
      * @param learningMode
-     *          A learning mode which can be either one of the constants: {LM_SINGLE_LABEL, LM_REGRESSION, LM_PAIR or LM_MULTI_LABEL}
+     *            A learning mode which can be either one of the constants: {LM_SINGLE_LABEL,
+     *            LM_REGRESSION, LM_PAIR or LM_MULTI_LABEL}
      * @param featureMode
-     *          A feature mode which can be either one of the constants
+     *            A feature mode which can be either one of the constants
      */
     public ExperimentBuilder(LearningMode learningMode, FeatureMode featureMode)
     {
@@ -94,6 +97,7 @@ public class ExperimentBuilder
         dimensions.add(getAsDimensionLearningMode());
         dimensions.add(getAsDimensionFeatureSets());
         dimensions.add(getAsDimensionReaders());
+        dimensions.addAll(additionalDimensions);
 
         ParameterSpace ps = new ParameterSpace();
         ps.setDimensions(dimensions.toArray(new Dimension<?>[0]));
@@ -259,6 +263,23 @@ public class ExperimentBuilder
         }
 
         sanityCheckReaders();
+    }
+
+    /**
+     * Adds additional user-defined dimensions that are not part of the minimal necessary
+     * configuration.
+     * 
+     * @param dim
+     *            A dimension for adding to the experiment
+     */
+    public void addAdditionalDimension(Dimension<?> dim)
+    {
+
+        if (dim == null) {
+            throw new NullPointerException("The added dimension is null");
+        }
+
+        additionalDimensions.add(dim);
     }
 
     private void sanityCheckReaders() throws IllegalStateException
