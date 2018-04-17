@@ -63,6 +63,29 @@ public class ExperimentBuilder
 
     }
     
+    /**
+     * Configures an experiment which chooses reasonable default values where possible. This is
+     * intended to be used by DKPro TC beginners. Using the individual setter methods enables a much
+     * more targeted configuration of an experiment.
+     * 
+     * @param type
+     *            The type of experiment
+     * @param trainReader
+     *            The reader for reading the training data
+     * @param testReader
+     *            The reader for reading the testing data - can be null if {@link ExperimentType} is
+     *            cross validation
+     * @param lm
+     *            The learning mode
+     * @param fm
+     *            The feature more
+     * @param adapter
+     *            The machine learning adapter. A default configuration is used.
+     * @param featureSet
+     *            The feature set to be used
+     * @throws Exception
+     *             Throws an exception in case invalid or missing values are found
+     */
     public ExperimentBuilder(ExperimentType type, CollectionReaderDescription trainReader,
             CollectionReaderDescription testReader, LearningMode lm, FeatureMode fm,
             TcShallowLearningAdapter adapter, TcFeatureSet featureSet) throws Exception
@@ -70,7 +93,10 @@ public class ExperimentBuilder
         setExperiment(type, "TcExperiment");
         
         addReader(trainReader, false);
-        addReader(testReader, true);
+        if(type == ExperimentType.TRAIN_TEST){
+            addReader(testReader, true);
+        }
+        
         setLearningMode(lm);
         setFeatureMode(fm);
         addAdapterConfiguration(adapter);
@@ -330,6 +356,19 @@ public class ExperimentBuilder
         this.experiment = experiment;
     }
     
+    /**
+     * Sets an experiment using a minimal default configuration of an experiment.
+     * If a cross validation experiment is used the number of folds must be set additionally.
+     * 
+     * @param type
+     *          The type of experiment
+     * @param experimentName
+     *          The name of an experiment
+     * @param numFolds
+     *          The number of folds to be used for cross validation
+     * @throws Exception
+     *          throws an exception in case of invalid values
+     */
     public void setExperiment(ExperimentType type, String experimentName, int... numFolds)
         throws Exception
     {
@@ -355,6 +394,11 @@ public class ExperimentBuilder
         }
     }
     
+    /**
+     * Adds reports to the experimental setup. This method requires that the experiment has already been set. 
+     * @param reports
+     *      The reports that should be additionally used in the experiment.
+     */
     public void addExperimentReports(ReportBase... reports)
     {
         if (experiment == null) {
@@ -365,6 +409,12 @@ public class ExperimentBuilder
         }
     }
     
+    /**
+     * If an experiment requires preprocessing, this can be set here
+     * 
+     * @param preprocessing
+     *          an analysis engine with the components that perform the required preprocessing
+     */
     public void setExperimentPreprocessing(AnalysisEngineDescription preprocessing)
     {
         if (experiment == null) {
@@ -373,6 +423,12 @@ public class ExperimentBuilder
         experiment.setPreprocessing(preprocessing);
     }
     
+    /**
+     * Sets a name that describes the experiment
+     * 
+     * @param experimentName
+     *          An experiment name
+     */
     public void setExperimentName(String experimentName)
     {
         if (experiment == null) {
