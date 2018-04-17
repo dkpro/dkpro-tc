@@ -124,14 +124,14 @@ public class WekaRawDemoUIMAonly
                 luceneFolder.toString(), WordNGramMC.PARAM_TARGET_LOCATION,
                 luceneFolder.toString() };
 
-        // Extract features from training data - this steps requires building the lucene index for
+        // Extract features from training data - this steps requires building the Lucene index for
         // the ngram feature
         runTrainingMetaCollection(train, luceneFolder, ngramParameter);
         File extractedTrainData = runFeatureExtraction(train, luceneFolder, ngramParameter,
                 outputPathTrain);
 
-        // Extract features from testing data - we use the lucene index created during training here
-        // - no need to run the meta collection
+        // Extract features from testing data - we use the Lucene index created during training here
+        // - no need to run the meta collection again
         File extractedTestData = runFeatureExtraction(test, luceneFolder, ngramParameter,
                 outputPathTest);
 
