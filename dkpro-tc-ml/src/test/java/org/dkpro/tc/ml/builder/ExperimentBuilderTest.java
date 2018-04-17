@@ -60,7 +60,7 @@ public class ExperimentBuilderTest
     }
 
     @Test
-    public void testBuilder()
+    public void testBuildingParameterSpace()
     {
         ExperimentBuilder builder = new ExperimentBuilder();
         builder.addFeatureSet(tcFeatureSet);
@@ -193,4 +193,37 @@ public class ExperimentBuilderTest
         builder.addAdapterConfiguration(adapter);
         builder.buildParameterSpace();
     }
+    
+    @Test(expected = NullPointerException.class)
+    public void testErrorNullExperiment()
+    {
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setExperiment(null);
+    }
+    
+    @Test
+    public void testSetExperimentViaEnumTrainTest() throws Exception
+    {
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setExperiment(ExperimentType.TRAIN_TEST, "experimentTrainTest");
+        assertTrue(builder.experiment != null);
+    }
+    
+    @Test
+    public void testSetExperimentViaEnumCrossValidation() throws Exception
+    {
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setExperiment(ExperimentType.CROSS_VALIDATION, "experimentCrossValidation");
+        assertTrue(builder.experiment != null);
+    }
+    
+    @Test
+    public void testSetExperimentViaEnumCrossValidationWithNumFolds() throws Exception
+    {
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.setExperiment(ExperimentType.CROSS_VALIDATION, "experimentCrossValidation", 3);
+        assertTrue(builder.experiment != null);
+    }
+    
+    
 }

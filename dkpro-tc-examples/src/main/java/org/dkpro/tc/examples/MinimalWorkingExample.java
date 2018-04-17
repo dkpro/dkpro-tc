@@ -23,30 +23,22 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
-import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.bayes.NaiveBayes;
 
 public class MinimalWorkingExample
     implements Constants
@@ -58,16 +50,11 @@ public class MinimalWorkingExample
 
     public static void main(String[] args) throws Exception
     {
-
         DemoUtils.setDkproHome("target/");
-
-        ParameterSpace pSpace = getParameterSpace();
-
-        MinimalWorkingExample experiment = new MinimalWorkingExample();
-        experiment.runTrainTest(pSpace);
+        runExperiment();
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static void runExperiment() throws Exception
     {
         // configure training and test data reader dimension
         // train/test will use both, while cross-validation will only use the
@@ -100,34 +87,11 @@ public class MinimalWorkingExample
                                                                 WordNGram.PARAM_NGRAM_MAX_N, 3)
                                         );
 
-        ExperimentBuilder builder = new ExperimentBuilder();
-        builder.addFeatureSet(tcFeatureSet);
-        builder.setLearningMode(LearningMode.SINGLE_LABEL);
-        builder.setFeatureMode(FeatureMode.DOCUMENT);
-        builder.addAdapterConfiguration(new WekaAdapter(), NaiveBayes.class.getName());
-        builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.buildParameterSpace();
-
-        return pSpace;
-    }
-
-    // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
-    {
-
-        ExperimentTrainTest experiment = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(new ContextMemoryReport());
-
-        // Run
-        Lab.getInstance().run(experiment);
-    }
-
-    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
-    {
-        return createEngineDescription(BreakIteratorSegmenter.class);
+        ExperimentBuilder builder = new ExperimentBuilder(ExperimentType.TRAIN_TEST, readerTrain,
+                readerTest, LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new WekaAdapter(),
+                tcFeatureSet);
+        builder.setExperimentPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
+        builder.setExperimentName("ExampleProject");
+        builder.runExperiment();
     }
 }

@@ -23,12 +23,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
  * Convenience class that builds a parameter space object that can be passed to a DKPro Lab
@@ -37,13 +45,14 @@ import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 public class ExperimentBuilder
     implements Constants
 {
-    private List<TcShallowLearningAdapter> adapter = new ArrayList<>();
-    private List<String[]> arguments = new ArrayList<>();
-    private String learningMode;
-    private String featureMode;
-    private Map<String, Object> readers = null;
-    private List<TcFeatureSet> featureSets = new ArrayList<>();
-    private List<Dimension<?>> additionalDimensions = new ArrayList<>();
+    List<TcShallowLearningAdapter> adapter = new ArrayList<>();
+    List<String[]> arguments = new ArrayList<>();
+    String learningMode;
+    String featureMode;
+    Map<String, Object> readers = null;
+    List<TcFeatureSet> featureSets = new ArrayList<>();
+    List<Dimension<?>> additionalDimensions = new ArrayList<>();
+    ShallowLearningExperiment_ImplBase experiment;
 
     /**
      * Creates an experiment builder object.
@@ -52,6 +61,20 @@ public class ExperimentBuilder
     public ExperimentBuilder()
     {
 
+    }
+    
+    public ExperimentBuilder(ExperimentType type, CollectionReaderDescription trainReader,
+            CollectionReaderDescription testReader, LearningMode lm, FeatureMode fm,
+            TcShallowLearningAdapter adapter, TcFeatureSet featureSet) throws Exception
+    {
+        setExperiment(type, "TcExperiment");
+        
+        addReader(trainReader, false);
+        addReader(testReader, true);
+        setLearningMode(lm);
+        setFeatureMode(fm);
+        addAdapterConfiguration(adapter);
+        addFeatureSet(featureSet);
     }
 
     /**
@@ -93,6 +116,18 @@ public class ExperimentBuilder
         ps.setDimensions(dimensions.toArray(new Dimension<?>[0]));
 
         return ps;
+    }
+    
+    public void runExperiment() throws Exception
+    {
+
+        if (experiment == null) {
+            throw new NullPointerException("The experiment has not been set");
+        }
+
+        ParameterSpace pSpace = buildParameterSpace();
+        experiment.setParameterSpace(pSpace);
+        Lab.getInstance().run(experiment);
     }
 
     private Dimension<?> getAsDimensionMachineLearningAdapter()
@@ -283,6 +318,67 @@ public class ExperimentBuilder
         }
 
         this.featureMode = featureMode.toString();
+    }
+
+    public void setExperiment(ShallowLearningExperiment_ImplBase experiment)
+    {
+
+        if (experiment == null) {
+            throw new NullPointerException("The experiment is null");
+        }
+
+        this.experiment = experiment;
+    }
+    
+    public void setExperiment(ExperimentType type, String experimentName, int... numFolds)
+        throws Exception
+    {
+        switch (type) {
+        case TRAIN_TEST:
+            experiment = new ExperimentTrainTest(experimentName);
+            experiment.addReport(new BatchTrainTestReport());
+            break;
+        case CROSS_VALIDATION:
+            if (numFolds.length > 1) {
+                throw new IllegalArgumentException(
+                        "Please provide only one value - the number of folds. Specifying multiple values is not possible");
+            }
+            else if (numFolds.length == 0) {
+                experiment = new ExperimentCrossValidation(experimentName, 10);
+                experiment.addReport(new BatchCrossValidationReport());
+            }
+            else {
+                experiment = new ExperimentCrossValidation(experimentName, numFolds[0]);
+                experiment.addReport(new BatchCrossValidationReport());
+            }
+            break;
+        }
+    }
+    
+    public void addExperimentReports(ReportBase... reports)
+    {
+        if (experiment == null) {
+            throw new NullPointerException("The experiment is not set");
+        }
+        for (ReportBase r : reports) {
+            experiment.addReport(r);
+        }
+    }
+    
+    public void setExperimentPreprocessing(AnalysisEngineDescription preprocessing)
+    {
+        if (experiment == null) {
+            throw new NullPointerException("The experiment is not initialized");
+        }
+        experiment.setPreprocessing(preprocessing);
+    }
+    
+    public void setExperimentName(String experimentName)
+    {
+        if (experiment == null) {
+            throw new NullPointerException("The experiment is not initialized");
+        }
+        experiment.setExperimentName(experimentName);
     }
 
 }
