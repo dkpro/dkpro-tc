@@ -76,5 +76,9 @@
 		<groupId>nz.ac.waikato.cms.weka</groupId>
 		<artifactId>weka-dev</artifactId>
 	</dependency>
+	<dependency>
+	    <groupId>org.dkpro.lab</groupId>
+		<artifactId>dkpro-lab-core</artifactId>
+	</dependency>
   </dependencies>
 </project>
