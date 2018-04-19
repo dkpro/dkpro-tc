@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.crfsuite.sequence.filter;
+package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
 import java.io.File;
 import java.util.ArrayList;

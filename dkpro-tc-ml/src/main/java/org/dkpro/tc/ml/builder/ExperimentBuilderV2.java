@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.dkpro.lab.Lab;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -46,20 +47,21 @@ import org.dkpro.tc.ml.report.BatchTrainTestReport;
 public class ExperimentBuilderV2
     implements Constants
 {
-    List<TcShallowLearningAdapter> adapter = new ArrayList<>();
-    List<List<String>> arguments = new ArrayList<>();
-    List<ReportBase> reports = new ArrayList<>();
+    List<TcShallowLearningAdapter> adapter;
+    List<List<String>> arguments;
+    List<ReportBase> reports;
     String learningMode;
     String featureMode;
     Map<String, Object> readers = null;
-    List<TcFeatureSet> featureSets = new ArrayList<>();
-    List<Dimension<?>> additionalDimensions = new ArrayList<>();
+    List<TcFeatureSet> featureSets;
+    List<Dimension<?>> additionalDimensions;
     ShallowLearningExperiment_ImplBase experiment;
     ParameterSpace parameterSpace;
     String experimentName;
     ExperimentType type;
     int numFolds = -1;
     private AnalysisEngineDescription preprocessing;
+    private List<String> featureFilter;
 
     /**
      * Creates an experiment builder object.
@@ -92,7 +94,14 @@ public class ExperimentBuilderV2
         dimensions.add(getAsDimensionLearningMode());
         dimensions.add(getAsDimensionFeatureSets());
         dimensions.add(getAsDimensionReaders());
-        dimensions.addAll(additionalDimensions);
+        
+        
+        if (featureFilter != null && featureFilter.size() > 0) {
+            dimensions.add(getFeatureFilters());
+        }
+        if (additionalDimensions != null && additionalDimensions.size() > 0) {
+            dimensions.addAll(additionalDimensions);
+        }
 
         parameterSpace = new ParameterSpace();
         parameterSpace.setDimensions(dimensions.toArray(new Dimension<?>[0]));
@@ -100,17 +109,11 @@ public class ExperimentBuilderV2
         return parameterSpace;
     }
 
-    // public void runExperiment() throws Exception
-    // {
-    //
-    // if (experiment == null) {
-    // throw new NullPointerException("The experiment has not been set");
-    // }
-    //
-    // ParameterSpace pSpace = buildParameterSpace();
-    // experiment.setParameterSpace(pSpace);
-    // Lab.getInstance().run(experiment);
-    // }
+    @SuppressWarnings("unchecked")
+    private Dimension<?> getFeatureFilters()
+    {
+        return Dimension.create(DIM_FEATURE_FILTERS, featureFilter);
+    }
 
     private Dimension<?> getAsDimensionMachineLearningAdapter()
     {
@@ -196,6 +199,21 @@ public class ExperimentBuilderV2
             sanityCheckFeatureSet(fs);
         }
         this.featureSets = new ArrayList<>(Arrays.asList(featureSet));
+        return this;
+    }
+    
+    public ExperimentBuilderV2 featureFilter(String...filter) {
+
+        if(filter == null) {
+            throw new NullPointerException("The feature filters are null");
+        }
+        
+        featureFilter = new ArrayList<>();
+        
+        for(String f : filter) {
+            featureFilter.add(f);
+        }
+        
         return this;
     }
 
@@ -393,6 +411,10 @@ public class ExperimentBuilderV2
             experiment(type, experimentName, numFolds);
         }
         
+        if (experiment instanceof ExperimentTrainTest && readers.size() != 2) {
+            throw new IllegalStateException("Train test requires two readers");
+        }
+        
         if (parameterSpace == null) {
             getParameterSpace();
         }
@@ -407,6 +429,11 @@ public class ExperimentBuilderV2
         }
 
         return experiment;
+    }
+    
+    public void run() throws Exception {
+        ShallowLearningExperiment_ImplBase build = build();
+        Lab.getInstance().run(build);
     }
 
 }

@@ -22,12 +22,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
@@ -39,28 +37,12 @@ import weka.core.SerializationHelper;
 public class SemanticTextSimilarityDemoTest
     extends TestCaseSuperClass
 {
-    ParameterSpace pSpace;
-    SemanticTextSimilarityDemo experiment;
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-
-        experiment = new SemanticTextSimilarityDemo();
-        pSpace = SemanticTextSimilarityDemo.getParameterSpace();
-    }
-
-    @Test
-    public void testJavaCrossValidation() throws Exception
-    {
-        experiment.runCrossValidation(pSpace);
-    }
+    SemanticTextSimilarityDemo experiment = new SemanticTextSimilarityDemo();
 
     @Test
     public void testTrainTest() throws Exception
     {
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest();
 
         // weka offers to calculate this value too - we take weka as "reference" value
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper

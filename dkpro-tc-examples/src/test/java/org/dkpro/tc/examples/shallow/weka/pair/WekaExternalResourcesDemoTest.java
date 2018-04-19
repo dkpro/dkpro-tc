@@ -18,10 +18,7 @@
  */
 package org.dkpro.tc.examples.shallow.weka.pair;
 
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.weka.pair.WekaExternalResourceDemo;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -30,21 +27,11 @@ import org.junit.Test;
 public class WekaExternalResourcesDemoTest
     extends TestCaseSuperClass
 {
-    WekaExternalResourceDemo javaExperiment;
-    ParameterSpace pSpace;
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-
-        javaExperiment = new WekaExternalResourceDemo();
-        pSpace = WekaExternalResourceDemo.getParameterSpace();
-    }
+    WekaExternalResourceDemo javaExperiment = new WekaExternalResourceDemo();
 
     @Test
     public void testJavaTrainTest() throws Exception
     {
-        javaExperiment.runTrainTest(pSpace);
+        javaExperiment.runTrainTest();
     }
 }

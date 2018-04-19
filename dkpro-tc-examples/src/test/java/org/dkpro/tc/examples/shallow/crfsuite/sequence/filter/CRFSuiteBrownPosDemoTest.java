@@ -18,22 +18,16 @@
  */
 package org.dkpro.tc.examples.shallow.crfsuite.sequence.filter;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.crfsuite.sequence.CRFSuiteBrownPosDemo;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,20 +47,9 @@ public class CRFSuiteBrownPosDemoTest
     }
 
     @Test
-    public void runTrainTestNoFilter() throws Exception
+    public void runTrainTest() throws Exception
     {
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] {new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5" });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-        
-        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, null);
-
-        javaExperiment.runTrainTest(pSpace);
+        javaExperiment.runTrainTest();
 
         assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
 
@@ -91,25 +74,4 @@ public class CRFSuiteBrownPosDemoTest
 
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void runTrainTestFilter() throws Exception
-    {
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] {new CrfSuiteAdapter(),
-                        CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-
-        Dimension<List<String>> dimFilter = Dimension.create(Constants.DIM_FEATURE_FILTERS,
-                asList(FilterLuceneCharacterNgramStartingWithLetter.class.getName()));
-
-        ParameterSpace pSpace = CRFSuiteBrownPosDemo.getParameterSpace(
-                Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL, mlas, dimFilter);
-
-        javaExperiment.runTrainTest(pSpace);
-
-    }
 }

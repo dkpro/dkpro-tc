@@ -20,16 +20,10 @@ package org.dkpro.tc.examples.shallow.weka.pair;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
@@ -37,13 +31,12 @@ import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.report.ScatterplotReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -82,67 +75,53 @@ public class WekaPairRegressionDemo
         DemoUtils.setDkproHome(WekaPairRegressionDemo.class.getSimpleName());
 
         WekaPairRegressionDemo experiment = new WekaPairRegressionDemo();
-        // experiment.runCrossValidation(getParameterSpace());
-        experiment.runTrainTest(getParameterSpace());
+        experiment.runCrossValidation();
+        experiment.runTrainTest();
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public CollectionReaderDescription getTrainReader() throws ResourceInitializationException
     {
-        // configure training data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTrain,
-                STSReader.PARAM_GOLD_FILE, goldFileTrain);
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                STSReader.class, STSReader.PARAM_INPUT_FILE, inputFileTest,
-                STSReader.PARAM_GOLD_FILE, goldFileTest);
-        dimReaders.put(DIM_READER_TEST, readerTest);
-
-        TcFeatureSet tcFeatureSet = new TcFeatureSet(
-                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class));
-        
-        
-        ExperimentBuilder builder = new ExperimentBuilder();
-        builder.addFeatureSet(tcFeatureSet);
-        builder.setLearningMode(LearningMode.REGRESSION);
-        builder.setFeatureMode(FeatureMode.PAIR);
-        builder.addAdapterConfiguration( new WekaAdapter(), SMOreg.class.getName());
-        builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.buildParameterSpace();
-      
-        return pSpace;
+        return CollectionReaderFactory.createReaderDescription(STSReader.class,
+                STSReader.PARAM_INPUT_FILE, inputFileTrain, STSReader.PARAM_GOLD_FILE,
+                goldFileTrain);
     }
 
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace) throws Exception
+    public CollectionReaderDescription getTestReader() throws ResourceInitializationException
     {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionExampleCV",
-                NUM_FOLDS);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        return CollectionReaderFactory.createReaderDescription(STSReader.class,
+                STSReader.PARAM_INPUT_FILE, inputFileTest, STSReader.PARAM_GOLD_FILE, goldFileTest);
     }
 
-    // ##### TRAIN-TEST #####
-    protected void runTrainTest(ParameterSpace pSpace) throws Exception
+    public TcFeatureSet getFeatureSet()
+    {
+        return new TcFeatureSet(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class));
+    }
+
+    public void runCrossValidation() throws Exception
+    {
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
+                .dataReaderTrain(getTrainReader()).numFolds(NUM_FOLDS)
+                .experimentPreprocessing(getPreprocessing())
+                .experimentReports(new ContextMemoryReport(), new ScatterplotReport())
+                .featureSets(getFeatureSet()).learningMode(LearningMode.REGRESSION)
+                .featureMode(FeatureMode.PAIR)
+                .machineLearningBackend(new MLBackend(new WekaAdapter(), SMOreg.class.getName()))
+                .run();
+    }
+
+    public void runTrainTest() throws Exception
     {
 
-        ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionExampleTrainTest");
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+                .dataReaderTrain(getTrainReader()).dataReaderTest(getTestReader())
+                .experimentPreprocessing(getPreprocessing())
+                .experimentReports(new ContextMemoryReport(), new ScatterplotReport())
+                .featureSets(getFeatureSet()).learningMode(LearningMode.REGRESSION)
+                .featureMode(FeatureMode.PAIR)
+                .machineLearningBackend(new MLBackend(new WekaAdapter(), SMOreg.class.getName()))
+                .run();
     }
 
     public static AnalysisEngineDescription getPreprocessing()

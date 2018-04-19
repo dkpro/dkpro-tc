@@ -18,20 +18,10 @@
  */
 package org.dkpro.tc.examples.shallow.crfsuite.sequence;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
@@ -40,14 +30,12 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -58,8 +46,6 @@ public class CRFSuiteBrownPosDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
-
-    public static final int NUM_FOLDS = 2;
 
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
@@ -73,82 +59,60 @@ public class CRFSuiteBrownPosDemo
         // instructions first :)
         DemoUtils.setDkproHome(CRFSuiteBrownPosDemo.class.getSimpleName());
 
-        Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR });
-        config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
-
-        ParameterSpace pSpace = getParameterSpace(Constants.FM_SEQUENCE, Constants.LM_SINGLE_LABEL,
-                mlas, null);
-
         CRFSuiteBrownPosDemo experiment = new CRFSuiteBrownPosDemo();
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest();
+        experiment.runCrossValidation();
     }
-
-    public static ParameterSpace getParameterSpace(String featureMode, String learningMode,
-            Dimension<Map<String, Object>> config, Dimension<List<String>> dimFilters)
-        throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+    
+    public static CollectionReaderDescription getTrainReader() throws ResourceInitializationException {
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a01.xml");
-        dimReaders.put(DIM_READER_TRAIN, train);
-
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+    }
+    
+    public static CollectionReaderDescription getTestReader() throws ResourceInitializationException {
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a02.xml");
-        dimReaders.put(DIM_READER_TEST, test);
-
-        TcFeatureSet tcFeatureSet = new TcFeatureSet(
+    }
+    
+    public static TcFeatureSet getFeatureSet() {
+        return new TcFeatureSet(
                 TcFeatureFactory.create(TokenLengthRatio.class),
                 TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
                         CharacterNGram.PARAM_NGRAM_MAX_N, 4, CharacterNGram.PARAM_NGRAM_USE_TOP_K,
                         50));
-
-        ExperimentBuilder builder = new ExperimentBuilder();
-        builder.addFeatureSet(tcFeatureSet);
-        builder.setLearningMode(LearningMode.SINGLE_LABEL);
-        builder.setFeatureMode(FeatureMode.SEQUENCE);
-        builder.addAdapterConfiguration(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT);
-        builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.buildParameterSpace();
-        
-        return pSpace;
     }
 
     // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace) throws Exception
+    public void runCrossValidation() throws Exception
     {
-
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation(
-                "BrownPosDemoCV_CRFSuite", NUM_FOLDS);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
+        .dataReaderTrain(getTrainReader())
+        .numFolds(2)
+        .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .experimentReports(new ContextMemoryReport())
+        .featureSets(getFeatureSet())
+        .learningMode(LearningMode.SINGLE_LABEL)
+        .featureMode(FeatureMode.SEQUENCE)
+        .machineLearningBackend(new MLBackend(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR))
+        .run();
     }
 
-    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    public void runTrainTest() throws Exception
     {
-        return createEngineDescription(SequenceOutcomeAnnotator.class);
-    }
-
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
-    {
-        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownTrainTest");
-        experiment.setParameterSpace(pSpace);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-
-        Lab.getInstance().run(experiment);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+        .dataReaderTrain(getTrainReader())
+        .dataReaderTest(getTestReader())
+        .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .experimentReports(new ContextMemoryReport())
+        .featureSets(getFeatureSet())
+        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .learningMode(LearningMode.SINGLE_LABEL)
+        .featureMode(FeatureMode.SEQUENCE)
+        .machineLearningBackend(new MLBackend(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR))
+        .run();
     }
 }

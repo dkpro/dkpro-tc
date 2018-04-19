@@ -18,25 +18,25 @@
  */
 package org.dkpro.tc.examples.shallow.weka.pair;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterLuceneCharacterNgramStartingWithLetter;
 import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
+import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;
@@ -66,59 +66,46 @@ public class PairModeWekaDemo
 
     public static void main(String[] args) throws Exception
     {
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
         DemoUtils.setDkproHome(PairModeWekaDemo.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
         PairModeWekaDemo experiment = new PairModeWekaDemo();
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest();
+    }
+    
+    public CollectionReaderDescription getTrainReader() throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+                PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTrain,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public CollectionReaderDescription getTestReader() throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                listFilePathTrain, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                listFilePathTest, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
-        dimReaders.put(DIM_READER_TEST, readerTest);
-
-        TcFeatureSet tcFeatureSet = new TcFeatureSet(
+        return CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+                PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTest,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
+    }
+    
+    public TcFeatureSet getFeatureSet() {
+        return new TcFeatureSet(
                 TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class));
-        
-        
-        ExperimentBuilder builder = new ExperimentBuilder();
-        builder.addFeatureSet(tcFeatureSet);
-        builder.setLearningMode(LearningMode.SINGLE_LABEL);
-        builder.setFeatureMode(FeatureMode.PAIR);
-        builder.addAdapterConfiguration( new WekaAdapter(), NaiveBayes.class.getName() );
-        builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.buildParameterSpace();
-
-        return pSpace;
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    public void runTrainTest() throws Exception
     {
-
-        ExperimentTrainTest batch = new ExperimentTrainTest("TwentyNewsgroupsTrainTest");
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
-        // Run
-        Lab.getInstance().run(batch);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+        .dataReaderTrain(getTrainReader())
+        .dataReaderTest(getTestReader())
+        .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .experimentReports(new ContextMemoryReport())
+        .featureSets(getFeatureSet())
+        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .learningMode(LearningMode.SINGLE_LABEL)
+        .featureMode(FeatureMode.PAIR)
+        .machineLearningBackend(new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()))
+        .run();
     }
 
 }

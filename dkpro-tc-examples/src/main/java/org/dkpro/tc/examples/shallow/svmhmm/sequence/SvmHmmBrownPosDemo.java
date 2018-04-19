@@ -18,31 +18,24 @@
  */
 package org.dkpro.tc.examples.shallow.svmhmm.sequence;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterLuceneCharacterNgramStartingWithLetter;
 import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
+import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 
 /**
@@ -55,73 +48,60 @@ public class SvmHmmBrownPosDemo
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei";
     private static final int NUM_FOLDS = 3;
 
-    public static Map<String, Object> getDimReaders() throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> results = new HashMap<>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+    public CollectionReaderDescription getTrainReader() throws Exception{
+        return CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
                 BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+    }
+    
+    public CollectionReaderDescription getTestReader() throws Exception{
+        return CollectionReaderFactory.createReaderDescription(
                 BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
                 BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
-
-        results.put(Constants.DIM_READER_TRAIN, readerTrain);
-        results.put(Constants.DIM_READER_TEST, readerTest);
-
-        return results;
+    }
+    
+    public TcFeatureSet getFeatureSet() {
+        return new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+                TcFeatureFactory.create(CharacterNGram.class,
+                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
+                        CharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                        CharacterNGram.PARAM_NGRAM_MAX_N, 3));
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = getDimReaders();
 
-        TcFeatureSet tcFeatureSet = new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
-                        TcFeatureFactory.create(CharacterNGram.class,
-                                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 20,
-                                CharacterNGram.PARAM_NGRAM_MIN_N, 2,
-                                CharacterNGram.PARAM_NGRAM_MAX_N, 3));
-
-        ExperimentBuilder builder = new ExperimentBuilder();
-        builder.addFeatureSet(tcFeatureSet);
-        builder.setLearningMode(LearningMode.SINGLE_LABEL);
-        builder.setFeatureMode(FeatureMode.SEQUENCE);
-        builder.addAdapterConfiguration( new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" );
-        builder.setReaders(dimReaders);
-        ParameterSpace pSpace = builder.buildParameterSpace();
-        
-        return pSpace;
-    }
-
-    protected void runCrossValidation(ParameterSpace pSpace,
-            Class<? extends TcShallowLearningAdapter> machineLearningAdapter)
+    protected void runCrossValidation()
         throws Exception
     {
-        final ExperimentCrossValidation batch = new ExperimentCrossValidation("BrownCVBatchTask",
-                NUM_FOLDS);
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        batch.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(batch);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "trainTestExperiment")
+        .dataReaderTrain(getTrainReader())
+        .numFolds(NUM_FOLDS)
+        .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .experimentReports(new ContextMemoryReport())
+        .featureSets(getFeatureSet())
+        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .learningMode(LearningMode.SINGLE_LABEL)
+        .featureMode(FeatureMode.SEQUENCE)
+        .machineLearningBackend(new MLBackend(new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" ))
+        .run();
     }
 
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    public void runTrainTest() throws Exception
     {
-        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownTrainTestBatchTask");
-        experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+        .dataReaderTrain(getTrainReader())
+        .dataReaderTest(getTestReader())
+        .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .experimentReports(new ContextMemoryReport())
+        .featureSets(getFeatureSet())
+        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .learningMode(LearningMode.SINGLE_LABEL)
+        .featureMode(FeatureMode.SEQUENCE)
+        .machineLearningBackend(new MLBackend(new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" ))
+        .run();
     }
 
     public static void main(String[] args) throws Exception
@@ -130,7 +110,8 @@ public class SvmHmmBrownPosDemo
         DemoUtils.setDkproHome(SvmHmmBrownPosDemo.class.getSimpleName());
 
         SvmHmmBrownPosDemo experiment = new SvmHmmBrownPosDemo();
-        experiment.runTrainTest(getParameterSpace());
+        experiment.runTrainTest();
+        experiment.runCrossValidation();
     }
 
 }
