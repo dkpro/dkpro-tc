@@ -62,11 +62,11 @@ public class TcTrainTestExperiment
     public void run() throws Exception
     {
         ExperimentBuilderV2 builder = new ExperimentBuilderV2();
-        builder.setExperiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
-                .setReader(trainReader, true).setReader(testReader, false)
-                .setFeatureSets(featureSet).setLearningMode(lm).setFeatureMode(fm)
-                .setMachineLearningBackend(getDefault(adapter, lm))
-                .setExperimentPreprocessing(preprocessing).run();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+                .dataReaders(trainReader, testReader)
+                .featureSets(featureSet).learningMode(lm).featureMode(fm)
+                .machineLearningBackend(getDefault(adapter, lm))
+                .experimentPreprocessing(preprocessing).run();
 
     }
 

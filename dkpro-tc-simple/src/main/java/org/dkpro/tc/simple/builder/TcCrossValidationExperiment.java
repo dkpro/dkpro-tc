@@ -62,13 +62,13 @@ public class TcCrossValidationExperiment
     public void run() throws Exception
     {
         ExperimentBuilderV2 builder = new ExperimentBuilderV2();
-        builder.setExperiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment", numberFolds)
-                .setReader(trainReader, true)
-                .setFeatureSets(featureSet)
-                .setLearningMode(lm)
-                .setFeatureMode(fm)
-                .setMachineLearningBackend(getDefault(adapter, lm))
-                .setExperimentPreprocessing(preprocessing).run();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment", numberFolds)
+                .dataReaders(trainReader, null)
+                .featureSets(featureSet)
+                .learningMode(lm)
+                .featureMode(fm)
+                .machineLearningBackend(getDefault(adapter, lm))
+                .experimentPreprocessing(preprocessing).run();
     }
 
 }

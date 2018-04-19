@@ -66,20 +66,20 @@ public class ExperimentBuilderV2
 
     }
 
-    public ExperimentBuilderV2 setMachineLearningBackend(MLBackend ...backends)
+    public ExperimentBuilderV2 machineLearningBackend(MLBackend... backends)
     {
         this.adapter = new ArrayList<>();
         this.arguments = new ArrayList<>();
-        
-        for(MLBackend b : backends) {
+
+        for (MLBackend b : backends) {
             this.adapter.add(b.getAdapter());
-            this.arguments.add(b.getParametrization());    
+            this.arguments.add(b.getParametrization());
         }
-        
+
         return this;
     }
 
-    public ExperimentBuilderV2 buildParameterSpace()
+    public ParameterSpace getParameterSpace()
     {
         List<Dimension<?>> dimensions = new ArrayList<>();
 
@@ -93,20 +93,20 @@ public class ExperimentBuilderV2
         parameterSpace = new ParameterSpace();
         parameterSpace.setDimensions(dimensions.toArray(new Dimension<?>[0]));
 
-        return this;
+        return parameterSpace;
     }
-    
-//    public void runExperiment() throws Exception
-//    {
-//
-//        if (experiment == null) {
-//            throw new NullPointerException("The experiment has not been set");
-//        }
-//
-//        ParameterSpace pSpace = buildParameterSpace();
-//        experiment.setParameterSpace(pSpace);
-//        Lab.getInstance().run(experiment);
-//    }
+
+    // public void runExperiment() throws Exception
+    // {
+    //
+    // if (experiment == null) {
+    // throw new NullPointerException("The experiment has not been set");
+    // }
+    //
+    // ParameterSpace pSpace = buildParameterSpace();
+    // experiment.setParameterSpace(pSpace);
+    // Lab.getInstance().run(experiment);
+    // }
 
     private Dimension<?> getAsDimensionMachineLearningAdapter()
     {
@@ -186,42 +186,28 @@ public class ExperimentBuilderV2
         return maps;
     }
 
-    public void setReaders(Map<String, Object> dimReaders) throws NullPointerException
+    public ExperimentBuilderV2 featureSets(TcFeatureSet... featureSet)
     {
-        nullCheckReaderMap(dimReaders);
-        this.readers = dimReaders;
-        sanityCheckReaders();
-    }
-
-    private void nullCheckReaderMap(Map<String, Object> readers)
-    {
-        if (readers == null) {
-            throw new NullPointerException("The provided readers are null");
-        }
-    }
-
-    public ExperimentBuilderV2 setFeatureSets(TcFeatureSet ...featureSet)
-    {
-        for(TcFeatureSet fs : featureSet) {
+        for (TcFeatureSet fs : featureSet) {
             sanityCheckFeatureSet(fs);
         }
         this.featureSets = new ArrayList<>(Arrays.asList(featureSet));
         return this;
     }
-    
-    public ExperimentBuilderV2 setFeatures(TcFeature...features)
+
+    public ExperimentBuilderV2 features(TcFeature... features)
     {
-        if(features == null) {
+        if (features == null) {
             throw new NullPointerException("The features are null");
         }
-        
+
         this.featureSets = new ArrayList<>();
-        
+
         TcFeatureSet set = new TcFeatureSet();
-        for(TcFeature f : features) {
+        for (TcFeature f : features) {
             set.add(f);
         }
-        
+
         this.featureSets.add(set);
         return this;
     }
@@ -236,10 +222,11 @@ public class ExperimentBuilderV2
         }
     }
 
-    public ExperimentBuilderV2 setReader(CollectionReaderDescription reader, boolean isTrain)
+    public ExperimentBuilderV2 dataReaders(CollectionReaderDescription trainReader,
+            CollectionReaderDescription testReader)
         throws IllegalStateException
     {
-        if (reader == null) {
+        if (trainReader == null) {
             throw new NullPointerException(
                     "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
@@ -247,26 +234,25 @@ public class ExperimentBuilderV2
         if (readers == null) {
             readers = new HashMap<>();
         }
-        if (isTrain) {
-            readers.put(DIM_READER_TRAIN, reader);
-        }
-        else {
-            readers.put(DIM_READER_TEST, reader);
+        readers.put(DIM_READER_TRAIN, trainReader);
+
+        if (testReader != null) {
+            readers.put(DIM_READER_TEST, testReader);
         }
 
         sanityCheckReaders();
-        
+
         return this;
     }
 
-    public ExperimentBuilderV2 setAdditionalDimensions(Dimension<?>...dim)
+    public ExperimentBuilderV2 additionalDimensions(Dimension<?>... dim)
     {
 
         if (dim == null) {
             throw new NullPointerException("The added dimension is null");
         }
-        for(Dimension<?> d : dim) {
-            if(d == null) {
+        for (Dimension<?> d : dim) {
+            if (d == null) {
                 throw new NullPointerException("The added dimension is null");
             }
         }
@@ -284,7 +270,7 @@ public class ExperimentBuilderV2
 
     }
 
-    public ExperimentBuilderV2 setLearningMode(LearningMode learningMode)
+    public ExperimentBuilderV2 learningMode(LearningMode learningMode)
     {
         if (learningMode == null) {
             throw new NullPointerException("Learning mode is null");
@@ -293,8 +279,8 @@ public class ExperimentBuilderV2
         this.learningMode = learningMode.toString();
         return this;
     }
-    
-    public ExperimentBuilderV2 setFeatureMode(FeatureMode featureMode)
+
+    public ExperimentBuilderV2 featureMode(FeatureMode featureMode)
     {
         if (featureMode == null) {
             throw new NullPointerException("Feature mode is null");
@@ -304,7 +290,7 @@ public class ExperimentBuilderV2
         return this;
     }
 
-    public ExperimentBuilderV2 setExperiment(ShallowLearningExperiment_ImplBase experiment)
+    public ExperimentBuilderV2 experiment(ShallowLearningExperiment_ImplBase experiment)
     {
 
         if (experiment == null) {
@@ -314,8 +300,9 @@ public class ExperimentBuilderV2
         this.experiment = experiment;
         return this;
     }
-    
-    public ExperimentBuilderV2 setExperiment(ExperimentType type, String experimentName, int... numFolds)
+
+    public ExperimentBuilderV2 experiment(ExperimentType type, String experimentName,
+            int... numFolds)
         throws Exception
     {
         switch (type) {
@@ -330,18 +317,17 @@ public class ExperimentBuilderV2
             }
             else if (numFolds.length == 0) {
                 experiment = new ExperimentCrossValidation(experimentName, 10);
-                experiment.addReport(new BatchCrossValidationReport());
             }
             else {
                 experiment = new ExperimentCrossValidation(experimentName, numFolds[0]);
-                experiment.addReport(new BatchCrossValidationReport());
             }
+            experiment.addReport(new BatchCrossValidationReport());
             break;
         }
         return this;
     }
-    
-    public ExperimentBuilderV2 setExperimentReports(ReportBase... reports)
+
+    public ExperimentBuilderV2 experimentReports(ReportBase... reports)
     {
         if (experiment == null) {
             throw new NullPointerException("The experiment is not set");
@@ -349,11 +335,11 @@ public class ExperimentBuilderV2
         for (ReportBase r : reports) {
             experiment.addReport(r);
         }
-        
+
         return this;
     }
-    
-    public ExperimentBuilderV2 setExperimentPreprocessing(AnalysisEngineDescription preprocessing)
+
+    public ExperimentBuilderV2 experimentPreprocessing(AnalysisEngineDescription preprocessing)
     {
         if (experiment == null) {
             throw new NullPointerException("The experiment is not initialized");
@@ -361,8 +347,8 @@ public class ExperimentBuilderV2
         experiment.setPreprocessing(preprocessing);
         return this;
     }
-    
-    public ExperimentBuilderV2 setExperimentName(String experimentName)
+
+    public ExperimentBuilderV2 experimentName(String experimentName)
     {
         if (experiment == null) {
             throw new NullPointerException("The experiment is not initialized");
@@ -373,10 +359,10 @@ public class ExperimentBuilderV2
 
     public void run() throws Exception
     {
-        if(parameterSpace == null) {
-            buildParameterSpace();
+        if (parameterSpace == null) {
+            getParameterSpace();
         }
-        
+
         experiment.setParameterSpace(parameterSpace);
         Lab.getInstance().run(experiment);
     }

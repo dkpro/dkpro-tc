@@ -107,10 +107,10 @@ public class MinimalWorkingExample
         // )
         // .run();
 
-//        TcTrainTestExperiment tte = new TcTrainTestExperiment(readerTrain, readerTest,
-//                LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new WekaAdapter(), tcFeatureSet,
-//                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
-//        tte.run();
+        TcTrainTestExperiment tte = new TcTrainTestExperiment(readerTrain, readerTest,
+                LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new WekaAdapter(), tcFeatureSet,
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+        tte.run();
         
         TcCrossValidationExperiment cve = new TcCrossValidationExperiment(2, readerTrain,
                 LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new WekaAdapter(), tcFeatureSet,
