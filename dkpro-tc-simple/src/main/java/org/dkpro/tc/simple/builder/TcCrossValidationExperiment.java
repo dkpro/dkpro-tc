@@ -21,8 +21,10 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.dkpro.lab.Lab;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
@@ -62,13 +64,15 @@ public class TcCrossValidationExperiment
     public void run() throws Exception
     {
         ExperimentBuilderV2 builder = new ExperimentBuilderV2();
-        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment", numberFolds)
-                .dataReaders(trainReader, null)
+        ShallowLearningExperiment_ImplBase experiment = builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
+                .numFolds(numberFolds)
+                .dataReaderTrain(trainReader)
                 .featureSets(featureSet)
                 .learningMode(lm)
                 .featureMode(fm)
                 .machineLearningBackend(getDefault(adapter, lm))
-                .experimentPreprocessing(preprocessing).run();
+                .experimentPreprocessing(preprocessing).build();
+        Lab.getInstance().run(experiment);
     }
 
 }

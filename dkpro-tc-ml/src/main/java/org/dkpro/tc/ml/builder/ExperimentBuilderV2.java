@@ -26,7 +26,6 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.dkpro.lab.Lab;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -49,6 +48,7 @@ public class ExperimentBuilderV2
 {
     List<TcShallowLearningAdapter> adapter = new ArrayList<>();
     List<List<String>> arguments = new ArrayList<>();
+    List<ReportBase> reports = new ArrayList<>();
     String learningMode;
     String featureMode;
     Map<String, Object> readers = null;
@@ -56,6 +56,10 @@ public class ExperimentBuilderV2
     List<Dimension<?>> additionalDimensions = new ArrayList<>();
     ShallowLearningExperiment_ImplBase experiment;
     ParameterSpace parameterSpace;
+    String experimentName;
+    ExperimentType type;
+    int numFolds = -1;
+    private AnalysisEngineDescription preprocessing;
 
     /**
      * Creates an experiment builder object.
@@ -222,11 +226,10 @@ public class ExperimentBuilderV2
         }
     }
 
-    public ExperimentBuilderV2 dataReaders(CollectionReaderDescription trainReader,
-            CollectionReaderDescription testReader)
+    public ExperimentBuilderV2 dataReaderTrain(CollectionReaderDescription reader)
         throws IllegalStateException
     {
-        if (trainReader == null) {
+        if (reader == null) {
             throw new NullPointerException(
                     "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
@@ -234,11 +237,25 @@ public class ExperimentBuilderV2
         if (readers == null) {
             readers = new HashMap<>();
         }
-        readers.put(DIM_READER_TRAIN, trainReader);
+        readers.put(DIM_READER_TRAIN, reader);
 
-        if (testReader != null) {
-            readers.put(DIM_READER_TEST, testReader);
+        sanityCheckReaders();
+
+        return this;
+    }
+
+    public ExperimentBuilderV2 dataReaderTest(CollectionReaderDescription reader)
+        throws IllegalStateException
+    {
+        if (reader == null) {
+            throw new NullPointerException(
+                    "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
+
+        if (readers == null) {
+            readers = new HashMap<>();
+        }
+        readers.put(DIM_READER_TEST, reader);
 
         sanityCheckReaders();
 
@@ -301,7 +318,14 @@ public class ExperimentBuilderV2
         return this;
     }
 
-    public ExperimentBuilderV2 experiment(ExperimentType type, String experimentName,
+    public ExperimentBuilderV2 experiment(ExperimentType type, String experimentName)
+    {
+        this.type = type;
+        this.experimentName = experimentName;
+        return this;
+    }
+
+    private ExperimentBuilderV2 experiment(ExperimentType type, String experimentName,
             int... numFolds)
         throws Exception
     {
@@ -329,11 +353,9 @@ public class ExperimentBuilderV2
 
     public ExperimentBuilderV2 experimentReports(ReportBase... reports)
     {
-        if (experiment == null) {
-            throw new NullPointerException("The experiment is not set");
-        }
+        this.reports = new ArrayList<>();
         for (ReportBase r : reports) {
-            experiment.addReport(r);
+            this.reports.add(r);
         }
 
         return this;
@@ -341,10 +363,13 @@ public class ExperimentBuilderV2
 
     public ExperimentBuilderV2 experimentPreprocessing(AnalysisEngineDescription preprocessing)
     {
-        if (experiment == null) {
-            throw new NullPointerException("The experiment is not initialized");
-        }
-        experiment.setPreprocessing(preprocessing);
+        this.preprocessing = preprocessing;
+        return this;
+    }
+
+    public ExperimentBuilderV2 numFolds(int numFolds)
+    {
+        this.numFolds = numFolds;
         return this;
     }
 
@@ -357,14 +382,31 @@ public class ExperimentBuilderV2
         return this;
     }
 
-    public void run() throws Exception
+    public ShallowLearningExperiment_ImplBase build() throws Exception
     {
+        if (experiment == null && type != null) {
+            int numFolds = this.numFolds;
+            if (numFolds == -1) {
+                numFolds = 10;
+            }
+
+            experiment(type, experimentName, numFolds);
+        }
+        
         if (parameterSpace == null) {
             getParameterSpace();
         }
-
         experiment.setParameterSpace(parameterSpace);
-        Lab.getInstance().run(experiment);
+
+        if (preprocessing != null) {
+            experiment.setPreprocessing(preprocessing);
+        }
+
+        for (ReportBase r : reports) {
+            experiment.addReport(r);
+        }
+
+        return experiment;
     }
 
 }
