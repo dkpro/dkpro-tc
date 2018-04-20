@@ -182,14 +182,14 @@ public class MultiRegressionTest
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
         assertEquals("#labels", lines.get(1).trim());
-        assertTrue(lines.get(3).matches("0=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(4).matches("1=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(5).matches("10=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(6).matches("11=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(7).matches("12=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(8).matches("13=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(9).matches("14=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(10).matches("15=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(3).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(4).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(5).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(6).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(7).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(8).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(9).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(10).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
     }
 
     private File getId2outcomeFile(List<File> id2outcomeFiles, String k)

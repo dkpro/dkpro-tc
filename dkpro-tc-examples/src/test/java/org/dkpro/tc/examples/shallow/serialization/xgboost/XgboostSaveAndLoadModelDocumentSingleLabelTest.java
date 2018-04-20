@@ -295,6 +295,7 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         possibleOutcomes.add("NN");
         possibleOutcomes.add("VBD");
         possibleOutcomes.add("AP");
+        possibleOutcomes.add("BEDZ");
         possibleOutcomes.add("HVD");
 
         assertEquals(31, outcomes.size());
