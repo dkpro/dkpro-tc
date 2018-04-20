@@ -52,7 +52,7 @@ public class ExperimentBuilderV2
     List<ReportBase> reports;
     String learningMode;
     String featureMode;
-    Map<String, Object> readers = null;
+    Map<String, Object> readerMap;
     List<TcFeatureSet> featureSets;
     List<Dimension<?>> additionalDimensions;
     ShallowLearningExperiment_ImplBase experiment;
@@ -103,8 +103,7 @@ public class ExperimentBuilderV2
             dimensions.addAll(additionalDimensions);
         }
 
-        parameterSpace = new ParameterSpace();
-        parameterSpace.setDimensions(dimensions.toArray(new Dimension<?>[0]));
+        parameterSpace = new ParameterSpace(dimensions.toArray(new Dimension<?>[0]));
 
         return parameterSpace;
     }
@@ -128,11 +127,11 @@ public class ExperimentBuilderV2
 
     private Dimension<?> getAsDimensionReaders()
     {
-        if (!readers.keySet().contains(DIM_READER_TRAIN)) {
+        if (!readerMap.keySet().contains(DIM_READER_TRAIN)) {
             throw new IllegalStateException("You must provide at least a training data reader");
         }
 
-        return Dimension.createBundle(DIM_READERS, readers);
+        return Dimension.createBundle(DIM_READERS, readerMap);
     }
 
     private Dimension<?> getAsDimensionFeatureSets()
@@ -252,10 +251,10 @@ public class ExperimentBuilderV2
                     "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
 
-        if (readers == null) {
-            readers = new HashMap<>();
+        if (readerMap == null) {
+            readerMap = new HashMap<>();
         }
-        readers.put(DIM_READER_TRAIN, reader);
+        readerMap.put(DIM_READER_TRAIN, reader);
 
         return this;
     }
@@ -268,10 +267,10 @@ public class ExperimentBuilderV2
                     "Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
         }
 
-        if (readers == null) {
-            readers = new HashMap<>();
+        if (readerMap == null) {
+            readerMap = new HashMap<>();
         }
-        readers.put(DIM_READER_TEST, reader);
+        readerMap.put(DIM_READER_TEST, reader);
 
         return this;
     }
@@ -398,7 +397,7 @@ public class ExperimentBuilderV2
             experiment(type, experimentName, numFolds);
         }
         
-        if (experiment instanceof ExperimentTrainTest && readers.size() != 2) {
+        if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
             throw new IllegalStateException("Train test requires two readers");
         }
         
