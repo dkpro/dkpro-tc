@@ -94,6 +94,11 @@ public class WekaDataWriter
         if (arffTarget.exists()) {
             FileUtils.forceDelete(arffTarget);
         }
+        
+        File genericOutputFile = new File(outputFolder, getGenericFileName());
+        if (genericOutputFile.exists()) {
+            FileUtils.forceDelete(genericOutputFile);
+        }
 
         isRegression = learningMode.equals(LM_REGRESSION);
 

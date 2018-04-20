@@ -174,6 +174,11 @@ public class CrfSuiteDataWriter
         if (classifierFormatOutputFile.exists()) {
             FileUtils.forceDelete(classifierFormatOutputFile);
         }
+        
+        File genericOutputFile = new File(outputDirectory, getGenericFileName());
+        if (genericOutputFile.exists()) {
+            FileUtils.forceDelete(genericOutputFile);
+        }
     }
 
     @Override
