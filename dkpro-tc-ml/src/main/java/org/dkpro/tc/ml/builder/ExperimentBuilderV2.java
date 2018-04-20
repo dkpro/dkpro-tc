@@ -403,7 +403,7 @@ public class ExperimentBuilderV2
         }
         
         if (parameterSpace == null) {
-            getParameterSpace();
+            parameterSpace = getParameterSpace();
         }
         experiment.setParameterSpace(parameterSpace);
 
