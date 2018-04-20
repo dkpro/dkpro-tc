@@ -94,8 +94,7 @@ public class ExperimentBuilder
         dimensions.add(getAsDimensionLearningMode());
         dimensions.add(getAsDimensionFeatureSets());
         dimensions.add(getAsDimensionReaders());
-        
-        
+
         if (featureFilter != null && featureFilter.size() > 0) {
             dimensions.add(getFeatureFilters());
         }
@@ -136,6 +135,11 @@ public class ExperimentBuilder
 
     private Dimension<?> getAsDimensionFeatureSets()
     {
+        if (featureSets == null) {
+            throw new NullPointerException("Set either a feature set ["
+                    + TcFeatureSet.class.getName() + "]or provide at least a single feature");
+        }
+
         if (featureSets.isEmpty()) {
             throw new IllegalStateException(
                     "No feature sets provided, please provide at least one feature set i.e. ["
@@ -200,19 +204,20 @@ public class ExperimentBuilder
         this.featureSets = new ArrayList<>(Arrays.asList(featureSet));
         return this;
     }
-    
-    public ExperimentBuilder featureFilter(String...filter) {
 
-        if(filter == null) {
+    public ExperimentBuilder featureFilter(String... filter)
+    {
+
+        if (filter == null) {
             throw new NullPointerException("The feature filters are null");
         }
-        
+
         featureFilter = new ArrayList<>();
-        
-        for(String f : filter) {
+
+        for (String f : filter) {
             featureFilter.add(f);
         }
-        
+
         return this;
     }
 
@@ -385,7 +390,7 @@ public class ExperimentBuilder
 
     public ShallowLearningExperiment_ImplBase build() throws Exception
     {
-        
+
         setExperiment();
         setParameterSpace();
         setPreprocessing();
@@ -393,21 +398,21 @@ public class ExperimentBuilder
 
         return experiment;
     }
-    
+
     private void setReports()
     {
         if (reports != null) {
             for (ReportBase r : reports) {
                 experiment.addReport(r);
             }
-        }        
+        }
     }
 
     private void setPreprocessing()
     {
         if (preprocessing != null) {
             experiment.setPreprocessing(preprocessing);
-        }        
+        }
     }
 
     private void setParameterSpace()
@@ -415,7 +420,7 @@ public class ExperimentBuilder
         if (parameterSpace == null) {
             parameterSpace = getParameterSpace();
         }
-        experiment.setParameterSpace(parameterSpace);        
+        experiment.setParameterSpace(parameterSpace);
     }
 
     private void setExperiment() throws Exception
@@ -427,18 +432,19 @@ public class ExperimentBuilder
             }
 
             experiment(type, experimentName, numFolds);
-        }        
-        
+        }
+
         if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
             throw new IllegalStateException("Train test requires two readers");
         }
-        
-        if(experimentName != null) {
+
+        if (experimentName != null) {
             experiment.setExperimentName(experimentName);
         }
     }
 
-    public void run() throws Exception {
+    public void run() throws Exception
+    {
         ShallowLearningExperiment_ImplBase build = build();
         Lab.getInstance().run(build);
     }
