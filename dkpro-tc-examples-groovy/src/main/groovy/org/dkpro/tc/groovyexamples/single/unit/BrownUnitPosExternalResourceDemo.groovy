@@ -19,8 +19,10 @@
 package org.dkpro.tc.groovyexamples.single.unit
 
 import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription
 
+import org.apache.uima.fit.factory.AnalysisEngineFactory
 import org.apache.uima.fit.factory.CollectionReaderFactory
 import org.apache.uima.resource.ExternalResourceDescription
 import org.dkpro.lab.Lab
@@ -29,7 +31,9 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader
+
+import org.dkpro.tc.examples.shallow.misc.SequenceOutcomeAnnotator
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation
@@ -55,10 +59,10 @@ implements Constants {
     def ExternalResourceDescription dummyResource = createExternalResourceDescription(
         DummyResource.class)
     
-    def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
-        BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-        BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-        BrownCorpusReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
+    def trainreader = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+        TeiReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+        TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+        TeiReader.PARAM_PATTERNS, [ INCLUDE_PREFIX + "*.xml", INCLUDE_PREFIX + "*.xml.gz"]
     );
 
     def dimReaders = Dimension.createBundle("readers", [
@@ -102,6 +106,7 @@ implements Constants {
             reports:         [
                 BatchCrossValidationReport.newInstance()
             ],
+            preprocessing: AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class),
             numFolds: NUM_FOLDS]
 
         // Run

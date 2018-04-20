@@ -31,13 +31,14 @@ import org.dkpro.lab.task.BatchTask.ExecutionPolicy
 import org.dkpro.tc.api.features.TcFeatureFactory
 import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
 import org.dkpro.tc.ml.report.BatchCrossValidationReport
+import org.dkpro.tc.examples.shallow.misc.SequenceOutcomeAnnotator
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
@@ -49,10 +50,10 @@ implements Constants {
     def String corpusFilePathTrain = "src/main/resources/data/brown_tei/"
     def experimentName = "BrownPosDemo"
 
-    def trainreader = CollectionReaderFactory.createReaderDescription(BrownCorpusReader.class,
-    BrownCorpusReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-    BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-    BrownCorpusReader.PARAM_PATTERNS, [
+    def trainreader = CollectionReaderFactory.createReaderDescription(TeiReader.class,
+    TeiReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+    TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+    TeiReader.PARAM_PATTERNS, [
         "*.xml",
         "*.xml.gz"]
     );
@@ -107,7 +108,7 @@ implements Constants {
     protected AnalysisEngineDescription getPreprocessing()
     throws ResourceInitializationException
     {
-        return createEngineDescription(NoOpAnnotator)
+        return createEngineDescription(SequenceOutcomeAnnotator.class)
     }
 
     public static void main(String[] args)
