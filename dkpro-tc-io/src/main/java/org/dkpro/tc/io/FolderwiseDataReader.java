@@ -28,6 +28,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * This reader is suited when several text documents (without any labels) are placed in a folder and
@@ -56,7 +57,10 @@ public class FolderwiseDataReader
 
         Resource currentFile = nextFile();
 
-        initCas(aJCas, currentFile);
+        DocumentMetaData metaData = new DocumentMetaData(aJCas);
+        metaData.setDocumentTitle(currentFile.getResource().getFile().getName());
+        metaData.setDocumentId(currentFile.getResource().getFile().getName());
+        metaData.addToIndexes();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(currentFile.getInputStream(), "utf-8"))) {

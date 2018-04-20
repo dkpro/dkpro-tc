@@ -171,24 +171,23 @@ public class MultiDocumentTest
         Lab.getInstance().run(experiment);        
     }
 
-    private void verifyId2OutcomeReport(File wekaId2outcomeFile) throws IOException
+    private void verifyId2OutcomeReport(File f) throws IOException
     {
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
-                "utf-8");
+        List<String> lines = FileUtils.readLines(f, "utf-8");
         assertEquals(11, lines.size());
 
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
         assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
         // line 2 is a time-stamp
-        assertTrue(lines.get(3).matches("alt.atheism/53068.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(4).matches("alt.atheism/53257.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(5).matches("alt.atheism/53260.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(6).matches("alt.atheism/53261.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(7).matches("comp.graphics/38758.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(8).matches("comp.graphics/38761.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(9).matches("comp.graphics/38762.txt=[0-1];[0-1];-1"));
-        assertTrue(lines.get(10).matches("comp.graphics/38763.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(3).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(4).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(5).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(6).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(7).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(8).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(9).matches("[0-9]+.txt=[0-1];[0-1];-1"));
+        assertTrue(lines.get(10).matches("[0-9]+.txt=[0-1];[0-1];-1"));
     }
 
     private File getId2outcomeFile(List<File> id2outcomeFiles, String k)
@@ -226,7 +225,7 @@ public class MultiDocumentTest
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.addReport(BatchCrossValidationReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(new ContextMemoryReport());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
         Lab.getInstance().run(experiment);         
