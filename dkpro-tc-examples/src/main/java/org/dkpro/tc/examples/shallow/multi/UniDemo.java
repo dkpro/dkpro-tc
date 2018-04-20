@@ -20,29 +20,24 @@ package org.dkpro.tc.examples.shallow.multi;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.misc.UnitOutcomeAnnotator;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentType;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.report.BatchRuntimeReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -64,84 +59,50 @@ public class UniDemo
 
     public static void main(String[] args) throws Exception
     {
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
         DemoUtils.setDkproHome(UniDemo.class.getSimpleName());
 
-        new UniDemo().runTrainTest(getParameterSpace());
+        new UniDemo().runTrainTest();
+    }
+    
+    public CollectionReaderDescription getReaderTrain() throws Exception {
+        return CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS, "*.xml");
+    }
+    
+    public CollectionReaderDescription getReaderTest() throws Exception {
+        return CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS, "*.xml");
+    }
+    
+    public TcFeatureSet getFeatureSet() {
+        return new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+                TcFeatureFactory.create(CharacterNGram.class,
+                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50));
     }
 
     // ##### Train Test #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    public void runTrainTest() throws Exception
     {
 
-        ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(ContextMemoryReport.class);
-        experiment.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
-    }
-
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
-    {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, "*.xml");
-
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, "*.xml");
-
-        dimReaders.put(DIM_READER_TEST, readerTest);
-
-        Map<String, Object> weka = new HashMap<>();
-        weka.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
-        weka.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        weka.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-
-        Map<String, Object> libsvm = new HashMap<>();
-        libsvm.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter() });
-        libsvm.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
-        libsvm.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
-
-        Map<String, Object> liblinear = new HashMap<>();
-        liblinear.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LiblinearAdapter() });
-        liblinear.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
-        liblinear.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
-
-        Map<String, Object> xgboost = new HashMap<>();
-        xgboost.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter() });
-        xgboost.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
-        xgboost.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
-
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", weka, libsvm,
-                liblinear, xgboost);
-
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(Constants.DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
-                        TcFeatureFactory.create(CharacterNGram.class,
-                                CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50)));
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle(DIM_READERS, dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_UNIT), dimFeatureSets, mlas);
-
-        return pSpace;
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
+                .dataReaderTrain(getReaderTrain())
+                .dataReaderTest(getReaderTest())
+                .preprocessing(getPreprocessing())
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.SINGLE_LABEL)
+                .featureMode(FeatureMode.UNIT)
+                .machineLearningBackend(
+                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()),
+                        new MLBackend(new LibsvmAdapter()),
+                        new MLBackend(new LiblinearAdapter()),
+                        new MLBackend(new XgboostAdapter())
+                        )
+                .run();
     }
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException

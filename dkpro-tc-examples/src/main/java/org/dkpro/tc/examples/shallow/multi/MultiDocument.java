@@ -93,9 +93,12 @@ public class MultiDocument
     {
 
         ExperimentBuilder builder = new ExperimentBuilder();
-        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidation").numFolds(NUM_FOLDS)
-                .dataReaderTrain(getReaderTrain()).preprocessing(getPreprocessing())
-                .featureSets(getFeatureSet()).learningMode(LearningMode.SINGLE_LABEL)
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidation")
+                .numFolds(NUM_FOLDS)
+                .dataReaderTrain(getReaderTrain())
+                .preprocessing(getPreprocessing())
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(
                         new MLBackend(new XgboostAdapter(), "objective=multi:softmax"),
@@ -110,10 +113,13 @@ public class MultiDocument
     public void runTrainTest() throws Exception
     {
         ExperimentBuilder builder = new ExperimentBuilder();
-        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest").numFolds(NUM_FOLDS)
-                .dataReaderTrain(getReaderTrain()).dataReaderTest(getReaderTest())
-                .preprocessing(getPreprocessing()).featureSets(getFeatureSet())
-                .learningMode(LearningMode.SINGLE_LABEL).featureMode(FeatureMode.DOCUMENT)
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
+                .dataReaderTrain(getReaderTrain())
+                .dataReaderTest(getReaderTest())
+                .preprocessing(getPreprocessing())
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.SINGLE_LABEL)
+                .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(
                         new MLBackend(new XgboostAdapter(), "objective=multi:softmax"),
                         new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
