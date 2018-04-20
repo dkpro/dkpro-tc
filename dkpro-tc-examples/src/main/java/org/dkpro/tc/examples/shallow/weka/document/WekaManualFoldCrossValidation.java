@@ -18,12 +18,11 @@
  */
 package org.dkpro.tc.examples.shallow.weka.document;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
@@ -33,6 +32,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.shallow.misc.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
@@ -69,6 +69,7 @@ public class WekaManualFoldCrossValidation
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(new BatchCrossValidationReport());
+        experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(UnitOutcomeAnnotator.class));
 
         // Run
         Lab.getInstance().run(experiment);
@@ -82,7 +83,7 @@ public class WekaManualFoldCrossValidation
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "de",
                 TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
+                TeiReader.PARAM_PATTERNS, "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
