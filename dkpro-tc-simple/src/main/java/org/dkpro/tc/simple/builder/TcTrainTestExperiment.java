@@ -71,7 +71,7 @@ public class TcTrainTestExperiment
                 .learningMode(lm)
                 .featureMode(fm)
                 .machineLearningBackend(getDefault(adapter, lm))
-                .experimentPreprocessing(preprocessing).build();
+                .preprocessing(preprocessing).build();
         
         Lab.getInstance().run(experiment);
 

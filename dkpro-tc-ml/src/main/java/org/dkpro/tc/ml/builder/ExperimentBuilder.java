@@ -355,7 +355,7 @@ public class ExperimentBuilder
         return this;
     }
 
-    public ExperimentBuilder experimentReports(ReportBase... reports)
+    public ExperimentBuilder reports(ReportBase... reports)
     {
         this.reports = new ArrayList<>();
         for (ReportBase r : reports) {
@@ -365,7 +365,7 @@ public class ExperimentBuilder
         return this;
     }
 
-    public ExperimentBuilder experimentPreprocessing(AnalysisEngineDescription preprocessing)
+    public ExperimentBuilder preprocessing(AnalysisEngineDescription preprocessing)
     {
         this.preprocessing = preprocessing;
         return this;
@@ -377,12 +377,9 @@ public class ExperimentBuilder
         return this;
     }
 
-    public ExperimentBuilder experimentName(String experimentName)
+    public ExperimentBuilder name(String experimentName)
     {
-        if (experiment == null) {
-            throw new NullPointerException("The experiment is not initialized");
-        }
-        experiment.setExperimentName(experimentName);
+        this.experimentName = experimentName;
         return this;
     }
 
@@ -434,6 +431,10 @@ public class ExperimentBuilder
         
         if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
             throw new IllegalStateException("Train test requires two readers");
+        }
+        
+        if(experimentName != null) {
+            experiment.setExperimentName(experimentName);
         }
     }
 

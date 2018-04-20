@@ -102,8 +102,8 @@ public class WekaPairRegressionDemo
         ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
                 .dataReaderTrain(getTrainReader()).numFolds(NUM_FOLDS)
-                .experimentPreprocessing(getPreprocessing())
-                .experimentReports(new ContextMemoryReport(), new ScatterplotReport())
+                .preprocessing(getPreprocessing())
+                .reports(new ContextMemoryReport(), new ScatterplotReport())
                 .featureSets(getFeatureSet()).learningMode(LearningMode.REGRESSION)
                 .featureMode(FeatureMode.PAIR)
                 .machineLearningBackend(new MLBackend(new WekaAdapter(), SMOreg.class.getName()))
@@ -116,8 +116,8 @@ public class WekaPairRegressionDemo
         ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
                 .dataReaderTrain(getTrainReader()).dataReaderTest(getTestReader())
-                .experimentPreprocessing(getPreprocessing())
-                .experimentReports(new ContextMemoryReport(), new ScatterplotReport())
+                .preprocessing(getPreprocessing())
+                .reports(new ContextMemoryReport(), new ScatterplotReport())
                 .featureSets(getFeatureSet()).learningMode(LearningMode.REGRESSION)
                 .featureMode(FeatureMode.PAIR)
                 .machineLearningBackend(new MLBackend(new WekaAdapter(), SMOreg.class.getName()))
