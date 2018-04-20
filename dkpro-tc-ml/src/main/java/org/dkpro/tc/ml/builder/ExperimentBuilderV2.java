@@ -257,8 +257,6 @@ public class ExperimentBuilderV2
         }
         readers.put(DIM_READER_TRAIN, reader);
 
-        sanityCheckReaders();
-
         return this;
     }
 
@@ -274,8 +272,6 @@ public class ExperimentBuilderV2
             readers = new HashMap<>();
         }
         readers.put(DIM_READER_TEST, reader);
-
-        sanityCheckReaders();
 
         return this;
     }
@@ -294,15 +290,6 @@ public class ExperimentBuilderV2
 
         additionalDimensions = new ArrayList<>(Arrays.asList(dim));
         return this;
-    }
-
-    private void sanityCheckReaders() throws IllegalStateException
-    {
-        if (readers.size() > 2) {
-            throw new IllegalStateException(
-                    "More than two readers have been added. Train-test experiments require two data readers, one for train, one for test. Cross-validation experiments require only one.");
-        }
-
     }
 
     public ExperimentBuilderV2 learningMode(LearningMode learningMode)
