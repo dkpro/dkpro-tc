@@ -19,90 +19,83 @@
 package org.dkpro.tc.examples.shallow.multi;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.misc.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
+import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+import de.unidue.ltl.evaluation.core.EvaluationData;
+import de.unidue.ltl.evaluation.measures.Accuracy;
 
 /**
- * Example for NER as sequence classification.
+ * This test just ensures that the experiment runs without throwing any exception.
  */
-public class SequenceDemo
-    implements Constants
+public class MultiSequenceTest
+    extends TestCaseSuperClass implements Constants
 {
-
-    public static final String LANGUAGE_CODE = "de";
-    public static final int NUM_FOLDS = 2;
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";
 
-    public static File outputFolder = null;
-
-    public static void main(String[] args) throws Exception
+    @Test
+    public void testSequence() throws Exception
     {
-        DemoUtils.setDkproHome(SequenceDemo.class.getSimpleName());
+        runExperiment();
 
-        SequenceDemo demo = new SequenceDemo();
-        // demo.runCrossValidation(getParameterSpace());
-        demo.runTrainTest(getParameterSpace());
+        assertEquals(2, ContextMemoryReport.id2outcomeFiles.size());
+        assertEquals(0.95833, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Crfsuite"), 0.1);
+        assertEquals(0.8333, getAccuracy(ContextMemoryReport.id2outcomeFiles, "SvmHmm"), 0.1);
+        
+        for(File f : ContextMemoryReport.id2outcomeFiles) {
+        List<String> lines = FileUtils.readLines(f,
+                "utf-8");
+        assertEquals(34, lines.size());
+
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals(
+                "#labels 0=NN 1=JJ 2=NP 3=DTS 4=BEDZ 5=HV 6=PPO 7=DT 8=NNS 9=PPS 10=JJT 11=ABX 12=MD 13=DOD 14=VBD 15=VBG 16=QL 32=%28null%29 17=pct 18=CC 19=VBN 20=NPg 21=IN 22=WDT 23=BEN 24=VB 25=BER 26=AP 27=RB 28=CS 29=AT 30=HVD 31=TO",
+                lines.get(1));
+        // 2nd line time stamp
+
+        // Crfsuite results are sensitive to some extend to the platform, to
+        // account for this sensitivity we check only that the "prediction"
+        // field is filled with any number but do not test for a specific value
+        assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;29;-1"));
+        assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
+        assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;17;-1"));
+        assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;22;-1"));
+        assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;2;-1"));
     }
-
-    // ##### CV #####
-    protected void runCrossValidation(ParameterSpace pSpace) throws Exception
-    {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("NamedEntitySequenceDemoCV",
-                NUM_FOLDS);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchCrossValidationReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
     }
-
-    // ##### Train Test #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    
+    private void runExperiment() throws Exception
     {
-        ExperimentTrainTest experiment = new ExperimentTrainTest(
-                "NamedEntitySequenceDemoTrainTest");
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
-        // Run
-        Lab.getInstance().run(experiment);
-    }
-
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
-    {
-
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
                 TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
@@ -139,13 +132,37 @@ public class SequenceDemo
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets, mlas);
-
-        return pSpace;
+        
+        ExperimentTrainTest experiment = new ExperimentTrainTest(
+                "NamedEntitySequenceDemoTrainTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(pSpace);
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        
+        Lab.getInstance().run(experiment);
+        
     }
-
+    
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
+    private double getAccuracy(List<File> id2outcomeFiles, String simpleName) throws Exception
+    {
+
+        for (File f : id2outcomeFiles) {
+            if (f.getAbsolutePath().toLowerCase().contains(simpleName.toLowerCase())) {
+
+                EvaluationData<String> data = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                Accuracy<String> acc = new Accuracy<>(data);
+                return acc.getResult();
+            }
+        }
+
+        return -1;
+    }
 }

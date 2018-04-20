@@ -348,12 +348,20 @@ public class LibsvmDataFormatWriter
             Map<String, String> index2instanceId)
         throws IOException
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("#Index\tDkProInstanceId\n");
-        for (String k : index2instanceId.keySet()) {
-            sb.append(k + "\t" + index2instanceId.get(k) + "\n");
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
+
+            writer.write("#Index\tDkProInstanceId\n");
+            for (String k : index2instanceId.keySet()) {
+                writer.write(k + "\t" + index2instanceId.get(k) + "\n");
+            }
+
         }
-        FileUtils.writeStringToFile(new File(outputDirectory, fileName), sb.toString(), "utf-8");
+        finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
     // build a map between the dkpro instance id and the index in the file

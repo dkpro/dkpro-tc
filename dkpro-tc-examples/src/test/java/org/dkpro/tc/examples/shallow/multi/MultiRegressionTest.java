@@ -18,49 +18,65 @@
  */
 package org.dkpro.tc.examples.shallow.multi;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
 import org.dkpro.lab.task.BatchTask;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureSet;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
+import org.dkpro.tc.examples.shallow.multi.feature.LengthFeatureNominal;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
+import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
+import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
-import org.junit.Before;
+import org.dkpro.tc.ml.weka.WekaAdapter;
+import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
+import weka.classifiers.functions.LinearRegression;
 
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
 public class MultiRegressionTest
     extends TestCaseSuperClass
+    implements Constants
 {
-    MultiRegression javaExperiment;
-    ParameterSpace pSpace;
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-
-        javaExperiment = new MultiRegression();
-        pSpace = MultiRegression.getParameterSpace();
-    }
 
     @Test
     public void testJavaTrainTest() throws Exception
     {
-        javaExperiment.runTrainTest(pSpace);
+        runTrainTestExperiment();
 
         assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
                 ContextMemoryReport.allIds.size());
@@ -72,17 +88,95 @@ public class MultiRegressionTest
         assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
         assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
                 0.2);
-        
+
         verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
         verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
         verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
         verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
     }
-    
+
+    private ParameterSpace getParameterSpace() throws Exception
+    {
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+
+        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+                DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
+        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/test/essay_test.txt",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
+        dimReaders.put(DIM_READER_TEST, readerTest);
+
+        Map<String, Object> xgboostConfig = new HashMap<>();
+        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
+        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
+        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+
+        Map<String, Object> liblinearConfig = new HashMap<>();
+        liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LiblinearAdapter(), "-s", "6" });
+        liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
+        liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
+
+        Map<String, Object> libsvmConfig = new HashMap<>();
+        libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" });
+        libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
+        libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
+
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new WekaAdapter(), LinearRegression.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig,
+                liblinearConfig, libsvmConfig, wekaConfig);
+
+        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+                new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
+                        TcFeatureFactory.create(LengthFeatureNominal.class),
+                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
+
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
+        return pSpace;
+    }
+
+    private void runTrainTestExperiment() throws Exception
+    {
+
+        ExperimentTrainTest experiment = new ExperimentTrainTest("trainTest");
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(getParameterSpace());
+        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
+        Lab.getInstance().run(experiment);
+    }
+
+    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
+    }
+
     private void verifyId2Outcome(File id2outcomeFile) throws IOException
     {
         List<String> lines = FileUtils.readLines(id2outcomeFile, "utf-8");
-        
+
         assertEquals(53, lines.size());
 
         // line-wise compare
@@ -95,7 +189,7 @@ public class MultiRegressionTest
         assertTrue(lines.get(7).matches("12=[0-9\\.]+;[0-9\\.]+;.*"));
         assertTrue(lines.get(8).matches("13=[0-9\\.]+;[0-9\\.]+;.*"));
         assertTrue(lines.get(9).matches("14=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(10).matches("15=[0-9\\.]+;[0-9\\.]+;.*"));        
+        assertTrue(lines.get(10).matches("15=[0-9\\.]+;[0-9\\.]+;.*"));
     }
 
     private File getId2outcomeFile(List<File> id2outcomeFiles, String k)
@@ -111,7 +205,7 @@ public class MultiRegressionTest
     @Test
     public void testCrossValidation() throws Exception
     {
-        javaExperiment.runCrossValidation(pSpace);
+        runCrossValidationExperiment();
 
         assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
                 ContextMemoryReport.allIds.size());
@@ -128,6 +222,18 @@ public class MultiRegressionTest
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
         assertEquals(4.1, getMeanSquaredErrorCrossValidation(
                 ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
+    }
+
+    private void runCrossValidationExperiment() throws Exception
+    {
+        ExperimentCrossValidation experiment = new ExperimentCrossValidation("crossValidation", 2);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.setParameterSpace(getParameterSpace());
+        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.addReport(ContextMemoryReport.class);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
+        Lab.getInstance().run(experiment);
     }
 
     private boolean combinedId2OutcomeReportsAreDissimilar(List<File> crossValidationTaskIds)

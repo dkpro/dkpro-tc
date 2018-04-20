@@ -157,7 +157,7 @@ public class LibsvmDataFormatOutcomeIdReport
             }
             String[] split = l.split("\t");
 
-            m.put(idx + "", split[0]);
+            m.put(idx + "", split[1]);
             idx++;
         }
         return m;
