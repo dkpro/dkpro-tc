@@ -46,7 +46,7 @@ import org.dkpro.tc.ml.weka.WekaAdapter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class WekaDocumentPlain
+public class WekaDocument
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -61,7 +61,7 @@ public class WekaDocumentPlain
 
         ParameterSpace pSpace = getParameterSpace();
 
-        WekaDocumentPlain experiment = new WekaDocumentPlain();
+        WekaDocument experiment = new WekaDocument();
         experiment.runTrainTest(pSpace);
     }
 
@@ -100,7 +100,8 @@ public class WekaDocumentPlain
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
+                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas,
+                Dimension.create(DIM_APPLY_INSTANCE_WEIGHTING, true));
 
         return pSpace;
     }

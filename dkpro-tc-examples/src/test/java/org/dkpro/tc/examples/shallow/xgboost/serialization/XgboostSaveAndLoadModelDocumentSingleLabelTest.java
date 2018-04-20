@@ -49,7 +49,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
+import org.dkpro.tc.examples.shallow.util.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -236,9 +236,9 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_PATTERNS, new String[] { "a01.xml" });
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+                TeiReader.PARAM_PATTERNS,   "a01.xml" );
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -307,11 +307,12 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
     private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLiblinearTestSaveModel",
+        ExperimentSaveModel experiment = new ExperimentSaveModel("UnitLiblinearTestSaveModel",
                 modelFolder);
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        experiment.setParameterSpace(paramSpace);
+        experiment.setPreprocessing(createEngineDescription(UnitOutcomeAnnotator.class));
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private void unitVerifyCreatedModelFiles(File modelFolder)

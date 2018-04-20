@@ -33,7 +33,7 @@ import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -101,7 +101,7 @@ public class WekaExternalResourceDemo
     public void runTrainTest() throws Exception
     {
 
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())

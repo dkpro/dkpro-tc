@@ -46,7 +46,6 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -54,7 +53,6 @@ import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -77,13 +75,6 @@ public class LiblinearSaveAndLoadModelDocumentRegression
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
-    }
-
     /**
      * This test case trains a regression model on scored essay texts
      */
@@ -91,7 +82,6 @@ public class LiblinearSaveAndLoadModelDocumentRegression
     public void documentRoundTripLiblinear() throws Exception
     {
 
-        DemoUtils.setDkproHome(LiblinearSaveAndLoadModelDocumentRegression.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace paramSpace = regressionGetParameterSpace();

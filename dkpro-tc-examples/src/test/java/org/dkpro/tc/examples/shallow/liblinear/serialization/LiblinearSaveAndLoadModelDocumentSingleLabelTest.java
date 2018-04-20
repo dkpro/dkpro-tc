@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.liblinear.serialization;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,8 +49,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
-import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.examples.shallow.util.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -60,7 +58,6 @@ import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -80,14 +77,6 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(
-                LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-    }
 
     private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useParametrizedArgs)
         throws ResourceInitializationException
@@ -138,8 +127,6 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
     public void documentRoundTripTest() throws Exception
     {
 
-        DemoUtils.setDkproHome(
-                LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel(false);
@@ -183,12 +170,12 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
     private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(
+        ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+        experiment.setPreprocessing(
                 createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        experiment.setParameterSpace(paramSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private static void documentLoadAndUseModel(File modelFolder,
@@ -228,8 +215,6 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
     public void unitRoundTripTest() throws Exception
     {
 
-        DemoUtils.setDkproHome(
-                LiblinearSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace unitParamSpace = unitGetParameterSpaceSingleLabel();
@@ -247,9 +232,9 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "a01.xml" });
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+                TeiReader.PARAM_PATTERNS, "a01.xml");
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -317,11 +302,12 @@ public class LiblinearSaveAndLoadModelDocumentSingleLabelTest
     private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLiblinearTestSaveModel",
+        ExperimentSaveModel experiment = new ExperimentSaveModel("UnitLiblinearTestSaveModel",
                 modelFolder);
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        experiment.setParameterSpace(paramSpace);
+        experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(UnitOutcomeAnnotator.class));
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private void unitVerifyCreatedModelFiles(File modelFolder)

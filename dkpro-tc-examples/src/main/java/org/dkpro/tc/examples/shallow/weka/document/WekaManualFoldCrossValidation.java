@@ -33,13 +33,13 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import weka.classifiers.bayes.NaiveBayes;
 
 public class WekaManualFoldCrossValidation
@@ -78,12 +78,11 @@ public class WekaManualFoldCrossValidation
         throws ResourceInitializationException
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
-        dimReaders.put(DIM_READER_TRAIN, BrownCorpusReader.class);
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "de",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "de",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS, INCLUDE_PREFIX + "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,

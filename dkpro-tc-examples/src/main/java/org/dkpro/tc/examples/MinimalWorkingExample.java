@@ -25,18 +25,16 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.TcFeatureFactory;
+import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
-import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.builder.MLBackend;
-import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.simple.builder.TcTrainTestExperiment;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -73,22 +71,31 @@ public class MinimalWorkingExample
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
-        builder.experiment(ExperimentType.TRAIN_TEST, "dummyExperiment")
-               .dataReaderTrain(readerTrain)
-               .dataReaderTest(readerTest)
-               .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class))
-               .experimentReports(new ContextMemoryReport())
-               .features(TcFeatureFactory.create(TokenRatioPerDocument.class),
-                        TcFeatureFactory.create(WordNGram.class,
-                        WordNGram.PARAM_NGRAM_USE_TOP_K, 20,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1,
-                        WordNGram.PARAM_NGRAM_MAX_N, 3)
-                        )
-                .learningMode(LearningMode.SINGLE_LABEL)
-                .featureMode(FeatureMode.DOCUMENT)
-                .machineLearningBackend(new MLBackend(new LiblinearAdapter()))
-                .run();
+//        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+//        builder.experiment(ExperimentType.TRAIN_TEST, "dummyExperiment")
+//               .dataReaderTrain(readerTrain)
+//               .dataReaderTest(readerTest)
+//               .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class))
+//               .experimentReports(new ContextMemoryReport())
+//               .features(TcFeatureFactory.create(TokenRatioPerDocument.class),
+//                        TcFeatureFactory.create(WordNGram.class,
+//                        WordNGram.PARAM_NGRAM_USE_TOP_K, 20,
+//                        WordNGram.PARAM_NGRAM_MIN_N, 1,
+//                        WordNGram.PARAM_NGRAM_MAX_N, 3)
+//                        )
+//                .learningMode(LearningMode.SINGLE_LABEL)
+//                .featureMode(FeatureMode.DOCUMENT)
+//                .machineLearningBackend(new MLBackend(new LiblinearAdapter()))
+//                .run();
+        
+        TcTrainTestExperiment exp = new TcTrainTestExperiment(readerTrain, readerTest,
+                LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new LibsvmAdapter(),
+                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
+                                20, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
+                                3)),
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+        exp.run();
         
     }
 }

@@ -30,7 +30,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenLengthRatio;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -87,7 +87,7 @@ public class CRFSuiteBrownPosDemo
     // ##### CV #####
     public void runCrossValidation() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
         .dataReaderTrain(getTrainReader())
         .numFolds(2)
@@ -102,14 +102,14 @@ public class CRFSuiteBrownPosDemo
 
     public void runTrainTest() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())
         .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
         .experimentReports(new ContextMemoryReport())
         .featureSets(getFeatureSet())
-        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .featureFilter(FilterCharNgramsByStartingLetter.class.getName())
         .learningMode(LearningMode.SINGLE_LABEL)
         .featureMode(FeatureMode.SEQUENCE)
         .machineLearningBackend(new MLBackend(new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR))

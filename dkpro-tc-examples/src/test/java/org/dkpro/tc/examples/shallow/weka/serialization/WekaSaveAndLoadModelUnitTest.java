@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,13 +45,10 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -75,18 +71,10 @@ public class WekaSaveAndLoadModelUnitTest
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelUnitTest.class.getSimpleName());
-    }
-
     @Test
     public void unitRoundTripWeka() throws Exception
     {
 
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelUnitTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace regressionParamSpace = unitGetParameterSpace();
@@ -122,11 +110,11 @@ public class WekaSaveAndLoadModelUnitTest
 
     private void unitExecuteSaveModel(ParameterSpace pSpace, File modelFolder) throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(createEngineDescription(WekaUnitAnnotator.class));
-        batch.setParameterSpace(pSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+        experiment.setPreprocessing(createEngineDescription(WekaUnitAnnotator.class));
+        experiment.setParameterSpace(pSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private static ParameterSpace unitGetParameterSpace() throws ResourceInitializationException
@@ -134,9 +122,9 @@ public class WekaSaveAndLoadModelUnitTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS,
-                Arrays.asList("*.xml"));
+                TeiReader.class, TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS,
+                "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
         
         Map<String, Object> wekaConfig = new HashMap<>();

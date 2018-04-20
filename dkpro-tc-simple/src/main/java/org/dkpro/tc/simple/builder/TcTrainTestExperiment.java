@@ -25,7 +25,7 @@ import org.dkpro.lab.Lab;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -63,7 +63,7 @@ public class TcTrainTestExperiment
 
     public void run() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         ShallowLearningExperiment_ImplBase experiment = builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
                 .dataReaderTrain(trainReader)
                 .dataReaderTest(testReader)

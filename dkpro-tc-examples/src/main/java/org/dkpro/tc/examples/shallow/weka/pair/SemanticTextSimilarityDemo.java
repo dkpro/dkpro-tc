@@ -31,7 +31,7 @@ import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -90,7 +90,7 @@ public class SemanticTextSimilarityDemo
     // ##### CV #####
     public void runCrossValidation() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
         .dataReaderTrain(getTrainReader())
         .experimentPreprocessing(getPreprocessing())
@@ -106,7 +106,7 @@ public class SemanticTextSimilarityDemo
     public void runTrainTest() throws Exception
     {
 
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())

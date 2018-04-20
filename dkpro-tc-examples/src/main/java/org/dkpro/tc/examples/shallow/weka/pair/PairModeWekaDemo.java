@@ -25,14 +25,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterLuceneCharacterNgramStartingWithLetter;
+import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterCharNgramsByStartingLetter;
 import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -94,14 +94,14 @@ public class PairModeWekaDemo
     // ##### TRAIN-TEST #####
     public void runTrainTest() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())
         .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
         .experimentReports(new ContextMemoryReport())
         .featureSets(getFeatureSet())
-        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .featureFilter(FilterCharNgramsByStartingLetter.class.getName())
         .learningMode(LearningMode.SINGLE_LABEL)
         .featureMode(FeatureMode.PAIR)
         .machineLearningBackend(new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()))

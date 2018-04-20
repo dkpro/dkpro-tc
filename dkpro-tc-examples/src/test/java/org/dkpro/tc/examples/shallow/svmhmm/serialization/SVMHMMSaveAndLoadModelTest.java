@@ -44,7 +44,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
+import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -58,6 +58,7 @@ import org.junit.rules.TemporaryFolder;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class SVMHMMSaveAndLoadModelTest
@@ -106,10 +107,11 @@ public class SVMHMMSaveAndLoadModelTest
     private void executeSaveModelIntoTemporyFolder(ParameterSpace aPSpace, File aModelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", aModelFolder);
-        batch.setParameterSpace(aPSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", aModelFolder);
+        experiment.setParameterSpace(aPSpace);
+        experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class));
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
 
     }
 
@@ -125,9 +127,9 @@ public class SVMHMMSaveAndLoadModelTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, trainFolder,
-                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_PATTERNS, "*.xml");
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, trainFolder,
+                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS, "*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,

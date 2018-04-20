@@ -18,7 +18,6 @@
  */
 package org.dkpro.tc.examples.shallow.libsvm.serialization;
 
-import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.INCLUDE_PREFIX;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,8 +47,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
-import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.examples.shallow.util.anno.UnitOutcomeAnnotator;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -57,7 +55,6 @@ import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.uima.TcAnnotator;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -77,13 +74,6 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-    }
 
     private ParameterSpace documentGetParameterSpaceSingleLabel(boolean useClassificationArguments)
         throws ResourceInitializationException
@@ -133,7 +123,6 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
     public void documentRoundTripTest() throws Exception
     {
 
-        DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel(false);
@@ -233,7 +222,6 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
     public void unitRoundTripTest() throws Exception
     {
 
-        DemoUtils.setDkproHome(LibsvmSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace unitParamSpace = unitGetParameterSpaceSingleLabel();
@@ -251,9 +239,9 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
-                BrownCorpusReader.PARAM_PATTERNS, new String[] { INCLUDE_PREFIX + "a01.xml" });
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder,
+                TeiReader.PARAM_PATTERNS, "a01.xml" );
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -336,10 +324,11 @@ public class LibsvmSaveAndLoadModelDocumentSingleLabelTest
     private static void unitTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("UnitLibsvmTestSaveModel", modelFolder);
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        ExperimentSaveModel experiment = new ExperimentSaveModel("UnitLibsvmTestSaveModel", modelFolder);
+        experiment.setParameterSpace(paramSpace);
+        experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(UnitOutcomeAnnotator.class));
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private void unitVerifyCreatedModelFiles(File modelFolder)

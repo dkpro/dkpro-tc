@@ -24,19 +24,20 @@ import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterLuceneCharacterNgramStartingWithLetter;
-import org.dkpro.tc.examples.shallow.io.BrownCorpusReader;
+import org.dkpro.tc.examples.shallow.crfsuite.sequence.FilterCharNgramsByStartingLetter;
 import org.dkpro.tc.examples.shallow.util.anno.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.builder.ExperimentBuilderV2;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
+
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
  * Tests SVMhmm on POS tagging of one file in Brown corpus
@@ -50,16 +51,16 @@ public class SvmHmmBrownPosDemo
 
     public CollectionReaderDescription getTrainReader() throws Exception{
         return CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                BrownCorpusReader.PARAM_PATTERNS, "a01.xml");
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS, "a01.xml");
     }
     
     public CollectionReaderDescription getTestReader() throws Exception{
         return CollectionReaderFactory.createReaderDescription(
-                BrownCorpusReader.class, BrownCorpusReader.PARAM_LANGUAGE, "en",
-                BrownCorpusReader.PARAM_LANGUAGE, "en", BrownCorpusReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, BrownCorpusReader.PARAM_PATTERNS, "a02.xml");
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "a02.xml");
     }
     
     public TcFeatureSet getFeatureSet() {
@@ -74,14 +75,14 @@ public class SvmHmmBrownPosDemo
     protected void runCrossValidation()
         throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.CROSS_VALIDATION, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .numFolds(NUM_FOLDS)
         .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
         .experimentReports(new ContextMemoryReport())
         .featureSets(getFeatureSet())
-        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .featureFilter(FilterCharNgramsByStartingLetter.class.getName())
         .learningMode(LearningMode.SINGLE_LABEL)
         .featureMode(FeatureMode.SEQUENCE)
         .machineLearningBackend(new MLBackend(new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" ))
@@ -90,14 +91,14 @@ public class SvmHmmBrownPosDemo
 
     public void runTrainTest() throws Exception
     {
-        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
+        ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())
         .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
         .experimentReports(new ContextMemoryReport())
         .featureSets(getFeatureSet())
-        .featureFilter(FilterLuceneCharacterNgramStartingWithLetter.class.getName())
+        .featureFilter(FilterCharNgramsByStartingLetter.class.getName())
         .learningMode(LearningMode.SINGLE_LABEL)
         .featureMode(FeatureMode.SEQUENCE)
         .machineLearningBackend(new MLBackend(new SvmHmmAdapter(), "-c", "5.0", "--t", "1", "-m", "0" ))

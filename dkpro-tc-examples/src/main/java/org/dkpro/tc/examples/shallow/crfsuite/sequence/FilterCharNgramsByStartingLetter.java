@@ -33,7 +33,7 @@ import com.google.gson.Gson;
  *  Demonstrates how feature filtering might work. The filter removes all ''character ngrams'' from the feature set
  *   - intended as demonstration - in practical setups you would simply remove the character ngram feature 
  */
-public class FilterLuceneCharacterNgramStartingWithLetter
+public class FilterCharNgramsByStartingLetter
     implements FeatureFilter
 {
     @Override
