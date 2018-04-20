@@ -157,7 +157,7 @@ public class WekaSaveAndLoadModelUnitTest
 
         JCas jcas = JCasFactory.createJCas();
         reader.getNext(jcas.getCas());
-        assertEquals(163, JCasUtil.select(jcas, Token.class).size()); // sanity check i.e. check
+        assertEquals(72, JCasUtil.select(jcas, Token.class).size()); // sanity check i.e. check
                                                                       // number of tokens which
                                                                       // determine number of
                                                                       // outcomes that are expected
@@ -166,8 +166,7 @@ public class WekaSaveAndLoadModelUnitTest
 
         Collection<TextClassificationOutcome> outcomes = JCasUtil.select(jcas,
                 TextClassificationOutcome.class);
-        assertEquals(163, outcomes.size()); // 168 tokens in the training file we expect for each an
-                                            // outcome
+        assertEquals(72, outcomes.size());  
         for (TextClassificationOutcome o : outcomes) {
             assertTrue(!o.getOutcome().isEmpty());
         }
