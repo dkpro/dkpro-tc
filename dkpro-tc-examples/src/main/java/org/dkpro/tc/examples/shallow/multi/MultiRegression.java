@@ -20,16 +20,10 @@ package org.dkpro.tc.examples.shallow.multi;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
@@ -39,13 +33,14 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.builder.ExperimentType;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -59,111 +54,77 @@ public class MultiRegression
     public static void main(String[] args) throws Exception
     {
 
-        // This is used to ensure that the required DKPRO_HOME environment variable is
-        // set.
-        // Ensures that people can run the experiments even if they haven't read the
-        // setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME
-        // as
-        // explained there.
         DemoUtils.setDkproHome(MultiRegression.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
-
         MultiRegression experiment = new MultiRegression();
-        // experiment.runTrainTest(pSpace);
-        experiment.runCrossValidation(pSpace);
+        experiment.runTrainTest();
+        experiment.runCrossValidation();
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public CollectionReaderDescription getReaderTrain() throws Exception
     {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        // The reader is also responsible for setting the labels/outcome on all
-        // documents/instances it creates.
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
                 DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
                 DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_train.txt",
                 DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+    }
 
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+    public CollectionReaderDescription getReaderTest() throws Exception
+    {
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
                 DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
                 DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/test/essay_test.txt",
                 DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
-        dimReaders.put(DIM_READER_TEST, readerTest);
+    }
 
-        Map<String, Object> xgboostConfig = new HashMap<>();
-        xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
-        xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
-        xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
-
-        Map<String, Object> liblinearConfig = new HashMap<>();
-        liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new LiblinearAdapter(), "-s", "6" });
-        liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
-        liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());
-
-        Map<String, Object> libsvmConfig = new HashMap<>();
-        libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new LibsvmAdapter(), "-s", "3", "-c", "10" });
-        libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
-        libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
-
-        Map<String, Object> wekaConfig = new HashMap<>();
-        wekaConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new WekaAdapter(), LinearRegression.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig,
-                liblinearConfig, libsvmConfig, wekaConfig);
-
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
-                        TcFeatureFactory.create(LengthFeatureNominal.class),
-                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
-
-        return pSpace;
+    public TcFeatureSet getFeatureSet()
+    {
+        return new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
+                TcFeatureFactory.create(LengthFeatureNominal.class),
+                TcFeatureFactory.create(TokenRatioPerDocument.class));
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    public void runTrainTest() throws Exception
     {
-        ExperimentTrainTest experiment = new ExperimentTrainTest("RegressionDemo");
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-        experiment.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestRegression")
+                .dataReaderTrain(getReaderTrain())
+                .dataReaderTest(getReaderTest())
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.REGRESSION)
+                .featureMode(FeatureMode.DOCUMENT)
+                .reports(new ContextMemoryReport(), new BatchRuntimeReport())
+                .preprocessing(getPreprocessing())
+                .machineLearningBackend(
+                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),
+                        new MLBackend(new LiblinearAdapter(), "-s", "6"),
+                        new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10"),
+                        new MLBackend(new WekaAdapter(), LinearRegression.class.getName()))
+                .run();
     }
 
-    public void runCrossValidation(ParameterSpace pSpace) throws Exception
+    public void runCrossValidation() throws Exception
     {
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("RegressionDemo", 2);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchCrossValidationReport.class);
-        experiment.addReport(ContextMemoryReport.class);
-        experiment.addReport(BatchRuntimeReport.class);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationRegression").numFolds(2)
+                .dataReaderTrain(getReaderTrain())
+                .numFolds(2)
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.REGRESSION)
+                .featureMode(FeatureMode.DOCUMENT)
+                .reports(new ContextMemoryReport(), new BatchRuntimeReport())
+                .preprocessing(getPreprocessing())
+                .machineLearningBackend(
+                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),
+                        new MLBackend(new LiblinearAdapter(), "-s", "6"),
+                        new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10"),
+                        new MLBackend(new WekaAdapter(), LinearRegression.class.getName()))
+                .run();
     }
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
