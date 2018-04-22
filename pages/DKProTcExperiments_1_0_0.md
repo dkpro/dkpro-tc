@@ -1,7 +1,7 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Basics"
-permalink: "/DKProTcBasics_1_0_0/"
+title: "DKPro TC Wiring Experiments"
+permalink: "/DKProTcExperiments_1_0_0/"
 ---
 
 ### Anatomy of a DKPro TC experiment
