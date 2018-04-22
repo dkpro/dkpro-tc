@@ -6,7 +6,7 @@ permalink: "/DKProTcWiringExperiments_1_0_0/"
 
 ### Anatomy of a DKPro TC experiment
 
-Subsequently, we introduce the key concepts necessary for using DKPro TC by discussing a minimal setup and walk the reader to the building blocks of an experiment.
+Using the `ExperimentBuilder` as described in [Basics](https://github.com/dkpro/dkpro-tc/blob/gh-pages/pages/DKProTcBasics) wires an experiment and creates all necessary information. We briefly discuss here the necessary steps without using the `ExperimentBuilder` to create an experiment: All information is provided in a DKPro Lab data type called a `Dimension`:
 
 {% highlight java %}
 // Defining the readers that read the data that we use in an experiment
@@ -36,13 +36,13 @@ Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, new Tc
 Map<String, Object> libsvmConfig = new HashMap<String, Object>();
 libsvmConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LibsvmAdapter(), "-s", "0", "-c", "100" });
-libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass().getName());
+libsvmConfig.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
 libsvmConfig.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 	
 Map<String, Object> liblinearConfig = new HashMap<String, Object>();
 liblinearConfig.put(DIM_CLASSIFICATION_ARGS,
                 new Object[] { new LiblinearAdapter(), "-s", "1"});
-liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass().getName());
+liblinearConfig.put(DIM_DATA_WRITER, new LiblinearAdapter().getDataWriterClass());
 liblinearConfig.put(DIM_FEATURE_USE_SPARSE, new LiblinearAdapter().useSparseFeatures());	
  
 Dimension<Map<String, Object>> configs = Dimension.createBundle("config", libsvmConfig, liblinearConfig);
@@ -72,21 +72,3 @@ Lab.getInstance().run(exp);
 An experiment consists of (i) several dimensions that are combined in a (ii) parameter space and provided to an experiment. 
 Regarding (i), dimensions are the basic building blocks of an experimental setup. Almost every parameter that is altered in an experiment is changed or set via a dimension. The dimensions in the code declare three building blocks: First, the readers that provide the data for the experiment, second, the feature set that is used in this experiment, and third, the classification arguments that specify the classifier which is to be used (Liblinear in this case).
 Regarding (ii), the parameter space is main data structure which is used by DKPro TC in the background; it is important that all created dimension are added to the parameter space, otherwise they are not used. 
-
-### Experiment
-DKPro TC has two experimental modi, a train-test experiment (shown in the code snippet) in which a fixed train-test data split is provided by the user or cross-validation in which DKPro TC splits the data autonomously into the number of requested folds.
-
-### Results of an experiment
-The results are written to the folder provided as `DKPRO_HOME` directory. The subfolder contain all output written by an experiment, and not just the final results. The folder with the results is the `Evaluation-*` folder. The other folders are probably not of importance for using DKPRo TC, but we explain their content yet briefly. For a train-test experiment, the following folders are created:
-
-* InitTask-Train-ExperimentName-*
-* InitTask-Test-ExperimentName-*
-* OutcomeCollectionTask-ExperimentName-*
-* MetaInfoTask-ExperimentName-*
-* ExtractFeaturesTask-Train-ExperimentName-*
-* ExtractFeaturesTask-Test-ExperimentName-*
-* DKProTcShallowTestTask-ExperimentName-*
-* \<MachineLearningAdapter>-ExperimentName-*
-* Evaluation-ExperimentName-*
-
-The `InitTask` folders contain the provided training and testing data converted into an internal data format. `OutcomeCollectionTask` collects all occurring labels in the training and testing data (or nothing if its regression). `MetaInfoTask` prepares the usage of features that use a frequency cut-off, i.e. the word-ngram feature that is used in the experimental setup. `ExtractFeatureTask` contain the extracted features in the data format the respective classifier expects. `DKProTcShallowTestTask` and `<MachineLearningAdapter>` execute the actual classifier with the feature data extracted before. The results per instance and some more low-level information can be found in the `<MachineLearningAdapter>` folder.
