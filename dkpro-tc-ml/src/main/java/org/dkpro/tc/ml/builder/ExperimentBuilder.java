@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.dkpro.lab.Lab;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
@@ -41,8 +42,7 @@ import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
- * Convenience class that builds a parameter space object that can be passed to a DKPro Lab
- * experiment.
+ * Builder class that offers a simplified wiring of DKPro TC experiments.
  */
 public class ExperimentBuilder
     implements Constants
@@ -72,6 +72,15 @@ public class ExperimentBuilder
 
     }
 
+    /**
+     * Sets one or multiple machine learning adapter configurations. Several configurations of the
+     * same adapter have to be passed as separated {@link MLBackend} configurations. Calling this
+     * method will remove all previously set {@link MLBackend} configurations.
+     * 
+     * @param backends
+     *            one or more machine learning backends
+     * @return the builder object
+     */
     public ExperimentBuilder machineLearningBackend(MLBackend... backends)
     {
         this.adapter = new ArrayList<>();
@@ -85,6 +94,11 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Wires the parameter space. The created parameter space can be passed to experimental setup.
+     * 
+     * @return a parameter space
+     */
     public ParameterSpace getParameterSpace()
     {
         List<Dimension<?>> dimensions = new ArrayList<>();
@@ -196,6 +210,15 @@ public class ExperimentBuilder
         return maps;
     }
 
+    /**
+     * Sets one or more pre-configured {@link TcFeatureSet}. Either this method or
+     * {@link #features(TcFeature...)} has to be called to create a valid experimental setup.
+     * Calling this method will remove all previously set feature sets.
+     * 
+     * @param featureSet
+     *            one or more feature sets
+     * @return the builder object
+     */
     public ExperimentBuilder featureSets(TcFeatureSet... featureSet)
     {
         for (TcFeatureSet fs : featureSet) {
@@ -205,6 +228,13 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets one or more feature filters by their full name i.e. .class.getName()
+     * 
+     * @param filter
+     *            one or more filter names
+     * @return the builder object
+     */
     public ExperimentBuilder featureFilter(String... filter)
     {
 
@@ -221,6 +251,16 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets several features to be used in an experiment. If this method is used a single
+     * {@link TcFeatureSet} is created in the background. If multiple feature sets shall be used use
+     * {@link #featureSets(TcFeatureSet...)} Calling this method will remove all previously set
+     * feature configurations
+     * 
+     * @param features
+     *            one or more features
+     * @return the builder object
+     */
     public ExperimentBuilder features(TcFeature... features)
     {
         if (features == null) {
@@ -248,8 +288,16 @@ public class ExperimentBuilder
         }
     }
 
+    /**
+     * Sets the data reader which reads the training data
+     * 
+     * @param reader
+     *            the {@link CollectionReaderDescription} that can be created via
+     *            {@link CollectionReaderFactory} from a reader class.
+     * @return the builder object
+     * 
+     */
     public ExperimentBuilder dataReaderTrain(CollectionReaderDescription reader)
-        throws IllegalStateException
     {
         if (reader == null) {
             throw new NullPointerException(
@@ -264,6 +312,14 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets the data reader which reads the test data
+     * 
+     * @param reader
+     *            the {@link CollectionReaderDescription} that can be created via
+     *            {@link CollectionReaderFactory} from a reader class.
+     * @return the builder object
+     */
     public ExperimentBuilder dataReaderTest(CollectionReaderDescription reader)
         throws IllegalStateException
     {
@@ -280,6 +336,15 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Allows the user to set additional dimensions. This is for advanced users that use dimensions
+     * that are not part of the minimal configuration for an experiment. This method will remove all
+     * previously set additional dimensions and replaces them with the newly provided one.
+     * 
+     * @param dim
+     *            a list of dimensions
+     * @return the builder object
+     */
     public ExperimentBuilder additionalDimensions(Dimension<?>... dim)
     {
 
@@ -296,6 +361,14 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets the learning mode of the experiment
+     * 
+     * @param learningMode
+     *          The learning mode
+     * @return
+     *          The builder object
+     */
     public ExperimentBuilder learningMode(LearningMode learningMode)
     {
         if (learningMode == null) {
@@ -306,6 +379,14 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets the feature mode of the experiment
+     * 
+     * @param featureMode
+     *          The feature mode
+     * @return
+     *      The builder object
+     */
     public ExperimentBuilder featureMode(FeatureMode featureMode)
     {
         if (featureMode == null) {
@@ -316,6 +397,14 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets an externally pre-defined experimental setup
+     * 
+     * @param experiment
+     *          An experimental setup
+     * @return
+     *      The builder object
+     */
     public ExperimentBuilder experiment(ShallowLearningExperiment_ImplBase experiment)
     {
 
@@ -327,6 +416,15 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Creates an experimental setup with a pre-defined type
+     * @param type
+     *          The type of experiment
+     * @param experimentName
+     *          The name of the experiment
+     * @return
+     *          The builder object
+     */
     public ExperimentBuilder experiment(ExperimentType type, String experimentName)
     {
         this.type = type;
@@ -360,6 +458,14 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets reports for the experiments
+     * 
+     * @param reports
+     *          One or more reports
+     * @return
+     *          The builder object
+     */
     public ExperimentBuilder reports(ReportBase... reports)
     {
         this.reports = new ArrayList<>();
@@ -370,24 +476,71 @@ public class ExperimentBuilder
         return this;
     }
 
+    /**
+     * Sets a {@link AnalysisEngineDescription} which contains all necessary pre-processing steps.
+     * Multiple {@link AnalysisEngineDescription} can be combined into a single one by nesting
+     * multiple descriptions, e.g. 
+     * <pre>
+     *     AnalysisEngineFactory.createEngineDescription(
+     *              AnalysisEngineFactory.createEngineDescription(abc1.class),
+     *              AnalysisEngineFactory.createEngineDescription(abc2.class),
+     *              AnalysisEngineFactory.createEngineDescription(...),
+     *     );
+     * </pre> 
+     * 
+     * @param preprocessing
+     *          the preprocessing component
+     * @return
+     *          The builder object
+     */
     public ExperimentBuilder preprocessing(AnalysisEngineDescription preprocessing)
     {
         this.preprocessing = preprocessing;
         return this;
     }
 
+    /**
+     * Sets the number of folds for {@link ExperimentType#CROSS_VALIDATION}. Defaults to ten if not
+     * set by the user. Is ignored for other experiment types.
+     * 
+     * @param numFolds
+     *          The number of folds
+     * @return
+     *      The builder object
+     */
     public ExperimentBuilder numFolds(int numFolds)
     {
         this.numFolds = numFolds;
         return this;
     }
 
+    /**
+     * Sets the experiment Name
+     * @param experimentName
+     *          The name
+     * @return
+     *      The builder object
+     */
     public ExperimentBuilder name(String experimentName)
     {
         this.experimentName = experimentName;
         return this;
     }
 
+    /**
+     * Wires the provided parameter to an experiment. The experiment object can be executed by
+     * calling:
+     * 
+     * <pre>
+     *      Lab.getInstance().run(...)
+     * </pre>
+     * 
+     * The method {@link #run()} performs automatically above step as convenience service.
+     * 
+     * @return The experiment
+     * @throws Exception
+     *             In case of invalid configurations
+     */
     public ShallowLearningExperiment_ImplBase build() throws Exception
     {
 
@@ -443,6 +596,12 @@ public class ExperimentBuilder
         }
     }
 
+    /**
+     * Executes the experiment
+     * 
+     * @throws Exception
+     *             In case of an invalid configuration or missing mandatory values
+     */
     public void run() throws Exception
     {
         ShallowLearningExperiment_ImplBase build = build();
