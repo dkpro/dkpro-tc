@@ -6,7 +6,7 @@ permalink: "/DKProTcWiringExperiments_1_0_0/"
 
 ### Anatomy of a DKPro TC experiment
 
-Using the `ExperimentBuilder` as described in [Basics](https://github.com/dkpro/dkpro-tc/blob/gh-pages/pages/DKProTcBasics) wires an experiment and creates all necessary information. We briefly discuss here the necessary steps without using the `ExperimentBuilder` to create an experiment: All information is provided in a DKPro Lab data type called a `Dimension`:
+Using the `ExperimentBuilder` as described in [Basics](https://github.com/dkpro/dkpro-tc/blob/gh-pages/pages/DKProTcBasics_1_0_0) wires an experiment and creates all necessary information. We briefly discuss here the necessary steps without using the `ExperimentBuilder` to create an experiment: All information is provided in a DKPro Lab data type called a `Dimension`:
 
 {% highlight java %}
 // Defining the readers that read the data that we use in an experiment
