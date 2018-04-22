@@ -26,7 +26,7 @@ TcFeatureSet featureSet = new TcFeatureSet(
                 .dataReaderTrain(getReaderTrain())
                 .dataReaderTest(getReaderTest())
                 .preprocessing(getPreprocessing())
-                .featureSets(getFeatureSet())
+                .featureSets(featureSet)
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(
