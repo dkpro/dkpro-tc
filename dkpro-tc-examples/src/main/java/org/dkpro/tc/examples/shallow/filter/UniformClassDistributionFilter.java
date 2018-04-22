@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.examples.shallow.misc.filter;
+package org.dkpro.tc.examples.shallow.filter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

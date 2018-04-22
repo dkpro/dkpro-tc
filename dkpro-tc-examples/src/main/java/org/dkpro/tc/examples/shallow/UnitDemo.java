@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.multi;
+package org.dkpro.tc.examples.shallow;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -27,7 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.misc.UnitOutcomeAnnotator;
+import org.dkpro.tc.examples.shallow.annotators.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;

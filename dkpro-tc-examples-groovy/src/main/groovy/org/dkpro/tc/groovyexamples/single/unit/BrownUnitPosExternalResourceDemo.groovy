@@ -33,7 +33,7 @@ import org.dkpro.tc.api.features.TcFeatureSet
 import org.dkpro.tc.core.Constants
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader
 
-import org.dkpro.tc.examples.shallow.misc.SequenceOutcomeAnnotator
+import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation

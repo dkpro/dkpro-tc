@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.weka.document;
+package org.dkpro.tc.examples.shallow.manualFolds;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,59 +24,40 @@ import java.util.Map;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.engine.ExecutionException;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.misc.UnitOutcomeAnnotator;
-import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.examples.TestCaseSuperClass;
+import org.dkpro.tc.examples.shallow.annotators.UnitOutcomeAnnotator;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
+import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import weka.classifiers.bayes.NaiveBayes;
 
-public class WekaManualFoldCrossValidation
-    implements Constants
+public class WekaManualFoldCrossValidationTest
+    extends TestCaseSuperClass implements Constants
 {
-    public static final String LANGUAGE_CODE = "de";
-    public static final int NUM_FOLDS = 2;
+    
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
 
-    public static void main(String[] args) throws Exception
+    /*
+     * We request more folds than we have files (2) because we set 'manualMode' to true we expect an
+     * exception
+     */
+    @Test(expected = ExecutionException.class)
+    public void testManualFoldCrossValdiationException() throws Exception
     {
-        WekaManualFoldCrossValidation demo = new WekaManualFoldCrossValidation();
-        demo.runCrossValidation(getParameterSpace(true), NUM_FOLDS);
+        runCrossValidation(true, 3);
     }
 
-    // ##### CV #####
-    public void runCrossValidation(ParameterSpace pSpace, int folds) throws Exception
-    {
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set DKPRO_HOME as
-        // explained there.
-        DemoUtils.setDkproHome(WekaManualFoldCrossValidation.class.getSimpleName());
-
-        ExperimentCrossValidation experiment = new ExperimentCrossValidation("NERDemoCV", folds);
-        experiment.setParameterSpace(pSpace);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(new BatchCrossValidationReport());
-        experiment.setPreprocessing(AnalysisEngineFactory.createEngineDescription(UnitOutcomeAnnotator.class));
-
-        // Run
-        Lab.getInstance().run(experiment);
-    }
-
-    public static ParameterSpace getParameterSpace(boolean manualFolds)
-        throws ResourceInitializationException
+    private void runCrossValidation(boolean useManualFolds, int numFolds) throws Exception
     {
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
@@ -106,9 +87,23 @@ public class WekaManualFoldCrossValidation
                  * MANUAL CROSS VALIDATION FOLDS - i.e. the cas created by your reader will be used
                  * as is to make folds
                  */
-                Dimension.create(DIM_CROSS_VALIDATION_MANUAL_FOLDS, manualFolds));
+                Dimension.create(DIM_CROSS_VALIDATION_MANUAL_FOLDS,useManualFolds));
+        
+        ExperimentCrossValidation cv = new ExperimentCrossValidation("cv", numFolds);
+        cv.setPreprocessing(AnalysisEngineFactory.createEngineDescription(UnitOutcomeAnnotator.class));
+        cv.setParameterSpace(pSpace);
+        
+        Lab.getInstance().run(cv);
+    }
 
-        return pSpace;
+    /*
+     * We request more folds than we have files (2) without 'manualModel' thus the CAS should be
+     * split up and create sufficient many CAS to be distributed into the folds
+     */
+    @Test
+    public void testManualFoldCrossValdiation() throws Exception
+    {
+        runCrossValidation(true, 2);
     }
 
 }

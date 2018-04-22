@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.misc;
+package org.dkpro.tc.examples.shallow.annotators;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -26,12 +25,14 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class UnitOutcomeAnnotator
+public class SequenceOutcomeAnnotator
     extends JCasAnnotator_ImplBase
 {
     int tcId = 0;
@@ -39,28 +40,33 @@ public class UnitOutcomeAnnotator
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
+        for (Sentence sent : JCasUtil.select(aJCas, Sentence.class)) {
+            TextClassificationSequence sequence = new TextClassificationSequence(aJCas,
+                    sent.getBegin(), sent.getEnd());
+            sequence.addToIndexes();
 
-        List<Token> tokens = new ArrayList<Token>(JCasUtil.select(aJCas, Token.class));
+            List<Token> tokens = JCasUtil.selectCovered(aJCas, Token.class, sent);
 
-        for (Token token : tokens) {
-            TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, token.getBegin(),
-                    token.getEnd());
-            aTarget.setId(tcId++);
-            aTarget.setSuffix(token.getCoveredText());
-            aTarget.addToIndexes();
+            for (Token token : tokens) {
+                TextClassificationTarget unit = new TextClassificationTarget(aJCas,
+                        token.getBegin(), token.getEnd());
+                unit.setId(tcId++);
+                unit.setSuffix(token.getCoveredText());
+                unit.addToIndexes();
 
-            TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
-                    token.getBegin(), token.getEnd());
-            outcome.setOutcome(getTextClassificationOutcome(aJCas, aTarget));
-            outcome.addToIndexes();
+                TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas,
+                        token.getBegin(), token.getEnd());
+                outcome.setOutcome(getTextClassificationOutcome(aJCas, unit));
+                outcome.addToIndexes();
+            }
 
         }
     }
 
-    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget aTarget)
+    public String getTextClassificationOutcome(JCas jcas, TextClassificationTarget unit)
     {
-        List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, aTarget);
-        return posList.get(0).getPosValue();
+        List<POS> posList = JCasUtil.selectCovered(jcas, POS.class, unit);
+        return posList.get(0).getPosValue().replaceAll(" ", "_");
     }
 
 }

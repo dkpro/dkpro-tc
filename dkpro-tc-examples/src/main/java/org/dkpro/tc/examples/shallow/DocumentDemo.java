@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.multi;
+package org.dkpro.tc.examples.shallow;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
