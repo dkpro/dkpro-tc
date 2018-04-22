@@ -60,8 +60,8 @@ public class ExperimentBuilder
     String experimentName;
     ExperimentType type;
     int numFolds = -1;
-    private AnalysisEngineDescription preprocessing;
-    private List<String> featureFilter;
+    AnalysisEngineDescription preprocessing;
+    List<String> featureFilter;
 
     /**
      * Creates an experiment builder object.
