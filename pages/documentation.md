@@ -21,8 +21,9 @@ _latest release_
 ### DKPro TC {{ unstable.version }}
 * [Setting Up DKProTC](/dkpro-tc/SettingUpDKPro/)
 
-
+* [Basics] (/dkpro-tc/DKProTcBasics_1_0_0/)
 * [Processing Modes](/dkpro-tc/DKProTcProcessingModes/)
+
 * [Using DKPro Core Readers](/dkpro-tc/DKProTcUsingDKProCoreReaders/)
 * [Wiring Experiments](/dkpro-tc/DKProTcWiringExperiments_1_0_0/)
 
