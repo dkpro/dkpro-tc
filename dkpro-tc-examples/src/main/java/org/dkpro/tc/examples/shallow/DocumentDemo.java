@@ -27,7 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.feature.filter.UniformClassDistributionFilter;
+import org.dkpro.tc.examples.shallow.filter.UniformClassDistributionFilter;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
