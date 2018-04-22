@@ -585,6 +585,7 @@ public class ExperimentBuilder
             }
 
             experiment(type, experimentName, numFolds);
+            return;
         }
 
         if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
@@ -594,6 +595,8 @@ public class ExperimentBuilder
         if (experimentName != null) {
             experiment.setExperimentName(experimentName);
         }
+        
+        throw new IllegalStateException("Please set an experiment");
     }
 
     /**
