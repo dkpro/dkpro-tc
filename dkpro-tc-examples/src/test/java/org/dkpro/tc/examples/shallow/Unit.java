@@ -61,7 +61,7 @@ import weka.classifiers.bayes.NaiveBayes;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiUnit
+public class Unit
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";

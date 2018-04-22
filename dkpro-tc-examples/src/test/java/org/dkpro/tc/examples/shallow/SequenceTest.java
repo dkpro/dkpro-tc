@@ -58,7 +58,7 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiSequenceTest
+public class SequenceTest
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";

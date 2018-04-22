@@ -47,16 +47,16 @@ import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;
 
-public class MultiRegression
+public class RegressionDemo
     implements Constants
 {
 
     public static void main(String[] args) throws Exception
     {
 
-        DemoUtils.setDkproHome(MultiRegression.class.getSimpleName());
+        DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
 
-        MultiRegression experiment = new MultiRegression();
+        RegressionDemo experiment = new RegressionDemo();
         experiment.runTrainTest();
         experiment.runCrossValidation();
     }

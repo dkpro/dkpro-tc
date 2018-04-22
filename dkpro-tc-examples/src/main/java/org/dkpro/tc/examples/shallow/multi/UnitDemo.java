@@ -49,7 +49,7 @@ import weka.classifiers.bayes.NaiveBayes;
  * classification unit, but unlike sequence tagging the decision for each POS is taken
  * independently. This will usually give worse results, so this is only to showcase the concept.
  */
-public class UniDemo
+public class UnitDemo
     implements Constants
 {
 
@@ -59,9 +59,9 @@ public class UniDemo
 
     public static void main(String[] args) throws Exception
     {
-        DemoUtils.setDkproHome(UniDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(UnitDemo.class.getSimpleName());
 
-        new UniDemo().runTrainTest();
+        new UnitDemo().runTrainTest();
     }
     
     public CollectionReaderDescription getReaderTrain() throws Exception {

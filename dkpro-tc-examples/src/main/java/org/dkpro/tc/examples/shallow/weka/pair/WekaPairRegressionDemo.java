@@ -64,14 +64,6 @@ public class WekaPairRegressionDemo
     public static void main(String[] args) throws Exception
     {
 
-        // This is used to ensure that the required DKPRO_HOME environment
-        // variable is set.
-        // Ensures that people can run the experiments even if they haven't read
-        // the setup
-        // instructions first :)
-        // Don't use this in real experiments! Read the documentation and set
-        // DKPRO_HOME as
-        // explained there.
         DemoUtils.setDkproHome(WekaPairRegressionDemo.class.getSimpleName());
 
         WekaPairRegressionDemo experiment = new WekaPairRegressionDemo();

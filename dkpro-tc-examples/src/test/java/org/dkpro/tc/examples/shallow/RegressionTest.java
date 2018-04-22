@@ -68,7 +68,7 @@ import weka.classifiers.functions.LinearRegression;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiRegressionTest
+public class RegressionTest
     extends TestCaseSuperClass
     implements Constants
 {

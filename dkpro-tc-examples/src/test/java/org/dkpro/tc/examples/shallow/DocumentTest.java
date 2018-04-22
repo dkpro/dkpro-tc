@@ -68,7 +68,7 @@ import weka.classifiers.functions.supportVector.PolyKernel;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiDocumentTest
+public class DocumentTest
     extends TestCaseSuperClass implements Constants
 {
     

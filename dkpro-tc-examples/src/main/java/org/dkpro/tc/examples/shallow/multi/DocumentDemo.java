@@ -27,6 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.feature.filter.UniformClassDistributionFilter;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
@@ -45,7 +46,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.supportVector.PolyKernel;
 
-public class MultiDocument
+public class DocumentDemo
     implements Constants
 {
     public static final String LANGUAGE_CODE = "en";
@@ -60,7 +61,7 @@ public class MultiDocument
 
         DemoUtils.setDkproHome("target/");
 
-        MultiDocument experiment = new MultiDocument();
+        DocumentDemo experiment = new DocumentDemo();
         experiment.runTrainTest();
         experiment.runCrossValidation();
     }
@@ -118,6 +119,7 @@ public class MultiDocument
                 .dataReaderTest(getReaderTest())
                 .preprocessing(getPreprocessing())
                 .featureSets(getFeatureSet())
+                .featureFilter(UniformClassDistributionFilter.class.getName())
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(

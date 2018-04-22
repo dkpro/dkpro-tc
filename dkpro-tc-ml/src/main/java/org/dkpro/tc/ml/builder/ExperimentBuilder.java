@@ -59,9 +59,12 @@ public class ExperimentBuilder
     ParameterSpace parameterSpace;
     String experimentName;
     ExperimentType type;
-    int numFolds = -1;
     AnalysisEngineDescription preprocessing;
     List<String> featureFilter;
+    List<Map<String,Object>> additionalMapDimensions;
+    
+    int numFolds = -1;
+    double bipartitionThreshold = -1;
 
     /**
      * Creates an experiment builder object.
@@ -99,6 +102,7 @@ public class ExperimentBuilder
      * 
      * @return a parameter space
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ParameterSpace getParameterSpace()
     {
         List<Dimension<?>> dimensions = new ArrayList<>();
@@ -115,10 +119,27 @@ public class ExperimentBuilder
         if (additionalDimensions != null && additionalDimensions.size() > 0) {
             dimensions.addAll(additionalDimensions);
         }
+        
+        if(additionalMapDimensions != null && additionalMapDimensions.size() > 0) {
+            int dim=1;
+            for(Map m : additionalMapDimensions) {
+                Dimension bundle = Dimension.createBundle("additionalDim_" + dim++, m);
+                dimensions.add(bundle);
+            }
+        }
+        
+        if(this.bipartitionThreshold!=-1) {
+            dimensions.add(getAsDimensionsBipartionThreshold());
+        }
 
         parameterSpace = new ParameterSpace(dimensions.toArray(new Dimension<?>[0]));
 
         return parameterSpace;
+    }
+
+    private Dimension<?> getAsDimensionsBipartionThreshold()
+    {
+        return Dimension.create(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
     }
 
     @SuppressWarnings("unchecked")
@@ -360,6 +381,23 @@ public class ExperimentBuilder
         additionalDimensions = new ArrayList<>(Arrays.asList(dim));
         return this;
     }
+    
+    @SafeVarargs
+    public final ExperimentBuilder additionalDimensions(Map<String,Object>... dimensions)
+    {
+
+        if (dimensions == null) {
+            throw new NullPointerException("The added dimension is null");
+        }
+        for (Map<String,Object> d : dimensions) {
+            if (d == null) {
+                throw new NullPointerException("The added map is null");
+            }
+        }
+
+        additionalMapDimensions = new ArrayList<>(Arrays.asList(dimensions));
+        return this;
+    }
 
     /**
      * Sets the learning mode of the experiment
@@ -524,6 +562,12 @@ public class ExperimentBuilder
     public ExperimentBuilder name(String experimentName)
     {
         this.experimentName = experimentName;
+        return this;
+    }
+    
+    public ExperimentBuilder bipartitionThreshold(double threshold)
+    {
+        this.bipartitionThreshold = threshold;
         return this;
     }
 
