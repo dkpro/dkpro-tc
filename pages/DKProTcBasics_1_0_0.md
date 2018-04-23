@@ -21,24 +21,22 @@ TcFeatureSet featureSet = new TcFeatureSet(
 
 // The experiment builder lets the user wire an experiment with few steps
  ExperimentBuilder builder = new ExperimentBuilder();
- 
- // Setup - providing all parameters and machine learning adapters that are used for an experiment
-        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
-                .dataReaderTrain(getReaderTrain())
-                .dataReaderTest(getReaderTest())
-                .preprocessing(getPreprocessing())
-                .featureSets(featureSet)
-                .learningMode(LearningMode.SINGLE_LABEL)
-                .featureMode(FeatureMode.DOCUMENT)
-                .machineLearningBackend(
-                        //an example how to configure an execution of four classifiers in a setup.
-                        // DKPro TC will run the feature extraction and use each classifier
-                        new MLBackend(new XgboostAdapter(), "objective=multi:softmax"),
-                        new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
-                                PolyKernel.class.getName() + " " + "-C -1 -E 2"),
-                        new MLBackend(new LiblinearAdapter(), "-s", "4", "-c", "100"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"))
-			
+// Setup - providing all parameters and machine learning adapters that are used for an experiment
+builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
+       .dataReaderTrain(getReaderTrain())
+       .dataReaderTest(getReaderTest())
+       .preprocessing(getPreprocessing())
+       .featureSets(featureSet)
+       .learningMode(LearningMode.SINGLE_LABEL)
+       .featureMode(FeatureMode.DOCUMENT)
+       .machineLearningBackend(
+       // an example how to configure an execution of four classifiers in a setup.
+       // DKPro TC will run the feature extraction and use each classifier
+       new MLBackend(new XgboostAdapter(), "objective=multi:softmax"),
+                     new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
+                                                      PolyKernel.class.getName() + " " + "-C -1 -E 2"),
+                     new MLBackend(new LiblinearAdapter(), "-s", "4", "-c", "100"),
+                     new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"));
 	// Execute the experiment		
         builder.run();
 
