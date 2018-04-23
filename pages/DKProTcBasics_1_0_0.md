@@ -20,8 +20,9 @@ TcFeatureSet featureSet = new TcFeatureSet(
 							WordNGram.PARAM_NGRAM_USE_TOP_K, 50));
 
 // The experiment builder lets the user wire an experiment with few steps
-// 
  ExperimentBuilder builder = new ExperimentBuilder();
+ 
+ // Setup - providing all parameters and machine learning adapters that are used for an experiment
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
                 .dataReaderTrain(getReaderTrain())
                 .dataReaderTest(getReaderTest())
@@ -37,7 +38,9 @@ TcFeatureSet featureSet = new TcFeatureSet(
                                 PolyKernel.class.getName() + " " + "-C -1 -E 2"),
                         new MLBackend(new LiblinearAdapter(), "-s", "4", "-c", "100"),
                         new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"))
-                .run();
+			
+	// Execute the experiment		
+        builder.run();
 
 {% endhighlight java %}
 
