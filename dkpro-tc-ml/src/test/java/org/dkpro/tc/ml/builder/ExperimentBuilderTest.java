@@ -47,9 +47,27 @@ public class ExperimentBuilderTest
     }
     
     @Test
-    public void experimentType() {
+    public void experimentTypeCV() {
         builder.experiment(ExperimentType.CROSS_VALIDATION, "cv");
         assertEquals(builder.type.toString(), ExperimentType.CROSS_VALIDATION.toString());
+    }
+    
+    @Test
+    public void experimentTypeTrainTest() {
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest");
+        assertEquals(builder.type.toString(), ExperimentType.TRAIN_TEST.toString());
+    }
+    
+    @Test
+    public void experimentSaveModelTest() {
+        builder.experiment(ExperimentType.SAVE_MODEL, "saveModel");
+        assertEquals(builder.type.toString(), ExperimentType.SAVE_MODEL.toString());
+    }
+    
+    @Test
+    public void outputFolder() {
+        builder.outputFolder("target/");
+        assertTrue(builder.outputFolder !=null);
     }
     
     @Test
@@ -166,6 +184,25 @@ public class ExperimentBuilderTest
                .learningMode(LearningMode.REGRESSION)
                .featureSets(set)
                .numFolds(3)
+               .machineLearningBackend(mlBackend)
+               .build();
+    }
+    
+    @Test(expected=IllegalStateException.class)
+    public void missingOutputFolderModelSaving() throws Exception {
+        CollectionReaderDescription readerMock = Mockito.mock(CollectionReaderDescription.class);
+        
+        TcShallowLearningAdapter adapterMock = Mockito.mock(TcShallowLearningAdapter.class);
+        MLBackend mlBackend = new MLBackend(adapterMock);
+        
+        TcFeature featureMock = Mockito.mock(TcFeature.class);
+        TcFeatureSet set = new TcFeatureSet(featureMock);
+        
+        builder.experiment(ExperimentType.SAVE_MODEL, "saveModel")
+               .dataReaderTrain(readerMock)
+               .featureMode(FeatureMode.DOCUMENT)
+               .learningMode(LearningMode.REGRESSION)
+               .featureSets(set)
                .machineLearningBackend(mlBackend)
                .build();
     }

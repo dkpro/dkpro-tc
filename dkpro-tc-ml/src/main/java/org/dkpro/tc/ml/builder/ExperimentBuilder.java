@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.builder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BatchCrossValidationReport;
@@ -65,6 +67,7 @@ public class ExperimentBuilder
     
     int numFolds = -1;
     double bipartitionThreshold = -1;
+    File outputFolder;
 
     /**
      * Creates an experiment builder object.
@@ -492,6 +495,16 @@ public class ExperimentBuilder
             }
             experiment.addReport(new BatchCrossValidationReport());
             break;
+        case SAVE_MODEL:
+            
+            if(outputFolder==null) {
+                throw new IllegalStateException(
+                        "The output folder to which the model will be stored is not set.");
+            }
+            
+            experiment = new ExperimentSaveModel(experimentName, outputFolder);
+            break;
+            
         }
         return this;
     }
@@ -653,6 +666,18 @@ public class ExperimentBuilder
     {
         ShallowLearningExperiment_ImplBase build = build();
         Lab.getInstance().run(build);
+    }
+
+    /**
+     * Sets the output folder to which the model is saved when the experiment type is set to save
+     * model
+     * 
+     * @param filePath
+     */
+    public void outputFolder(String filePath)
+    {
+        this.outputFolder = new File(filePath);
+        outputFolder.mkdirs();
     }
 
 }

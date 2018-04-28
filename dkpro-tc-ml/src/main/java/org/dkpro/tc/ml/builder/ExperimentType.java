@@ -26,4 +26,6 @@ public enum ExperimentType
     TRAIN_TEST,
 
     CROSS_VALIDATION, 
+    
+    SAVE_MODEL
 }
