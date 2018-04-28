@@ -16,44 +16,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.weka.pair;
+package org.dkpro.tc.examples.shallow;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
-import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.shallow.filter.FilterCharNgramsByStartingLetter;
 import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
+import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
+import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
-import org.dkpro.tc.ml.report.ScatterplotReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
-import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
-import weka.classifiers.functions.SMO;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
- * Demonstrates the usage of external resources within feature extractors, i.e. nested resources in
- * uimaFit. Resource is created with
- * {@link ExternalResourceFactory#createExternalResourceDescription} and then passed to the feature
- * extractor(s) via the parameter space.
+ * PairTwentyNewsgroupsExperiment, using Java
  * 
+ * The PairTwentyNewsgroupsExperiment takes pairs of news files and trains/tests a binary classifier
+ * to learn if the files in the pair are from the same newsgroup. The pairs are listed in a tsv
+ * file: see the files in src/main/resources/lists/ as examples.
+ * <p>
+ * PairTwentyNewsgroupsExperiment uses similar architecture as TwentyNewsgroupsGroovyExperiment (
+ * {@link ExperimentTrainTest}) to automatically wire the standard tasks for a basic TrainTest
+ * setup. To remind the user to be careful of information leak when training and testing on pairs of
+ * data from similar sources, we do not provide a demo Cross Validation setup here. (Our sample
+ * train and test datasets are from separate newsgroups.) Please see
+ * TwentyNewsgroupsGroovyExperiment for a demo implementing a CV experiment.
  */
-public class WekaExternalResourceDemo
+public class PairDemo
     implements Constants
 {
 
@@ -64,58 +66,46 @@ public class WekaExternalResourceDemo
 
     public static void main(String[] args) throws Exception
     {
-        DemoUtils.setDkproHome(WekaExternalResourceDemo.class.getSimpleName());
+        DemoUtils.setDkproHome(PairDemo.class.getSimpleName());
 
-        WekaExternalResourceDemo experiment = new WekaExternalResourceDemo();
+        PairDemo experiment = new PairDemo();
         experiment.runTrainTest();
     }
     
     public CollectionReaderDescription getTrainReader() throws ResourceInitializationException
     {
-        return CollectionReaderFactory.createReaderDescription(
-                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                listFilePathTrain, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
+        return CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+                PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTrain,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
     }
 
     public CollectionReaderDescription getTestReader() throws ResourceInitializationException
     {
-        return CollectionReaderFactory.createReaderDescription(
-                PairTwentyNewsgroupsReader.class, PairTwentyNewsgroupsReader.PARAM_LISTFILE,
-                listFilePathTest, PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
+        return CollectionReaderFactory.createReaderDescription(PairTwentyNewsgroupsReader.class,
+                PairTwentyNewsgroupsReader.PARAM_LISTFILE, listFilePathTest,
+                PairTwentyNewsgroupsReader.PARAM_LANGUAGE_CODE, languageCode);
+    }
+    
+    public TcFeatureSet getFeatureSet() {
+        return new TcFeatureSet(
+                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class));
     }
 
-    public TcFeatureSet getFeatureSet()
-    {
-
-        // Create the External Resource here:
-        ExternalResourceDescription gstResource = ExternalResourceFactory
-                .createExternalResourceDescription(CosineSimilarityResource.class,
-                        CosineSimilarityResource.PARAM_NORMALIZATION,
-                        NormalizationMode.L2.toString());
-
-        return new TcFeatureSet(TcFeatureFactory.create(SimilarityPairFeatureExtractor.class,
-                        SimilarityPairFeatureExtractor.PARAM_TEXT_SIMILARITY_RESOURCE,
-                        gstResource));
-    }
-
+    // ##### TRAIN-TEST #####
     public void runTrainTest() throws Exception
     {
-
         ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
         .dataReaderTrain(getTrainReader())
         .dataReaderTest(getTestReader())
-        .preprocessing(getPreprocessing())
-        .reports(new ContextMemoryReport(), new ScatterplotReport())
+        .preprocessing(AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class))
+        .reports(new ContextMemoryReport())
         .featureSets(getFeatureSet())
+        .featureFilter(FilterCharNgramsByStartingLetter.class.getName())
         .learningMode(LearningMode.SINGLE_LABEL)
         .featureMode(FeatureMode.PAIR)
-        .machineLearningBackend(new MLBackend(new WekaAdapter(), SMO.class.getName()))
+        .machineLearningBackend(new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()))
         .run();
     }
 
-    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
-    {
-        return createEngineDescription(BreakIteratorSegmenter.class);
-    }
 }

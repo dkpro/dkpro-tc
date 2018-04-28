@@ -71,30 +71,19 @@ public class MinimalWorkingExample
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
-//        ExperimentBuilderV2 builder = new ExperimentBuilderV2();
-//        builder.experiment(ExperimentType.TRAIN_TEST, "dummyExperiment")
-//               .dataReaderTrain(readerTrain)
-//               .dataReaderTest(readerTest)
-//               .experimentPreprocessing(AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class))
-//               .experimentReports(new ContextMemoryReport())
-//               .features(TcFeatureFactory.create(TokenRatioPerDocument.class),
-//                        TcFeatureFactory.create(WordNGram.class,
-//                        WordNGram.PARAM_NGRAM_USE_TOP_K, 20,
-//                        WordNGram.PARAM_NGRAM_MIN_N, 1,
-//                        WordNGram.PARAM_NGRAM_MAX_N, 3)
-//                        )
-//                .learningMode(LearningMode.SINGLE_LABEL)
-//                .featureMode(FeatureMode.DOCUMENT)
-//                .machineLearningBackend(new MLBackend(new LiblinearAdapter()))
-//                .run();
         
-        TcTrainTestExperiment exp = new TcTrainTestExperiment(readerTrain, readerTest,
-                LearningMode.SINGLE_LABEL, FeatureMode.DOCUMENT, new LibsvmAdapter(),
-                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
-                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-                                20, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N,
-                                3)),
-                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
+        TcTrainTestExperiment exp = new TcTrainTestExperiment(readerTrain, 
+                                                              readerTest,
+                                                              LearningMode.SINGLE_LABEL,
+                                                              FeatureMode.DOCUMENT, 
+                                                              new LibsvmAdapter(),
+                                                              new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+                                                              TcFeatureFactory.create(WordNGram.class, 
+                                                                                      WordNGram.PARAM_NGRAM_USE_TOP_K, 20, 
+                                                                                      WordNGram.PARAM_NGRAM_MIN_N, 1, 
+                                                                                      WordNGram.PARAM_NGRAM_MAX_N, 3)),
+                                                              AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class)
+                                                              );
         exp.run();
         
     }
