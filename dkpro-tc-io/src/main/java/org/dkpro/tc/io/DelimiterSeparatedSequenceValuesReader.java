@@ -238,10 +238,10 @@ public class DelimiterSeparatedSequenceValuesReader
     {
 
         if (reader == null) {
-            Resource nextFile = getNextResource();
             if (!sequenceBuffer.isEmpty()) {
                 return true; // data left to process
             }
+            Resource nextFile = getNextResource();
             if (nextFile == null) {
                 return false;
             }

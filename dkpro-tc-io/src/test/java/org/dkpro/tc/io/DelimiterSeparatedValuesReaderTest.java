@@ -37,7 +37,6 @@ public class DelimiterSeparatedValuesReaderTest
     @Test
     public void testReader() throws Exception
     {
-
         CollectionReader reader = CollectionReaderFactory.createReader(
                 DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 2,
                 DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 1,

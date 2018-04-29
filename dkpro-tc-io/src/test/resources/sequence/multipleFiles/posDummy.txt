@@ -1,0 +1,17 @@
+This	DET
+is	VERB
+a	DET
+test	NOUN
+
+This2	DET2
+is2	VERB2
+a2	DET2
+#test2	NOUN2
+!	PUNCT2
+
+This3	DET3
+is3	VERB3
+a3	DET3
+test3	NOUN3
+!	PUNCT3
+!	PUNCT3

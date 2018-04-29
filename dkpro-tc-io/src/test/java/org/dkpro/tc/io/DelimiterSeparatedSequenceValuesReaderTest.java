@@ -43,8 +43,10 @@ public class DelimiterSeparatedSequenceValuesReaderTest
     public void testReader() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
-                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/",
                 DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "posDummy.txt",
                 DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 1);
 
@@ -133,8 +135,10 @@ public class DelimiterSeparatedSequenceValuesReaderTest
     public void testReaderIndexParameter() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
-                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION, "src/test/resources/sequence/",
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/",
                 DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "otherFormat.txt",
                 DelimiterSeparatedSequenceValuesReader.PARAM_OUTCOME_INDEX, 1,
                 DelimiterSeparatedSequenceValuesReader.PARAM_TOKEN_INDEX, 2);
@@ -210,7 +214,8 @@ public class DelimiterSeparatedSequenceValuesReaderTest
     public void testSkipLineReader() throws Exception
     {
 
-        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
                 DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
                 DelimiterSeparatedSequenceValuesReader.PARAM_SKIP_LINES_START_WITH_STRING, "#");
@@ -257,7 +262,8 @@ public class DelimiterSeparatedSequenceValuesReaderTest
     {
 
         // all in one
-        CollectionReader reader = CollectionReaderFactory.createReader(DelimiterSeparatedSequenceValuesReader.class,
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
                 DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
                 "src/test/resources/sequence/posDummy.txt",
                 DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 10);
@@ -315,6 +321,61 @@ public class DelimiterSeparatedSequenceValuesReaderTest
         assertEquals(2, createdCas);
         assertEquals(3, sentCount);
         assertEquals(15, tokenCount);
+    }
+
+    @Test
+    public void testMultipleFilesFromFolder() throws Exception
+    {
+        testReadMultipleFiles();
+
+        testReadMultipleFilesOnePerCas();
+    }
+
+    private void testReadMultipleFilesOnePerCas() throws Exception
+    {
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/multipleFiles/",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "*.txt",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 1);
+
+        int sentCount = 0;
+        int tokenCount = 0;
+        int createdCas = 0;
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+            sentCount += JCasUtil.select(theJCas, Sentence.class).size();
+            tokenCount += JCasUtil.select(theJCas, Token.class).size();
+            createdCas++;
+        }
+        assertEquals(5, createdCas);
+        assertEquals(5, sentCount);
+        assertEquals(25, tokenCount);
+    }
+
+    private void testReadMultipleFiles() throws Exception
+    {
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/multipleFiles/",
+                DelimiterSeparatedSequenceValuesReader.PARAM_PATTERNS, "*.txt");
+
+        int sentCount = 0;
+        int tokenCount = 0;
+        int createdCas = 0;
+        while (reader.hasNext()) {
+            JCas theJCas = JCasFactory.createJCas();
+            reader.getNext(theJCas.getCas());
+            sentCount += JCasUtil.select(theJCas, Sentence.class).size();
+            tokenCount += JCasUtil.select(theJCas, Token.class).size();
+            createdCas++;
+        }
+        assertEquals(2, createdCas);
+        assertEquals(5, sentCount);
+        assertEquals(25, tokenCount);
     }
 
 }
