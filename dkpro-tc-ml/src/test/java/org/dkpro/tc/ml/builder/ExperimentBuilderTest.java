@@ -128,7 +128,7 @@ public class ExperimentBuilderTest
         MLBackend mlBackend = new MLBackend(adapterMock);
         
         builder.machineLearningBackend(mlBackend);
-        assertEquals(builder.adapter.get(0), adapterMock);
+        assertEquals(builder.backends.get(0), adapterMock);
         
     }
     
@@ -204,6 +204,26 @@ public class ExperimentBuilderTest
                .learningMode(LearningMode.REGRESSION)
                .featureSets(set)
                .machineLearningBackend(mlBackend)
+               .build();
+    }
+    
+    @Test(expected=IllegalStateException.class)
+    public void multipleMLBackendsForModelSaving() throws Exception {
+        CollectionReaderDescription readerMock = Mockito.mock(CollectionReaderDescription.class);
+        
+        TcShallowLearningAdapter adapterMock = Mockito.mock(TcShallowLearningAdapter.class);
+        MLBackend mlBackend = new MLBackend(adapterMock);
+        
+        TcFeature featureMock = Mockito.mock(TcFeature.class);
+        TcFeatureSet set = new TcFeatureSet(featureMock);
+        
+        builder.experiment(ExperimentType.SAVE_MODEL, "saveModel")
+               .dataReaderTrain(readerMock)
+               .featureMode(FeatureMode.DOCUMENT)
+               .learningMode(LearningMode.REGRESSION)
+               .featureSets(set)
+               .outputFolder("target/")
+               .machineLearningBackend(mlBackend, mlBackend)
                .build();
     }
     

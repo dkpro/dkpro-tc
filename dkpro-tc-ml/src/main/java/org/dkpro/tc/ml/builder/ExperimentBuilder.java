@@ -49,7 +49,7 @@ import org.dkpro.tc.ml.report.BatchTrainTestReport;
 public class ExperimentBuilder
     implements Constants
 {
-    List<TcShallowLearningAdapter> adapter;
+    List<TcShallowLearningAdapter> backends;
     List<List<String>> arguments;
     List<ReportBase> reports;
     String learningMode;
@@ -63,8 +63,8 @@ public class ExperimentBuilder
     ExperimentType type;
     AnalysisEngineDescription preprocessing;
     List<String> featureFilter;
-    List<Map<String,Object>> additionalMapDimensions;
-    
+    List<Map<String, Object>> additionalMapDimensions;
+
     int numFolds = -1;
     double bipartitionThreshold = -1;
     File outputFolder;
@@ -89,11 +89,11 @@ public class ExperimentBuilder
      */
     public ExperimentBuilder machineLearningBackend(MLBackend... backends)
     {
-        this.adapter = new ArrayList<>();
+        this.backends = new ArrayList<>();
         this.arguments = new ArrayList<>();
 
         for (MLBackend b : backends) {
-            this.adapter.add(b.getAdapter());
+            this.backends.add(b.getAdapter());
             this.arguments.add(b.getParametrization());
         }
 
@@ -122,16 +122,16 @@ public class ExperimentBuilder
         if (additionalDimensions != null && additionalDimensions.size() > 0) {
             dimensions.addAll(additionalDimensions);
         }
-        
-        if(additionalMapDimensions != null && additionalMapDimensions.size() > 0) {
-            int dim=1;
-            for(Map m : additionalMapDimensions) {
+
+        if (additionalMapDimensions != null && additionalMapDimensions.size() > 0) {
+            int dim = 1;
+            for (Map m : additionalMapDimensions) {
                 Dimension bundle = Dimension.createBundle("additionalDim_" + dim++, m);
                 dimensions.add(bundle);
             }
         }
-        
-        if(this.bipartitionThreshold!=-1) {
+
+        if (this.bipartitionThreshold != -1) {
             dimensions.add(getAsDimensionsBipartionThreshold());
         }
 
@@ -209,15 +209,15 @@ public class ExperimentBuilder
 
     private List<Map<String, Object>> getAdapterInfo()
     {
-        if (adapter.size() == 0) {
+        if (backends.size() == 0) {
             throw new IllegalStateException(
                     "No machine learning adapter set - Provide at least one machine learning configuration");
         }
 
         List<Map<String, Object>> maps = new ArrayList<>();
 
-        for (int i = 0; i < adapter.size(); i++) {
-            TcShallowLearningAdapter a = adapter.get(i);
+        for (int i = 0; i < backends.size(); i++) {
+            TcShallowLearningAdapter a = backends.get(i);
             List<String> list = arguments.get(i);
 
             List<Object> o = new ArrayList<>();
@@ -384,15 +384,15 @@ public class ExperimentBuilder
         additionalDimensions = new ArrayList<>(Arrays.asList(dim));
         return this;
     }
-    
+
     @SafeVarargs
-    public final ExperimentBuilder additionalDimensions(Map<String,Object>... dimensions)
+    public final ExperimentBuilder additionalDimensions(Map<String, Object>... dimensions)
     {
 
         if (dimensions == null) {
             throw new NullPointerException("The added dimension is null");
         }
-        for (Map<String,Object> d : dimensions) {
+        for (Map<String, Object> d : dimensions) {
             if (d == null) {
                 throw new NullPointerException("The added map is null");
             }
@@ -406,9 +406,8 @@ public class ExperimentBuilder
      * Sets the learning mode of the experiment
      * 
      * @param learningMode
-     *          The learning mode
-     * @return
-     *          The builder object
+     *            The learning mode
+     * @return The builder object
      */
     public ExperimentBuilder learningMode(LearningMode learningMode)
     {
@@ -424,9 +423,8 @@ public class ExperimentBuilder
      * Sets the feature mode of the experiment
      * 
      * @param featureMode
-     *          The feature mode
-     * @return
-     *      The builder object
+     *            The feature mode
+     * @return The builder object
      */
     public ExperimentBuilder featureMode(FeatureMode featureMode)
     {
@@ -442,9 +440,8 @@ public class ExperimentBuilder
      * Sets an externally pre-defined experimental setup
      * 
      * @param experiment
-     *          An experimental setup
-     * @return
-     *      The builder object
+     *            An experimental setup
+     * @return The builder object
      */
     public ExperimentBuilder experiment(ShallowLearningExperiment_ImplBase experiment)
     {
@@ -459,12 +456,12 @@ public class ExperimentBuilder
 
     /**
      * Creates an experimental setup with a pre-defined type
+     * 
      * @param type
-     *          The type of experiment
+     *            The type of experiment
      * @param experimentName
-     *          The name of the experiment
-     * @return
-     *          The builder object
+     *            The name of the experiment
+     * @return The builder object
      */
     public ExperimentBuilder experiment(ExperimentType type, String experimentName)
     {
@@ -473,49 +470,69 @@ public class ExperimentBuilder
         return this;
     }
 
-    private ExperimentBuilder experiment(ExperimentType type, String experimentName,
-            int... numFolds)
+    private ExperimentBuilder configureExperiment(ExperimentType type, String experimentName)
         throws Exception
     {
         switch (type) {
         case TRAIN_TEST:
+            sanityCheckTrainTestExperiment();
             experiment = new ExperimentTrainTest(experimentName);
             experiment.addReport(new BatchTrainTestReport());
             break;
         case CROSS_VALIDATION:
-            if (numFolds.length > 1) {
-                throw new IllegalArgumentException(
-                        "Please provide only one value - the number of folds. Specifying multiple values is not possible");
-            }
-            else if (numFolds.length == 0) {
-                experiment = new ExperimentCrossValidation(experimentName, 10);
-            }
-            else {
-                experiment = new ExperimentCrossValidation(experimentName, numFolds[0]);
-            }
+            int folds = getCvFolds();
+            experiment = new ExperimentCrossValidation(experimentName, folds);
             experiment.addReport(new BatchCrossValidationReport());
             break;
         case SAVE_MODEL:
-            
-            if(outputFolder==null) {
-                throw new IllegalStateException(
-                        "The output folder to which the model will be stored is not set.");
-            }
-            
+            sanityCheckSaveModelExperiment();
             experiment = new ExperimentSaveModel(experimentName, outputFolder);
             break;
-            
+
         }
         return this;
+    }
+
+    private void sanityCheckTrainTestExperiment()
+    {
+        if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
+            throw new IllegalStateException("Train test requires two readers");
+        }
+    }
+
+    private int getCvFolds()
+    {
+        if (numFolds == -1) {
+            numFolds = 10;
+        }
+
+        return numFolds;
+    }
+
+    private void sanityCheckSaveModelExperiment()
+    {
+        if (outputFolder == null) {
+            throw new IllegalStateException(
+                    "The output folder to which the model will be stored is not set.");
+        }
+
+        if (backends == null) {
+            throw new IllegalStateException(
+                    "No machine learning backend select - set exactly one machine learning backend for save model experiments");
+        }
+
+        if (backends.size() > 1) {
+            throw new IllegalStateException(
+                    "Only one machine learning backend can be specified for model saving");
+        }
     }
 
     /**
      * Sets reports for the experiments
      * 
      * @param reports
-     *          One or more reports
-     * @return
-     *          The builder object
+     *            One or more reports
+     * @return The builder object
      */
     public ExperimentBuilder reports(ReportBase... reports)
     {
@@ -530,19 +547,19 @@ public class ExperimentBuilder
     /**
      * Sets a {@link AnalysisEngineDescription} which contains all necessary pre-processing steps.
      * Multiple {@link AnalysisEngineDescription} can be combined into a single one by nesting
-     * multiple descriptions, e.g. 
+     * multiple descriptions, e.g.
+     * 
      * <pre>
      *     AnalysisEngineFactory.createEngineDescription(
      *              AnalysisEngineFactory.createEngineDescription(abc1.class),
      *              AnalysisEngineFactory.createEngineDescription(abc2.class),
      *              AnalysisEngineFactory.createEngineDescription(...),
      *     );
-     * </pre> 
+     * </pre>
      * 
      * @param preprocessing
-     *          the preprocessing component
-     * @return
-     *          The builder object
+     *            the preprocessing component
+     * @return The builder object
      */
     public ExperimentBuilder preprocessing(AnalysisEngineDescription preprocessing)
     {
@@ -555,9 +572,8 @@ public class ExperimentBuilder
      * set by the user. Is ignored for other experiment types.
      * 
      * @param numFolds
-     *          The number of folds
-     * @return
-     *      The builder object
+     *            The number of folds
+     * @return The builder object
      */
     public ExperimentBuilder numFolds(int numFolds)
     {
@@ -567,17 +583,17 @@ public class ExperimentBuilder
 
     /**
      * Sets the experiment Name
+     * 
      * @param experimentName
-     *          The name
-     * @return
-     *      The builder object
+     *            The name
+     * @return The builder object
      */
     public ExperimentBuilder name(String experimentName)
     {
         this.experimentName = experimentName;
         return this;
     }
-    
+
     public ExperimentBuilder bipartitionThreshold(double threshold)
     {
         this.bipartitionThreshold = threshold;
@@ -636,23 +652,14 @@ public class ExperimentBuilder
     private void setExperiment() throws Exception
     {
         if (experiment == null && type != null) {
-            int numFolds = this.numFolds;
-            if (numFolds == -1) {
-                numFolds = 10;
-            }
-
-            experiment(type, experimentName, numFolds);
+            configureExperiment(type, experimentName);
             return;
-        }
-
-        if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
-            throw new IllegalStateException("Train test requires two readers");
         }
 
         if (experimentName != null) {
             experiment.setExperimentName(experimentName);
         }
-        
+
         throw new IllegalStateException("Please set an experiment");
     }
 
@@ -673,7 +680,7 @@ public class ExperimentBuilder
      * model
      * 
      * @param filePath
-     * @return 
+     * @return
      */
     public ExperimentBuilder outputFolder(String filePath)
     {
