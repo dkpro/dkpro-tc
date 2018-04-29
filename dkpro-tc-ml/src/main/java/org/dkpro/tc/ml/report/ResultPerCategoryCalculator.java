@@ -47,13 +47,14 @@ public class ResultPerCategoryCalculator
         List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Label\tFScore\tPrecision\tRecall\n");
+        sb.append(String.format("%10s\t%5s\t%-5s\t%-5s\t%-5s\n", "#Label", "FREQ", "P", "R", "F1"));
         computeFScores.forEach(
-                s -> sb.append(String.format("%10s\t%.4f\t%.4f\t%.4f\n", 
+                s -> sb.append(String.format("%10s\t%5d\t%.4f\t%.4f\t%.4f\n", 
                         s[0],
-                        Double.parseDouble(s[1]),
+                        Long.parseLong(s[1]),
                         Double.parseDouble(s[2]),
-                        Double.parseDouble(s[3]))
+                        Double.parseDouble(s[3]),
+                        Double.parseDouble(s[4]))
                         ));
 
         FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");

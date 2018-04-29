@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.dkpro.tc.core.Constants;
 
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
@@ -131,6 +132,9 @@ public class MetricComputationUtil
         List<String[]> fscores = new ArrayList<>();
 
         EvaluationData<String> m = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
+        
+        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+        m.forEach(e->fd.addSample(e.getGold(), 1));
 
         Set<String> occurringLabels = new HashSet<>();
         m.forEach(e -> occurringLabels.add(e.getGold()));
@@ -143,10 +147,11 @@ public class MetricComputationUtil
         Recall<String> recall = new Recall<>(m);
 
         for (String l : uniqueLabels) {
+            Long n = fd.getCount(l);
             Double f = score.getScoreForLabel(l);
             Double p = precision.getPrecisionForLabel(l);
             Double r = recall.getRecallForLabel(l);
-            fscores.add(new String[] { l, f.toString(), p.toString(), r.toString() });
+            fscores.add(new String[] { l, n.toString(), f.toString(), p.toString(), r.toString() });
         }
 
         return fscores;
