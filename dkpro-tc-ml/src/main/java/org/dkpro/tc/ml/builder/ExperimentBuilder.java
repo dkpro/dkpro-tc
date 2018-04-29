@@ -673,11 +673,13 @@ public class ExperimentBuilder
      * model
      * 
      * @param filePath
+     * @return 
      */
-    public void outputFolder(String filePath)
+    public ExperimentBuilder outputFolder(String filePath)
     {
         this.outputFolder = new File(filePath);
         outputFolder.mkdirs();
+        return this;
     }
 
 }
