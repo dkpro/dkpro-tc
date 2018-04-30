@@ -37,8 +37,19 @@ public class BasicResultReport
     extends TcBatchReportBase
     implements Constants
 {
+    private boolean sysoutResults = true;
 
     private static String OUTPUT_FILE = "results.txt";
+    
+    public BasicResultReport()
+    {
+        
+    }
+    
+    public BasicResultReport(boolean sysOutResults)
+    {
+        this.sysoutResults = sysOutResults;
+    }
 
     @Override
     public void execute() throws Exception
@@ -109,6 +120,10 @@ public class BasicResultReport
 
         for (Entry<String, String> e : resultMap.entrySet()) {
             pa.setProperty(e.getKey(), e.getValue());
+            
+            if(sysoutResults) {
+                System.err.println(e.getKey() + " " + e.getValue());
+            }
         }
 
         return pa;
@@ -116,10 +131,8 @@ public class BasicResultReport
 
     private Properties addRandomBaselineResult(Properties pa, String learningMode) throws Exception
     {
-        // Random baseline results
         File randomBaseline2outcomeFile = getContext().getStorageService()
                 .locateKey(getContext().getId(), BASELINE_RANDOM_ID_OUTCOME_KEY);
-        // FIXME: Remove if-check after implementing this report for all adapters
         if (randomBaseline2outcomeFile != null && randomBaseline2outcomeFile.exists()) {
             Map<String, String> randomBaseline = MetricComputationUtil
                     .getResults(randomBaseline2outcomeFile, learningMode);
@@ -134,10 +147,9 @@ public class BasicResultReport
     private Properties addMajorityBaselineResults(Properties pa, String learningMode)
         throws Exception
     {
-        // Baseline results
         File baseline2outcomeFile = getContext().getStorageService().locateKey(getContext().getId(),
                 BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-        // FIXME: Remove if-check after implementing this report for all adapters
+        
         if (baseline2outcomeFile != null && baseline2outcomeFile.exists()) {
             Map<String, String> baseline = MetricComputationUtil.getResults(baseline2outcomeFile,
                     learningMode);
