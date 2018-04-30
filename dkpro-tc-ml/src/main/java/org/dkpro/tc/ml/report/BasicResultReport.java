@@ -37,7 +37,7 @@ public class BasicResultReport
     extends TcBatchReportBase
     implements Constants
 {
-    private boolean sysoutResults = true;
+    public static boolean sysoutResults = true;
 
     private static String OUTPUT_FILE = "results.txt";
     
@@ -48,7 +48,7 @@ public class BasicResultReport
     
     public BasicResultReport(boolean sysOutResults)
     {
-        this.sysoutResults = sysOutResults;
+        BasicResultReport.sysoutResults = sysOutResults;
     }
 
     @Override
