@@ -76,6 +76,10 @@ public class CrfSuiteBaselineRandomIdReport
     @Override
     protected String getPrediction(Map<String, Integer> map, String s)
     {
+        if (pool.size() == 1) {
+            return pool.get(0);
+        }
+        
         return "" + random.nextInt(pool.size() - 1);
     }
 
