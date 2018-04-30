@@ -122,7 +122,7 @@ public class BasicResultReport
             pa.setProperty(e.getKey(), e.getValue());
             
             if(sysoutResults) {
-                System.err.println(e.getKey() + " " + e.getValue());
+                System.out.println(e.getKey() + " " + e.getValue());
             }
         }
 
