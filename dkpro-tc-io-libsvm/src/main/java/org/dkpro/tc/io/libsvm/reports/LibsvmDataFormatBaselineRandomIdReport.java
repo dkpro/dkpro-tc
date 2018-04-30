@@ -90,6 +90,10 @@ public class LibsvmDataFormatBaselineRandomIdReport
     @Override
     protected String getPrediction(String p)
     {
+        if(pool.size() == 1) {
+            return pool.get(0);
+        }
+        
         Integer idx = random.nextInt(pool.size() - 1);
         return pool.get(idx);
     }
