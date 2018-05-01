@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -67,11 +69,10 @@ public class MappingAnnotator
     Type instanceType;
 
     Map<String, Integer> instanceMap;
-    Map<String, Integer> outcomeMap;
+    Set<String> outcomeSet;
 
     // We start to count at 1 as zero might be reserved
     int instanceIdx = -1;
-    int outcomeIdx = -1;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
@@ -79,7 +80,6 @@ public class MappingAnnotator
         super.initialize(context);
 
         instanceIdx = startIndexInstances;
-        outcomeIdx = startIndexOutcomes;
 
         instanceMappingFile = new File(targetFolder,
                 DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
@@ -96,7 +96,7 @@ public class MappingAnnotator
         }
 
         instanceMap = new HashMap<>();
-        outcomeMap = new HashMap<>();
+        outcomeSet = new HashSet<>();
 
     }
 
@@ -104,19 +104,16 @@ public class MappingAnnotator
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         mapInstances(aJCas);
-        mapOutcomes(aJCas);
+        collectOutcomes(aJCas);
     }
 
-    private void mapOutcomes(JCas aJCas)
+    private void collectOutcomes(JCas aJCas)
     {
         Collection<TextClassificationOutcome> tcos = JCasUtil.select(aJCas,
                 TextClassificationOutcome.class);
         for (TextClassificationOutcome o : tcos) {
             String outcome = o.getOutcome();
-            if (outcomeMap.containsKey(outcome)) {
-                continue;
-            }
-            outcomeMap.put(outcome, outcomeIdx++);
+            outcomeSet.add(outcome);
         }
     }
 
@@ -137,11 +134,28 @@ public class MappingAnnotator
     {
         try {
             FileUtils.writeStringToFile(instanceMappingFile, toString(instanceMap), "utf-8");
-            FileUtils.writeStringToFile(outcomeMappingFile, toString(outcomeMap), "utf-8");
+            FileUtils.writeStringToFile(outcomeMappingFile, toString(outcomeSet, startIndexOutcomes), "utf-8");
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
+    }
+
+    private String toString(Set<String> aSet, int startAt)
+    { 
+        
+        StringBuilder sb = new StringBuilder();
+
+        List<String> keys = new ArrayList<>(aSet);
+        Collections.sort(keys);
+        
+        int idx = startAt;
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            sb.append(key + "\t" + idx++ + "\n");
+        }
+
+        return sb.toString();
     }
 
     private String toString(Map<String, Integer> map)

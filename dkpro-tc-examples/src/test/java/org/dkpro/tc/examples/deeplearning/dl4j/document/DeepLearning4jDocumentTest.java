@@ -48,7 +48,7 @@ public class DeepLearning4jDocumentTest
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
         assertEquals("#labels 0=bollywood 1=business 2=crime 3=politics", lines.get(1));
-        assertTrue(lines.get(3).matches("1=[0-9]+;1;-1"));
-        assertTrue(lines.get(4).matches("10=[0-9]+;1;-1"));
+        assertTrue(lines.get(3).matches("0=[0-9]+;1;-1"));
+        assertTrue(lines.get(4).matches("1=[0-9]+;1;-1"));
     }
 }
