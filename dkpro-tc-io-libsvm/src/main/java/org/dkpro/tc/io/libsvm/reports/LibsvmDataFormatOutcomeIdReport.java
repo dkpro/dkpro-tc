@@ -163,7 +163,7 @@ public class LibsvmDataFormatOutcomeIdReport
                 value = split[1];
             }
 
-            m.put(idx + "", value);
+            m.put(idx + "", value.isEmpty() ? idx + "" : value);
             idx++;
         }
         return m;
