@@ -37,17 +37,13 @@ public class ContextMemoryReport
     extends TcBatchReportBase
 {
 
-    public static List<File> id2outcomeFiles = new ArrayList<>();
-    public static List<File> crossValidationCombinedIdFiles = new ArrayList<>();
-    public static List<String> allIds = new ArrayList<String>();
+    public List<File> id2outcomeFiles = new ArrayList<>();
+    public List<File> crossValidationCombinedIdFiles = new ArrayList<>();
+    public List<String> allIds = new ArrayList<String>();
 
     @Override
     public void execute() throws Exception
     {
-
-        id2outcomeFiles = new ArrayList<>();
-        crossValidationCombinedIdFiles = new ArrayList<>();
-        allIds = new ArrayList<String>();
 
         StorageService storageService = getContext().getStorageService();
 

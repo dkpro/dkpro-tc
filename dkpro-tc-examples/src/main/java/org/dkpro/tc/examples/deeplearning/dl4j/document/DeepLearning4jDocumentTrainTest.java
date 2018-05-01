@@ -28,6 +28,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -57,7 +58,7 @@ public class DeepLearning4jDocumentTrainTest
         ParameterSpace pSpace = getParameterSpace();
 
         DeepLearning4jDocumentTrainTest experiment = new DeepLearning4jDocumentTrainTest();
-        experiment.runTrainTest(pSpace);
+        experiment.runTrainTest(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
@@ -91,14 +92,14 @@ public class DeepLearning4jDocumentTrainTest
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace) throws Exception
+    public void runTrainTest(ParameterSpace pSpace, Report r) throws Exception
     {
         DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
                 "DeepLearning", Deeplearning4jAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchRuntimeReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(r);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

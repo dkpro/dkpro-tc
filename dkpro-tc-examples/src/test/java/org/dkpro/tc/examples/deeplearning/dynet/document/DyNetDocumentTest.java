@@ -27,17 +27,17 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.junit.Test;
 
 public class DyNetDocumentTest
     extends PythonLocator
 {
+    ContextMemoryReport contextReport;
+    
     @Test
     public void runTest() throws Exception
     {
-
-        DemoUtils.setDkproHome(DynetDocumentTrainTest.class.getSimpleName());
+        contextReport = new ContextMemoryReport();
 
         boolean testConditon = true;
         String python3 = null;
@@ -50,11 +50,11 @@ public class DyNetDocumentTest
 
         if (testConditon) {
             ParameterSpace ps = DynetDocumentTrainTest.getParameterSpace(python3);
-            DynetDocumentTrainTest.runTrainTest(ps);
+            DynetDocumentTrainTest.runTrainTest(ps, contextReport);
 
-            assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+            assertEquals(1, contextReport.id2outcomeFiles.size());
 
-            List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
                     "utf-8");
             assertEquals(63, lines.size());
 

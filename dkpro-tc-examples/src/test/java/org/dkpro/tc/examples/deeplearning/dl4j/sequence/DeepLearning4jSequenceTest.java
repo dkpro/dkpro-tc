@@ -40,19 +40,21 @@ public class DeepLearning4jSequenceTest
     extends TestCaseSuperClass
 {
     LabFolderTrackerReport folderTracker;
+    ContextMemoryReport contextReport;
 
     @Before
     public void setup() throws Exception
     {
         super.setup();
         folderTracker = new LabFolderTrackerReport();
+        contextReport = new ContextMemoryReport();
     }
 
     @Test
     public void runSequenceTest() throws Exception
     {
         DeepLearningDl4jSeq2SeqTrainTest dl4j = new DeepLearningDl4jSeq2SeqTrainTest();
-        dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace(), folderTracker);
+        dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace(), folderTracker, contextReport);
 
         List<String> vocabulary = getPreparationVocabulary();
         assertEquals(18, vocabulary.size());
@@ -69,7 +71,7 @@ public class DeepLearning4jSequenceTest
 
         assertTrue(compareContent(Arrays.asList(vecTrain.replaceAll("\n", " ").split(" "))));
 
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
                 "utf-8");
         assertEquals(30, lines.size());
         // line-wise compare

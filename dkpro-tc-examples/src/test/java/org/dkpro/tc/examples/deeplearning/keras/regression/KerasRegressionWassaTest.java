@@ -32,9 +32,12 @@ import org.junit.Test;
 public class KerasRegressionWassaTest
     extends PythonLocator
 {
+    ContextMemoryReport contextReport;
+    
     @Test
     public void runTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
@@ -46,11 +49,11 @@ public class KerasRegressionWassaTest
 
         if (testConditon) {
             ParameterSpace ps = KerasRegressionWassa.getParameterSpace(python3);
-            KerasRegressionWassa.runTrainTest(ps);
+            KerasRegressionWassa.runTrainTest(ps, contextReport);
 
-            assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+            assertEquals(1, contextReport.id2outcomeFiles.size());
 
-            List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
                     "utf-8");
             assertEquals(87, lines.size());
 

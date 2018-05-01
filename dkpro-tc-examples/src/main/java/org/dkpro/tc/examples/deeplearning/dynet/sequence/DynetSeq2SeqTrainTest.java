@@ -65,7 +65,7 @@ public class DynetSeq2SeqTrainTest
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        DynetSeq2SeqTrainTest.runTrainTest(pSpace);
+        DynetSeq2SeqTrainTest.runTrainTest(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace(String python3)
@@ -106,14 +106,14 @@ public class DynetSeq2SeqTrainTest
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public static void runTrainTest(ParameterSpace pSpace) throws Exception
+    public static void runTrainTest(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
         DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
                 "DynetSeq2Seq", DynetAdapter.class);
         experiment.setParameterSpace(pSpace);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.addReport(new BatchTrainTestReport());
         Lab.getInstance().run(experiment);
     }

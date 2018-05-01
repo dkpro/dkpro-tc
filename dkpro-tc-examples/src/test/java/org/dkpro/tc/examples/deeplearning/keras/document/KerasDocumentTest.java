@@ -32,11 +32,15 @@ import org.junit.Test;
 public class KerasDocumentTest
     extends PythonLocator
 {
+    
+    ContextMemoryReport contextReport;
 
     @Test
     public void runTest() throws Exception
     {
 
+        contextReport = new ContextMemoryReport();
+        
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
@@ -48,11 +52,11 @@ public class KerasDocumentTest
 
         if (testConditon) {
             ParameterSpace ps = KerasDocumentTrainTest.getParameterSpace(python3);
-            KerasDocumentTrainTest.runTrainTest(ps);
+            KerasDocumentTrainTest.runTrainTest(ps, contextReport);
             
-            assertEquals(1, ContextMemoryReport.id2outcomeFiles.size());
+            assertEquals(1, contextReport.id2outcomeFiles.size());
 
-            List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
                     "utf-8");
             assertEquals(11, lines.size());
 

@@ -56,7 +56,7 @@ public class KerasDocumentCrossValidation
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        KerasDocumentCrossValidation.runCrossValidation(pSpace);
+        KerasDocumentCrossValidation.runCrossValidation(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace(String python3)
@@ -89,7 +89,7 @@ public class KerasDocumentCrossValidation
     }
 
     // ##### TRAIN-TEST #####
-    public static void runCrossValidation(ParameterSpace pSpace) throws Exception
+    public static void runCrossValidation(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
 
         DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
@@ -97,7 +97,7 @@ public class KerasDocumentCrossValidation
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchCrossValidationReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

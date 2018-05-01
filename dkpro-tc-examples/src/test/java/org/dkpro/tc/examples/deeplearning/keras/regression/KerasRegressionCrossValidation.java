@@ -32,9 +32,13 @@ import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 public class KerasRegressionCrossValidation
     extends PythonLocator
 {
+    ContextMemoryReport contextReport;
+    
     @Test
     public void runTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
@@ -46,10 +50,10 @@ public class KerasRegressionCrossValidation
         
         if (testConditon) {
             ParameterSpace ps = KerasRegression.getParameterSpace(python3);
-            KerasRegression.runCrossValidation(ps);
+            KerasRegression.runCrossValidation(ps, contextReport);
 
             EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(
-                    ContextMemoryReport.crossValidationCombinedIdFiles.get(0));
+                    contextReport.crossValidationCombinedIdFiles.get(0));
             SpearmanCorrelation spear = new SpearmanCorrelation(data);
 
             assertTrue(spear.getResult() < 0.0);

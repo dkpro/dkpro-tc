@@ -56,7 +56,7 @@ public class KerasDocumentTrainTest
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        KerasDocumentTrainTest.runTrainTest(pSpace);
+        KerasDocumentTrainTest.runTrainTest(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace(String python3)
@@ -94,7 +94,7 @@ public class KerasDocumentTrainTest
     }
 
     // ##### TRAIN-TEST #####
-    protected static void runTrainTest(ParameterSpace pSpace) throws Exception
+    protected static void runTrainTest(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
 
         DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
@@ -103,7 +103,7 @@ public class KerasDocumentTrainTest
         experiment.setParameterSpace(pSpace);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
 
         // Run
         Lab.getInstance().run(experiment);

@@ -32,13 +32,17 @@ import org.junit.Test;
 public class DeepLearning4jDocumentTest
     extends TestCaseSuperClass
 {
+    ContextMemoryReport contextReport;
+    
     @Test
     public void runDocumentTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         DeepLearning4jDocumentTrainTest dl4j = new DeepLearning4jDocumentTrainTest();
-        dl4j.runTrainTest(DeepLearning4jDocumentTrainTest.getParameterSpace());
-
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0),
+        dl4j.runTrainTest(DeepLearning4jDocumentTrainTest.getParameterSpace(), contextReport);
+        
+        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
                 "utf-8");
         assertEquals(203, lines.size());
         // line-wise compare

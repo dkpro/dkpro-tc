@@ -61,22 +61,24 @@ import weka.classifiers.bayes.NaiveBayes;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class Unit
+public class UnitModeTest
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
+    
+    ContextMemoryReport contextReport;
 
     @Test
     public void testTrainTest() throws Exception
     {
         runExperimentTrainTest();
 
-        assertEquals(0.51, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.2);
-        assertEquals(0.25, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.2);
-        assertEquals(0.41, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.2);
-        assertEquals(0.32, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.2);
+        assertEquals(0.51, getAccuracy(contextReport.id2outcomeFiles, "Weka"), 0.2);
+        assertEquals(0.25, getAccuracy(contextReport.id2outcomeFiles, "Libsvm"), 0.2);
+        assertEquals(0.41, getAccuracy(contextReport.id2outcomeFiles, "Liblinear"), 0.2);
+        assertEquals(0.32, getAccuracy(contextReport.id2outcomeFiles, "Xgboost"), 0.2);
         
-        for(File f  : ContextMemoryReport.id2outcomeFiles) {
+        for(File f  : contextReport.id2outcomeFiles) {
             List<String> lines = FileUtils.readLines(f,
                     "utf-8");
             assertEquals(34, lines.size());
@@ -96,11 +98,13 @@ public class Unit
     
     private void runExperimentTrainTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.addReport(BatchRuntimeReport.class);
 
         // Run

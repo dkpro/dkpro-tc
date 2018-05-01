@@ -29,9 +29,13 @@ import org.junit.Test;
 public class KerasCrossValidation
     extends PythonLocator
 {
+    ContextMemoryReport contextReport;
+    
     @Test
     public void runTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         boolean testConditon = true;
         String python3 = null;
         python3 = getEnvironment();
@@ -43,13 +47,13 @@ public class KerasCrossValidation
 
         if (testConditon) {
             ParameterSpace ps = KerasDocumentCrossValidation.getParameterSpace(python3);
-            KerasDocumentCrossValidation.runCrossValidation(ps);
+            KerasDocumentCrossValidation.runCrossValidation(ps, contextReport);
 
             // The comined file in the CV folder + 2 single files in the per-fold folder
-            assertEquals(3, ContextMemoryReport.id2outcomeFiles.size());
-            assertTrue(ContextMemoryReport.id2outcomeFiles.get(0).exists());
-            assertTrue(ContextMemoryReport.id2outcomeFiles.get(1).exists());
-            assertTrue(ContextMemoryReport.id2outcomeFiles.get(2).exists());
+            assertEquals(3, contextReport.id2outcomeFiles.size());
+            assertTrue(contextReport.id2outcomeFiles.get(0).exists());
+            assertTrue(contextReport.id2outcomeFiles.get(1).exists());
+            assertTrue(contextReport.id2outcomeFiles.get(2).exists());
         }
     }
 }

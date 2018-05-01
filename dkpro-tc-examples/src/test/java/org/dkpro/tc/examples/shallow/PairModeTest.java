@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.weka.pair;
+package org.dkpro.tc.examples.shallow;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
@@ -56,7 +56,7 @@ import weka.core.SerializationHelper;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class SemanticTextSimilarityDemoTest
+public class PairModeTest
     extends TestCaseSuperClass
     implements Constants
 {
@@ -67,6 +67,8 @@ public class SemanticTextSimilarityDemoTest
     public static final String inputFileTest = "src/main/resources/data/sts2012/STS.input.MSRvid.txt";
     public static final String goldFileTest = "src/main/resources/data/sts2012/STS.gs.MSRvid.txt";
 
+    ContextMemoryReport contextReport;
+    
     @Test
     public void testTrainTest() throws Exception
     {
@@ -74,18 +76,20 @@ public class SemanticTextSimilarityDemoTest
 
         // weka offers to calculate this value too - we take weka as "reference" value
         weka.classifiers.Evaluation eval = (weka.classifiers.Evaluation) SerializationHelper
-                .read(new File(ContextMemoryReport.id2outcomeFiles.get(0).getParent() + "/"
+                .read(new File(contextReport.id2outcomeFiles.get(0).getParent() + "/"
                         + WekaTestTask.evaluationBin).getAbsolutePath());
         double wekaMeanAbsoluteError = eval.meanAbsoluteError();
 
         MeanAbsoluteError mae = new MeanAbsoluteError(Tc2LtlabEvalConverter
-                .convertRegressionModeId2Outcome(ContextMemoryReport.id2outcomeFiles.get(0)));
+                .convertRegressionModeId2Outcome(contextReport.id2outcomeFiles.get(0)));
 
         assertEquals(wekaMeanAbsoluteError, mae.getResult(), 0.1);
     }
 
     private void runExperimentTrainTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, getTrainReader());
         dimReaders.put(DIM_READER_TEST, getTestReader());
@@ -110,7 +114,7 @@ public class SemanticTextSimilarityDemoTest
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(experiment);

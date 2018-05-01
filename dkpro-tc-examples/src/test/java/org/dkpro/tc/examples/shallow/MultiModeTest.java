@@ -60,7 +60,7 @@ import weka.classifiers.bayes.NaiveBayes;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class MultiTest
+public class MultiModeTest
     extends TestCaseSuperClass implements Constants
 {
     private static final String FILEPATH_TRAIN = "src/main/resources/data/reuters/training";
@@ -68,13 +68,15 @@ public class MultiTest
     private static final String FILEPATH_GOLD_LABELS = "src/main/resources/data/reuters/cats.txt";
   
     private static final String BIPARTITION_THRESHOLD = "0.5";
+    
+    ContextMemoryReport contextReport;
 
     @Test
     public void testTrainTest() throws Exception
     {
         runExperimentTrainTest();
 
-        for(File f  : ContextMemoryReport.id2outcomeFiles) {
+        for(File f  : contextReport.id2outcomeFiles) {
             List<String> lines = FileUtils.readLines(f,
                     "utf-8");
             assertEquals(15, lines.size());
@@ -94,11 +96,13 @@ public class MultiTest
     
     private void runExperimentTrainTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         ExperimentTrainTest experiment = new ExperimentTrainTest("BrownPosDemoCV");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.addReport(BatchRuntimeReport.class);
 
         // Run

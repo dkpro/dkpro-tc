@@ -32,8 +32,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeatureFactory;
@@ -58,22 +58,24 @@ import de.unidue.ltl.evaluation.measures.Accuracy;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class SequenceTest
+public class SequenceModeTest
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";
 
+    ContextMemoryReport contextReport;
+    
     @Test
     public void testSequence() throws Exception
     {
         runExperiment();
 
-        assertEquals(2, ContextMemoryReport.id2outcomeFiles.size());
-        assertEquals(0.22, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Crfsuite"), 0.1);
-        assertEquals(0.1, getAccuracy(ContextMemoryReport.id2outcomeFiles, "SvmHmm"), 0.1);
+        assertEquals(2, contextReport.id2outcomeFiles.size());
+        assertEquals(0.22, getAccuracy(contextReport.id2outcomeFiles, "Crfsuite"), 0.1);
+        assertEquals(0.1, getAccuracy(contextReport.id2outcomeFiles, "SvmHmm"), 0.1);
         
-        verifyCrfSuite(getId2Outcome(ContextMemoryReport.id2outcomeFiles, "Crfsuite"));
-        verifySvmHmm(getId2Outcome(ContextMemoryReport.id2outcomeFiles, "SvmHmm"));
+        verifyCrfSuite(getId2Outcome(contextReport.id2outcomeFiles, "Crfsuite"));
+        verifySvmHmm(getId2Outcome(contextReport.id2outcomeFiles, "SvmHmm"));
     }
     
     private void verifySvmHmm(File f) throws Exception
@@ -151,12 +153,14 @@ public class SequenceTest
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets, mlas);
         
+        contextReport = new ContextMemoryReport();
+        
         ExperimentTrainTest experiment = new ExperimentTrainTest(
                 "NamedEntitySequenceDemoTrainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
         Lab.getInstance().run(experiment);

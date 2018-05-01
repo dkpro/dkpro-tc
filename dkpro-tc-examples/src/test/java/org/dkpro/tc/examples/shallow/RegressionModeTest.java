@@ -68,10 +68,11 @@ import weka.classifiers.functions.LinearRegression;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class RegressionTest
+public class RegressionModeTest
     extends TestCaseSuperClass
     implements Constants
 {
+    ContextMemoryReport contextReport;
 
     @Test
     public void testJavaTrainTest() throws Exception
@@ -79,20 +80,20 @@ public class RegressionTest
         runTrainTestExperiment();
 
         assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
-                ContextMemoryReport.allIds.size());
+                contextReport.allIds.size());
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
-                ContextMemoryReport.id2outcomeFiles.size());
+                contextReport.id2outcomeFiles.size());
 
-        assertEquals(1.3, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.1);
-        assertEquals(0.5, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
-        assertEquals(0.6, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-        assertEquals(2.8, getMeanSquaredError(ContextMemoryReport.id2outcomeFiles, "Liblinear"),
+        assertEquals(1.3, getMeanSquaredError(contextReport.id2outcomeFiles, "Xgboost"), 0.1);
+        assertEquals(0.5, getMeanSquaredError(contextReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.6, getMeanSquaredError(contextReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(2.8, getMeanSquaredError(contextReport.id2outcomeFiles, "Liblinear"),
                 0.2);
 
-        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
-        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
-        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
-        verifyId2Outcome(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
+        verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Xgboost"));
+        verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Weka"));
+        verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Libsvm"));
+        verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Liblinear"));
     }
 
     private ParameterSpace getParameterSpace() throws Exception
@@ -157,12 +158,13 @@ public class RegressionTest
 
     private void runTrainTestExperiment() throws Exception
     {
+        contextReport = new ContextMemoryReport();
 
         ExperimentTrainTest experiment = new ExperimentTrainTest("trainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(experiment);
@@ -208,29 +210,31 @@ public class RegressionTest
         runCrossValidationExperiment();
 
         assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
-                ContextMemoryReport.allIds.size());
+                contextReport.allIds.size());
         assertTrue(combinedId2OutcomeReportsAreDissimilar(
-                ContextMemoryReport.crossValidationCombinedIdFiles));
+                contextReport.crossValidationCombinedIdFiles));
 
         // Larger variance is acceptable, i.e. Windows, OSX and Linux compute slightly different
         // values
         assertEquals(1.4, getMeanSquaredErrorCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
+                contextReport.crossValidationCombinedIdFiles, "Weka"), 0.3);
         assertEquals(3.2, getMeanSquaredErrorCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.3);
+                contextReport.crossValidationCombinedIdFiles, "Xgboost"), 0.3);
         assertEquals(1.3, getMeanSquaredErrorCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
+                contextReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
         assertEquals(4.1, getMeanSquaredErrorCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
+                contextReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
     }
 
     private void runCrossValidationExperiment() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         ExperimentCrossValidation experiment = new ExperimentCrossValidation("crossValidation", 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.addReport(BatchCrossValidationReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(experiment);

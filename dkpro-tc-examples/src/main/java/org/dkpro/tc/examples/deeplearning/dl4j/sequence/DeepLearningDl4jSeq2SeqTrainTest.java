@@ -68,7 +68,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest
         ParameterSpace pSpace = getParameterSpace();
 
         DeepLearningDl4jSeq2SeqTrainTest experiment = new DeepLearningDl4jSeq2SeqTrainTest();
-        experiment.runTrainTest(pSpace, null);
+        experiment.runTrainTest(pSpace, null, null);
     }
 
     public static ParameterSpace getParameterSpace() throws ResourceInitializationException
@@ -104,7 +104,8 @@ public class DeepLearningDl4jSeq2SeqTrainTest
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public void runTrainTest(ParameterSpace pSpace, ReportBase r) throws Exception
+    public void runTrainTest(ParameterSpace pSpace, ReportBase r, ContextMemoryReport r2)
+        throws Exception
     {
 
         DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
@@ -116,8 +117,10 @@ public class DeepLearningDl4jSeq2SeqTrainTest
         if (r != null) {
             experiment.addReport(r);
         }
+        if (r2 != null) {
+            experiment.addReport(r2);
+        }
         experiment.addReport(new BatchTrainTestReport());
-        experiment.addReport(ContextMemoryReport.class);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(experiment);

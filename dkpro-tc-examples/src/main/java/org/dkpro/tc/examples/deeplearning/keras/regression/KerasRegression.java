@@ -54,7 +54,7 @@ public class KerasRegression
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        KerasRegression.runCrossValidation(pSpace);
+        KerasRegression.runCrossValidation(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace(String pythonPath)
@@ -94,14 +94,14 @@ public class KerasRegression
         return pSpace;
     }
 
-    public static void runCrossValidation(ParameterSpace pSpace) throws Exception
+    public static void runCrossValidation(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
 
         DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
                 "KerasRegressionCrossValidation", KerasAdapter.class, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.addReport(BatchCrossValidationReport.class);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 

@@ -62,7 +62,7 @@ public class DynetDocumentTrainTest
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        DynetDocumentTrainTest.runTrainTest(pSpace);
+        DynetDocumentTrainTest.runTrainTest(pSpace, null);
     }
 
     public static ParameterSpace getParameterSpace(String python3)
@@ -97,7 +97,7 @@ public class DynetDocumentTrainTest
         return pSpace;
     }
 
-    public static void runTrainTest(ParameterSpace pSpace) throws Exception
+    public static void runTrainTest(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
         DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
                 "DynetDocument", DynetAdapter.class);
@@ -105,7 +105,7 @@ public class DynetDocumentTrainTest
         experiment.setPreprocessing(
                 AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         Lab.getInstance().run(experiment);
     }
 }

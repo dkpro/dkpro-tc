@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
-package org.dkpro.tc.examples.shallow.weka.pair;
+package org.dkpro.tc.examples.shallow.res;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
@@ -58,7 +58,7 @@ import weka.classifiers.functions.SMO;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class WekaExternalResourcesDemoTest
+public class ExternalResourcesTest
     extends TestCaseSuperClass
     implements Constants
 {
@@ -68,13 +68,15 @@ public class WekaExternalResourcesDemoTest
     public static final String listFilePathTrain = "src/main/resources/data/twentynewsgroups/pairs/pairslist.train";
     public static final String listFilePathTest = "src/main/resources/data/twentynewsgroups/pairs/pairslist.test";
 
+    ContextMemoryReport contextReport;
+    
     @Test
     public void testJavaTrainTest() throws Exception
     {
 
         runTrainTest();
         
-        List<String> lines = FileUtils.readLines(ContextMemoryReport.id2outcomeFiles.get(0), "utf-8");
+        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
         assertEquals(5, lines.size());
 
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
@@ -91,6 +93,8 @@ public class WekaExternalResourcesDemoTest
 
     private void runTrainTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, getTrainReader());
         dimReaders.put(DIM_READER_TEST, getTestReader());

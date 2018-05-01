@@ -68,9 +68,11 @@ import weka.classifiers.functions.supportVector.PolyKernel;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class DocumentTest
+public class DocumentModeTest
     extends TestCaseSuperClass implements Constants
 {
+    
+    ContextMemoryReport contextReport;
     
     public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
     public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
@@ -81,21 +83,21 @@ public class DocumentTest
         runExperimentTrainTest();
 
         assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
-                ContextMemoryReport.allIds.size());
+                contextReport.allIds.size());
 
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
-                ContextMemoryReport.id2outcomeFiles.size());
+                contextReport.id2outcomeFiles.size());
 
-        assertEquals(0.5, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Weka"), 0.1);
+        assertEquals(0.5, getAccuracy(contextReport.id2outcomeFiles, "Weka"), 0.1);
         assertEquals(0.5, getAccuracy(
-                ContextMemoryReport.id2outcomeFiles, "Xgboost"), 0.5);
-        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Libsvm"), 0.1);
-        assertEquals(0.625, getAccuracy(ContextMemoryReport.id2outcomeFiles, "Liblinear"), 0.1);
+                contextReport.id2outcomeFiles, "Xgboost"), 0.5);
+        assertEquals(0.625, getAccuracy(contextReport.id2outcomeFiles, "Libsvm"), 0.1);
+        assertEquals(0.625, getAccuracy(contextReport.id2outcomeFiles, "Liblinear"), 0.1);
         
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Weka"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Xgboost"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Libsvm"));
-        verifyId2OutcomeReport(getId2outcomeFile(ContextMemoryReport.id2outcomeFiles, "Liblinear"));
+        verifyId2OutcomeReport(getId2outcomeFile(contextReport.id2outcomeFiles, "Weka"));
+        verifyId2OutcomeReport(getId2outcomeFile(contextReport.id2outcomeFiles, "Xgboost"));
+        verifyId2OutcomeReport(getId2outcomeFile(contextReport.id2outcomeFiles, "Libsvm"));
+        verifyId2OutcomeReport(getId2outcomeFile(contextReport.id2outcomeFiles, "Liblinear"));
     }
     
     private ParameterSpace getParameterSpace() throws ResourceInitializationException {
@@ -160,12 +162,14 @@ public class DocumentTest
 
     private void runExperimentTrainTest() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         ExperimentTrainTest experiment = new ExperimentTrainTest(
                 "NamedEntitySequenceDemoTrainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.addReport(BatchTrainTestReport.class);
-        experiment.addReport(ContextMemoryReport.class);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
         Lab.getInstance().run(experiment);        
@@ -206,26 +210,28 @@ public class DocumentTest
         runExperimentCrossValidation();
 
         assertEquals(getSumOfExpectedTasksForCrossValidation().intValue(),
-                ContextMemoryReport.allIds.size());
+                contextReport.allIds.size());
 
         assertEquals(0.625, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
+                contextReport.crossValidationCombinedIdFiles, "Weka"), 0.1);
         assertEquals(0.75, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
+                contextReport.crossValidationCombinedIdFiles, "Libsvm"), 0.1);
         assertEquals(0.8, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
+                contextReport.crossValidationCombinedIdFiles, "Liblinear"), 0.1);
         assertEquals(0.62, getAccuracyCrossValidation(
-                ContextMemoryReport.crossValidationCombinedIdFiles, "Xgboost"), 0.1);
+                contextReport.crossValidationCombinedIdFiles, "Xgboost"), 0.1);
     }
 
     private void runExperimentCrossValidation() throws Exception
     {
+        contextReport = new ContextMemoryReport();
+        
         ExperimentCrossValidation experiment = new ExperimentCrossValidation(
                 "crossValidation",2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
         experiment.addReport(BatchCrossValidationReport.class);
-        experiment.addReport(new ContextMemoryReport());
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
         Lab.getInstance().run(experiment);         
