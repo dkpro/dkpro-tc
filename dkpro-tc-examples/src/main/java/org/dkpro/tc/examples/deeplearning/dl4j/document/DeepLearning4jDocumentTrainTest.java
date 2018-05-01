@@ -35,6 +35,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
 import org.dkpro.tc.ml.report.BatchRuntimeReport;
@@ -68,15 +69,21 @@ public class DeepLearning4jDocumentTrainTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class, LinewiseTextReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
+                DelimiterSeparatedValuesReader.class, 
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain, 
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0, 
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1, 
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                LinewiseTextReader.class, LinewiseTextReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTest, LinewiseTextReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                LinewiseTextReader.PARAM_PATTERNS, "/**/*.txt");
+                DelimiterSeparatedValuesReader.class, 
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0, 
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1, 
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "/**/*.txt");
         dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

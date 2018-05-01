@@ -18,7 +18,6 @@
 package org.dkpro.tc.api.features;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -29,7 +28,6 @@ public class TcFeature
     implements Discriminable
 {
     private String id;
-    protected Map<String, Object> config;
     private String fullFeatureName;
     private Object[] params;
     private Class<? extends Resource> classOfFeat;
@@ -50,11 +48,6 @@ public class TcFeature
         this.id = id;
         this.fullFeatureName = classOfFeat.getName();
         this.params = Arrays.<Object> copyOf(params, params.length);
-    }
-
-    public void setConfig(Map<String, Object> aConfig)
-    {
-        config = aConfig;
     }
 
     @Override

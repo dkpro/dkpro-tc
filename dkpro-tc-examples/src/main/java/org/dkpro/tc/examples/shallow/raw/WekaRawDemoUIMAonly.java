@@ -21,7 +21,6 @@ package org.dkpro.tc.examples.shallow.raw;
 import static java.util.Arrays.asList;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -107,11 +106,11 @@ public class WekaRawDemoUIMAonly
     {
         String train = "src/main/resources/data/twentynewsgroups/bydate-train/*/*.txt";
         String outputPathTrain = "target/tn_raw_output/train";
-        new File(outputPathTrain).mkdirs();
+        ensureFolderExistence(outputPathTrain);
 
         String test = "src/main/resources/data/twentynewsgroups/bydate-test/*/*.txt";
         String outputPathTest = "target/tn_raw_output/test";
-        new File(outputPathTest).mkdirs();
+        ensureFolderExistence(outputPathTest);
 
         File luceneFolder = new File(FileUtils.getTempDirectory(), "luceneDirRawDemo");
         luceneFolder.deleteOnExit();
@@ -135,9 +134,22 @@ public class WekaRawDemoUIMAonly
         File modelOut = FileUtil.createTempFile("modeltmp", ".model");
         modelOut.deleteOnExit();
         TcTrainer trainer = new WekaTrainer();
-        trainer.train(extractedTrainData, modelOut, Arrays.asList(SMO.class.getName()));
+        trainer.train(extractedTrainData, modelOut, asList(SMO.class.getName()));
 
         TcPredictor predictor = new WekaPredictor();
         return predictor.predict(extractedTestData, modelOut);
+    }
+
+    private void ensureFolderExistence(String outputPathTrain)
+    {
+        File file = new File(outputPathTrain);
+        if (file.exists()) {
+            return;
+        }
+        boolean creationSuccessful = file.mkdirs();
+        if (!creationSuccessful) {
+            throw new IllegalStateException(
+                    "Could not create the folder path [" + file.getAbsolutePath() + "]");
+        }
     }
 }

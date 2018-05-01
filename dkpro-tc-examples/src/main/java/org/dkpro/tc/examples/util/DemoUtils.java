@@ -47,7 +47,14 @@ public class DemoUtils
             System.out.println("DKPRO_HOME not set.");
 
             File folder = new File("target/results/" + experimentName);
-            folder.mkdirs();
+            if(!folder.exists()) {
+                boolean create = folder.mkdirs();
+                if(!create) {
+                    throw new IllegalStateException(
+                            "Could not create folder path to  [" + folder.getAbsolutePath() + "]");
+                }
+            }
+            
 
             System.setProperty(dkproHome, folder.getPath());
             System.out.println("Setting DKPRO_HOME to: " + folder.getPath());

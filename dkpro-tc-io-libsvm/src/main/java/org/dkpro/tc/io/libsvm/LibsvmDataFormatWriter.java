@@ -354,10 +354,10 @@ public class LibsvmDataFormatWriter
                     new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
 
             writer.write("#Index\tDkProInstanceId\n");
-            for (String k : index2instanceId.keySet()) {
-                writer.write(k + "\t" + index2instanceId.get(k) + "\n");
+            
+            for (Entry<String, String> e : index2instanceId.entrySet()) {
+                writer.write(e.getKey() + "\t" + e.getValue() + "\n");
             }
-
         }
         finally {
             IOUtils.closeQuietly(writer);

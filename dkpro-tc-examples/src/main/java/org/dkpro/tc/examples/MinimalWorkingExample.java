@@ -18,9 +18,6 @@ package org.dkpro.tc.examples;
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -54,22 +51,16 @@ public class MinimalWorkingExample
 
     public static void runExperiment() throws Exception
     {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the
-        // train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
                 FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTest, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
                 FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-        dimReaders.put(DIM_READER_TEST, readerTest);
 
         
         TcTrainTestExperiment exp = new TcTrainTestExperiment(readerTrain, 

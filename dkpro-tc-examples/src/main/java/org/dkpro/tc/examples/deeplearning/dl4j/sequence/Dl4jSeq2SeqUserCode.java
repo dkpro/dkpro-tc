@@ -64,7 +64,7 @@ public class Dl4jSeq2SeqUserCode
 
     Vectorize vectorize = new Vectorize();
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void run(File trainVec, File trainOutcome, File testVec, File testOutcome,
             File embedding, int seed, int maximumLength, double threshold, File prediction)
