@@ -116,10 +116,6 @@
     	<artifactId>dkpro-tc-simple</artifactId>
     </dependency>      
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
@@ -149,10 +145,6 @@
     		de.tudarmstadt.ukp.dkpro.core.api.frequency-asl
     	</artifactId>
     </dependency>    
-    <dependency>
-      <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-      <artifactId>de.tudarmstadt.ukp.dkpro.core.api.io-asl</artifactId>
-    </dependency>     
   	<dependency>
       <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
       <artifactId>de.tudarmstadt.ukp.dkpro.core.api.metadata-asl</artifactId>
@@ -208,10 +200,6 @@
     <dependency>
       <groupId>org.nd4j</groupId>
       <artifactId>nd4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
