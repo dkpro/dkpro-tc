@@ -99,7 +99,8 @@ public class TcFeature
         config = aConfig;
     }
     
-    public Map<String, Object> getConfig(){
+    public Map<String, Object> getConfig()
+    {
         return config;
     }
 
