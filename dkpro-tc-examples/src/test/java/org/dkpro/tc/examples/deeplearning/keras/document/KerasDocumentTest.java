@@ -62,15 +62,15 @@ public class KerasDocumentTest
 
             // line-wise compare
             assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-            assertEquals("#labels 0=comp.graphics 1=alt.atheism", lines.get(1));
-            assertTrue(lines.get(3).matches("[0-9]+.txt=[0-9]+;0;-1"));
-            assertTrue(lines.get(4).matches("[0-9]+.txt=[0-9]+;0;-1"));
-            assertTrue(lines.get(5).matches("[0-9]+.txt=[0-9]+;0;-1"));
-            assertTrue(lines.get(6).matches("[0-9]+.txt=[0-9]+;0;-1"));
-            assertTrue(lines.get(7).matches("[0-9]+.txt=[0-9]+;1;-1"));
-            assertTrue(lines.get(8).matches("[0-9]+.txt=[0-9]+;1;-1"));
-            assertTrue(lines.get(9).matches("[0-9]+.txt=[0-9]+;1;-1"));
-            assertTrue(lines.get(10).matches("[0-9]+.txt=[0-9]+;1;-1"));
+            assertEquals("#labels 0=alt.atheism 1=comp.graphics", lines.get(1));
+            assertTrue(lines.get(3).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(4).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(5).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(6).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(7).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(8).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(9).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(10).matches("[0-9]+\\.txt=[0-9]+;[0-9]+;-1"));
 
         }
     }
