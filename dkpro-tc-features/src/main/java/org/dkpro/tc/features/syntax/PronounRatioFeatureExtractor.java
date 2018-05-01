@@ -49,6 +49,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_WE_RATIO = "PronounRatioWe";
     public static final String FN_THEY_RATIO = "PronounRatioThey";
     public static final String FN_US_RATIO = "PronounRatioUs";
+    public static final String FN_IT_RATIO = "PronounRatioIt";
     public static final String FN_YOU_RATIO = "PronounRatioYou";
 
     @Override
@@ -63,6 +64,7 @@ public class PronounRatioFeatureExtractor
         int theyCount = 0;
         int usCount = 0;
         int youCount = 0;
+        int itCount = 0;
 
         int n = 0;
         for (POS_PRON pronoun : JCasUtil.selectCovered(jcas, POS_PRON.class, aTarget)) {
@@ -89,19 +91,21 @@ public class PronounRatioFeatureExtractor
             }
             else if (text.equals("you")) {
                 youCount++;
+            }else if (text.equals("it")) {
+                itCount++;
             }
         }
 
         Set<Feature> features = new HashSet<Feature>();
-        if (n > 0) {
-            features.add(new Feature(FN_HE_RATIO, (double) heCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_I_RATIO, (double) iCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_WE_RATIO, (double) weCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_THEY_RATIO, (double) theyCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_US_RATIO, (double) usCount / n, FeatureType.NUMERIC));
-            features.add(new Feature(FN_YOU_RATIO, (double) youCount / n, FeatureType.NUMERIC));
-        }
+        features.add(new Feature(FN_HE_RATIO, (double) heCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_I_RATIO, (double) iCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_WE_RATIO, (double) weCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(
+                new Feature(FN_THEY_RATIO, (double) theyCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_US_RATIO, (double) usCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_YOU_RATIO, (double) youCount / n, n == 0, FeatureType.NUMERIC));
+        features.add(new Feature(FN_IT_RATIO, (double) itCount / n, n == 0, FeatureType.NUMERIC));
 
         return features;
     }
