@@ -39,7 +39,7 @@ public class RawUimaDemo
     {
         WekaRawDemoUIMAonly uima = new WekaRawDemoUIMAonly();
         List<String> run = uima.run();
-        assertTrue(run!=null);
+        assertTrue(run != null);
         assertEquals(8, run.size());
     }
 }

@@ -19,16 +19,16 @@
 package org.dkpro.tc.examples.shallow.raw;
 
 import static java.util.Arrays.asList;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
-import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
@@ -41,7 +41,6 @@ import org.dkpro.tc.ml.weka.core.WekaPredictor;
 import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
 
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMO;
 
@@ -57,22 +56,21 @@ public class WekaRawDemoUIMAonly
       new WekaRawDemoUIMAonly().run();
     }
 
-    private static File runFeatureExtraction(String train, File luceneFolder,
-            Object[] ngramParameter, String outputPathTrain)
+    private static File runFeatureExtraction(String train, Object[] ngramParameter,
+            String outputPathTrain)
         throws Exception
     {
-        runPipeline(
+        SimplePipeline.runPipeline(
                 // Reader
-                createReaderDescription(FolderwiseDataReader.class,
+                CollectionReaderFactory.createReaderDescription(FolderwiseDataReader.class,
                         FolderwiseDataReader.PARAM_SOURCE_LOCATION, train,
                         FolderwiseDataReader.PARAM_LANGUAGE, "en"),
                 // Preprocessing
-                createEngineDescription(JCasIdSetter.class),
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(OpenNlpPosTagger.class),
+                AnalysisEngineFactory.createEngineDescription(JCasIdSetter.class),
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
 
                 // Feature extraction
-                createEngineDescription(ExtractFeaturesConnector.class,
+                AnalysisEngineFactory.createEngineDescription(ExtractFeaturesConnector.class,
                         ExtractFeaturesConnector.PARAM_OUTPUT_DIRECTORY, outputPathTrain,
                         ExtractFeaturesConnector.PARAM_DATA_WRITER_CLASS,
                         WekaDataWriter.class.getName(),
@@ -85,25 +83,24 @@ public class WekaRawDemoUIMAonly
                         ExtractFeaturesConnector.PARAM_OUTCOMES,
                         new String[] { "alt.atheism", "comp.graphics" },
                         ExtractFeaturesConnector.PARAM_FEATURE_EXTRACTORS,
-                        asList(createExternalResourceDescription(WordNGram.class,
+                        asList(ExternalResourceFactory.createExternalResourceDescription(WordNGram.class,
                                 ngramParameter))));
 
         return new File(outputPathTrain, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
     }
 
-    private static void runTrainingMetaCollection(String train, File luceneFolder,
-            Object[] ngramParameter)
+    private static void runTrainingMetaCollection(String train, Object[] ngramParameter)
         throws Exception
     {
         // Features such as WordNgram (or any other Ngram-based features) build a Lucene index
         // first, this is done by executing this piece of code. If no Ngram features are used this
         // step is not necessary
-        runPipeline(
-                createReaderDescription(FolderwiseDataReader.class,
+        SimplePipeline.runPipeline(
+                CollectionReaderFactory.createReaderDescription(FolderwiseDataReader.class,
                         FolderwiseDataReader.PARAM_SOURCE_LOCATION, train,
                         FolderwiseDataReader.PARAM_LANGUAGE, "en"),
-                createEngineDescription(BreakIteratorSegmenter.class),
-                createEngineDescription(WordNGramMC.class, ngramParameter));
+                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
+                AnalysisEngineFactory.createEngineDescription(WordNGramMC.class, ngramParameter));
     }
 
     public List<String> run() throws Exception
@@ -126,13 +123,13 @@ public class WekaRawDemoUIMAonly
 
         // Extract features from training data - this steps requires building the Lucene index for
         // the ngram feature
-        runTrainingMetaCollection(train, luceneFolder, ngramParameter);
-        File extractedTrainData = runFeatureExtraction(train, luceneFolder, ngramParameter,
+        runTrainingMetaCollection(train, ngramParameter);
+        File extractedTrainData = runFeatureExtraction(train, ngramParameter,
                 outputPathTrain);
 
         // Extract features from testing data - we use the Lucene index created during training here
         // - no need to run the meta collection again
-        File extractedTestData = runFeatureExtraction(test, luceneFolder, ngramParameter,
+        File extractedTestData = runFeatureExtraction(test, ngramParameter,
                 outputPathTest);
 
         File modelOut = FileUtil.createTempFile("modeltmp", ".model");

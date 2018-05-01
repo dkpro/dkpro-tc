@@ -684,8 +684,18 @@ public class ExperimentBuilder
      */
     public ExperimentBuilder outputFolder(String filePath)
     {
+        if(filePath == null) {
+            throw new NullPointerException("The provided output folder path is null");
+        }
+        
         this.outputFolder = new File(filePath);
-        outputFolder.mkdirs();
+        if (!this.outputFolder.exists()) {
+            boolean mkdirs = outputFolder.mkdirs();
+            if (!mkdirs) {
+                throw new IllegalStateException(
+                        "Could not create output folder [" + filePath + "]");
+            }
+        }
         return this;
     }
 

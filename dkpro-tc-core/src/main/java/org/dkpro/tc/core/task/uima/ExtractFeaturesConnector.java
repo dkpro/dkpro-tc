@@ -235,9 +235,6 @@ public class ExtractFeaturesConnector
             dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
             documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
         }
-        catch (IllegalArgumentException e) {
-            // annotation missing
-        }
         catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
         }

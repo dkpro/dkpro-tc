@@ -166,15 +166,15 @@ public class FeatureResourceLoader
         // this
         // recursively
         ResourceSpecifier aDesc = exRes.getResourceSpecifier();
-        if (aDesc instanceof AnalysisEngineDescription) {
-            // Analysis engines are ok
-            if (!((AnalysisEngineDescription) aDesc).isPrimitive()) {
+        if (aDesc instanceof AnalysisEngineDescription
+                || aDesc instanceof CustomResourceSpecifier_impl) {
+            
+            // Only primitive engines work
+            if (aDesc instanceof AnalysisEngineDescription
+                    && !((AnalysisEngineDescription) aDesc).isPrimitive()) {
                 throw new IllegalArgumentException(
                         "Only primitive meta collectors currently supported.");
             }
-        }
-        else if (aDesc instanceof CustomResourceSpecifier_impl) {
-            // Feature extractors are ok
         }
         else {
             throw new IllegalArgumentException(

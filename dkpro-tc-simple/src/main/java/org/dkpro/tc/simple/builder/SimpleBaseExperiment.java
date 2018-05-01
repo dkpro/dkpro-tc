@@ -83,7 +83,7 @@ public abstract class SimpleBaseExperiment
         else if (isSvmHmm(adapter)) {
             if (isClassification(lm)) {
                 return new MLBackend(adapter,
-                        CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT);
+                        "-c", "1000", "-e", "10");
             }
         }
 

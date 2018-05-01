@@ -79,7 +79,7 @@ public class FilterCharNgramsByStartingLetter
 
         // overwrite input file with new file
         FileUtils.copyFile(tmp, inputFeatureFile);
-        tmp.delete();
+        FileUtils.deleteQuietly(tmp);
     }
 
     @Override

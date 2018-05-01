@@ -27,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -139,8 +138,8 @@ public class Dl4jSeq2SeqUserCode
         List<String> testOutcomes = FileUtils.readLines(testOutcome, "utf-8");
 
         Set<String> s = new HashSet<>();
-        trainOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
-        testOutcomes.stream().forEach(x -> Arrays.asList(x.split(" ")).forEach(y -> s.add(y)));
+        trainOutcomes.stream().forEach(x -> asList(x.split(" ")).forEach(y -> s.add(y)));
+        testOutcomes.stream().forEach(x -> asList(x.split(" ")).forEach(y -> s.add(y)));
 
         return s.toArray(new String[0]);
     }
@@ -184,10 +183,10 @@ public class Dl4jSeq2SeqUserCode
     {
         Set<String> outcomes = new HashSet<>();
         List<String> lines = FileUtils.readLines(trainOutcome, "utf-8");
-        lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+        lines.forEach(x -> outcomes.addAll(asList(x.split(" "))));
 
         lines = FileUtils.readLines(testOutcome, "utf-8");
-        lines.forEach(x -> outcomes.addAll(Arrays.asList(x.split(" "))));
+        lines.forEach(x -> outcomes.addAll(asList(x.split(" "))));
 
         return outcomes.size();
     }
@@ -209,8 +208,8 @@ public class Dl4jSeq2SeqUserCode
 
         for (int i = 0; i < sentences.size(); i++) {
             // each sent/label pairing is in an own data set
-            List<String> singleSent = Arrays.asList(sentences.get(i));
-            List<String> singleOutcome = Arrays.asList(outcomes.get(i));
+            List<String> singleSent = asList(sentences.get(i));
+            List<String> singleOutcome = asList(outcomes.get(i));
             data.add(vectorize.vectorize(transformToList(singleSent),
                     transformToList(singleOutcome), bw, maxLen, numOutcomes, true));
         }
