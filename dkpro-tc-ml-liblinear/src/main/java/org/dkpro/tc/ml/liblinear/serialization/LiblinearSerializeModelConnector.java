@@ -34,13 +34,6 @@ public class LiblinearSerializeModelConnector
     implements Constants
 {
 
-    boolean trainModel = true;
-
-    public void trainModel(boolean b)
-    {
-        trainModel = b;
-    }
-
     @Override
     protected void trainModel(TaskContext aContext, File fileTrain) throws Exception
     {
