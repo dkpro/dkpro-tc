@@ -62,7 +62,7 @@ public class PronounRatioTest
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
         List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
-        Assert.assertEquals(7, features.size());
+        Assert.assertEquals(8, features.size());
 
         for (Feature feature : features) {
             if (feature.getName().equals(FN_HE_RATIO)) {
