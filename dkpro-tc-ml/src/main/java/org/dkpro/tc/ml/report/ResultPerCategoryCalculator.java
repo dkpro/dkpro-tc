@@ -47,7 +47,7 @@ public class ResultPerCategoryCalculator
         List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%10s\t%5s\t%-5s\t%-5s\t%-5s\n", "#Label", "FREQ", "P", "R", "F1"));
+        sb.append(String.format("%10s\t%5s\t%-5s\t%-5s\t%-5s%n", "#Label", "FREQ", "P", "R", "F1"));
         computeFScores.forEach(
                 s -> sb.append(String.format("%10s\t%5d\t%.4f\t%.4f\t%.4f\n", 
                         s[0],
