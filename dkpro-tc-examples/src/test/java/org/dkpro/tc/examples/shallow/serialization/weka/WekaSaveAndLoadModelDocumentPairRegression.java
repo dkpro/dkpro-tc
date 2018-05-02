@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,18 +139,19 @@ public class WekaSaveAndLoadModelDocumentPairRegression
                 STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,
                 pairGoldFiles);
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(
-                Constants.DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(new Object[] { new WekaAdapter(), SMOreg.class.getName() }));
+        
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] {  new WekaAdapter(), SMOreg.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
                 TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, dimClassificationArgs);
+                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, mlas);
 
         return pSpace;
     }
