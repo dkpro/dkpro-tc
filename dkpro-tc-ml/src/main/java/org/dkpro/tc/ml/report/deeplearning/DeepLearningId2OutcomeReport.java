@@ -263,10 +263,8 @@ public class DeepLearningId2OutcomeReport
             if (l.isEmpty()) {
                 continue;
             }
-            String[] e = l.split("\t");
 
-            keys.add(e[0]);
-            keys.add(e[1]);
+            keys.add(l);
         }
 
         List<String> sortedKeys = new ArrayList<String>(keys);
