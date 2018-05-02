@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,14 +45,12 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.dkpro.tc.ml.weka.WekaAdapter;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -77,13 +74,6 @@ public class WekaSaveAndLoadModelDocumentRegression
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentRegression.class.getSimpleName());
-    }
-
     /**
      * This test case trains a regression model on scored essay texts
      */
@@ -91,7 +81,6 @@ public class WekaSaveAndLoadModelDocumentRegression
     public void documentRoundTripWekaRegression() throws Exception
     {
 
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentRegression.class.getSimpleName());
         File modelFolder = folder.newFolder();
 
         ParameterSpace paramSpace = regressionGetParameterSpace();
@@ -176,11 +165,12 @@ public class WekaSaveAndLoadModelDocumentRegression
                 "src/main/resources/data/essays/train/essay_train.txt",
                 DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        @SuppressWarnings("unchecked")
-        Dimension<List<Object>> dimClassificationArgs = Dimension.create(DIM_CLASSIFICATION_ARGS,
-                Arrays.asList(
-                        new Object[] { new WekaAdapter(), LinearRegression.class.getName() }));
+        
+        Map<String, Object> wekaConfig = new HashMap<>();
+        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] {  new WekaAdapter(), LinearRegression.class.getName() });
+        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
+        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
@@ -189,7 +179,7 @@ public class WekaSaveAndLoadModelDocumentRegression
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
                 Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets,
-                dimClassificationArgs);
+                mlas);
 
         return pSpace;
     }
