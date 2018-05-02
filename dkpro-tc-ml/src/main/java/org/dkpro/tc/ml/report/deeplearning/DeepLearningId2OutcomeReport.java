@@ -250,14 +250,15 @@ public class DeepLearningId2OutcomeReport
             return m;
         }
 
-        File file = getContext().getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT,
+        File prepFolder = getContext().getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
                 AccessMode.READONLY);
+        File file = new File(prepFolder, DeepLearningConstants.FILENAME_OUTCOMES);
         List<String> readLines = FileUtils.readLines(file, "utf-8");
 
         Set<String> keys = new HashSet<>();
 
         int mapIdx = 0;
-        for (int i = 1; i < readLines.size(); i++) {
+        for (int i = 0; i < readLines.size(); i++) {
             String l = readLines.get(i);
             if (l.isEmpty()) {
                 continue;
