@@ -67,14 +67,18 @@ public class BatchCrossValidationReport
 
         TcFlexTable<String> table = TcFlexTable.forClass(String.class);
         table.setDefaultValue("");
-
+        
         for (String id : idPool) {
+        	
             if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
                 continue;
             }
+            
+            
+            Map<String, String> discriminatorsMap = getDiscriminatorsOfMlaSetup(id);
 
-            Map<String, String> discriminatorsMap = getDiscriminatorsForContext(store, id,
-                    Task.DISCRIMINATORS_KEY);
+            discriminatorsMap.putAll(getDiscriminatorsForContext(store, id,
+                    Task.DISCRIMINATORS_KEY));
             discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
             Map<String, String> values = new HashMap<String, String>();
@@ -120,7 +124,22 @@ public class BatchCrossValidationReport
         
     }
 
-    private boolean isSingleLabelMode(String learningMode)
+    private Map<String, String> getDiscriminatorsOfMlaSetup(String id) throws Exception {
+    	Map<String,String> discriminatorsMap = new HashMap<>();
+        
+        //get the details of the configuration from a MLA - any will do
+        Set<String> collectSubtasks = collectSubtasks(id);
+        for(String subid : collectSubtasks){
+        	if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subid)){
+        		 discriminatorsMap.putAll(getDiscriminatorsForContext(getContext().getStorageService(), subid,
+                         Task.DISCRIMINATORS_KEY));
+        		 break;
+        	}
+        }
+		return discriminatorsMap;
+	}
+
+	private boolean isSingleLabelMode(String learningMode)
     {
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }
