@@ -187,7 +187,7 @@ public class VectorizationDoc2SingleLabel
             }
         }
 
-        writerInstance.write(System.lineSeparator());
+        writerInstance.write("\n");
     }
 
     @Override
