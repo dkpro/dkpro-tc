@@ -190,7 +190,7 @@ public class VectorizationDocDoc2MultiLabel
             }
         }
 
-        writerInstance.write(System.lineSeparator());
+        writerInstance.write("\n");
     }
 
     @Override

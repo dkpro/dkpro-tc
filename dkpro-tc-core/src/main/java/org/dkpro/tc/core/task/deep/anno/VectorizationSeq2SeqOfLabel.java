@@ -179,7 +179,7 @@ public class VectorizationSeq2SeqOfLabel
                     writerSeqOutcome.write(" ");
                 }
             }
-            writerSeqOutcome.write(System.lineSeparator());
+            writerSeqOutcome.write("\n");
         }
     }
 

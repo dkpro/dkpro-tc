@@ -119,8 +119,8 @@ public class VocabularyOutcomeCollector
     {
         StringBuilder sb = new StringBuilder();
 
-        for (String e : tokens) {
-            sb.append(e + System.lineSeparator());
+        for (String t : tokens) {
+            sb.append(t + "\n");
         }
         return sb.toString();
     }

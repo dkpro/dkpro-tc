@@ -179,7 +179,7 @@ public class VectorizationDoc2Regression
             }
         }
 
-        writerInstance.write(System.lineSeparator());
+        writerInstance.write("\n");
     }
 
     @Override

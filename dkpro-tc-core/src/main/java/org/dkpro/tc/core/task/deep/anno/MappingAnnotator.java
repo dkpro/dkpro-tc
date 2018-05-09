@@ -169,7 +169,7 @@ public class MappingAnnotator
             String key = keys.get(i);
             sb.append(key + "\t" + map.get(key));
             if (i + 1 < keys.size()) {
-                sb.append(System.lineSeparator());
+                sb.append("\n");
             }
         }
 
