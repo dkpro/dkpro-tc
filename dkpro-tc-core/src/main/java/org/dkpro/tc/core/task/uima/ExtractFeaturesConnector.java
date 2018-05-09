@@ -18,7 +18,6 @@
 package org.dkpro.tc.core.task.uima;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -43,8 +42,6 @@ import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
@@ -120,7 +117,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
         try {
 
-            initDocumentMetaDataLogger();
+        	documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 
             instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
                     addInstanceId);
@@ -146,13 +143,6 @@ public class ExtractFeaturesConnector
         }
     }
 
-    private void initDocumentMetaDataLogger() throws Exception
-    {
-        documentMetaLogger = new DocumentMetaLogger(outputDirectory);
-        documentMetaLogger.write("# Order in which JCas documents have been processed");
-        documentMetaLogger.write("#ID\tTitle");
-    }
-
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
@@ -162,7 +152,7 @@ public class ExtractFeaturesConnector
         LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
                 + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
-        recordDocumentMetaLog(aJCas);
+        documentMetaLogger.writeMeta(aJCas);
 
         if (!featureMeta.didCollect()) {
             getFeatureNames(aJCas);
@@ -226,18 +216,6 @@ public class ExtractFeaturesConnector
     private boolean isFilteringRequestedOrNoStreamingAvailable()
     {
         return featureFilters.length > 0 || !dsw.canStream();
-    }
-
-    private void recordDocumentMetaLog(JCas aJCas) throws AnalysisEngineProcessException
-    {
-        DocumentMetaData dmd = null;
-        try {
-            dmd = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-            documentMetaLogger.write(dmd.getDocumentId() + "\t" + dmd.getDocumentTitle());
-        }
-        catch (IOException e) {
-            throw new AnalysisEngineProcessException(e);
-        }
     }
 
     private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException

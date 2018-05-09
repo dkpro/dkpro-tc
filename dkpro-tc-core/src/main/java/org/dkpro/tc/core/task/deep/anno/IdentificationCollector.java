@@ -82,7 +82,7 @@ public class IdentificationCollector
 
             writer.write(
                     "# processing sequence of the respective document / target - prediction output should conform to this order enabling determination which document/item was classified as X"
-                            + System.lineSeparator());
+                            + "\n");
 
             JCas typeFactory = JCasFactory.createJCas();
             Type type = JCasUtil.getType(typeFactory, Class.forName(sequenceSpanTypeName));
@@ -129,14 +129,14 @@ public class IdentificationCollector
                     String identification = String.format("%06d_%06d_%06d", jcasId, seqId, i);
                     writer.write(identification + "\t" + tco.getCoveredText());
                     if (i + 1 < targets.size()) {
-                        writer.write(System.lineSeparator());
+                        writer.write("\n");
                     }
 
                     if (maximumLength != null && maximumLength > 0 && i + 1 >= maximumLength) {
                         break;
                     }
                 }
-                writer.write(System.lineSeparator());
+                writer.write("\n");
                 seqId++;
             }
         }
@@ -153,7 +153,7 @@ public class IdentificationCollector
             if (documentFile == null) {
                 documentFile = DocumentMetaData.get(aJCas).getDocumentId();
             }
-            writer.write(jcasId + "\t" + documentFile + System.lineSeparator());
+            writer.write(jcasId + "\t" + documentFile + "\n");
         }
         catch (IOException e) {
             throw new AnalysisEngineProcessException(e);
