@@ -159,7 +159,7 @@ public class LibsvmDataFormatOutcomeIdReport
             
             //not title set in the reader that could be retrieved
             String value="";
-            if(split.length == 2) {
+            if(split.length >= 2) {
                 value = split[1];
             }
 

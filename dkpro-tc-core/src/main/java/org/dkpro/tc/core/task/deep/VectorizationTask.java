@@ -36,6 +36,7 @@ import org.dkpro.lab.uima.task.impl.UimaTaskBase;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.task.deep.anno.IdentificationCollector;
+import org.dkpro.tc.core.task.deep.anno.MetaDataCollectionAnnotator;
 import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2Regression;
 import org.dkpro.tc.core.task.deep.anno.VectorizationDoc2SingleLabel;
 import org.dkpro.tc.core.task.deep.anno.VectorizationDocDoc2MultiLabel;
@@ -107,6 +108,9 @@ public class VectorizationTask
                 IdentificationCollector.PARAM_TARGET_DIRECTORY, outputDir,
                 IdentificationCollector.PARAM_MODE, featureMode,
                 IdentificationCollector.PARAM_USER_SET_MAXIMUM_LENGTH, maximumLength));
+        
+        builder.add(createEngineDescription(MetaDataCollectionAnnotator.class, 
+        		MetaDataCollectionAnnotator.PARAM_TARGET_DIRECTORY, outputDir));
 
         AnalysisEngineDescription engine = null;
 
