@@ -96,7 +96,7 @@ public class ID2OutcomeCombiner<T>
                 continue;
             }
 
-            String[] split = line.split("=");
+            String[] split = splitAtEqualFromRight(line);
             String docName = split[0];
             String values = split[1];
 
@@ -143,8 +143,8 @@ public class ID2OutcomeCombiner<T>
             if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
-
-            String[] split = line.split("=");
+            
+            String[] split = splitAtEqualFromRight(line);
             String docName = split[0];
             String values = split[1];
 
@@ -172,7 +172,22 @@ public class ID2OutcomeCombiner<T>
 
     }
 
-    @SuppressWarnings("unchecked")
+
+	private String[] splitAtEqualFromRight(String line) {
+    	
+    	int indexOf = line.lastIndexOf("=");
+    	
+    	if(indexOf == -1){
+    		throw new IllegalStateException("Did not find an [=] sign in string ["+line+"]");
+    	}
+    	
+    	String left = line.substring(0, indexOf);
+    	String right = line.substring(indexOf+1);
+    	
+		return new String [] {left, right};
+	}
+
+	@SuppressWarnings("unchecked")
     private void processMultilabel(File id2OutcomeFile) throws Exception
     {
         BufferedReader reader = new BufferedReader(
@@ -188,7 +203,7 @@ public class ID2OutcomeCombiner<T>
                 continue;
             }
 
-            String[] split = line.split("=");
+            String[] split = splitAtEqualFromRight(line);
             String docName = split[0];
             String values = split[1];
 
