@@ -45,8 +45,11 @@ public class Id2OutcomeAggregatorTest
         aggregator.add(
                 new File("src/test/resources/id2outcome/combine/singleLabelID2outcome_2.txt"),
                 Constants.LM_SINGLE_LABEL);
+        aggregator.add(
+                new File("src/test/resources/id2outcome/combine/singleLabelID2outcome_3.txt"),
+                Constants.LM_SINGLE_LABEL);
 
-        assertEquals(18, aggregator.generateId2OutcomeFile().split("\n").length);
+        assertEquals(63, aggregator.generateId2OutcomeFile().split("\n").length);
     }
 
     @Test
