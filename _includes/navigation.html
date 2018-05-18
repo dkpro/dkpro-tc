@@ -1,9 +1,10 @@
+{% assign stable = (site.data.releases | where:"status", "stable" | first) %}
 
 <div id="navigation" class="sticky">
   <nav class="top-bar" data-topbar>
     <ul class="title-area">
       <li class="name">
-      <h1 class="show-for-small-only"><a href="{{ site.url }}" class="icon-tree"> {{ site.title }}</a></h1>
+      <h1 class="show-for-small-only"><a href="{{ site.url }}" class="icon-tree"> {{ site.title }}</a></h1>
     </li>
        <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Navigation</span></a></li>
@@ -96,7 +97,7 @@
             {% else %}
 
               <li class="has-dropdown{% if link.url == page.url %} active{% endif %}">
-                <a href="{{ domain }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title }}</a>
+                <a href="{{ domain }}{{ link.url | replace: '!LATEST!', stable.version}}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title }}</a>
 
                   <ul class="dropdown">
                     {% for dropdown_link in link.dropdown %}
@@ -107,7 +108,7 @@
                         {% assign domain = site.url %}
                       {% endif %}
 
-                      <li><a href="{{ domain }}{{ dropdown_link.url }}"{% if dropdown_link.url contains 'http' %} target="_blank"{% endif %}>{{ dropdown_link.title }}</a></li>
+                      <li><a href="{{ domain }}{{ dropdown_link.url | replace: '!LATEST!', stable.version}}"{% if dropdown_link.url contains 'http' %} target="_blank"{% endif %}>{{ dropdown_link.title }}</a></li>
                     {% endfor %}
                   </ul>
                   
