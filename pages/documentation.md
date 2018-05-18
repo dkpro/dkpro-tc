@@ -9,16 +9,6 @@ permalink: "/documentation/"
 
 ## Reference Documentation
 
-### DKPro TC 0.5.0
-
-* [Getting Started](/dkpro-tc/DemoExperiments_0_5_0/)
-* [Discriminators](/dkpro-tc/Discriminators_0_5_0/)
-
-### DKPro TC 0.6.0
-
-* [Getting Started](/dkpro-tc/DemoExperiments_0_6_0/)
-* [Discriminators](/dkpro-tc/Discriminators_0_6_0/)
-
 {% unless stable.version == null %}
 ### DKPro TC {{ stable.version }}
 _latest release_
@@ -29,6 +19,18 @@ _latest release_
 
 {% unless unstable.version == null %}
 ### DKPro TC {{ unstable.version }}
+* [Setting Up DKProTC](/dkpro-tc/SettingUpDKPro/)
+* [Processing Modes](/dkpro-tc/DKProTcProcessingModes/)
+* [Using DKPro Core Readers](/dkpro-tc/DKProTcUsingDKProCoreReaders/)
+
+## Shallow Classification
+* [Basics](/dkpro-tc/DKProTcBasics_1_0_0/)
+* [Wiring Experiments](/dkpro-tc/DKProTcWiringExperiments_1_0_0/)
+
+## Deep Classification
+* [Deep Learning](/dkpro-tc/DKProTcDeepLearning_1_0_0/)
+* [Debugging Deep Learning Experiments](/dkpro-tc/DKProTcDebugginPythonDeepLearningExperiments/)
+
 _upcoming release - links may be temporarily broken while a build is in progress_
 
 {% unless unstable.user_guide_url == null %}* [User Guide]({{ unstable.user_guide_url }}){% endunless %}
