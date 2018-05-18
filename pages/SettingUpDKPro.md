@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Setup"
+title: "Setup"
 permalink: "/SettingUpDKPro/"
 ---
 

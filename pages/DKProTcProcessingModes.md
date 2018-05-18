@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Processing Modes"
+title: "Processing Modes"
 permalink: "/DKProTcProcessingModes/"
 ---
 

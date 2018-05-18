@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Wiring Experiments"
+title: "Wiring Experiments"
 permalink: "/DKProTcWiringExperiments_1_0_0/"
 ---
 

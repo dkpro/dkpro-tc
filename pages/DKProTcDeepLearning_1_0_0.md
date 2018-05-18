@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Deep Learning"
+title: "Deep Learning"
 permalink: "/DKProTcDeepLearning_1_0_0/"
 ---
 

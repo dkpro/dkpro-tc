@@ -1,6 +1,6 @@
 ---
 layout: page-fullwidth
-title: "DKPro TC Basics Experiments"
+title: "Basic Experiments"
 permalink: "/DKProTcBasics_1_0_0/"
 ---
 
