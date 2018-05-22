@@ -47,17 +47,26 @@ public class ResultPerCategoryCalculator
         List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%10s\t%5s\t%-5s\t%-5s\t%-5s%n", "#Label", "FREQ", "P", "R", "F1"));
+        sb.append(String.format("%25s\t%5s\t%-6s\t%-6s\t%-6s%n", "#Label", "FREQ", "P", "R", "F1"));
         computeFScores.forEach(
-                s -> sb.append(String.format("%10s\t%5d\t%.4f\t%.4f\t%.4f\n", 
+                s -> sb.append(String.format("%25s\t%5d\t%.4f\t%.4f\t%.4f\n", 
                         s[0],
                         Long.parseLong(s[1]),
-                        Double.parseDouble(s[2]),
-                        Double.parseDouble(s[3]),
-                        Double.parseDouble(s[4]))
+                        catchNan(Double.parseDouble(s[2])),
+                        catchNan(Double.parseDouble(s[3])),
+                        catchNan(Double.parseDouble(s[4])))
                         ));
 
         FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");
+    }
+    
+    private double catchNan(double d){
+    	
+    	if(Double.isNaN(d)){
+    		return 0.0;
+    	}
+    	
+    	return d;
     }
 
 }
