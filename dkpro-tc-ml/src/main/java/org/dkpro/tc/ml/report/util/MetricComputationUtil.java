@@ -148,10 +148,10 @@ public class MetricComputationUtil
 
         for (String l : uniqueLabels) {
             Long n = fd.getCount(l);
-            Double f = score.getScoreForLabel(l);
             Double p = precision.getPrecisionForLabel(l);
             Double r = recall.getRecallForLabel(l);
-            fscores.add(new String[] { l, n.toString(), f.toString(), p.toString(), r.toString() });
+            Double f = score.getScoreForLabel(l);
+            fscores.add(new String[] { l, n.toString(), p.toString(), r.toString(), f.toString() });
         }
 
         return fscores;
