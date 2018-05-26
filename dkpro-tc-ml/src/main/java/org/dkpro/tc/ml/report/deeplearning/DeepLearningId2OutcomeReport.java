@@ -19,19 +19,18 @@
 package org.dkpro.tc.ml.report.deeplearning;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -39,7 +38,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
-import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 public class DeepLearningId2OutcomeReport
     extends TcBatchReportBase
@@ -76,7 +74,7 @@ public class DeepLearningId2OutcomeReport
         Map<String, String> inverseMap = inverseMap(map);
 
         StringBuilder header = new StringBuilder();
-        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD\nlabels ");
+        header.append("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD\n#labels ");
 
         List<String> k = new ArrayList<>(map.keySet());
         for (Integer i = 0; i < map.keySet().size(); i++) {
@@ -94,8 +92,8 @@ public class DeepLearningId2OutcomeReport
         }
 
         List<String> nameOfTargets = getNameOfTargets();
-        Properties prop = new SortedKeyProperties();
-
+        StringBuilder sb = new StringBuilder();
+        
         int shift = 0;
         for (int i = 0; i < predictions.size(); i++) {
 
@@ -115,7 +113,7 @@ public class DeepLearningId2OutcomeReport
             String[] split = p.split("\t");
 
             if (isMultiLabel) {
-                multilabelReport(id, split, isIntegerMode, prop, map);
+                sb = multilabelReport(id, split, isIntegerMode, sb, map);
                 continue;
             }
 
@@ -136,19 +134,16 @@ public class DeepLearningId2OutcomeReport
                     prediction = map.get(split[1]).toString();
                 }
             }
-            prop.setProperty("" + id,
-                    prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+            sb.append(id + "=" + prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD + "\n");
         }
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String timeStamp = dateFormat.format(cal.getTime());
 
+        String data = header.toString() + "\n#" + timeStamp + "\n" + sb.toString();
         File id2o = getTargetFile();
-        OutputStreamWriter osw = null;
-        try {
-            osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
-            prop.store(osw, header.toString());
-        }
-        finally {
-            IOUtils.closeQuietly(osw);
-        }
+        FileUtils.writeStringToFile(id2o, data, "utf-8");
     }
 
     private String determineId(List<String> nameOfTargets, int i, int shift)
@@ -195,7 +190,7 @@ public class DeepLearningId2OutcomeReport
         return inverseMap;
     }
 
-    private void multilabelReport(String id, String[] split, boolean isIntegerMode, Properties prop,
+    private StringBuilder multilabelReport(String id, String[] split, boolean isIntegerMode, StringBuilder sb,
             Map<String, String> map)
     {
 
@@ -215,7 +210,8 @@ public class DeepLearningId2OutcomeReport
             s = split[1].split(" ");
             prediction = label2String(s, map);
         }
-        prop.setProperty("" + id, prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD);
+        sb.append(id + "=" +  prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + THRESHOLD + "\n");
+        return sb;
     }
 
     private String label2String(String[] val, Map<String, String> map)
