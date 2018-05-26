@@ -24,20 +24,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
-import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 import org.dkpro.tc.ml.weka.core._eka;
 import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
@@ -89,25 +88,25 @@ public class WekaOutcomeIDReport
 
         List<String> labels = getLabels(isMultiLabel, isRegression);
 
-        Properties props;
-
+        String content;
         if (isMultiLabel) {
             MultilabelResult r = readMlResultFromFile(mlResults);
-            props = generateMlProperties(predictions, labels, r);
+            content = generateMlProperties(predictions, labels, r);
         }
         else {
             Map<Integer, String> documentIdMap = loadDocumentMap();
-            props = generateSlProperties(predictions, isRegression, isUnit, documentIdMap, labels);
+            content = generateSlProperties(predictions, isRegression, isUnit, documentIdMap, labels);
         }
 
-        FileWriterWithEncoding fw = null;
-        try {
-            fw = new FileWriterWithEncoding(getTargetOutputFile(), "utf-8");
-            props.store(fw, generateHeader(labels));
-        }
-        finally {
-            IOUtils.closeQuietly(fw);
-        }
+        String header = generateHeader(labels);
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String timeStamp = dateFormat.format(cal.getTime());
+        
+        String data = header + "\n#" + timeStamp + "\n" + content;
+        
+        FileUtils.writeStringToFile(getTargetOutputFile(), data, "utf-8");
     }
 
     protected File getTargetOutputFile()
@@ -133,8 +132,8 @@ public class WekaOutcomeIDReport
     protected static String generateHeader(List<String> labels) throws UnsupportedEncodingException
     {
         StringBuilder comment = new StringBuilder();
-        comment.append("ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
-                + "THRESHOLD" + "\n" + "labels");
+        comment.append("#ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
+                + "THRESHOLD" + "\n#" + "labels");
 
         // add numbered indexing of labels: e.g. 0=NPg, 1=JJ
         for (int i = 0; i < labels.size(); i++) {
@@ -144,12 +143,11 @@ public class WekaOutcomeIDReport
         return comment.toString();
     }
 
-    protected static Properties generateMlProperties(Instances predictions, List<String> labels,
+    protected static String generateMlProperties(Instances predictions, List<String> labels,
             MultilabelResult r)
         throws ClassNotFoundException, IOException
     {
-        Properties props = new SortedKeyProperties();
-
+        StringBuilder sb = new StringBuilder();
         int attOffset = predictions.attribute(ID_FEATURE_NAME).index();
 
         Map<String, Integer> class2number = classNamesToMapping(labels);
@@ -168,17 +166,16 @@ public class WekaOutcomeIDReport
             String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR
                     + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition);
             String stringValue = predictions.get(i).stringValue(attOffset);
-            props.setProperty(stringValue, s);
+            sb.append(stringValue + "=" + s+"\n");
         }
-        return props;
+        return sb.toString();
     }
 
-    protected Properties generateSlProperties(Instances predictions, boolean isRegression,
+    protected String generateSlProperties(Instances predictions, boolean isRegression,
             boolean isUnit, Map<Integer, String> documentIdMap, List<String> labels)
         throws Exception
     {
 
-        Properties props = new SortedKeyProperties();
         String[] classValues = new String[predictions.numClasses()];
 
         for (int i = 0; i < predictions.numClasses(); i++) {
@@ -189,6 +186,8 @@ public class WekaOutcomeIDReport
 
         prepareBaseline();
 
+        StringBuilder sb = new StringBuilder();
+        
         int idx = 0;
         for (Instance inst : predictions) {
             Double gold;
@@ -208,24 +207,22 @@ public class WekaOutcomeIDReport
                 // .get(gsAtt.value(prediction.intValue()));
                 Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
 
-                String stringValue = inst.stringValue(attOffset);
+                String key = inst.stringValue(attOffset);
                 if (!isUnit && documentIdMap != null) {
-                    stringValue = documentIdMap.get(idx++);
+                    key = documentIdMap.get(idx++);
                 }
-                props.setProperty(stringValue, getPrediction(prediction, class2number, gsAtt)
-                        + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1));
+                sb.append(key + "=" + getPrediction(prediction, class2number, gsAtt) + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1) + "\n");
             }
             else {
                 // the outcome is numeric
-                String stringValue = inst.stringValue(attOffset);
+                String key = inst.stringValue(attOffset);
                 if (documentIdMap != null) {
-                    stringValue = documentIdMap.get(idx++);
+                    key = documentIdMap.get(idx++);
                 }
-                props.setProperty(stringValue,
-                        prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + String.valueOf(0));
+                sb.append(key + "=" + prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "-1" + "\n");
             }
         }
-        return props;
+        return sb.toString();
     }
 
     protected String getPrediction(Double prediction, Map<String, Integer> class2number,

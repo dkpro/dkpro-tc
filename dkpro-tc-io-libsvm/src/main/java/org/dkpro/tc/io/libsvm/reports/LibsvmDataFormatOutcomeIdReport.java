@@ -21,21 +21,20 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
-import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 public class LibsvmDataFormatOutcomeIdReport
     extends TcBatchReportBase
@@ -67,8 +66,8 @@ public class LibsvmDataFormatOutcomeIdReport
         List<String> predictions = readPredictions();
         Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
 
-        Properties prop = new SortedKeyProperties();
         int lineCounter = 0;
+        StringBuilder sb = new StringBuilder();
         for (String line : predictions) {
             if (line.startsWith("#")) {
                 continue;
@@ -80,27 +79,26 @@ public class LibsvmDataFormatOutcomeIdReport
             String goldString = split[1];
 
             if (isRegression) {
-                prop.setProperty(key,
-                        predictionString + ";" + goldString + ";" + THRESHOLD_CONSTANT);
+                sb.append(key + "=" + predictionString + ";" + goldString + ";" + THRESHOLD_CONSTANT
+                        + "\n");
             }
             else {
                 int pred = Double.valueOf(predictionString).intValue();
                 int gold = Double.valueOf(goldString).intValue();
-                prop.setProperty(key, pred + ";" + gold + ";" + THRESHOLD_CONSTANT);
+                sb.append(key + "=" + pred + ";" + gold + ";" + THRESHOLD_CONSTANT
+                        + "\n");
             }
             lineCounter++;
         }
 
         File targetFile = getTargetOutputFile();
-
-        FileWriterWithEncoding fw = null;
-        try {
-            fw = new FileWriterWithEncoding(targetFile, "utf-8");
-            prop.store(fw, header);
-        }
-        finally {
-            IOUtils.closeQuietly(fw);
-        }
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String timeStamp = dateFormat.format(cal.getTime());
+        
+        String content = header + "\n#" + timeStamp + "\n" + sb.toString();
+        FileUtils.writeStringToFile(targetFile, content, "utf-8");
 
     }
 
@@ -185,7 +183,7 @@ public class LibsvmDataFormatOutcomeIdReport
         throws UnsupportedEncodingException
     {
         StringBuilder header = new StringBuilder();
-        header.append("ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n" + "labels" + " ");
+        header.append("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD" + "\n#" + "labels" + " ");
 
         if (isRegression) {
             // no label mapping for regression so that is all we have to do
