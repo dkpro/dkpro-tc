@@ -87,11 +87,11 @@ public class UnitModeTest
             assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
             assertEquals("#labels 0=AP 1=AT 2=BEDZ 3=BEN 4=CC 5=DT 6=HVD 7=IN 8=JJ 9=MD 10=NN 11=NNS 12=NP 13=PPS 14=RB 15=TO 16=VB 17=VBD 18=VBN 19=WDT 20=pct", lines.get(1));
             // line 2 is a time-stamp
-            assertTrue(lines.get(3).matches("0_0_The=[0-9]+;[0-9]+;-1"));
-            assertTrue(lines.get(4).matches("0_10_would=[0-9]+;[0-9]+;-1"));
-            assertTrue(lines.get(5).matches("0_11_force=[0-9]+;[0-9]+;-1"));
-            assertTrue(lines.get(6).matches("0_12_banks=[0-9]+;[0-9]+;-1"));
-            assertTrue(lines.get(7).matches("0_13_,=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(3).matches("[a-zA-Z0-9_,\\.]+=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(4).matches("[a-zA-Z0-9_,\\.]+=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(5).matches("[a-zA-Z0-9_,\\.]+=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(6).matches("[a-zA-Z0-9_,\\.]+=[0-9]+;[0-9]+;-1"));
+            assertTrue(lines.get(7).matches("[a-zA-Z0-9_,\\.]+=[0-9]+;[0-9]+;-1"));
         }
         
     }
