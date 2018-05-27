@@ -7,7 +7,7 @@
   </parent>
   <groupId>org.dkpro.tc</groupId>
   <artifactId>dkpro-tc</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>DKPro TC is a UIMA-based text classification framework built on top of DKPro Core and DKPro Lab. It is intended to alleviate supervised machine learning experiments with any kind of textual data.</description>
   <inceptionYear>2013</inceptionYear>
@@ -45,7 +45,7 @@
     <connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
     <developerConnection>scm:git:git@github.com:dkpro/dkpro-tc.git</developerConnection>
     <url>https://github.com/dkpro/dkpro-tc</url>
-    <tag>dkpro-tc-1.0.1</tag>
+    <tag>dkpro-tc-0.9.0-SNAPSHOT</tag>
   </scm>
   <issueManagement>
     <url>https://github.com/dkpro/dkpro-tc/issues</url>
@@ -121,117 +121,117 @@
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-api</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-api-features</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-core</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-examples</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-examples-groovy</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-features</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-features-ngram</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-features-pair</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-features-pair-similarity</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-io</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-io-libsvm</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-crfsuite</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-dynet</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-keras</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-deeplearning4j</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-liblinear</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-libsvm</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-svmhmm</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-weka</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-xgboost</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>   
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-simple</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>   
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-testing</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
       </dependency>
       <!-- Evaluation module -->
       <dependency>
