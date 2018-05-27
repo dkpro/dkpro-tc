@@ -47,7 +47,7 @@ This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquito
 [KERAS]: https://keras.io
 [LIBLINEAR]: https://www.csie.ntu.edu.tw/~cjlin/liblinear/
 [LIBSVM]: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
-[SVMHMM]: (https://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html)
+[SVMHMM]: https://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html
 [WEKA]: http://www.cs.waikato.ac.nz/ml/weka
 [XGBOOST]: https://github.com/dmlc/xgboost
 [ACL_2014]: http://anthology.aclweb.org//P/P14/P14-5011.pdf
