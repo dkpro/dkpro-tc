@@ -16,7 +16,7 @@ DKPro TC comes with
   * many generic feature extractors, e.g. n-grams, POS-tags etc.
   * convenient parameter optimization capabilities
   * comprehensive reporting with support for many standard performance measures
-  * support for single- and multi-label classification, and regression in various frameworks, e.g. [CRFsuite][CRFSUITE], [DyNet](https://github.com/clab/dynet), [DeepLearning4j](https://deeplearning4j.org), [LibLinear](https://www.csie.ntu.edu.tw/~cjlin/liblinear/), [LibSvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/), [Keras](https://keras.io), [SvmHmm](https://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html), [Weka][WEKA], [XGBoost](https://github.com/dmlc/xgboost), 
+  * support for single- and multi-label classification, and regression in various frameworks, e.g. [CRFsuite][CRFSUITE], [DyNet][DYNET], [DeepLearning4j][DL4J], [LibLinear][LIBLINEAR], [LibSvm][LIBSVM], [Keras][KERAS], [SvmHmm][SVMHMM], [Weka][WEKA], [XGBoost][XGBOOST], 
 
 If you want to use the latest (snapshot) version of DKPro TC, please mind that the project is subject to constant change. 
 
@@ -39,9 +39,16 @@ It must be pointed out that while the component's source code itself is licensed
 
 This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquitous Knowledge Processing Lab (UKP)](https://www.ukp.tu-darmstadt.de/), Technische Universität Darmstadt. It is now jointly developed by UKP Lab (Technische Universität Darmstadt), [Language Technology Lab](http://ltl.uni-due.de/) (Universität Duisburg-Essen), and other [contributors](https://github.com/dkpro/dkpro-tc/blob/master/CONTRIBUTORS.txt).
 
+[CRFSUITE]: https://github.com/chokkan/crfsuite
 [DKPRO_CORE]: https://dkpro.github.io/dkpro-core
 [DKPRO_LAB]: https://dkpro.github.io/dkpro-lab
+[DYNET]: https://github.com/clab/dynet
+[DL4J]: https://deeplearning4j.org
+[KERAS]: https://keras.io
+[LIBLINEAR]: https://www.csie.ntu.edu.tw/~cjlin/liblinear/
+[LIBSVM]: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
+[SVMHMM]: (https://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html)
 [WEKA]: http://www.cs.waikato.ac.nz/ml/weka
-[CRFSUITE]: https://github.com/chokkan/crfsuite
+[XGBOOST]: https://github.com/dmlc/xgboost
 [ACL_2014]: http://anthology.aclweb.org//P/P14/P14-5011.pdf
 [ACL_2014_BIB]: http://anthology.aclweb.org/P/P14/P14-5011.bib
