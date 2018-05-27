@@ -27,7 +27,7 @@ If you use DKPro TC in research, please cite the following paper:
 
 > Johannes Daxenberger, Oliver Ferschke, Iryna Gurevych, and Torsten Zesch (2014). DKPro TC: A Java-based Framework for Supervised Learning Experiments on Textual Data. In:  *Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics (System Demonstrations)*, pp. 61-66, Baltimore, Maryland, USA. [(pdf)][ACL_2014] [(bib)][ACL_2014_BIB]
 
-> Tobias Horsmann and Torsten Zesch (2018). DeepTC - An Extension of DKPro Text Classification for Fostering Reproducibility of Deep Learning Experiments. In: *Proceedings of the International Conference on Language Resources and Evaluation (LREC)*, pp. 2539-2545, Miyazaki, Japan. [(pdf)][http://www.lrec-conf.org/proceedings/lrec2018/pdf/45.pdf] [(bib)][http://www.lrec-conf.org/proceedings/lrec2018/summaries/45.html]
+> Tobias Horsmann and Torsten Zesch (2018). DeepTC - An Extension of DKPro Text Classification for Fostering Reproducibility of Deep Learning Experiments. In: *Proceedings of the International Conference on Language Resources and Evaluation (LREC)*, pp. 2539-2545, Miyazaki, Japan. [(pdf)](http://www.lrec-conf.org/proceedings/lrec2018/pdf/45.pdf) [(bib)](http://www.lrec-conf.org/proceedings/lrec2018/summaries/45.html)
 
 ### License
 
