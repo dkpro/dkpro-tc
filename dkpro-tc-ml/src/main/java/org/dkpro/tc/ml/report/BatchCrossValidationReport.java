@@ -19,6 +19,7 @@ package org.dkpro.tc.ml.report;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -56,29 +57,108 @@ public class BatchCrossValidationReport
 
         String learningMode = determineLearningMode(store, idPool);
 
-        writeOverallResuls(learningMode, store, idPool);
+        writeOverallResults(learningMode, store, idPool);
+        writeOverallPerCategoryResults(learningMode, store, idPool);
         writeResultsPerFold(learningMode, store, idPool);
 
     }
 
-    private void writeOverallResuls(String learningMode, StorageService store, Set<String> idPool)
+    private void writeOverallPerCategoryResults(String learningMode, StorageService store,
+            Set<String> idPool) throws Exception
+    {
+        if (!isSingleLabelMode(learningMode)) {
+            return;
+        }
+        
+        TcFlexTable<String> table = TcFlexTable.forClass(String.class);
+        table.setDefaultValue("");
+
+        for (String id : idPool) {
+
+            if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
+                continue;
+            }
+
+            Map<String, String> discriminatorsMap = getDiscriminatorsOfMlaSetup(id);
+
+            discriminatorsMap
+                    .putAll(getDiscriminatorsForContext(store, id, Task.DISCRIMINATORS_KEY));
+            discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
+            
+            discriminatorsMap = ReportUtils.replaceKeyWithConstant(discriminatorsMap, DIM_FILES_VALIDATION, "<OMITTED>");
+            discriminatorsMap = ReportUtils.replaceKeyWithConstant(discriminatorsMap, DIM_FILES_TRAINING, "<OMITTED>");
+            
+            discriminatorsMap = ReportUtils.prefixKeys(discriminatorsMap, "*");
+
+            Map<String, String> values = new HashMap<String, String>();
+            values.putAll(discriminatorsMap);
+
+            // The classification result is always there
+            File combinedId2outcome = store.locateKey(id, FILE_COMBINED_ID_OUTCOME_KEY);
+            Map<String, String> results = MetricComputationUtil.getResults(combinedId2outcome,
+                    learningMode);
+            values.putAll(results);
+            
+            List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(combinedId2outcome, learningMode);
+            
+            for(String [] v : computeFScores) {
+                
+                String category = v[0];
+                //Long freq = Long.valueOf(v[1]);
+                Double precision = catchNan(Double.valueOf(v[2]));
+                Double recall = catchNan(Double.valueOf(v[3]));
+                Double fscore = catchNan(Double.valueOf(v[4]));
+                
+                values.put("Precision-" + category, precision.toString());
+                values.put("Recall-" + category, recall.toString());
+                values.put("F1-" + category, fscore.toString());
+                
+            }
+            
+            table.addRow(getContextLabel(id), values);
+            ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table,
+                    FILE_SCORE_PER_CATEGORY, SUFFIX_EXCEL, SUFFIX_CSV);
+
+            // // write additionally a confusion matrix over the combined file
+            File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX,
+                    AccessMode.READWRITE);
+            MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
+
+//                File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
+//                        FILE_SCORE_PER_CATEGORY);
+//                ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(combinedId2outcome,
+//                        learningMode);
+//                r.writeResults(fscoreFile);
+        }
+    }
+    
+    private double catchNan(double d)
+    {
+
+        if (Double.isNaN(d)) {
+            return 0.0;
+        }
+
+        return d;
+    }
+
+    private void writeOverallResults(String learningMode, StorageService store, Set<String> idPool)
         throws Exception
     {
 
         TcFlexTable<String> table = TcFlexTable.forClass(String.class);
         table.setDefaultValue("");
-        
+
         for (String id : idPool) {
-        	
+
             if (!TcTaskTypeUtil.isCrossValidationTask(store, id)) {
                 continue;
             }
-            
-            
+
             Map<String, String> discriminatorsMap = getDiscriminatorsOfMlaSetup(id);
 
-            discriminatorsMap.putAll(getDiscriminatorsForContext(store, id,
-                    Task.DISCRIMINATORS_KEY));
+            discriminatorsMap
+                    .putAll(getDiscriminatorsForContext(store, id, Task.DISCRIMINATORS_KEY));
             discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
             Map<String, String> values = new HashMap<String, String>();
@@ -102,11 +182,11 @@ public class BatchCrossValidationReport
                 File confusionMatrix = getContext().getFile(FILE_CONFUSION_MATRIX,
                         AccessMode.READWRITE);
                 MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
-                
-                
+
                 File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
                         FILE_SCORE_PER_CATEGORY);
-                ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(combinedId2outcome, learningMode);
+                ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(combinedId2outcome,
+                        learningMode);
                 r.writeResults(fscoreFile);
             }
 
@@ -120,26 +200,27 @@ public class BatchCrossValidationReport
 
         ReportUtils.writeExcelAndCSV(getContext(), getContextLabel(), table, EVAL_FILE_NAME,
                 SUFFIX_EXCEL, SUFFIX_CSV);
-        
-        
+
     }
 
-    private Map<String, String> getDiscriminatorsOfMlaSetup(String id) throws Exception {
-    	Map<String,String> discriminatorsMap = new HashMap<>();
-        
-        //get the details of the configuration from a MLA - any will do
-        Set<String> collectSubtasks = collectSubtasks(id);
-        for(String subid : collectSubtasks){
-        	if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(), subid)){
-        		 discriminatorsMap.putAll(getDiscriminatorsForContext(getContext().getStorageService(), subid,
-                         Task.DISCRIMINATORS_KEY));
-        		 break;
-        	}
-        }
-		return discriminatorsMap;
-	}
+    private Map<String, String> getDiscriminatorsOfMlaSetup(String id) throws Exception
+    {
+        Map<String, String> discriminatorsMap = new HashMap<>();
 
-	private boolean isSingleLabelMode(String learningMode)
+        // get the details of the configuration from a MLA - any will do
+        Set<String> collectSubtasks = collectSubtasks(id);
+        for (String subid : collectSubtasks) {
+            if (TcTaskTypeUtil.isMachineLearningAdapterTask(getContext().getStorageService(),
+                    subid)) {
+                discriminatorsMap.putAll(getDiscriminatorsForContext(
+                        getContext().getStorageService(), subid, Task.DISCRIMINATORS_KEY));
+                break;
+            }
+        }
+        return discriminatorsMap;
+    }
+
+    private boolean isSingleLabelMode(String learningMode)
     {
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }

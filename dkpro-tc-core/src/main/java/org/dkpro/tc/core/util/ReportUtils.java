@@ -129,4 +129,33 @@ public class ReportUtils
         return map;
     }
 
+    public static Map<String, String> prefixKeys(Map<String, String> map,
+            String prefix)
+    {
+        Map<String, String> m = new HashMap<>();
+
+        for (Entry<String, String> e : map.entrySet()) {
+            m.put(prefix + e.getKey(), e.getValue());
+        }
+
+        return m;
+    }
+
+    public static Map<String, String> shortenValuesTo(Map<String, String> discriminatorsMap, final int maxLen)
+    {
+        Map<String, String> m = new HashMap<>();
+
+        for(Entry<String, String> e : discriminatorsMap.entrySet()) {
+            String value = e.getValue();
+            if (value.length() > maxLen) {
+                value = value.substring(0, maxLen);
+            }
+            m.put(e.getKey(), value);
+        }
+
+        return m;
+    }
+
+    
+
 }
