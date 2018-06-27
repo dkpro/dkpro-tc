@@ -26,11 +26,11 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -182,7 +182,8 @@ public class TcFlexTable<V>
 
     public String[] getColumnIds()
     {
-        Set<String> keySet = columns.keySet();
+        List<String> keySet = new ArrayList<>(columns.keySet());
+        Collections.sort(keySet);
         return keySet.toArray(new String[keySet.size()]);
     }
 

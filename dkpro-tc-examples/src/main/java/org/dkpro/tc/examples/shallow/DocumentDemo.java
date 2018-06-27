@@ -59,7 +59,7 @@ public class DocumentDemo
     public static void main(String[] args) throws Exception
     {
 
-        DemoUtils.setDkproHome("target/");
+        DemoUtils.setDkproHome(DocumentDemo.class.getSimpleName());
 
         DocumentDemo experiment = new DocumentDemo();
         experiment.runTrainTest();

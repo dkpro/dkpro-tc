@@ -60,13 +60,14 @@ public class ResultPerCategoryCalculator
         FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");
     }
     
-    private double catchNan(double d){
-    	
-    	if(Double.isNaN(d)){
-    		return 0.0;
-    	}
-    	
-    	return d;
+    private double catchNan(double d)
+    {
+
+        if (Double.isNaN(d)) {
+            return 0.0;
+        }
+
+        return d;
     }
 
 }
