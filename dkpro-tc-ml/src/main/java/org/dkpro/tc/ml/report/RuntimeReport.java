@@ -36,7 +36,7 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 /**
  * Collects the final runtime results in a train/test setting.
  */
-public class BatchRuntimeReport
+public class RuntimeReport
     extends TcBatchReportBase
 {
 

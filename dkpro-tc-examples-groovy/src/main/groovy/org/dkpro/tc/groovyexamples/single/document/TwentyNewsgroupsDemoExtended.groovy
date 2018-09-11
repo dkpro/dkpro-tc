@@ -40,7 +40,7 @@ import org.dkpro.tc.io.FolderwiseDataReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.length.*
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.ml.report.BatchTrainTestReport
+import org.dkpro.tc.ml.report.TrainTestReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 import org.dkpro.tc.ml.weka.report.WekaOutcomeIDReport
 import org.dkpro.tc.ml.weka.task.WekaTestTask
@@ -178,7 +178,7 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
          *	Wrap wired tasks in batch task
          */
 
-        DefaultBatchTask batchTask = [
+        DefaultBatchTask experiment = [
             type: "Evaluation-TwentyNewsgroups-TrainTest",
             parameterSpace : [
                 dimReaders,
@@ -198,12 +198,12 @@ public class TwentyNewsgroupsDemoExtended implements Constants{
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport.newInstance()
+                TrainTestReport.newInstance()
                 ]
         ]
 
         // Run
-        Lab.getInstance().run(batchTask)
+        Lab.getInstance().run(experiment)
     }
 
     private AnalysisEngineDescription getPreprocessing()

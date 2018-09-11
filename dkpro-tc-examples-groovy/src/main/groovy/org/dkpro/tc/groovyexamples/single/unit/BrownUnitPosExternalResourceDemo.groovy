@@ -37,7 +37,7 @@ import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
+import org.dkpro.tc.ml.report.CrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 
 import weka.classifiers.bayes.NaiveBayes
@@ -104,7 +104,7 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchCrossValidationReport.newInstance()
+                CrossValidationReport.newInstance()
             ],
             preprocessing: AnalysisEngineFactory.createEngineDescription(SequenceOutcomeAnnotator.class),
             numFolds: NUM_FOLDS]

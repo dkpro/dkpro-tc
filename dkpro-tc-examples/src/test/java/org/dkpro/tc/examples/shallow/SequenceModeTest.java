@@ -46,7 +46,7 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
 import org.junit.Test;
@@ -159,7 +159,7 @@ public class SequenceModeTest
                 "NamedEntitySequenceDemoTrainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(TrainTestReport.class);
         experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         

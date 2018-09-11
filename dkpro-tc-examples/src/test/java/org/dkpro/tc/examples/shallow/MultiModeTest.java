@@ -46,7 +46,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.report.BatchRuntimeReport;
+import org.dkpro.tc.ml.report.RuntimeReport;
 import org.dkpro.tc.ml.weka.MekaAdapter;
 import org.junit.Test;
 
@@ -103,7 +103,7 @@ public class MultiModeTest
         experiment.setParameterSpace(getParameterSpace());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(contextReport);
-        experiment.addReport(BatchRuntimeReport.class);
+        experiment.addReport(RuntimeReport.class);
 
         // Run
         Lab.getInstance().run(experiment);
