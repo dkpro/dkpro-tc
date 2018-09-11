@@ -439,14 +439,10 @@ public interface Constants
      * Name of the file which holds the bipartition threshold
      */
     String MODEL_BIPARTITION_THRESHOLD = "bipartitionThreshold.txt";
-    /**
-     * name of the prediction map file
-     */
-    String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
     
     String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
     
-    String FILE_SCORE_PER_CATEGORY = "scorePerCategory";
+    String FILE_SCORE_PER_CATEGORY = "scorePerCategory.tsv";
 
     /*
      * Misc
