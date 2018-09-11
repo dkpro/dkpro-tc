@@ -42,8 +42,8 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.report.BatchTrainTestReport
+import org.dkpro.tc.ml.report.CrossValidationReport
+import org.dkpro.tc.ml.report.TrainTestReport
 import org.dkpro.tc.ml.weka.MekaAdapter
 
 import weka.attributeSelection.InfoGainAttributeEval
@@ -125,7 +125,7 @@ public class ReutersDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        ExperimentCrossValidation batchTask = [
+        ExperimentCrossValidation experiment = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
@@ -140,10 +140,10 @@ public class ReutersDemo implements Constants {
                 dimFeatureSets,
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchCrossValidationReport.newInstance()],
+            reports:         [CrossValidationReport.newInstance()],
             numFolds: numFolds]
 
-        Lab.getInstance().run(batchTask)
+        Lab.getInstance().run(experiment)
     }
     /**
      * TrainTest Setting
@@ -168,7 +168,7 @@ public class ReutersDemo implements Constants {
                 dimFeatureSets
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
-            reports:         [BatchTrainTestReport.newInstance()]]
+            reports:         [TrainTestReport.newInstance()]]
 
         // Run
         Lab.getInstance().run(batchTask)

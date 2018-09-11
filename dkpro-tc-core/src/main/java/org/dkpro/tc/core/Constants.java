@@ -254,14 +254,6 @@ public interface Constants
     String EVAL_FILE_NAME_PER_FOLD = "evaluation_results_fold";
 
     /**
-     * File suffix for EXCEL files
-     */
-    String SUFFIX_EXCEL = ".xls";
-    /**
-     * File suffix for CSV files
-     */
-    String SUFFIX_CSV = ".csv";
-    /**
      * File suffix for LaTeX files
      */
     String SUFFIX_LATEX = ".tex";
@@ -439,10 +431,6 @@ public interface Constants
      * Name of the file which holds the bipartition threshold
      */
     String MODEL_BIPARTITION_THRESHOLD = "bipartitionThreshold.txt";
-    /**
-     * name of the prediction map file
-     */
-    String PREDICTION_MAP_FILE_NAME = "prediction_map.ser";
     
     String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
     

@@ -37,6 +37,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
@@ -54,6 +55,8 @@ public class KerasSeq2SeqTrainTest
 
     public static void main(String[] args) throws Exception
     {
+    	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
+    	
         ParameterSpace pSpace = getParameterSpace();
         KerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
     }
@@ -95,16 +98,6 @@ public class KerasSeq2SeqTrainTest
 
     public static void runTrainTest(ParameterSpace pSpace, File dkproHome) throws Exception
     {
-
-        // This is used to ensure that the required DKPRO_HOME environment variable is set.
-        // Ensures that people can run the experiments even if they haven't read the setup
-        // instructions first :)
-        // if(dkproHome == null){
-        // DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
-        // }else{
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop/");
-        // }
-
         DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
                 "KerasSeq2Seq", KerasAdapter.class);
         experiment.setParameterSpace(pSpace);

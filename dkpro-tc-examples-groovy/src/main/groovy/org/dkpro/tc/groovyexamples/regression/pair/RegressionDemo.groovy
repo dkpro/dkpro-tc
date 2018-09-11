@@ -33,8 +33,8 @@ import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.ExperimentTrainTest
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
-import org.dkpro.tc.ml.report.BatchTrainTestReport
+import org.dkpro.tc.ml.report.CrossValidationReport
+import org.dkpro.tc.ml.report.TrainTestReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 
 import weka.classifiers.functions.SMOreg
@@ -103,7 +103,7 @@ public class RegressionDemo implements Constants {
     protected void runCrossValidation() throws Exception
     {
 
-        ExperimentCrossValidation batchTask = [
+        ExperimentCrossValidation experiment = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
@@ -117,11 +117,11 @@ public class RegressionDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchCrossValidationReport.newInstance()
+                CrossValidationReport.newInstance()
             ],
             numFolds: NUM_FOLDS]
 
-        Lab.getInstance().run(batchTask)
+        Lab.getInstance().run(experiment)
     }
 
     /**
@@ -132,7 +132,7 @@ public class RegressionDemo implements Constants {
     protected void runTrainTest() throws Exception
     {
 
-        ExperimentTrainTest batchTask = [
+        ExperimentTrainTest experiment = [
             experimentName: experimentName + "-TrainTest-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-TrainTest-Groovy",
@@ -146,12 +146,12 @@ public class RegressionDemo implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchTrainTestReport.newInstance()
+                TrainTestReport.newInstance()
                 ]
         ]
 
         // Run
-        Lab.getInstance().run(batchTask)
+        Lab.getInstance().run(experiment)
     }
 
     private AnalysisEngineDescription getPreprocessing()

@@ -38,7 +38,7 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
+import org.dkpro.tc.ml.report.CrossValidationReport
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.
  */
@@ -83,7 +83,7 @@ implements Constants {
     protected void runCrossValidation()
     throws Exception
     {
-        ExperimentCrossValidation batchTask = [
+        ExperimentCrossValidation experiment = [
             experimentName: experimentName + "-CV-Groovy",
             // we need to explicitly set the name of the batch task, as the constructor of the groovy setup must be zero-arg
             type: "Evaluation-"+ experimentName +"-CV-Groovy",
@@ -97,12 +97,12 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchCrossValidationReport.newInstance()
+                CrossValidationReport.newInstance()
             ],
             numFolds: NUM_FOLDS]
 
         // Run
-        Lab.getInstance().run(batchTask)
+        Lab.getInstance().run(experiment)
     }
 
     protected AnalysisEngineDescription getPreprocessing()
