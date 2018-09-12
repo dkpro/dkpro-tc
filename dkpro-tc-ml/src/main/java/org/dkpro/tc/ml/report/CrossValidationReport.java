@@ -123,7 +123,7 @@ public class CrossValidationReport extends TcBatchReportBase implements Constant
 				File confusionMatrix = getContext().getFile(matrixName, AccessMode.READWRITE);
 				MetricComputationUtil.writeConfusionMatrix(combinedId2outcome, confusionMatrix);
 
-				String catScoreName = getMLSetup(id) + registerGetMapping(id) + "_" + FILE_SCORE_PER_CATEGORY;
+				String catScoreName = getMLSetup(id) + registerGetMapping(id) + "_" + FILE_SCORE_PER_CATEGORY + FILE_ENDING;
 				File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(), catScoreName);
 				ResultPerCategoryCalculator r = new ResultPerCategoryCalculator(combinedId2outcome, learningMode);
 				r.writeResults(fscoreFile);
