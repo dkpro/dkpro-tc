@@ -54,7 +54,7 @@ import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.CrossValidationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
@@ -163,7 +163,7 @@ public class RegressionModeTest
         ExperimentTrainTest experiment = new ExperimentTrainTest("trainTest");
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
-        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(TrainTestReport.class);
         experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 

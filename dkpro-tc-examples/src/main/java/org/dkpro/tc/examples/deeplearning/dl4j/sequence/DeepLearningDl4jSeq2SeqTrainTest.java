@@ -39,7 +39,7 @@ import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -114,7 +114,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest
         if (r2 != null) {
             experiment.addReport(r2);
         }
-        experiment.addReport(new BatchTrainTestReport());
+        experiment.addReport(new TrainTestReport());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         Lab.getInstance().run(experiment);

@@ -41,7 +41,7 @@ import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.CrossValidationReport;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 
 /**
  * Builder class that offers a simplified wiring of DKPro TC experiments.
@@ -477,7 +477,7 @@ public class ExperimentBuilder
         case TRAIN_TEST:
             sanityCheckTrainTestExperiment();
             experiment = new ExperimentTrainTest(experimentName);
-            experiment.addReport(new BatchTrainTestReport());
+            experiment.addReport(new TrainTestReport());
             break;
         case CROSS_VALIDATION:
             int folds = getCvFolds();

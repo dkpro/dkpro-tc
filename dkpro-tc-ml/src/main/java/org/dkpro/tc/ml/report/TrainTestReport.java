@@ -38,14 +38,14 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-public class BatchTrainTestReport
+public class TrainTestReport
     extends TcBatchReportBase
     implements Constants
 {
     private final List<String> discriminatorsToExclude = Arrays
             .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 
-    public BatchTrainTestReport()
+    public TrainTestReport()
     {
         // required by groovy
     }

@@ -38,7 +38,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -104,7 +104,7 @@ public class KerasRegressionWassa
                 "KerasRegressionWassa2017AngerTrainTest", KerasAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchTrainTestReport.class);
+        experiment.addReport(TrainTestReport.class);
         experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
