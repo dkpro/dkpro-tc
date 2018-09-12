@@ -65,7 +65,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 		writeOverallResults(BASELINE_MAJORITIY_ID_OUTCOME_KEY, true, "majorityBaseline");
 		writeOverallResults(BASELINE_RANDOM_ID_OUTCOME_KEY, true, "randomBaseline");
 
-		writeOverallCategoricalResults();
+		writeCategoricalResults();
 	}
 
 	private void writeDiscriminators() throws Exception {
@@ -122,7 +122,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 		return value;
 	}
 
-	private void writeOverallCategoricalResults() throws Exception {
+	private void writeCategoricalResults() throws Exception {
 		StorageService store = getContext().getStorageService();
 
 		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
@@ -174,6 +174,9 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 				
 				File file = getContext().getFile(getMLSetup(sid) + FILE_SCORE_PER_CATEGORY + "_" + registerGetMapping(sid)+ FILE_ENDING, AccessMode.READWRITE);
 				FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
+				
+				file = getContext().getFile(getMLSetup(sid) + FILE_CONFUSION_MATRIX + "_" + registerGetMapping(sid)+ FILE_ENDING, AccessMode.READWRITE);
+				MetricComputationUtil.writeConfusionMatrix(id2outcome, file);
 			}
 		}
 
@@ -204,7 +207,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 	private String catchNan(String v) {
 
 		if (v.equals("NaN")) {
-			return "0";
+			return "0,000000";
 		}
 
 		return v;
