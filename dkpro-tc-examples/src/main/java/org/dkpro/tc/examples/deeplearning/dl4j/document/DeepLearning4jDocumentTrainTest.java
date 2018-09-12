@@ -39,7 +39,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
-import org.dkpro.tc.ml.report.BatchRuntimeReport;
+import org.dkpro.tc.ml.report.RuntimeReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -105,7 +105,7 @@ public class DeepLearning4jDocumentTrainTest
                 "DeepLearning", Deeplearning4jAdapter.class);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.addReport(BatchRuntimeReport.class);
+        experiment.addReport(RuntimeReport.class);
         experiment.addReport(r);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
