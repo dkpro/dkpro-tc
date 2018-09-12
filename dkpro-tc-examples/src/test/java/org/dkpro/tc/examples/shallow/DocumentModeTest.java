@@ -52,7 +52,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
@@ -230,7 +230,7 @@ public class DocumentModeTest
                 "crossValidation",2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
-        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.addReport(CrossValidationReport.class);
         experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         

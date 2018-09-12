@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.BatchTrainTestReport;
 
 /**
@@ -482,7 +482,7 @@ public class ExperimentBuilder
         case CROSS_VALIDATION:
             int folds = getCvFolds();
             experiment = new ExperimentCrossValidation(experimentName, folds);
-            experiment.addReport(new BatchCrossValidationReport());
+            experiment.addReport(new CrossValidationReport());
             break;
         case SAVE_MODEL:
             sanityCheckSaveModelExperiment();

@@ -35,6 +35,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
@@ -53,8 +54,7 @@ public class DeepLearning4jDocumentTrainTest
     public static void main(String[] args) throws Exception
     {
 
-        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+    	DemoUtils.setDkproHome(DeepLearning4jDocumentTrainTest.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 

@@ -34,10 +34,11 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -49,8 +50,7 @@ public class KerasRegression
     public static void main(String[] args) throws Exception
     {
 
-        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+         DemoUtils.setDkproHome(KerasRegression.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
@@ -98,11 +98,11 @@ public class KerasRegression
     {
 
         DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
-                "KerasRegressionCrossValidation", KerasAdapter.class, 2);
+                "KerasRegression", KerasAdapter.class, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(contextReport);
-        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.addReport(CrossValidationReport.class);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run

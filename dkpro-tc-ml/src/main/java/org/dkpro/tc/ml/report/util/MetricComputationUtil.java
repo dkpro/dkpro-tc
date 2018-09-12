@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,175 +47,162 @@ import de.unidue.ltl.evaluation.measures.regression.MeanAbsoluteError;
 import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import de.unidue.ltl.evaluation.visualization.ConfusionMatrix;
 
-public class MetricComputationUtil
-{
+public class MetricComputationUtil {
 
-    /**
-     * Computes basic results i.e. for single label <i>accuracy</i>, for regression <i> mean
-     * absolute/squared error and Pearson/Spearman correlation</i> and for multi label <i> multi
-     * label accuracy and Hamming loss </i>
-     * 
-     * @param id2o
-     *            Id2outcome file
-     * @param mode
-     *            the learning mode used
-     * @return a map with the computed results which depend on the learning mode
-     * @throws Exception
-     *             in case of an error
-     */
-    public static Map<String, String> getResults(File id2o, String mode) throws Exception
-    {
+	/**
+	 * Computes basic results i.e. for single label <i>accuracy</i>, for regression
+	 * <i> mean absolute/squared error and Pearson/Spearman correlation</i> and for
+	 * multi label <i> multi label accuracy and Hamming loss </i>
+	 * 
+	 * @param id2o Id2outcome file
+	 * @param mode the learning mode used
+	 * @return a map with the computed results which depend on the learning mode
+	 * @throws Exception in case of an error
+	 */
+	public static Map<String, String> getResults(File id2o, String mode) throws Exception {
 
-        if (mode == null) {
-            throw new IllegalArgumentException("The learning mode is null");
-        }
+		if (mode == null) {
+			throw new IllegalArgumentException("The learning mode is null");
+		}
 
-        Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 
-        if (mode.equals(Constants.LM_SINGLE_LABEL)) {
-            EvaluationData<String> data = Tc2LtlabEvalConverter
-                    .convertSingleLabelModeId2Outcome(id2o);
+		if (mode.equals(Constants.LM_SINGLE_LABEL)) {
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
 
-            Accuracy<String> acc = new Accuracy<>(data);
-            map.put(acc.getClass().getSimpleName(), "" + acc.getResult());
+			Accuracy<String> acc = new Accuracy<>(data);
+			map.put(acc.getClass().getSimpleName(), localize(acc.getResult()));
 
-        }
-        else if (mode.equals(Constants.LM_REGRESSION)) {
+			Fscore<String> f = new Fscore<>(data);
+			map.put("Micro-F1", localize(f.getMicroFscore()));
+			map.put("Macro-F1", localize(f.getMacroFscore()));
 
-            EvaluationData<Double> data = Tc2LtlabEvalConverter
-                    .convertRegressionModeId2Outcome(id2o);
+		} else if (mode.equals(Constants.LM_REGRESSION)) {
 
-            EvaluationMeasure<?> m = new PearsonCorrelation(data);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(id2o);
 
-            m = new SpearmanCorrelation(data);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			EvaluationMeasure<?> m = new PearsonCorrelation(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-            m = new MeanSquaredError(data);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			m = new SpearmanCorrelation(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-            m = new MeanAbsoluteError(data);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			m = new MeanSquaredError(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-        }
-        else if (mode.equals(Constants.LM_MULTI_LABEL)) {
+			m = new MeanAbsoluteError(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-            EvaluationData<String> data = Tc2LtlabEvalConverter
-                    .convertMultiLabelModeId2Outcome(id2o);
+		} else if (mode.equals(Constants.LM_MULTI_LABEL)) {
 
-            EvaluationMeasure<?> m = new ExactMatchRatio<>(data);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			EvaluationData<String> data = Tc2LtlabEvalConverter.convertMultiLabelModeId2Outcome(id2o);
 
-            EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter
-                    .convertMultiLabelModeId2OutcomeUseInteger(id2o);
+			EvaluationMeasure<?> m = new ExactMatchRatio<>(data);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-            m = new HammingLoss(dataInt);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			EvaluationData<Integer> dataInt = Tc2LtlabEvalConverter.convertMultiLabelModeId2OutcomeUseInteger(id2o);
 
-            m = new MultilabelAccuracy(dataInt);
-            map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
+			m = new HammingLoss(dataInt);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-        }
-        return map;
-    }
+			m = new MultilabelAccuracy(dataInt);
+			map.put(m.getClass().getSimpleName(), getExceptionFreeResult(m));
 
-    public static List<String[]> computePerCategoryResults(File id2o, String mode) throws Exception
-    {
+		}
+		return map;
+	}
 
-        if (mode == null) {
-            throw new IllegalArgumentException("The learning mode is null");
-        }
+	public static List<String[]> computePerCategoryResults(File id2o, String mode) throws Exception {
 
-        if (!mode.equals(Constants.LM_SINGLE_LABEL)) {
-            throw new IllegalArgumentException("This method computes FScore for single label");
-        }
+		if (mode == null) {
+			throw new IllegalArgumentException("The learning mode is null");
+		}
 
-        List<String[]> fscores = new ArrayList<>();
+		if (!mode.equals(Constants.LM_SINGLE_LABEL)) {
+			throw new IllegalArgumentException("This method computes FScore for single label");
+		}
 
-        EvaluationData<String> m = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
-        
-        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-        m.forEach(e->fd.addSample(e.getGold(), 1));
+		List<String[]> fscores = new ArrayList<>();
 
-        Set<String> occurringLabels = new HashSet<>();
-        m.forEach(e -> occurringLabels.add(e.getGold()));
-        
-        List<String> uniqueLabels = new ArrayList<>(occurringLabels);
-        Collections.sort(uniqueLabels);
+		EvaluationData<String> m = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2o);
 
-        Fscore<String> score = new Fscore<>(m);
-        Precision<String> precision = new Precision<>(m);
-        Recall<String> recall = new Recall<>(m);
+		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+		m.forEach(e -> fd.addSample(e.getGold(), 1));
 
-        for (String l : uniqueLabels) {
-            Long n = fd.getCount(l);
-            Double p = precision.getPrecisionForLabel(l);
-            Double r = recall.getRecallForLabel(l);
-            Double f = score.getScoreForLabel(l);
-            fscores.add(new String[] { l, n.toString(), p.toString(), r.toString(), f.toString() });
-        }
+		Set<String> occurringLabels = new HashSet<>();
+		m.forEach(e -> occurringLabels.add(e.getGold()));
 
-        return fscores;
-    }
+		List<String> uniqueLabels = new ArrayList<>(occurringLabels);
+		Collections.sort(uniqueLabels);
 
-    /**
-     * Writes a visualization of the results in the id2outcome file as confusion matrix. This
-     * operation is only supported for single-label classification results.
-     * 
-     * @param id2outcome
-     *            The id2outcome file with the results
-     * @param matrixFile
-     *            The file of the output marix
-     * @throws Exception
-     *             In case of an error
-     */
-    public static void writeConfusionMatrix(File id2outcome, File matrixFile) throws Exception
-    {
-        EvaluationData<String> data = Tc2LtlabEvalConverter
-                .convertSingleLabelModeId2Outcome(id2outcome);
+		Fscore<String> score = new Fscore<>(m);
+		Precision<String> precision = new Precision<>(m);
+		Recall<String> recall = new Recall<>(m);
 
-        ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
-        FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
-    }
+		for (String l : uniqueLabels) {
+			Long n = fd.getCount(l);
+			Double p = precision.getPrecisionForLabel(l);
+			Double r = recall.getRecallForLabel(l);
+			Double f = score.getScoreForLabel(l);
+			fscores.add(new String[] { l, n.toString(), localize(p), localize(r), localize(f) });
+		}
 
-    /**
-     * if an exception occurs, it is caught and written to string, execution should not be
-     * interrupted at this point.
-     * 
-     * @param measure
-     *            the current measure
-     * @return a string with the computed measure or the exception error message if an error
-     *         occurred
-     */
-    private static String getExceptionFreeResult(EvaluationMeasure<?> measure)
-    {
-        String val = null;
+		return fscores;
+	}
 
-        try {
-            val = measure.getResult() + "";
+	private static String localize(Double value) {
+		return String.format(Locale.getDefault(), "%f", value);
+	}
 
-        }
-        catch (Exception e) {
-            String stackTrace = ExceptionUtils.getStackTrace(e);
-            return "Exception occurred with following stack trace: [" + stackTrace + "]";
-        }
+	/**
+	 * Writes a visualization of the results in the id2outcome file as confusion
+	 * matrix. This operation is only supported for single-label classification
+	 * results.
+	 * 
+	 * @param id2outcome The id2outcome file with the results
+	 * @param matrixFile The file of the output marix
+	 * @throws Exception In case of an error
+	 */
+	public static void writeConfusionMatrix(File id2outcome, File matrixFile) throws Exception {
+		EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2outcome);
 
-        return val;
-    }
+		ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
+		FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
+	}
 
-    private static String getMatrix(ConfusionMatrix<String> matrix)
-    {
-        String val = "";
+	/**
+	 * if an exception occurs, it is caught and written to string, execution should
+	 * not be interrupted at this point.
+	 * 
+	 * @param measure the current measure
+	 * @return a string with the computed measure or the exception error message if
+	 *         an error occurred
+	 */
+	private static String getExceptionFreeResult(EvaluationMeasure<?> measure) {
+		String val = null;
 
-        try {
-            val = matrix.toText();
-        }
-        catch (Exception e) {
-            String stackTrace = ExceptionUtils.getStackTrace(e);
-            return "Exception occurred with following stack trace: [" + stackTrace + "]";
-        }
+		try {
+			val = localize(measure.getResult());
 
-        return val;
-    }
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+
+		return val;
+	}
+
+	private static String getMatrix(ConfusionMatrix<String> matrix) {
+		String val = "";
+
+		try {
+			val = matrix.toText();
+		} catch (Exception e) {
+			String stackTrace = ExceptionUtils.getStackTrace(e);
+			return "Exception occurred with following stack trace: [" + stackTrace + "]";
+		}
+
+		return val;
+	}
 
 }

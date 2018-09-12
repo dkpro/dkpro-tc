@@ -57,13 +57,7 @@ public class DeepLearningDl4jSeq2SeqTrainTest
     public static void main(String[] args) throws Exception
     {
 
-        // This is used to ensure that the required DKPRO_HOME environment
-        // variable is set.
-        // Ensures that people can run the experiments even if they haven't read
-        // the setup
-        // instructions first :)
-        // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+    	DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 

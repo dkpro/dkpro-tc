@@ -34,6 +34,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
@@ -49,12 +50,11 @@ public class KerasRegressionWassa
     public static void main(String[] args) throws Exception
     {
 
-        // DemoUtils.setDkproHome(DeepLearningTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+		DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
+		ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        KerasRegressionWassa.runTrainTest(pSpace, new ContextMemoryReport());
+		KerasRegressionWassa.runTrainTest(pSpace, new ContextMemoryReport());
     }
 
     public static ParameterSpace getParameterSpace(String python3)

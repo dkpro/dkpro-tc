@@ -18,7 +18,9 @@
 package org.dkpro.tc.ml.report;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
@@ -45,29 +47,31 @@ public class ResultPerCategoryCalculator
     {
 
         List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
+        
+        NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
 
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%25s\t%5s\t%-6s\t%-6s\t%-6s%n", "#Label", "FREQ", "P", "R", "F1"));
-        computeFScores.forEach(
-                s -> sb.append(String.format("%25s\t%5d\t%.4f\t%.4f\t%.4f\n", 
-                        s[0],
-                        Long.parseLong(s[1]),
-                        catchNan(Double.parseDouble(s[2])),
-                        catchNan(Double.parseDouble(s[3])),
-                        catchNan(Double.parseDouble(s[4])))
-                        ));
-
+        
+        for(String [] s : computeFScores) {
+        	sb.append(String.format(Locale.getDefault(), "%25s\t%5d\t%.4f\t%.4f\t%.4f\n", 
+                    s[0],
+                    Long.parseLong(s[1]),
+                    nf.parse(catchNan(s[2])).doubleValue(),
+                    nf.parse(catchNan(s[3])).doubleValue(),
+                    nf.parse(catchNan(s[4])).doubleValue()
+        			));
+        }
+        
         FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");
     }
     
-    private double catchNan(double d)
+    private String catchNan(String s)
     {
-
-        if (Double.isNaN(d)) {
-            return 0.0;
-        }
-
-        return d;
+    	if(s.equals("NaN")) {
+    		return "0";
+    	}
+        return s;
     }
 
 }
