@@ -254,14 +254,6 @@ public interface Constants
     String EVAL_FILE_NAME_PER_FOLD = "evaluation_results_fold";
 
     /**
-     * File suffix for EXCEL files
-     */
-    String SUFFIX_EXCEL = ".xls";
-    /**
-     * File suffix for CSV files
-     */
-    String SUFFIX_CSV = ".csv";
-    /**
      * File suffix for LaTeX files
      */
     String SUFFIX_LATEX = ".tex";
@@ -442,7 +434,7 @@ public interface Constants
     
     String FILE_CONFUSION_MATRIX = "confusionMatrix.txt";
     
-    String FILE_SCORE_PER_CATEGORY = "scorePerCategory.tsv";
+    String FILE_SCORE_PER_CATEGORY = "scorePerCategory";
 
     /*
      * Misc
