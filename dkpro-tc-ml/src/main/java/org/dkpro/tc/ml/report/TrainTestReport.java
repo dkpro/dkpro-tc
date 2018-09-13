@@ -47,10 +47,9 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 
 	private Map<String, String> taskMapping = new HashMap<>();
 	private int maxId = 1;
-	private String baselineFolder = "baselineResults";
-
+	
+	private static final String baselineFolder = "baselineResults";
 	private static final String SEP = "\t";
-
 	private static final String FILE_ENDING = ".tsv";
 
 	public TrainTestReport() {
@@ -146,7 +145,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 			Set<String> subTaskId = collectTasks(wrapped);
 
 			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%20s\t%5s\t%10s%10s%10s\n", "Category", "Freq", "Precision",
+			sb.append(String.format("%20s\t%5s\t%10s%10s%10s%n", "Category", "Freq", "Precision",
 					"Recall", "F1"));
 
 			for (String sid : subTaskId) {
@@ -169,7 +168,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 					String recall = catchNan(v[3]);
 					String fscore = catchNan(v[4]);
 
-					sb.append(String.format("%20s\t%5d\t%10s%10s%10s\n", category, freq, precision, recall, fscore));
+					sb.append(String.format("%20s\t%5d\t%10s%10s%10s%n", category, freq, precision, recall, fscore));
 				}
 				
 				File file = getContext().getFile(getMLSetup(sid) + FILE_SCORE_PER_CATEGORY + "_" + registerGetMapping(sid)+ FILE_ENDING, AccessMode.READWRITE);

@@ -54,7 +54,7 @@ public class ResultPerCategoryCalculator
         sb.append(String.format("%25s\t%5s\t%-6s\t%-6s\t%-6s%n", "#Label", "FREQ", "P", "R", "F1"));
         
         for(String [] s : computeFScores) {
-        	sb.append(String.format(Locale.getDefault(), "%25s\t%5d\t%.4f\t%.4f\t%.4f\n", 
+        	sb.append(String.format(Locale.getDefault(), "%25s\t%5d\t%.4f\t%.4f\t%.4f%n", 
                     s[0],
                     Long.parseLong(s[1]),
                     nf.parse(catchNan(s[2])).doubleValue(),

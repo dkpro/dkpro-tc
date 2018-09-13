@@ -44,10 +44,9 @@ public class CrossValidationReport extends TcBatchReportBase implements Constant
 	private Map<String, String> taskMapping = new HashMap<>();
 	private int maxId = 1;
 
-	private final String baselineFolder = "baselineResults";
-
-	private final String SEP = "\t";
-	private final String FILE_ENDING = ".tsv";
+	private static final String baselineFolder = "baselineResults";
+	private static final String SEP = "\t";
+	private static final String FILE_ENDING = ".tsv";
 
 	public CrossValidationReport() {
 		// required by groovy
