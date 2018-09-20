@@ -160,6 +160,9 @@ public class ExtractFeaturesConnector
 
         List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
         
+        LogFactory.getLog(getClass()).info("--- Extracted ["
+                + instances.size() + " feature instances] ---");
+        
         if(enforceMatchinFeatures) {
             /*
              * filter-out feature names which did not occur during training if we are in the testing
