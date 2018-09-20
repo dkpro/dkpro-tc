@@ -98,12 +98,15 @@ public class CharacterNGramMC
             Annotation focusAnnotation, boolean lowerCaseNgrams, int minN, int maxN,
             char boundaryBegin, char boundaryEnd)
     {
+    	
+    		String text = focusAnnotation.getCoveredText();
+    		if (lowerCaseNgrams) {
+    			 text = text.toLowerCase();
+        }
+    	
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
         for (String charNgram : new CharacterNGramStringIterable(
-                boundaryBegin + focusAnnotation.getCoveredText() + boundaryEnd, minN, maxN)) {
-            if (lowerCaseNgrams) {
-                charNgram = charNgram.toLowerCase();
-            }
+                boundaryBegin + text + boundaryEnd, minN, maxN)) {
             charNgrams.inc(charNgram);
         }
 
