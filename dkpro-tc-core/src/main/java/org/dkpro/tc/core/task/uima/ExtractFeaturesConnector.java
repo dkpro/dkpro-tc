@@ -255,7 +255,7 @@ public class ExtractFeaturesConnector
 		
 		DocumentMetaData dmd = new DocumentMetaData(mockCas);
 		dmd.setLanguage(aDocMeta.getLanguage());
-		dmd.setDocumentId(aDocMeta.getDocumentId());
+		dmd.setDocumentId(System.currentTimeMillis() + "");
 		dmd.addToIndexes();
 		
 		//Create two views for Pair Mode
