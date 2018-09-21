@@ -101,7 +101,7 @@ public class FeatureSet implements Iterable<Feature> {
 	/**
 	 * Selects only the features that have the default value as feature. If one
 	 * is unsure about the notion of default values, use the method
-	 * {@link org.dkpro.tc.api.features#getAllFeatures()}, which returns all
+	 * {@link #getAllFeatures()}, which returns all
 	 * instances of a feature set.
 	 * 
 	 * @return sub set of features with default values
@@ -124,6 +124,11 @@ public class FeatureSet implements Iterable<Feature> {
 		return f;
 	}
 
+	/**
+	 * Returns the number of {@link Instance} in the feature set.
+	 * 
+	 * @return number of instances in this feature set
+	 */
 	public int size() {
 		return features.get(KEY_DEFAULT).size() + features.get(KEY_SET_VALUE).size();
 	}
