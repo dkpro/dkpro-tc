@@ -64,7 +64,7 @@ public class TestTargetSurfaceFormContextFeature
         TargetSurfaceFormContextFeature createResource = FeatureUtil
                 .createResource(TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, i));
-        Set<Feature> extract = createResource.extract(jcas, tcu);
+        Set<Feature> extract = createResource.extract(jcas, tcu).getAllFeatures();
 
         assertEquals(1, extract.size());
         assertEquals(o, extract.iterator().next().getValue());

@@ -18,10 +18,8 @@
 package org.dkpro.tc.features.ngram;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
@@ -30,6 +28,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -53,10 +52,10 @@ public class SkipWordNGram
     protected int skipSize;
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        Set<Feature> features = new HashSet<Feature>();
+    		FeatureSet features = new FeatureSet();
 
         FrequencyDistribution<String> documentNgrams = SkipWordNGramMC.getDocumentSkipNgrams(jcas,
                 aTarget, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,

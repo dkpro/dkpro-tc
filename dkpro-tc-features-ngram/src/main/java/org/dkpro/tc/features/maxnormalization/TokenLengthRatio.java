@@ -20,13 +20,13 @@ package org.dkpro.tc.features.maxnormalization;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -44,14 +44,14 @@ public class TokenLengthRatio
     public static final String FEATURE_NAME = "TokLenRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-
         long maxLen = getMax();
-
         double ratio = getRatio(aTarget.getCoveredText().length(), maxLen);
-        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
+        FeatureSet featureSet = new FeatureSet();
+        featureSet.add(new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC));
+        return featureSet;
     }
 
     @Override

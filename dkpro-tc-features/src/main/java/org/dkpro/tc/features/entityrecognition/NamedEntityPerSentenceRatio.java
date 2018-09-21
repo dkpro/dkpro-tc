@@ -17,16 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.features.entityrecognition;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -46,11 +44,11 @@ public class NamedEntityPerSentenceRatio
 {
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationTarget aTarget)
+    public FeatureSet extract(JCas view, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
-        Set<Feature> featList = new TreeSet<Feature>();
+    		FeatureSet featList = new FeatureSet();
 
         int numOrgaNE = JCasUtil.selectCovered(view, Organization.class, aTarget).size();
         int numPersonNE = JCasUtil.selectCovered(view, Person.class, aTarget).size();

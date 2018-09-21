@@ -17,14 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.core.feature;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class NoopFeatureExtractor
@@ -33,10 +30,10 @@ public class NoopFeatureExtractor
 {
 
     @Override
-    public Set<Feature> extract(JCas view, TextClassificationTarget aTarget)
+    public FeatureSet extract(JCas view, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        return Collections.<Feature> emptySet();
+        return new FeatureSet();
     }
 
 }

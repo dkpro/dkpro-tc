@@ -19,7 +19,6 @@
 package org.dkpro.tc.examples.shallow.feature;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -28,6 +27,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -44,19 +44,20 @@ public class LengthFeatureNominal
     public static final String FEATURE_NAME = "NominalLengthFeature";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget classificationUnit)
+    public FeatureSet extract(JCas jcas, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
+    		FeatureSet featureSet = new FeatureSet();
 
-        Collection<Token> tokens = JCasUtil.select(jcas, Token.class);
-        if (tokens.size() > 150) {
-            return new Feature(FEATURE_NAME, LengthEnum.LONG, FeatureType.NOMINAL).asSet();
-        }
-        else if (tokens.size() > 100) {
-            return new Feature(FEATURE_NAME, LengthEnum.MIDDLE, FeatureType.NOMINAL).asSet();
-        }
-        else {
-            return new Feature(FEATURE_NAME, LengthEnum.SHORT, FeatureType.NOMINAL).asSet();
-        }
+		Collection<Token> tokens = JCasUtil.select(jcas, Token.class);
+		if (tokens.size() > 150) {
+			featureSet.add(new Feature(FEATURE_NAME, LengthEnum.LONG, FeatureType.NOMINAL));
+		} else if (tokens.size() > 100) {
+			featureSet.add(new Feature(FEATURE_NAME, LengthEnum.MIDDLE, FeatureType.NOMINAL));
+		} else {
+			featureSet.add(new Feature(FEATURE_NAME, LengthEnum.SHORT, FeatureType.NOMINAL));
+		}
+        
+        return featureSet;
     }
 }

@@ -20,7 +20,6 @@ package org.dkpro.tc.core.task.uima;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +32,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.type.JCasId;
@@ -61,29 +61,24 @@ public class InstanceExtractor
     public List<Instance> getInstances(JCas aJCas, boolean extractSparse)
         throws AnalysisEngineProcessException
     {
-
-        List<Instance> extractedInstances = new ArrayList<>();
-
         try {
             if (isSequenceMode()) {
-                List<Instance> instances = getSequenceInstances(aJCas, extractSparse);
-                extractedInstances.addAll(instances);
+                return getSequenceInstances(aJCas, extractSparse);
             }
             else if (isUnitMode()) {
-                List<Instance> instances = getUnitInstances(aJCas, extractSparse);
-                extractedInstances.addAll(instances);
+                return getUnitInstances(aJCas, extractSparse);
             }
             else {
                 Instance instance = getSingleInstance(aJCas, extractSparse);
-                extractedInstances.add(instance);
+                List<Instance> instances = new ArrayList<Instance>();
+                instances.add(instance);
+                return instances;
             }
 
         }
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-
-        return extractedInstances;
     }
 
     private boolean isUnitMode()
@@ -99,8 +94,6 @@ public class InstanceExtractor
     public List<Instance> getSequenceInstances(JCas aJCas, boolean useSparse)
         throws TextClassificationException
     {
-        List<Instance> instances = new ArrayList<Instance>();
-
         int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
         int sequenceId = 0;
         int targetId = 0;
@@ -108,9 +101,12 @@ public class InstanceExtractor
         Collection<TextClassificationSequence> sequences = JCasUtil.select(aJCas,
                 TextClassificationSequence.class);
         
+        int initialSize = JCasUtil.select(aJCas, TextClassificationTarget.class).size();
+        List<Instance> instances = new ArrayList<Instance>(initialSize);
+        
         for (TextClassificationSequence seq : sequences) {
             targetId = 0;
-
+            
             List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(aJCas,
                     TextClassificationTarget.class, seq);
             for (TextClassificationTarget aTarget : seqTargets) {
@@ -364,22 +360,16 @@ public class InstanceExtractor
             FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        return ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
+        FeatureSet featureSet = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
+        return featureSet.getAllFeatures();
     }
 
     private Set<Feature> getSparse(JCas aJCas, TextClassificationTarget aTarget,
             FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        Set<Feature> features = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
-        Set<Feature> filtered = new HashSet<>();
-        for (Feature f : features) {
-            if (!f.isDefaultValue()) {
-                filtered.add(f);
-            }
-        }
-
-        return filtered;
+        FeatureSet features = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
+        return features.getNonDefaultFeatures();
     }
 
 }

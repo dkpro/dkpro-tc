@@ -20,18 +20,17 @@ package org.dkpro.tc.features.tcu;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureSet;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
  * Provides speedy access to the TextClassificationUnits (TCU) covered by a
@@ -52,7 +51,7 @@ public class TcuLookUpTable
     protected HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
     protected List<TextClassificationTarget> units = new ArrayList<TextClassificationTarget>();
 
-    public Set<Feature> extract(JCas aView, TextClassificationTarget aTarget)
+    public FeatureSet extract(JCas aView, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         if (isTheSameDocument(aView)) {
