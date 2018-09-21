@@ -40,6 +40,6 @@ public interface FeatureExtractor
      * @throws TextClassificationException
      *             if feature extraction failed
      */
-    FeatureSet extract(JCas aJCas, TextClassificationTarget aTarget)
+    FeatureCollection extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException;
 }

@@ -24,7 +24,7 @@ import static org.dkpro.tc.testing.FeatureTestUtil.assertFeatures;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.jcas.JCas;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class AdjectiveEndingTest
         aTarget.addToIndexes();
 
         AdjectiveEndingFeatureExtractor extractor = new AdjectiveEndingFeatureExtractor();
-        FeatureSet features = extractor.extract(jcas, aTarget);
+        FeatureCollection features = extractor.extract(jcas, aTarget);
 
         Assert.assertEquals(9, features.size());
 

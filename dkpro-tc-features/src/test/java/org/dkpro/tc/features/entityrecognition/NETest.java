@@ -24,7 +24,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
@@ -59,14 +59,14 @@ public class NETest
 
         NamedEntityPerSentenceRatio extractor = new NamedEntityPerSentenceRatio();
 
-        FeatureSet features1 = extractor.extract(jcas, aTarget);
+        FeatureCollection features1 = extractor.extract(jcas, aTarget);
         assertEquals(6, features1.size());
 
         testFeatures(features1, 1, 1, 1, 0.5f, 0.5f, 0.5f);
 
     }
 
-    private void testFeatures(FeatureSet features, int expectedValue1, int expectedValue2,
+    private void testFeatures(FeatureCollection features, int expectedValue1, int expectedValue2,
             int expectedValue3, float... expectedValues4)
     {
 

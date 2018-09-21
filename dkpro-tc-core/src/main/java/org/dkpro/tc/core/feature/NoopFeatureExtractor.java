@@ -21,7 +21,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
 public class NoopFeatureExtractor
@@ -30,10 +30,10 @@ public class NoopFeatureExtractor
 {
 
     @Override
-    public FeatureSet extract(JCas view, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas view, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        return new FeatureSet();
+        return new FeatureCollection();
     }
 
 }

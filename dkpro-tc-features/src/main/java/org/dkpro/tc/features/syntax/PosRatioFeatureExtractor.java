@@ -25,7 +25,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -64,10 +64,10 @@ public class PosRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-    		FeatureSet features = new FeatureSet();
+    		FeatureCollection features = new FeatureCollection();
         double total = selectCovered(jcas, POS.class, aTarget).size();
         double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
         double adv = selectCovered(jcas, POS_ADV.class, aTarget).size() / total;

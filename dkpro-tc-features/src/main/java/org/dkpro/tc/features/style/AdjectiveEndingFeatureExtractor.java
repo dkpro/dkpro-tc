@@ -24,7 +24,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -60,7 +60,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException
     {
 
         double able = 0;
@@ -114,7 +114,7 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        FeatureSet featSet = new FeatureSet();
+        FeatureCollection featSet = new FeatureCollection();
         featSet.add(
                 new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0, FeatureType.NUMERIC));
         featSet.add(

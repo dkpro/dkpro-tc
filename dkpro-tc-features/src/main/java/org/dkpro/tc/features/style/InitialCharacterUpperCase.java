@@ -22,7 +22,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -39,14 +39,14 @@ public class InitialCharacterUpperCase
     public static final String FEATURE_NAME = "InitialCharacterUpperCaseUFE";
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         String token = aTarget.getCoveredText();
 
         boolean bool = Character.isUpperCase(token.charAt(0));
         
-        FeatureSet featureSet = new FeatureSet();
+        FeatureCollection featureSet = new FeatureCollection();
         featureSet.add(new Feature(FEATURE_NAME, bool ? 1.0 : 0.0, bool == false, FeatureType.BOOLEAN));
         return featureSet;
     }

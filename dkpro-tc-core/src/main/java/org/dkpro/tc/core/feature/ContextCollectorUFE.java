@@ -32,7 +32,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -77,7 +77,7 @@ public class ContextCollectorUFE
     // };
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget unit)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget unit)
         throws TextClassificationException
     {
         try {
@@ -91,7 +91,7 @@ public class ContextCollectorUFE
         catch (IOException e) {
             throw new TextClassificationException(e);
         }
-        return new FeatureSet();
+        return new FeatureCollection();
     }
 
     @Override

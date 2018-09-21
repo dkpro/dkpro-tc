@@ -29,17 +29,17 @@ import java.util.Set;
 
 /**
  * A feature set implementation that distinguishes internally features that have
- * a default value set and those that have an actual not default value. This
+ * a default value set and those that have an actual non-default value. This
  * enables a direct access to features with a non-default value, which speeds up
  * processing in case the classifier works with sparse features.
  */
-public class FeatureSet implements Iterable<Feature> {
+public class FeatureCollection implements Iterable<Feature> {
 	private static final String KEY_DEFAULT = "default";
 	private static final String KEY_SET_VALUE = "setValue";
 
 	private Map<String, List<Feature>> features;
 
-	public FeatureSet() {
+	public FeatureCollection() {
 		features = new HashMap<String, List<Feature>>();
 		features.put(KEY_DEFAULT, new ArrayList<>(4096));
 		features.put(KEY_SET_VALUE, new ArrayList<>(4096));

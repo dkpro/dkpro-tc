@@ -28,7 +28,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -53,11 +53,11 @@ public class PosNGram
     protected boolean useCanonicalTags;
 
     @Override
-    public FeatureSet extract(JCas view, TextClassificationTarget classificationUnit)
+    public FeatureCollection extract(JCas view, TextClassificationTarget classificationUnit)
         throws TextClassificationException
     {
 
-    		FeatureSet features = new FeatureSet();
+    		FeatureCollection features = new FeatureCollection();
         FrequencyDistribution<String> documentPOSNgrams = null;
         documentPOSNgrams = PosNGramMC.getDocumentPosNgrams(view, classificationUnit, ngramMinN,
                 ngramMaxN, useCanonicalTags);

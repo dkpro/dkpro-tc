@@ -24,7 +24,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -50,14 +50,14 @@ public class EmoticonRatio
     implements FeatureExtractor
 {
     @Override
-    public FeatureSet extract(JCas jCas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, aTarget).size();
         int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, aTarget).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
         
-        FeatureSet featureSet = new FeatureSet();
+        FeatureCollection featureSet = new FeatureCollection();
         featureSet.add(new Feature(EmoticonRatio.class.getSimpleName(), ratio, FeatureType.NUMERIC));
         return featureSet;
     }

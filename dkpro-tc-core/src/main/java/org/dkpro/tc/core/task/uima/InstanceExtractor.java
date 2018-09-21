@@ -32,7 +32,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.type.JCasId;
@@ -360,7 +360,7 @@ public class InstanceExtractor
             FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        FeatureSet featureSet = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
+        FeatureCollection featureSet = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
         return featureSet.getAllFeatures();
     }
 
@@ -368,7 +368,7 @@ public class InstanceExtractor
             FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        FeatureSet features = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
+        FeatureCollection features = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
         return features.getNonDefaultFeatures();
     }
 

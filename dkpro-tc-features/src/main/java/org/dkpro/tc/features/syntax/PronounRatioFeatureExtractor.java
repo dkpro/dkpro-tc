@@ -24,7 +24,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -51,7 +51,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_YOU_RATIO = "PronounRatioYou";
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
@@ -94,7 +94,7 @@ public class PronounRatioFeatureExtractor
             }
         }
 
-        FeatureSet features = new FeatureSet();
+        FeatureCollection features = new FeatureCollection();
         features.add(new Feature(FN_HE_RATIO, (double) heCount / n, n == 0, FeatureType.NUMERIC));
         features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n, n == 0, FeatureType.NUMERIC));
         features.add(new Feature(FN_I_RATIO, (double) iCount / n, n == 0, FeatureType.NUMERIC));

@@ -27,7 +27,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -47,7 +47,7 @@ public class SentenceRatioPerDocument
     public static final String FEATURE_NAME = "sentencesRatioPerDocument";
 
     @Override
-    public FeatureSet extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         long maxLen = getMax();
@@ -55,7 +55,7 @@ public class SentenceRatioPerDocument
         List<Sentence> sentences = JCasUtil.selectCovered(jcas, Sentence.class, aTarget);
         double ratio = getRatio(sentences.size(), maxLen);
         
-        FeatureSet featureSet = new FeatureSet();
+        FeatureCollection featureSet = new FeatureCollection();
         featureSet.add(new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC));
         return featureSet;
     }

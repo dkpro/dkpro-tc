@@ -39,7 +39,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -72,11 +72,11 @@ public class BrownClusterFeature
         return true;
     }
 
-    public FeatureSet extract(JCas aJcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas aJcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         String target = aTarget.getCoveredText().toLowerCase();
-        FeatureSet features = createFeatures(target);
+        FeatureCollection features = createFeatures(target);
 
         someOperationsOnInnerClassUsingAnonymousClasses();
 
@@ -140,9 +140,9 @@ public class BrownClusterFeature
 
     }
 
-    private FeatureSet createFeatures(String unit) throws TextClassificationException
+    private FeatureCollection createFeatures(String unit) throws TextClassificationException
     {
-        FeatureSet features = new FeatureSet();
+        FeatureCollection features = new FeatureCollection();
 
         String bitCode = map.get(unit);
 

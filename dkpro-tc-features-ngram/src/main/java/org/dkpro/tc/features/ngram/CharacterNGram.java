@@ -28,7 +28,7 @@ import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -47,10 +47,10 @@ public class CharacterNGram
 {
 
     @Override
-    public FeatureSet extract(JCas jCas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-    		FeatureSet features = new FeatureSet();
+    		FeatureCollection features = new FeatureCollection();
         FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC
                 .getAnnotationCharacterNgrams(aTarget, ngramLowerCase, ngramMinN, ngramMaxN, '^',
                         '$');

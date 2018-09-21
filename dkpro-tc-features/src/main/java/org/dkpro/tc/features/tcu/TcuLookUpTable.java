@@ -26,7 +26,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -51,7 +51,7 @@ public class TcuLookUpTable
     protected HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
     protected List<TextClassificationTarget> units = new ArrayList<TextClassificationTarget>();
 
-    public FeatureSet extract(JCas aView, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas aView, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         if (isTheSameDocument(aView)) {

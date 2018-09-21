@@ -22,7 +22,7 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureSet;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -55,7 +55,7 @@ public class TargetSurfaceFormContextFeature
     static final String BEG_OF_SEQUENCE = "BOS";
     static final String OUT_OF_BOUNDARY = "OOB";
 
-    public FeatureSet extract(JCas aView, TextClassificationTarget unit)
+    public FeatureCollection extract(JCas aView, TextClassificationTarget unit)
         throws TextClassificationException
     {
         super.extract(aView, unit);
@@ -66,7 +66,7 @@ public class TargetSurfaceFormContextFeature
 
         String featureVal = getTargetText(targetIdx);
         
-        FeatureSet featureSet = new FeatureSet();
+        FeatureCollection featureSet = new FeatureCollection();
         featureSet.add(new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal,
                 FeatureType.NUMERIC));
         return featureSet;
