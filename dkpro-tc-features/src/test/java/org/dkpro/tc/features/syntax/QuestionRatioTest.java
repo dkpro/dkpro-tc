@@ -53,7 +53,7 @@ public class QuestionRatioTest
         aTarget.addToIndexes();
 
         QuestionsRatioFeatureExtractor extractor = new QuestionsRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(1, features.size());
 

@@ -52,7 +52,7 @@ public class NumberOfHashTagsTest
         aTarget.addToIndexes();
 
         NumberOfHashTags extractor = new NumberOfHashTags();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(1, features.size());
 

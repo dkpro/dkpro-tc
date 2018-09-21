@@ -18,7 +18,7 @@
 package org.dkpro.tc.core.io;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.features.Instance;
@@ -29,7 +29,7 @@ import org.dkpro.tc.api.features.Instance;
  */
 public interface DataWriter
 {
-    void writeGenericFormat(List<Instance> instances) throws AnalysisEngineProcessException;
+    void writeGenericFormat(Collection<Instance> instances) throws AnalysisEngineProcessException;
 
     /**
      * If the generic data format is/must be used - this method will read the generic file and
@@ -40,7 +40,7 @@ public interface DataWriter
      */
     void transformFromGeneric() throws Exception;
 
-    void writeClassifierFormat(List<Instance> instances)
+    void writeClassifierFormat(Collection<Instance> instances)
         throws AnalysisEngineProcessException;
 
     /**

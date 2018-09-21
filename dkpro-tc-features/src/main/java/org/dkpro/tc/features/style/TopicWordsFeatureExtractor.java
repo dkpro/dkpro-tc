@@ -20,8 +20,10 @@ package org.dkpro.tc.features.style;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -34,7 +36,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -57,21 +58,19 @@ public class TopicWordsFeatureExtractor
     private String prefix;
 
     @Override
-    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         if (topicFilePath == null || topicFilePath.isEmpty()) {
             throw new TextClassificationException("Path to word list must be set!");
         }
         List<String> topics = null;
-        FeatureCollection features = new FeatureCollection();
+        Set<Feature> features = new HashSet<Feature>();
         List<String> tokens = JCasUtil.toText(JCasUtil.selectCovered(jcas, Token.class, aTarget));
         try {
             topics = FileUtils.readLines(new File(topicFilePath), "utf-8");
             for (String t : topics) {
-            		for (Feature f: countWordHits(t, tokens)){
-            			features.add(f);
-            		}
+                features.addAll(countWordHits(t, tokens));
             }
         }
         catch (IOException e) {

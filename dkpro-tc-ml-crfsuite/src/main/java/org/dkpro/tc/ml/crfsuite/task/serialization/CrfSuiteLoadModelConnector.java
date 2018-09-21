@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -33,7 +32,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -158,8 +156,7 @@ public class CrfSuiteLoadModelConnector
             // execute feature extractors and add features to instance
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                		Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, aTarget).getNonDefaultFeatures();
-                    instance.addFeatures(features);
+                    instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, aTarget));
                 }
             }
             catch (TextClassificationException e) {

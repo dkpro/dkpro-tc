@@ -66,7 +66,7 @@ public class EmoticonRatioTest
         aTarget.addToIndexes();
 
         EmoticonRatio extractor = new EmoticonRatio();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(1, features.size());
 

@@ -51,7 +51,7 @@ public class InitialCharacterUpperCaseTest
         aTarget.addToIndexes();
 
         InitialCharacterUpperCase extractor = new InitialCharacterUpperCase();
-        Set<Feature> features = extractor.extract(jcas, aTarget).getAllFeatures();
+        Set<Feature> features = extractor.extract(jcas, aTarget);
 
         List<Feature> fetList = new ArrayList<>(features);
         Assert.assertEquals(1, features.size());

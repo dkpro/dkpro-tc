@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -24,7 +27,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -51,7 +53,7 @@ public class PronounRatioFeatureExtractor
     public static final String FN_YOU_RATIO = "PronounRatioYou";
 
     @Override
-    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
@@ -94,7 +96,7 @@ public class PronounRatioFeatureExtractor
             }
         }
 
-        FeatureCollection features = new FeatureCollection();
+        Set<Feature> features = new HashSet<Feature>();
         features.add(new Feature(FN_HE_RATIO, (double) heCount / n, n == 0, FeatureType.NUMERIC));
         features.add(new Feature(FN_SHE_RATIO, (double) sheCount / n, n == 0, FeatureType.NUMERIC));
         features.add(new Feature(FN_I_RATIO, (double) iCount / n, n == 0, FeatureType.NUMERIC));

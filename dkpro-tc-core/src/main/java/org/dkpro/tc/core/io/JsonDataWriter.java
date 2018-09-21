@@ -22,8 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.features.Instance;
@@ -49,7 +49,7 @@ public class JsonDataWriter
     private File outputDirectory;
 
     @Override
-    public void writeGenericFormat(List<Instance> instances)
+    public void writeGenericFormat(Collection<Instance> instances)
         throws AnalysisEngineProcessException
     {
         throw new UnsupportedOperationException(
@@ -64,7 +64,7 @@ public class JsonDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(List<Instance> instances)
+    public void writeClassifierFormat(Collection<Instance> instances)
         throws AnalysisEngineProcessException
     {
         try {

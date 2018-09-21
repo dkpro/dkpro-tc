@@ -17,14 +17,15 @@
  ******************************************************************************/
 package org.dkpro.tc.features.twitter;
 
+import java.util.Set;
+
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -50,15 +51,12 @@ public class EmoticonRatio
     implements FeatureExtractor
 {
     @Override
-    public FeatureCollection extract(JCas jCas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         int nrOfEmoticons = JCasUtil.selectCovered(jCas, POS_EMO.class, aTarget).size();
         int nrOfTokens = JCasUtil.selectCovered(jCas, Token.class, aTarget).size();
         double ratio = (double) nrOfEmoticons / nrOfTokens;
-        
-        FeatureCollection featureSet = new FeatureCollection();
-        featureSet.add(new Feature(EmoticonRatio.class.getSimpleName(), ratio, FeatureType.NUMERIC));
-        return featureSet;
+        return new Feature(EmoticonRatio.class.getSimpleName(), ratio, FeatureType.NUMERIC).asSet();
     }
 }

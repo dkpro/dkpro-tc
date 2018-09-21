@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.dkpro.tc.features.tcu;
 
+import java.util.Set;
+
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -55,7 +57,7 @@ public class TargetSurfaceFormContextFeature
     static final String BEG_OF_SEQUENCE = "BOS";
     static final String OUT_OF_BOUNDARY = "OOB";
 
-    public FeatureCollection extract(JCas aView, TextClassificationTarget unit)
+    public Set<Feature> extract(JCas aView, TextClassificationTarget unit)
         throws TextClassificationException
     {
         super.extract(aView, unit);
@@ -65,11 +67,8 @@ public class TargetSurfaceFormContextFeature
         Integer targetIdx = currentTargetIdx + shiftIdx;
 
         String featureVal = getTargetText(targetIdx);
-        
-        FeatureCollection featureSet = new FeatureCollection();
-        featureSet.add(new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal,
-                FeatureType.NUMERIC));
-        return featureSet;
+        return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal,
+                FeatureType.NUMERIC).asSet();
     }
 
     private String toHumanReadable(Integer shiftIdx)

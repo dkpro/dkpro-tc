@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
@@ -28,7 +29,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -48,17 +48,15 @@ public class TokenRatioPerDocument
     public static final String FEATURE_NAME = "TokenRatioPerTarget";
 
     @Override
-    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
+
         long maxLen = getMax();
 
         Collection<Token> tokens = JCasUtil.selectCovered(jcas, Token.class, aTarget);
         double ratio = getRatio(tokens.size(), maxLen);
-        
-        FeatureCollection featureSet = new FeatureCollection();
-        featureSet.add(new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC));
-        return featureSet;
+        return new Feature(FEATURE_NAME, ratio, FeatureType.NUMERIC).asSet();
     }
 
     @Override

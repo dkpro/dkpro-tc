@@ -17,16 +17,16 @@
  ******************************************************************************/
 package org.dkpro.tc.features.twitter;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -45,7 +45,7 @@ public class NumberOfHashTags
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#[a-zA-Z0-9_]+");
 
     @Override
-    public FeatureCollection extract(JCas jCas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
         Matcher hashTagMatcher = HASHTAG_PATTERN
@@ -54,11 +54,8 @@ public class NumberOfHashTags
         while (hashTagMatcher.find()) {
             numberOfHashTags++;
         }
-        
-        FeatureCollection featureSet = new FeatureCollection();
-        featureSet.add(new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags,
-                FeatureType.NUMERIC));
-        return featureSet;
+        return new Feature(NumberOfHashTags.class.getSimpleName(), numberOfHashTags,
+                FeatureType.NUMERIC).asSet();
     }
 
 }

@@ -68,7 +68,7 @@ public class ContextualityTest
         aTarget.addToIndexes();
 
         ContextualityMeasureFeatureExtractor extractor = new ContextualityMeasureFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
 
         Assert.assertEquals(8, features.size());
 

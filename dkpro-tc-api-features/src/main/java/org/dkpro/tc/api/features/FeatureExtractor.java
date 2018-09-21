@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.api.features;
 
+import java.util.Set;
+
 import org.apache.uima.jcas.JCas;
+
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -40,6 +43,6 @@ public interface FeatureExtractor
      * @throws TextClassificationException
      *             if feature extraction failed
      */
-    FeatureCollection extract(JCas aJCas, TextClassificationTarget aTarget)
+    Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException;
 }

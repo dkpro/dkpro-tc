@@ -50,265 +50,290 @@ import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
- * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply
- * the feature extractors on each CAS.
+ * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
+ * extractors on each CAS.
  */
-public class ExtractFeaturesConnector extends JCasAnnotator_ImplBase implements ConnectorConstants {
+public class ExtractFeaturesConnector
+    extends JCasAnnotator_ImplBase
+    implements ConnectorConstants
+{
 
-	/**
-	 * Directory in which the extracted features will be stored
-	 */
-	public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
+    /**
+     * Directory in which the extracted features will be stored
+     */
+    public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
 
-	@ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
-	private File outputDirectory;
+    @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
+    private File outputDirectory;
 
-	/**
-	 * Whether an ID should be added to each instance in the feature file
-	 */
-	public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
+    /**
+     * Whether an ID should be added to each instance in the feature file
+     */
+    public static final String PARAM_ADD_INSTANCE_ID = "addInstanceId";
 
-	@ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
-	private boolean addInstanceId;
+    @ConfigurationParameter(name = PARAM_ADD_INSTANCE_ID, mandatory = true, defaultValue = "true")
+    private boolean addInstanceId;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
-	private String[] featureFilters;
+    @ConfigurationParameter(name = PARAM_FEATURE_FILTERS, mandatory = true)
+    private String[] featureFilters;
 
-	@ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
-	private String[] outcomes;
+    @ConfigurationParameter(name = PARAM_OUTCOMES, mandatory = true)
+    private String[] outcomes;
 
-	@ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
-	private boolean useSparseFeatures;
+    @ConfigurationParameter(name = PARAM_USE_SPARSE_FEATURES, mandatory = true)
+    private boolean useSparseFeatures;
 
-	@ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
-	private String dataWriterClass;
+    @ConfigurationParameter(name = PARAM_DATA_WRITER_CLASS, mandatory = true)
+    private String dataWriterClass;
 
-	@ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
-	private String learningMode;
+    @ConfigurationParameter(name = PARAM_LEARNING_MODE, mandatory = true, defaultValue = Constants.LM_SINGLE_LABEL)
+    private String learningMode;
 
-	@ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
-	private String featureMode;
+    @ConfigurationParameter(name = PARAM_FEATURE_MODE, mandatory = true, defaultValue = Constants.FM_DOCUMENT)
+    private String featureMode;
 
-	@ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
-	private boolean applyWeighting;
+    @ConfigurationParameter(name = PARAM_APPLY_WEIGHTING, mandatory = true, defaultValue = "false")
+    private boolean applyWeighting;
 
-	@ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
-	private boolean isTesting;
+    @ConfigurationParameter(name = PARAM_IS_TESTING, mandatory = true)
+    private boolean isTesting;
 
-	@ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
-	private Set<String> requiredTypes;
+    @ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
+    private Set<String> requiredTypes;
+    
+    @ConfigurationParameter(name = PARAM_ENFORCE_MATCHING_FEATURES, mandatory = false)
+    private boolean enforceMatchingFeatures;
 
-	@ConfigurationParameter(name = PARAM_ENFORCE_MATCHING_FEATURES, mandatory = false)
-	private boolean enforceMatchingFeatures;
+    @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
+    protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-	@ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
-	protected FeatureExtractorResource_ImplBase[] featureExtractors;
+    DataWriter dsw;
 
-	DataWriter dsw;
-	boolean writeFeatureNames = true;
-	private InstanceExtractor instanceExtractor;
-	private FeatureMetaData featureMeta;
-	private DocumentMetaLogger documentMetaLogger;
+    boolean writeFeatureNames = true;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		try {
+    private InstanceExtractor instanceExtractor;
 
-			documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+    private FeatureMetaData featureMeta;
 
-			instanceExtractor = new InstanceExtractor(featureMode, featureExtractors, addInstanceId);
-			featureMeta = new FeatureMetaData();
+    private DocumentMetaLogger documentMetaLogger;
 
-			if (isTesting) {
-				File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
-				TreeSet<String> featureNames = new TreeSet<>(FileUtils.readLines(featureNamesFile, "utf-8"));
-				featureMeta.setFeatureNames(featureNames);
-			}
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
+        try {
 
-			if (featureExtractors.length == 0) {
-				LogFactory.getLog(getClass()).error("No feature extractors have been defined.");
-				throw new ResourceInitializationException();
-			}
+        		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 
-			dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-			dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
-	}
+            instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
+                    addInstanceId);
+            featureMeta = new FeatureMetaData();
 
-	@Override
-	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+            if (isTesting) {
+                File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
+                TreeSet<String> featureNames = new TreeSet<>(
+                        FileUtils.readLines(featureNamesFile, "utf-8"));
+                featureMeta.setFeatureNames(featureNames);
+            }
 
-		checkRequiredTypes(aJCas);
-		documentMetaLogger.writeMeta(aJCas);
-		if (!featureMeta.didCollect()) {
-			getFeatureNames(aJCas);
-		}
+            if (featureExtractors.length == 0) {
+            		LogFactory.getLog(getClass()).error("No feature extractors have been defined.");
+                throw new ResourceInitializationException();
+            }
 
-		LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
-				+ JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
+            dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
+            dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+    }
 
-		List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
+    @Override
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
+    {
 
-		if (enforceMatchingFeatures) {
-			/*
-			 * filter-out feature names which did not occur during training if
-			 * we are in the testing stage
-			 */
-			instances = enforceMatchingFeatures(instances);
-		}
+        checkRequiredTypes(aJCas);
 
-		LogFactory.getLog(getClass()).info("--- Delegating [" + instances.size() + "] feature instances to the data writer ["
-				+ dataWriterClass + "] ---");
+        documentMetaLogger.writeMeta(aJCas);
 
-		if (isFilteringRequestedOrNoStreamingAvailable()) {
-			dsw.writeGenericFormat(instances);
-		} else {
-			dsw.writeClassifierFormat(instances);
-		}
-	}
+        if (!featureMeta.didCollect()) {
+            getFeatureNames(aJCas);
+        }
+        
+        LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
+                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
-	private void checkRequiredTypes(JCas aJCas) throws AnalysisEngineProcessException {
+        List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
+        
+        LogFactory.getLog(getClass()).info("--- Extracted ["
+                + instances.size() + " feature instances] ---");
+        
+        if(enforceMatchingFeatures) {
+            /*
+             * filter-out feature names which did not occur during training if we are in the testing
+             * stage
+             */
+            instances = enforceMatchingFeatures(instances);
+        }
+        
 
-		if (requiredTypes == null || requiredTypes.isEmpty()) {
-			return;
-		}
+        if (isFilteringRequestedOrNoStreamingAvailable()) {
+            dsw.writeGenericFormat(instances);
+        }
+        else {
+            dsw.writeClassifierFormat(instances);
+        }
+    }
 
-		try {
+    private void checkRequiredTypes(JCas aJCas) throws AnalysisEngineProcessException
+    {
 
-			for (String entry : requiredTypes) {
+        if (requiredTypes == null || requiredTypes.isEmpty()) {
+            return;
+        }
 
-				String[] split = entry.split("\\|");
+        try {
 
-				String feature = split[0];
-				for (int i = 1; i < split.length; i++) {
-					String type = split[i];
+            for (String entry : requiredTypes) {
 
-					@SuppressWarnings("unchecked")
-					Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class.forName(type);
-					boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
-					if (exists) {
-						continue;
-					}
-					throw new IllegalStateException("The feature extractor [" + feature
-							+ "] requires the annotation of the type [" + type
-							+ "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
-				}
-			}
+                String[] split = entry.split("\\|");
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+                String feature = split[0];
+                for (int i = 1; i < split.length; i++) {
+                    String type = split[i];
 
-	private boolean isFilteringRequestedOrNoStreamingAvailable() {
-		return featureFilters.length > 0 || !dsw.canStream();
-	}
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Annotation> expectedAnnotation = (Class<? extends Annotation>) Class
+                            .forName(type);
+                    boolean exists = JCasUtil.exists(aJCas, expectedAnnotation);
+                    if (exists) {
+                        continue;
+                    }
+                    throw new IllegalStateException("The feature extractor [" + feature
+                            + "] requires the annotation of the type [" + type
+                            + "] which was not found, did you forget to configure a tokenizer, PoS tagger, etc. in your pre-processing setup?");
+                }
+            }
 
-	private void getFeatureNames(JCas aJCas) throws AnalysisEngineProcessException {
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
+    private boolean isFilteringRequestedOrNoStreamingAvailable()
+    {
+        return featureFilters.length > 0 || !dsw.canStream();
+    }
+
+    private void getFeatureNames(JCas aJCas) throws AnalysisEngineProcessException
+    {
+    	
 		LogFactory.getLog(getClass()).info("--- collecting feature names ---");
-
-		// We run one time through feature extraction to get all features names
-		try {
-
+    	
+        // We run one time through feature extraction to get all features names
+        try {
+        	
 			// Create a mock CAS, we don't care about the feature values just
 			// their names. An empty CAS will be a lot faster!
-			JCas mockCas = buildMockCAS(JCasUtil.selectSingle(aJCas, DocumentMetaData.class));
+        		JCas mockCas = buildMockCAS(JCasUtil.selectSingle(aJCas, DocumentMetaData.class));
+        		
+            List<Instance> instances = instanceExtractor.getInstances(mockCas, false);
+            featureMeta.collectMetaData(instances);
+            featureMeta.writeMetaData(outputDirectory);
 
-			List<Instance> instances = instanceExtractor.getInstances(mockCas, false);
-			featureMeta.collectMetaData(instances);
-			featureMeta.writeMetaData(outputDirectory);
-
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
-	}
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
+    }
 
 	private JCas buildMockCAS(DocumentMetaData aDocMeta) throws UIMAException {
 		JCas mockCas = JCasFactory.createJCas();
 		mockCas.setDocumentLanguage(aDocMeta.getLanguage());
-
+		
 		DocumentMetaData dmd = new DocumentMetaData(mockCas);
 		dmd.setLanguage(aDocMeta.getLanguage());
 		dmd.setDocumentId(aDocMeta.getDocumentId());
 		dmd.addToIndexes();
-
-		// Create two views for Pair Mode
+		
+		//Create two views for Pair Mode
 		JCas view1 = mockCas.createView(Constants.PART_ONE);
 		JCas view2 = mockCas.createView(Constants.PART_TWO);
-
+		
 		String dummyText = "dummyText";
 		mockCas.setDocumentText(dummyText);
-
-		// just add all needed annotation for all CAS/views
-		for (JCas j : new JCas[] { mockCas, view1, view2 }) {
-			TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
-			s.addToIndexes();
-			TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
-			t.addToIndexes();
-			TextClassificationOutcome o = new TextClassificationOutcome(j, 0, dummyText.length());
-			o.addToIndexes();
-			JCasId id = new JCasId(j);
-			id.addToIndexes();
+		
+		for(JCas j : new JCas [] {mockCas, view1, view2}){
+		
+		TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
+		s.addToIndexes();
+		TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
+		t.addToIndexes();
+		TextClassificationOutcome o = new TextClassificationOutcome(j, 0, dummyText.length());
+		o.addToIndexes();
+		JCasId id = new JCasId(j);
+		id.addToIndexes();
 		}
-
+		
 		return mockCas;
 	}
 
-	// FIXME: This is extremely expensive and slow
-	private List<Instance> enforceMatchingFeatures(List<Instance> instances) {
-		if (!isTesting) {
-			return instances;
-		}
+	private List<Instance> enforceMatchingFeatures(List<Instance> instances)
+    {
+        if (!isTesting) {
+            return instances;
+        }
 
-		List<Instance> out = new ArrayList<>();
+        List<Instance> out = new ArrayList<>();
 
-		for (Instance i : instances) {
-			List<Feature> newFeatures = new ArrayList<>();
-			for (Feature feat : i.getFeatures()) {
-				if (!featureMeta.getFeatureNames().contains(feat.getName())) {
-					continue;
-				}
-				newFeatures.add(feat);
-			}
-			i.setFeatures(newFeatures);
-			out.add(i);
-		}
-		return out;
-	}
+        for (Instance i : instances) {
+            List<Feature> newFeatures = new ArrayList<>();
+            for (Feature feat : i.getFeatures()) {
+                if (!featureMeta.getFeatureNames().contains(feat.getName())) {
+                    continue;
+                }
+                newFeatures.add(feat);
+            }
+            i.setFeatures(newFeatures);
+            out.add(i);
+        }
+        return out;
+    }
 
-	@Override
-	public void collectionProcessComplete() throws AnalysisEngineProcessException {
-		super.collectionProcessComplete();
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException
+    {
+        super.collectionProcessComplete();
 
-		try {
+        try {
 
-			if (featureFilters.length > 0) {
-				applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
-			}
+            if (featureFilters.length > 0) {
+                applyFilter(new File(outputDirectory, dsw.getGenericFileName()));
+            }
 
-			if (featureFilters.length > 0 || !dsw.canStream()) {
-				// if we use generic mode we have to finalize the feature
-				// extraction by transforming
-				// the generic file into the classifier-specific data format
-				dsw.transformFromGeneric();
-			}
+            if (featureFilters.length > 0 || !dsw.canStream()) {
+                // if we use generic mode we have to finalize the feature
+                // extraction by transforming
+                // the generic file into the classifier-specific data format
+                dsw.transformFromGeneric();
+            }
 
-			dsw.close();
+            dsw.close();
 
-			documentMetaLogger.close();
+            documentMetaLogger.close();
 
-		} catch (Exception e) {
-			throw new AnalysisEngineProcessException(e);
-		}
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
 
-	}
+    }
 
-	private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException {
-		InstanceFilter filter = new InstanceFilter(featureFilters, isTesting);
-		filter.filter(jsonTempFile);
-	}
+    private void applyFilter(File jsonTempFile) throws AnalysisEngineProcessException
+    {
+        InstanceFilter filter = new InstanceFilter(featureFilters, isTesting);
+        filter.filter(jsonTempFile);
+    }
 }

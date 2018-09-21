@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.dkpro.tc.features.style;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -24,7 +27,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
-import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -60,7 +62,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException
     {
 
         double able = 0;
@@ -114,7 +116,7 @@ public class AdjectiveEndingFeatureExtractor
             }
         }
 
-        FeatureCollection featSet = new FeatureCollection();
+        Set<Feature> featSet = new HashSet<Feature>();
         featSet.add(
                 new Feature(ADJ_ENDING1, n > 0 ? able * 100 / n : 0, n == 0, FeatureType.NUMERIC));
         featSet.add(

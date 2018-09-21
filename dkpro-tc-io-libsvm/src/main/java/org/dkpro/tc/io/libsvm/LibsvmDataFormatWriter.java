@@ -58,17 +58,25 @@ public class LibsvmDataFormatWriter
     public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 
     private File outputDirectory;
+
     private String learningMode;
+
     private File classifierFormatOutputFile;
+
     private BufferedWriter bw = null;
+
     private Map<String, String> index2instanceId;
+
     private Gson gson = new Gson();
+
     protected int maxId = 0;
+
     private Map<String, Integer> featureNames2id;
+
     private Map<String, Integer> outcomeMap;
 
     @Override
-    public void writeGenericFormat(List<Instance> instances)
+    public void writeGenericFormat(Collection<Instance> instances)
         throws AnalysisEngineProcessException
     {
 
@@ -120,7 +128,7 @@ public class LibsvmDataFormatWriter
     }
 
     @Override
-    public void writeClassifierFormat(List<Instance> in) throws AnalysisEngineProcessException
+    public void writeClassifierFormat(Collection<Instance> in) throws AnalysisEngineProcessException
     {
 
         try {

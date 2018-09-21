@@ -48,7 +48,7 @@ public class CrfSuiteFeatureFormatExtractionIterator
     @Override
     public StringBuilder next()
     {
-        StringBuilder sb = new StringBuilder(5000000);
+        StringBuilder sb = new StringBuilder();
 
         try {
 
