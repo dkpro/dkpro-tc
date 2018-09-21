@@ -33,6 +33,17 @@ public class FeatureNameEscaper {
 	private Map<String, String> mapping = new HashMap<>();
 	private Semaphore createLock = new Semaphore(1);
 
+	/**
+	 * Escapes feature names. The substitution is synchronized by
+	 * a @link{java.util.concurrent.Semaphore} if used by multiple threads.
+	 * 
+	 * @param rawName
+	 *            the unescaped name of the feature
+	 * @return the escaped name of the feature, will be identical to the input
+	 *         if no characters are found that require escaping
+	 * @throws TextClassificationException
+	 *             in case of an error
+	 */
 	public String escape(String rawName) throws TextClassificationException {
 
 		if (mapping.containsKey(rawName)) {
