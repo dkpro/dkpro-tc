@@ -25,11 +25,13 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
+import org.apache.uima.UIMAException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -39,6 +41,9 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.JCasId;
+import org.dkpro.tc.api.type.TextClassificationOutcome;
+import org.dkpro.tc.api.type.TextClassificationSequence;
+import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
@@ -228,7 +233,12 @@ public class ExtractFeaturesConnector
     	
         // We run one time through feature extraction to get all features names
         try {
-            List<Instance> instances = instanceExtractor.getInstances(aJCas, false);
+        	
+			// Create a mock CAS, we don't care about the feature values just
+			// their names. An empty CAS will be a lot faster!
+        		JCas mockCas = buildMockCAS();
+        		
+            List<Instance> instances = instanceExtractor.getInstances(mockCas, false);
             featureMeta.collectMetaData(instances);
             featureMeta.writeMetaData(outputDirectory);
 
@@ -238,7 +248,23 @@ public class ExtractFeaturesConnector
         }
     }
 
-    private List<Instance> enforceMatchingFeatures(List<Instance> instances)
+	private JCas buildMockCAS() throws UIMAException {
+		JCas mockCas = JCasFactory.createJCas();
+		String dummyText = "dummyText";
+		mockCas.setDocumentText(dummyText);
+		TextClassificationSequence s = new TextClassificationSequence(mockCas, 0, dummyText.length());
+		s.addToIndexes();
+		TextClassificationTarget t = new TextClassificationTarget(mockCas, 0, dummyText.length());
+		t.addToIndexes();
+		TextClassificationOutcome o = new TextClassificationOutcome(mockCas, 0, dummyText.length());
+		o.addToIndexes();
+		JCasId id = new JCasId(mockCas);
+		id.addToIndexes();
+		
+		return mockCas;
+	}
+
+	private List<Instance> enforceMatchingFeatures(List<Instance> instances)
     {
         if (!isTesting) {
             return instances;
