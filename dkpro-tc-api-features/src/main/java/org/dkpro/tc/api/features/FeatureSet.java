@@ -89,7 +89,7 @@ public class FeatureSet implements Iterable<Feature> {
 	 * Selects only the features that have a value that is different to the
 	 * default value of a feature. The default value is feature dependent. If
 	 * one is unsure about the notion of default values, use the method
-	 * {@link org.dkpro.tc.api.features#getAllFeatures()}, which returns all
+	 * {@link #getAllFeatures()}, which returns all
 	 * instances of a feature set.
 	 * 
 	 * @return sub set of features with non-default value
