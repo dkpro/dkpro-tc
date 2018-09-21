@@ -149,14 +149,14 @@ public class ExtractFeaturesConnector
 
         checkRequiredTypes(aJCas);
 
-        LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
-                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
-
         documentMetaLogger.writeMeta(aJCas);
 
         if (!featureMeta.didCollect()) {
             getFeatureNames(aJCas);
         }
+        
+        LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
+                + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
         
@@ -221,11 +221,14 @@ public class ExtractFeaturesConnector
         return featureFilters.length > 0 || !dsw.canStream();
     }
 
-    private void getFeatureNames(JCas jcas) throws AnalysisEngineProcessException
+    private void getFeatureNames(JCas aJCas) throws AnalysisEngineProcessException
     {
+    	
+		LogFactory.getLog(getClass()).info("--- collecting feature names ---");
+    	
         // We run one time through feature extraction to get all features names
         try {
-            List<Instance> instances = instanceExtractor.getInstances(jcas, false);
+            List<Instance> instances = instanceExtractor.getInstances(aJCas, false);
             featureMeta.collectMetaData(instances);
             featureMeta.writeMetaData(outputDirectory);
 
