@@ -22,19 +22,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.type.TextClassificationTarget;
@@ -79,7 +77,7 @@ public class ContextCollectorUFE
     // };
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget unit)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget unit)
         throws TextClassificationException
     {
         try {
@@ -93,7 +91,7 @@ public class ContextCollectorUFE
         catch (IOException e) {
             throw new TextClassificationException(e);
         }
-        return new HashSet<Feature>();
+        return new FeatureCollection();
     }
 
     @Override

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,9 +24,10 @@ import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -46,7 +46,7 @@ public class QuestionsRatioFeatureExtractor
     public static final String FN_QUESTION_RATIO = "QuestionRatio";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
 
@@ -67,6 +67,8 @@ public class QuestionsRatioFeatureExtractor
             questionRatio = (double) matches / nrOfSentences;
         }
 
-        return new Feature(FN_QUESTION_RATIO, questionRatio, FeatureType.NUMERIC).asSet();
+        FeatureCollection featureSet = new FeatureCollection();
+        featureSet.add(new Feature(FN_QUESTION_RATIO, questionRatio, FeatureType.NUMERIC));
+        return featureSet;
     }
 }

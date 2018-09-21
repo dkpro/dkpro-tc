@@ -28,7 +28,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class CrfSuiteDataWriter
     private File classifierFormatOutputFile;
 
     @Override
-    public void writeGenericFormat(Collection<Instance> instances)
+    public void writeGenericFormat(List<Instance> instances)
         throws AnalysisEngineProcessException
     {
         try {
@@ -117,14 +116,13 @@ public class CrfSuiteDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> instances)
+    public void writeClassifierFormat(final List<Instance> instances)
         throws AnalysisEngineProcessException
     {
         try {
             initClassifierFormat();
 
-            Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
-                    new ArrayList<Instance>(instances));
+            Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(instances);
 
             while (sequenceIterator.hasNext()) {
                 String features = sequenceIterator.next().toString();
