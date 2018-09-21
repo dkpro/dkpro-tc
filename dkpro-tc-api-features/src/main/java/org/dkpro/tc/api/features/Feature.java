@@ -28,7 +28,6 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 public class Feature
     implements Comparable<Feature>
 {
-
 	static FeatureNameEscaper escaper = new FeatureNameEscaper();
 	
     protected String name;
@@ -58,7 +57,8 @@ public class Feature
      *            <i>not set</i> for an instance
      * @param type
      *            Type of this feature
-     * @throws InterruptedException 
+     * @throws TextClassificationException
+     * 			  in case of an error 
      */
     public Feature(String name, Object value, boolean isDefaultValue, FeatureType type) throws TextClassificationException
     {
