@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -108,8 +107,6 @@ public class InstanceExtractor
 
         Collection<TextClassificationSequence> sequences = JCasUtil.select(jcas,
                 TextClassificationSequence.class);
-        
-        LogFactory.getLog(getClass()).info("--- processing [" + sequences.size() + "] sequences for feature extraction ---");
         
         for (TextClassificationSequence seq : sequences) {
             unitId = 0;
