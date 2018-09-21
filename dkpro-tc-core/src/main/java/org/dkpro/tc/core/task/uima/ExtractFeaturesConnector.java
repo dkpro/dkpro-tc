@@ -36,7 +36,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -138,7 +137,7 @@ public class ExtractFeaturesConnector
             }
 
             if (featureExtractors.length == 0) {
-                context.getLogger().log(Level.SEVERE, "No feature extractors have been defined.");
+            		LogFactory.getLog(getClass()).error("No feature extractors have been defined.");
                 throw new ResourceInitializationException();
             }
 
