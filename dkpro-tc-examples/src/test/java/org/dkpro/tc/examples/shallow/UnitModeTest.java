@@ -47,7 +47,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.report.BatchRuntimeReport;
+import org.dkpro.tc.ml.report.RuntimeReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
@@ -105,7 +105,7 @@ public class UnitModeTest
         experiment.setParameterSpace(getParameterSpace());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(contextReport);
-        experiment.addReport(BatchRuntimeReport.class);
+        experiment.addReport(RuntimeReport.class);
 
         // Run
         Lab.getInstance().run(experiment);

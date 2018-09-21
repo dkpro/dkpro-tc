@@ -36,9 +36,10 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.dkpro.tc.ml.report.BatchCrossValidationReport;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -55,8 +56,7 @@ public class KerasSeq2SeqCrossValidation
     public static void main(String[] args) throws Exception
     {
 
-        // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+    	DemoUtils.setDkproHome(KerasSeq2SeqCrossValidation.class.getSimpleName());
 
         ParameterSpace pSpace = getParameterSpace();
 
@@ -99,7 +99,7 @@ public class KerasSeq2SeqCrossValidation
         experiment.setParameterSpace(pSpace);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(BatchCrossValidationReport.class);
+        experiment.addReport(CrossValidationReport.class);
 
         Lab.getInstance().run(experiment);
     }

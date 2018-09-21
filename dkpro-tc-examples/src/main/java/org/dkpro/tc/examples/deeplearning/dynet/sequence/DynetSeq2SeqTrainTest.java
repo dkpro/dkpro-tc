@@ -37,7 +37,7 @@ import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
-import org.dkpro.tc.ml.report.BatchTrainTestReport;
+import org.dkpro.tc.ml.report.TrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -114,7 +114,7 @@ public class DynetSeq2SeqTrainTest
         experiment.setPreprocessing(getPreprocessing());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         experiment.addReport(contextReport);
-        experiment.addReport(new BatchTrainTestReport());
+        experiment.addReport(new TrainTestReport());
         Lab.getInstance().run(experiment);
     }
 }

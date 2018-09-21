@@ -66,7 +66,7 @@ public class SequenceDemo
     }
 
     // ##### CV #####
-    protected void runCrossValidation() throws Exception
+    public void runCrossValidation() throws Exception
     {
         ExperimentBuilder builder = new ExperimentBuilder();
         builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
@@ -75,8 +75,8 @@ public class SequenceDemo
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
                .featureSets(getFeatureSet())
-               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5"),
-                                       new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5")
+                                       , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
                                        )
                .preprocessing(getPreprocessing())
                .run();
@@ -92,8 +92,8 @@ public class SequenceDemo
                .featureSets(getFeatureSet())
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
-               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5"),
-                                       new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "max_iterations=5")
+                                       ,new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
                                        )
                .preprocessing(getPreprocessing())
                .run();
@@ -110,7 +110,7 @@ public class SequenceDemo
         return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
                 TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TeiReader.PARAM_PATTERNS, "a02.xml");
+                TeiReader.PARAM_PATTERNS, "a01.xml");
     }
     
     public TcFeatureSet getFeatureSet() {

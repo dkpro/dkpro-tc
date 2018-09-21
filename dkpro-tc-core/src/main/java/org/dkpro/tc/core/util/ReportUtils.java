@@ -17,17 +17,11 @@
  ******************************************************************************/
 package org.dkpro.tc.core.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.engine.TaskContext;
-import org.dkpro.lab.storage.StorageService;
 
 /**
  * Utility methods needed in reports
@@ -44,32 +38,6 @@ public class ReportUtils
             }
         }
         return false;
-    }
-
-    public static void writeExcelAndCSV(TaskContext context, String contextLabel,
-            TcFlexTable<String> table, String evalFileName, String suffixExcel, String suffixCsv)
-        throws IOException
-    {
-        StorageService store = context.getStorageService();
-        // Excel cannot cope with more than 255 columns
-        if (table.getColumnIds().length <= 255) {
-            context.storeBinary(evalFileName + "_compact" + suffixExcel, table.getExcelWriter());
-        }
-        context.storeBinary(evalFileName + "_compact" + suffixCsv, table.getCsvWriter());
-        table.setCompact(false);
-        // Excel cannot cope with more than 255 columns
-        if (table.getColumnIds().length <= 255) {
-            context.storeBinary(evalFileName + suffixExcel, table.getExcelWriter());
-        }
-        context.storeBinary(evalFileName + suffixCsv, table.getCsvWriter());
-
-        // output the location of the batch evaluation folder
-        // otherwise it might be hard for novice users to locate this
-        File dummyFolder = store.locateKey(context.getId(), "dummy");
-        // TODO can we also do this without creating and deleting the dummy folder?
-        context.getLoggingService().message(contextLabel,
-                "Storing detailed results in:\n" + dummyFolder.getParent() + "\n");
-        FileUtils.deleteDirectory(dummyFolder);
     }
 
     public static Map<String, String> clearDiscriminatorsByExcludePattern(
@@ -128,5 +96,34 @@ public class ReportUtils
         
         return map;
     }
+
+    public static Map<String, String> prefixKeys(Map<String, String> map,
+            String prefix)
+    {
+        Map<String, String> m = new HashMap<>();
+
+        for (Entry<String, String> e : map.entrySet()) {
+            m.put(prefix + e.getKey(), e.getValue());
+        }
+
+        return m;
+    }
+
+    public static Map<String, String> shortenValuesTo(Map<String, String> discriminatorsMap, final int maxLen)
+    {
+        Map<String, String> m = new HashMap<>();
+
+        for(Entry<String, String> e : discriminatorsMap.entrySet()) {
+            String value = e.getValue();
+            if (value.length() > maxLen) {
+                value = value.substring(0, maxLen);
+            }
+            m.put(e.getKey(), value);
+        }
+
+        return m;
+    }
+
+    
 
 }

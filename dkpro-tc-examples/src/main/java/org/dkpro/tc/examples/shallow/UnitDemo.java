@@ -62,6 +62,7 @@ public class UnitDemo
         DemoUtils.setDkproHome(UnitDemo.class.getSimpleName());
 
         new UnitDemo().runTrainTest();
+//        new UnitDemo().runCrossValidation();
     }
     
     public CollectionReaderDescription getReaderTrain() throws Exception {
@@ -92,6 +93,27 @@ public class UnitDemo
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
                 .dataReaderTrain(getReaderTrain())
                 .dataReaderTest(getReaderTest())
+                .preprocessing(getPreprocessing())
+                .featureSets(getFeatureSet())
+                .learningMode(LearningMode.SINGLE_LABEL)
+                .featureMode(FeatureMode.UNIT)
+                .machineLearningBackend(
+                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()),
+                        new MLBackend(new LibsvmAdapter()),
+                        new MLBackend(new LiblinearAdapter()),
+                        new MLBackend(new XgboostAdapter())
+                        )
+                .run();
+    }
+    
+    // ##### Cross Validation #####
+    public void runCrossValidation() throws Exception
+    {
+
+        ExperimentBuilder builder = new ExperimentBuilder();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidation")
+                .numFolds(2)
+                .dataReaderTrain(getReaderTrain())
                 .preprocessing(getPreprocessing())
                 .featureSets(getFeatureSet())
                 .learningMode(LearningMode.SINGLE_LABEL)

@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
-import org.dkpro.tc.ml.report.BatchRuntimeReport;
+import org.dkpro.tc.ml.report.RuntimeReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -98,7 +98,7 @@ public class RegressionDemo
                 .featureSets(getFeatureSet())
                 .learningMode(LearningMode.REGRESSION)
                 .featureMode(FeatureMode.DOCUMENT)
-                .reports(new ContextMemoryReport(), new BatchRuntimeReport())
+                .reports(new ContextMemoryReport(), new RuntimeReport())
                 .preprocessing(getPreprocessing())
                 .machineLearningBackend(
                         new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),
@@ -117,7 +117,7 @@ public class RegressionDemo
                 .featureSets(getFeatureSet())
                 .learningMode(LearningMode.REGRESSION)
                 .featureMode(FeatureMode.DOCUMENT)
-                .reports(new ContextMemoryReport(), new BatchRuntimeReport())
+                .reports(new ContextMemoryReport(), new RuntimeReport())
                 .preprocessing(getPreprocessing())
                 .machineLearningBackend(
                         new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),

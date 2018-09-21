@@ -35,7 +35,7 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase
 import org.dkpro.tc.io.DelimiterSeparatedSequenceValuesReader;
 import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.ml.report.BatchCrossValidationReport
+import org.dkpro.tc.ml.report.CrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 
 import weka.classifiers.bayes.NaiveBayes
@@ -101,7 +101,7 @@ implements Constants {
             ],
             executionPolicy: ExecutionPolicy.RUN_AGAIN,
             reports:         [
-                BatchCrossValidationReport.newInstance()
+                CrossValidationReport.newInstance()
             ],
             numFolds: NUM_FOLDS]
 
