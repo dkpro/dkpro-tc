@@ -26,11 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -41,6 +39,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -73,11 +72,11 @@ public class BrownClusterFeature
         return true;
     }
 
-    public Set<Feature> extract(JCas aJcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas aJcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        String unit = aTarget.getCoveredText().toLowerCase();
-        Set<Feature> features = createFeatures(unit);
+        String target = aTarget.getCoveredText().toLowerCase();
+        FeatureCollection features = createFeatures(target);
 
         someOperationsOnInnerClassUsingAnonymousClasses();
 
@@ -141,9 +140,9 @@ public class BrownClusterFeature
 
     }
 
-    private Set<Feature> createFeatures(String unit) throws TextClassificationException
+    private FeatureCollection createFeatures(String unit) throws TextClassificationException
     {
-        Set<Feature> features = new HashSet<Feature>();
+        FeatureCollection features = new FeatureCollection();
 
         String bitCode = map.get(unit);
 

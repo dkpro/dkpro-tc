@@ -19,15 +19,13 @@ package org.dkpro.tc.features.syntax;
 
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureCollection;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -49,7 +47,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS_X;
  * Extracts the ratio of each universal POS tags to the total number of tags
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS" })
-public class POSRatioFeatureExtractor
+public class PosRatioFeatureExtractor
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
 {
@@ -66,10 +64,10 @@ public class POSRatioFeatureExtractor
     public static final String FN_V_RATIO = "VRatioFeature";
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+    public FeatureCollection extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        Set<Feature> features = new HashSet<Feature>();
+    		FeatureCollection features = new FeatureCollection();
         double total = selectCovered(jcas, POS.class, aTarget).size();
         double adj = selectCovered(jcas, POS_ADJ.class, aTarget).size() / total;
         double adv = selectCovered(jcas, POS_ADV.class, aTarget).size() / total;

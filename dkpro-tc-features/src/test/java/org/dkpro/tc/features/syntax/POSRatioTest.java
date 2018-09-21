@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.features.syntax;
 
-import static org.dkpro.tc.features.syntax.POSRatioFeatureExtractor.FN_N_RATIO;
-import static org.dkpro.tc.features.syntax.POSRatioFeatureExtractor.FN_PUNC_RATIO;
+import static org.dkpro.tc.features.syntax.PosRatioFeatureExtractor.FN_N_RATIO;
+import static org.dkpro.tc.features.syntax.PosRatioFeatureExtractor.FN_PUNC_RATIO;
 import static org.dkpro.tc.testing.FeatureTestUtil.assertFeature;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
@@ -37,7 +37,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.syntax.POSRatioFeatureExtractor;
+import org.dkpro.tc.features.syntax.PosRatioFeatureExtractor;
 
 public class POSRatioTest
 {
@@ -60,8 +60,8 @@ public class POSRatioTest
                 jcas.getDocumentText().length());
         aTarget.addToIndexes();
 
-        POSRatioFeatureExtractor extractor = new POSRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
+        PosRatioFeatureExtractor extractor = new PosRatioFeatureExtractor();
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
 
         Assert.assertEquals(11, features.size());
 

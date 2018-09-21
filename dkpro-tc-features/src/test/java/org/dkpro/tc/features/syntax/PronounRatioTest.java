@@ -60,7 +60,7 @@ public class PronounRatioTest
         aTarget.addToIndexes();
 
         PronounRatioFeatureExtractor extractor = new PronounRatioFeatureExtractor();
-        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget));
+        List<Feature> features = new ArrayList<Feature>(extractor.extract(jcas, aTarget).getAllFeatures());
 
         Assert.assertEquals(8, features.size());
 
