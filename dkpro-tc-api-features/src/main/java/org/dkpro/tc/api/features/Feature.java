@@ -20,7 +20,7 @@ package org.dkpro.tc.api.features;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.exception.TextClassificationException;
 
 /**
  * Internal representation of a feature.
@@ -29,15 +29,16 @@ public class Feature
     implements Comparable<Feature>
 {
 
+	static FeatureNameEscaper escaper = new FeatureNameEscaper();
+	
     protected String name;
     protected Object value;
     private boolean isDefaultValue;
     private FeatureType type;
 
-    public Feature(String name, Object value, FeatureType type)
+    public Feature(String name, Object value, FeatureType type) throws TextClassificationException
     {
-        // TODO should we cache the feature espacing? this is called quite often ...
-        this.name = FeatureUtil.escapeFeatureName(name).intern();
+        this.name = escaper.escape(name);
         this.value = value;
         this.isDefaultValue = false;
         this.type = type;
@@ -57,11 +58,11 @@ public class Feature
      *            <i>not set</i> for an instance
      * @param type
      *            Type of this feature
+     * @throws InterruptedException 
      */
-    public Feature(String name, Object value, boolean isDefaultValue, FeatureType type)
+    public Feature(String name, Object value, boolean isDefaultValue, FeatureType type) throws TextClassificationException
     {
-        // TODO should we cache the feature espacing? this is called quite often ...
-        this.name = FeatureUtil.escapeFeatureName(name).intern();
+        this.name = escaper.escape(name);
         this.value = value;
         this.isDefaultValue = isDefaultValue;
         this.type = type;

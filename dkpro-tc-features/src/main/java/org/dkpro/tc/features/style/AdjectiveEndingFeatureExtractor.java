@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
@@ -61,7 +62,7 @@ public class AdjectiveEndingFeatureExtractor
     public static final String ADV_ENDING9 = "EndingLy"; // adverb, but anyway
 
     @Override
-    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget) throws TextClassificationException
     {
 
         double able = 0;

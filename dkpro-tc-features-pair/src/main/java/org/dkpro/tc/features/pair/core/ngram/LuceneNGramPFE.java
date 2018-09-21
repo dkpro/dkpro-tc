@@ -223,7 +223,7 @@ public class LuceneNGramPFE
     }
 
     protected Set<Feature> addToFeatureArray(FrequencyDistribution<String> viewNgrams,
-            FrequencyDistribution<String> topKSet, Set<Feature> features)
+            FrequencyDistribution<String> topKSet, Set<Feature> features) throws TextClassificationException
     {
         for (String ngram : topKSet.getKeys()) {
             long value = 1;
