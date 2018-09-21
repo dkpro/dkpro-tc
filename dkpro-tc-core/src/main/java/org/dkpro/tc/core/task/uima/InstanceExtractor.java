@@ -109,7 +109,7 @@ public class InstanceExtractor
         Collection<TextClassificationSequence> sequences = JCasUtil.select(jcas,
                 TextClassificationSequence.class);
         
-        LogFactory.getLog(getClass()).info("--- processing [" + sequences.size() + "]" + sequences + "] ---");
+        LogFactory.getLog(getClass()).info("--- processing [" + sequences.size() + "] sequences for feature extraction ---");
         
         for (TextClassificationSequence seq : sequences) {
             unitId = 0;
