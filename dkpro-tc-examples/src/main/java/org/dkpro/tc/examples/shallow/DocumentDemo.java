@@ -30,7 +30,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.filter.UniformClassDistributionFilter;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.builder.ExperimentType;
@@ -63,7 +63,6 @@ public class DocumentDemo
 
         DocumentDemo experiment = new DocumentDemo();
         experiment.runTrainTest();
-        experiment.runCrossValidation();
     }
 
     public CollectionReaderDescription getReaderTrain() throws Exception
@@ -86,8 +85,8 @@ public class DocumentDemo
     {
         return new TcFeatureSet("DummyFeatureSet",
                 TcFeatureFactory.create(TokenRatioPerDocument.class),
-                TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 500,
-                        WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3));
+                TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 500,
+                		CharacterNGram.PARAM_NGRAM_MIN_N, 1, CharacterNGram.PARAM_NGRAM_MAX_N, 3));
     }
 
     public void runCrossValidation() throws Exception
@@ -123,11 +122,7 @@ public class DocumentDemo
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(
-                        new MLBackend(new XgboostAdapter(), "objective=multi:softmax"),
-                        new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
-                                PolyKernel.class.getName() + " " + "-C -1 -E 2"),
-                        new MLBackend(new LiblinearAdapter(), "-s", "4", "-c", "100"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"))
+                        new MLBackend(new XgboostAdapter(), "objective=multi:softmax"))
                 .run();
     }
 

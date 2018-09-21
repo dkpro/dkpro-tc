@@ -242,7 +242,7 @@ public class InstanceTest
     }
 
     @Test
-    public void testSetterAndGetter()
+    public void testSetterAndGetter() throws TextClassificationException
     {
         Instance i = new Instance(Arrays.asList(new Feature("dummy", 0, FeatureType.STRING)),
                 "RESULT");

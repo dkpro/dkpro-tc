@@ -141,7 +141,7 @@ public class BrownClusterFeature
 
     }
 
-    private Set<Feature> createFeatures(String unit)
+    private Set<Feature> createFeatures(String unit) throws TextClassificationException
     {
         Set<Feature> features = new HashSet<Feature>();
 
@@ -159,7 +159,7 @@ public class BrownClusterFeature
         return features;
     }
 
-    private Feature getFeature(String bitCode, int i)
+    private Feature getFeature(String bitCode, int i) throws TextClassificationException
     {
         if (bitCode == null || bitCode.isEmpty()) {
             return new Feature("brown_" + i, NOT_SET, true, FeatureType.STRING);
