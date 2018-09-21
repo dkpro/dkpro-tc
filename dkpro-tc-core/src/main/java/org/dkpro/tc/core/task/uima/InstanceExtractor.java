@@ -96,47 +96,47 @@ public class InstanceExtractor
         return featureMode.equals(Constants.FM_SEQUENCE);
     }
 
-    public List<Instance> getSequenceInstances(JCas jcas, boolean useSparse)
+    public List<Instance> getSequenceInstances(JCas aJCas, boolean useSparse)
         throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
 
-        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
         int sequenceId = 0;
-        int unitId = 0;
+        int targetId = 0;
 
-        Collection<TextClassificationSequence> sequences = JCasUtil.select(jcas,
+        Collection<TextClassificationSequence> sequences = JCasUtil.select(aJCas,
                 TextClassificationSequence.class);
         
         for (TextClassificationSequence seq : sequences) {
-            unitId = 0;
+            targetId = 0;
 
-            List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(jcas,
+            List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(aJCas,
                     TextClassificationTarget.class, seq);
             for (TextClassificationTarget aTarget : seqTargets) {
 
-                aTarget.setId(unitId++);
+                aTarget.setId(targetId++);
 
                 Instance instance = new Instance();
 
                 if (addInstanceId) {
-                    instance.addFeature(InstanceIdFeature.retrieve(jcas, aTarget, sequenceId));
+                    instance.addFeature(InstanceIdFeature.retrieve(aJCas, aTarget, sequenceId));
                 }
 
                 // execute feature extractors and add features to instance
 
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
                     if (useSparse) {
-                        instance.addFeatures(getSparse(jcas, aTarget, featExt));
+                        instance.addFeatures(getSparse(aJCas, aTarget, featExt));
                     }
                     else {
-                        instance.addFeatures(getDense(jcas, aTarget, featExt));
+                        instance.addFeatures(getDense(aJCas, aTarget, featExt));
                     }
                 }
 
                 // set and write outcome label(s)
-                instance.setOutcomes(getOutcomes(jcas, aTarget));
-                instance.setWeight(getWeight(jcas, aTarget));
+                instance.setOutcomes(getOutcomes(aJCas, aTarget));
+                instance.setWeight(getWeight(aJCas, aTarget));
                 instance.setJcasId(jcasId);
                 instance.setSequenceId(sequenceId);
                 instance.setSequencePosition(aTarget.getId());
@@ -149,20 +149,20 @@ public class InstanceExtractor
         return instances;
     }
 
-    public List<Instance> getUnitInstances(JCas jcas, boolean supportSparseFeatures)
+    public List<Instance> getUnitInstances(JCas aJCas, boolean supportSparseFeatures)
         throws TextClassificationException
     {
         List<Instance> instances = new ArrayList<Instance>();
-        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
 
-        Collection<TextClassificationTarget> targets = JCasUtil.select(jcas,
+        Collection<TextClassificationTarget> targets = JCasUtil.select(aJCas,
                 TextClassificationTarget.class);
         for (TextClassificationTarget aTarget : targets) {
 
             Instance instance = new Instance();
 
             if (addInstanceId) {
-                Feature feat = InstanceIdFeature.retrieve(jcas, aTarget);
+                Feature feat = InstanceIdFeature.retrieve(aJCas, aTarget);
                 instance.addFeature(feat);
             }
 
@@ -176,16 +176,16 @@ public class InstanceExtractor
                                     + featExt.getResourceName());
                 }
                 if (supportSparseFeatures) {
-                    instance.addFeatures(getSparse(jcas, aTarget, featExt));
+                    instance.addFeatures(getSparse(aJCas, aTarget, featExt));
                 }
                 else {
-                    instance.addFeatures(getDense(jcas, aTarget, featExt));
+                    instance.addFeatures(getDense(aJCas, aTarget, featExt));
                 }
             }
 
             // set and write outcome label(s)
-            instance.setOutcomes(getOutcomes(jcas, aTarget));
-            instance.setWeight(getWeight(jcas, aTarget));
+            instance.setOutcomes(getOutcomes(aJCas, aTarget));
+            instance.setWeight(getWeight(aJCas, aTarget));
             instance.setJcasId(jcasId);
             // instance.setSequenceId(sequenceId);
             instance.setSequencePosition(aTarget.getId());
@@ -196,19 +196,19 @@ public class InstanceExtractor
         return instances;
     }
 
-    public Instance getSingleInstance(JCas jcas, boolean supportSparseFeatures) throws Exception
+    public Instance getSingleInstance(JCas aJCas, boolean supportSparseFeatures) throws Exception
     {
 
         Instance instance = new Instance();
 
         if (isDocumentMode()) {
-            instance = getSingleInstanceDocument(instance, jcas, supportSparseFeatures);
+            instance = getSingleInstanceDocument(instance, aJCas, supportSparseFeatures);
         }
         else if (isPairMode()) {
-            instance = getSingleInstancePair(instance, jcas);
+            instance = getSingleInstancePair(instance, aJCas);
         }
         else if (isUnitMode()) {
-            instance = getSingleInstanceUnit(instance, jcas, supportSparseFeatures);
+            instance = getSingleInstanceUnit(instance, aJCas, supportSparseFeatures);
         }
 
         return instance;
@@ -224,40 +224,40 @@ public class InstanceExtractor
         return featureMode.equals(Constants.FM_DOCUMENT);
     }
 
-    private Instance getSingleInstanceUnit(Instance instance, JCas jcas,
+    private Instance getSingleInstanceUnit(Instance anInstance, JCas aJCas,
             boolean supportsSparseFeature)
         throws Exception
     {
-        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        TextClassificationTarget unit = JCasUtil.selectSingle(jcas, TextClassificationTarget.class);
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
+        TextClassificationTarget unit = JCasUtil.selectSingle(aJCas, TextClassificationTarget.class);
 
         if (addInstanceId) {
-            instance.addFeature(InstanceIdFeature.retrieve(jcas, unit));
+            anInstance.addFeature(InstanceIdFeature.retrieve(aJCas, unit));
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
 
             if (supportsSparseFeature) {
-                instance.addFeatures(getSparse(jcas, unit, featExt));
+                anInstance.addFeatures(getSparse(aJCas, unit, featExt));
             }
             else {
-                instance.addFeatures(getDense(jcas, unit, featExt));
+                anInstance.addFeatures(getDense(aJCas, unit, featExt));
             }
 
-            instance.setOutcomes(getOutcomes(jcas, unit));
-            instance.setWeight(getWeight(jcas, unit));
-            instance.setJcasId(jcasId);
+            anInstance.setOutcomes(getOutcomes(aJCas, unit));
+            anInstance.setWeight(getWeight(aJCas, unit));
+            anInstance.setJcasId(jcasId);
         }
-        return instance;
+        return anInstance;
     }
 
-    private Instance getSingleInstancePair(Instance instance, JCas jcas)
+    private Instance getSingleInstancePair(Instance anInstance, JCas aJCas)
         throws TextClassificationException
     {
         try {
-            int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+            int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
             if (addInstanceId) {
-                instance.addFeature(InstanceIdFeature.retrieve(jcas));
+                anInstance.addFeature(InstanceIdFeature.retrieve(aJCas));
             }
 
             for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
@@ -265,32 +265,32 @@ public class InstanceExtractor
                     throw new TextClassificationException(
                             "Using non-pair FE in pair mode: " + featExt.getResourceName());
                 }
-                JCas view1 = jcas.getView(Constants.PART_ONE);
-                JCas view2 = jcas.getView(Constants.PART_TWO);
+                JCas view1 = aJCas.getView(Constants.PART_ONE);
+                JCas view2 = aJCas.getView(Constants.PART_TWO);
 
-                instance.setOutcomes(getOutcomes(jcas, null));
-                instance.setWeight(getWeight(jcas, null));
-                instance.setJcasId(jcasId);
-                instance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
+                anInstance.setOutcomes(getOutcomes(aJCas, null));
+                anInstance.setWeight(getWeight(aJCas, null));
+                anInstance.setJcasId(jcasId);
+                anInstance.addFeatures(((PairFeatureExtractor) featExt).extract(view1, view2));
             }
         }
         catch (CASException e) {
             throw new TextClassificationException(e);
         }
-        return instance;
+        return anInstance;
     }
 
-    private Instance getSingleInstanceDocument(Instance instance, JCas jcas,
+    private Instance getSingleInstanceDocument(Instance anInstance, JCas aJCas,
             boolean supportSparseFeatures)
         throws TextClassificationException
     {
-        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
 
-        TextClassificationTarget documentTcu = JCasUtil.selectSingle(jcas,
+        TextClassificationTarget documentTcu = JCasUtil.selectSingle(aJCas,
                 TextClassificationTarget.class);
 
         if (addInstanceId) {
-            instance.addFeature(InstanceIdFeature.retrieve(jcas));
+            anInstance.addFeature(InstanceIdFeature.retrieve(aJCas));
         }
 
         for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
@@ -301,28 +301,28 @@ public class InstanceExtractor
             }
 
             if (supportSparseFeatures) {
-                instance.addFeatures(getSparse(jcas, documentTcu, featExt));
+                anInstance.addFeatures(getSparse(aJCas, documentTcu, featExt));
             }
             else {
-                instance.addFeatures(getDense(jcas, documentTcu, featExt));
+                anInstance.addFeatures(getDense(aJCas, documentTcu, featExt));
             }
 
-            instance.setOutcomes(getOutcomes(jcas, null));
-            instance.setWeight(getWeight(jcas, null));
-            instance.setJcasId(jcasId);
+            anInstance.setOutcomes(getOutcomes(aJCas, null));
+            anInstance.setWeight(getWeight(aJCas, null));
+            anInstance.setJcasId(jcasId);
         }
 
-        return instance;
+        return anInstance;
     }
 
-    public List<String> getOutcomes(JCas jcas, AnnotationFS unit) throws TextClassificationException
+    public List<String> getOutcomes(JCas aJCas, AnnotationFS anAnnotation) throws TextClassificationException
     {
         Collection<TextClassificationOutcome> outcomes;
-        if (unit == null) {
-            outcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+        if (anAnnotation == null) {
+            outcomes = JCasUtil.select(aJCas, TextClassificationOutcome.class);
         }
         else {
-            outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
+            outcomes = JCasUtil.selectCovered(aJCas, TextClassificationOutcome.class, anAnnotation);
         }
 
         if (outcomes.size() == 0) {
@@ -337,14 +337,14 @@ public class InstanceExtractor
         return stringOutcomes;
     }
 
-    private double getWeight(JCas jcas, AnnotationFS unit) throws TextClassificationException
+    private double getWeight(JCas aJCas, AnnotationFS anAnnotation) throws TextClassificationException
     {
         Collection<TextClassificationOutcome> outcomes;
-        if (unit == null) {
-            outcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+        if (anAnnotation == null) {
+            outcomes = JCasUtil.select(aJCas, TextClassificationOutcome.class);
         }
         else {
-            outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
+            outcomes = JCasUtil.selectCovered(aJCas, TextClassificationOutcome.class, anAnnotation);
         }
 
         if (outcomes.size() == 0) {
@@ -360,18 +360,18 @@ public class InstanceExtractor
         return weight;
     }
 
-    private Set<Feature> getDense(JCas jcas, TextClassificationTarget unit,
-            FeatureExtractorResource_ImplBase featExt)
+    private Set<Feature> getDense(JCas aJCas, TextClassificationTarget aTarget,
+            FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        return ((FeatureExtractor) featExt).extract(jcas, unit);
+        return ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
     }
 
-    private Set<Feature> getSparse(JCas jcas, TextClassificationTarget unit,
-            FeatureExtractorResource_ImplBase featExt)
+    private Set<Feature> getSparse(JCas aJCas, TextClassificationTarget aTarget,
+            FeatureExtractorResource_ImplBase aFeatExtractor)
         throws TextClassificationException
     {
-        Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, unit);
+        Set<Feature> features = ((FeatureExtractor) aFeatExtractor).extract(aJCas, aTarget);
         Set<Feature> filtered = new HashSet<>();
         for (Feature f : features) {
             if (!f.isDefaultValue()) {
