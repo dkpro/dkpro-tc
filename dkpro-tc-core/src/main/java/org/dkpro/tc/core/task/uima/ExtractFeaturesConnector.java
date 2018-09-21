@@ -101,7 +101,7 @@ public class ExtractFeaturesConnector
     private Set<String> requiredTypes;
     
     @ConfigurationParameter(name = PARAM_ENFORCE_MATCHING_FEATURES, mandatory = false)
-    private boolean enforceMatchinFeatures;
+    private boolean enforceMatchingFeatures;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
@@ -168,7 +168,7 @@ public class ExtractFeaturesConnector
         LogFactory.getLog(getClass()).info("--- Extracted ["
                 + instances.size() + " feature instances] ---");
         
-        if(enforceMatchinFeatures) {
+        if(enforceMatchingFeatures) {
             /*
              * filter-out feature names which did not occur during training if we are in the testing
              * stage
