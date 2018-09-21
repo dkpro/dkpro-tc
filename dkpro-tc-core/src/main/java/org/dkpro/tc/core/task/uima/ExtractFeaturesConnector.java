@@ -48,6 +48,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 
+import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
@@ -236,7 +238,7 @@ public class ExtractFeaturesConnector
         	
 			// Create a mock CAS, we don't care about the feature values just
 			// their names. An empty CAS will be a lot faster!
-        		JCas mockCas = buildMockCAS();
+        		JCas mockCas = buildMockCAS(JCasUtil.selectSingle(aJCas, DocumentMetaData.class));
         		
             List<Instance> instances = instanceExtractor.getInstances(mockCas, false);
             featureMeta.collectMetaData(instances);
@@ -248,18 +250,33 @@ public class ExtractFeaturesConnector
         }
     }
 
-	private JCas buildMockCAS() throws UIMAException {
+	private JCas buildMockCAS(DocumentMetaData aDocMeta) throws UIMAException {
 		JCas mockCas = JCasFactory.createJCas();
+		mockCas.setDocumentLanguage(aDocMeta.getLanguage());
+		
+		DocumentMetaData dmd = new DocumentMetaData(mockCas);
+		dmd.setLanguage(aDocMeta.getLanguage());
+		dmd.setDocumentId(aDocMeta.getDocumentId());
+		dmd.addToIndexes();
+		
+		//Create two views for Pair Mode
+		JCas view1 = mockCas.createView(Constants.PART_ONE);
+		JCas view2 = mockCas.createView(Constants.PART_TWO);
+		
 		String dummyText = "dummyText";
 		mockCas.setDocumentText(dummyText);
-		TextClassificationSequence s = new TextClassificationSequence(mockCas, 0, dummyText.length());
+		
+		for(JCas j : new JCas [] {mockCas, view1, view2}){
+		
+		TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
 		s.addToIndexes();
-		TextClassificationTarget t = new TextClassificationTarget(mockCas, 0, dummyText.length());
+		TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
 		t.addToIndexes();
-		TextClassificationOutcome o = new TextClassificationOutcome(mockCas, 0, dummyText.length());
+		TextClassificationOutcome o = new TextClassificationOutcome(j, 0, dummyText.length());
 		o.addToIndexes();
-		JCasId id = new JCasId(mockCas);
+		JCasId id = new JCasId(j);
 		id.addToIndexes();
+		}
 		
 		return mockCas;
 	}
