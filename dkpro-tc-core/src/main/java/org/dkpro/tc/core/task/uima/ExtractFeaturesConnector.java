@@ -122,7 +122,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
         try {
 
-        	documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+        		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 
             instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
                     addInstanceId);
