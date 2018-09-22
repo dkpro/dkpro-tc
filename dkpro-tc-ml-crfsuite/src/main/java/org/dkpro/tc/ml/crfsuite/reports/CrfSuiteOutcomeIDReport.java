@@ -32,6 +32,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
+import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
 import org.dkpro.tc.ml.report.TcBatchReportBase;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -107,8 +108,9 @@ public class CrfSuiteOutcomeIDReport
         File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
         List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
 
-        outcomes.add("(null)"); // Crfsuite might output this additional "label";
-
+        // Crfsuite might output a null label in rare cases
+        outcomes.add("(null)"); 
+        
         Map<String, Integer> map = new HashMap<String, Integer>();
         int i = 0;
         for (String label : outcomes) {
@@ -161,11 +163,14 @@ public class CrfSuiteOutcomeIDReport
             String id = extractTCId(featureEntry);
             String[] idsplit = id.split("_");
             // make ids sortable by enforcing zero-prefixing
-            String zeroPaddedId = String.format("%04d_%04d_%04d%s", Integer.valueOf(idsplit[0]),
-                    Integer.valueOf(idsplit[1]), Integer.valueOf(idsplit[2]),
-                    idsplit.length > 3 ? "_" + idsplit[3] : "");
-            int numGold = aMapping.get(split[0]);
-            String numPred = getPrediction(aMapping, split[1]);
+            String zeroPaddedId = String.format("%04d_%04d_%04d%s", 
+                                                Integer.valueOf(idsplit[0]),
+                                                Integer.valueOf(idsplit[1]), 
+                                                Integer.valueOf(idsplit[2]),
+                                                idsplit.length > 3 ? "_" + idsplit[3] : "");
+            
+            int numGold = aMapping.get(LabelSubstitutor.undoLabelReplacement(split[0]));
+            String numPred = getPrediction(aMapping, LabelSubstitutor.undoLabelReplacement(split[1]));
             p.setProperty(zeroPaddedId,
                     numPred + SEPARATOR_CHAR + numGold + SEPARATOR_CHAR + THRESHOLD_DUMMY_CONSTANT);
         }
