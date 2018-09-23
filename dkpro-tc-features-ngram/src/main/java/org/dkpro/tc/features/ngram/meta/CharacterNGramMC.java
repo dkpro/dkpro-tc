@@ -99,14 +99,14 @@ public class CharacterNGramMC
             char boundaryBegin, char boundaryEnd)
     {
     	
-    		String text = focusAnnotation.getCoveredText();
-    		if (lowerCaseNgrams) {
-    			 text = text.toLowerCase();
+        String text = focusAnnotation.getCoveredText();
+        if (lowerCaseNgrams) {
+            text = text.toLowerCase();
         }
-    	
+
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
-        for (String charNgram : new CharacterNGramStringIterable(
-                boundaryBegin + text + boundaryEnd, minN, maxN)) {
+        for (String charNgram : new CharacterNGramStringIterable(boundaryBegin + text + boundaryEnd,
+                minN, maxN)) {
             charNgrams.inc(charNgram);
         }
 
