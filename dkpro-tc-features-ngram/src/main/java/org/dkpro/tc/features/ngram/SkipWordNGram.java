@@ -18,7 +18,6 @@
 package org.dkpro.tc.features.ngram;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +28,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.SkipWordNGramMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -44,37 +40,31 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class SkipWordNGram
-    extends LuceneFeatureExtractorBase
-    implements FeatureExtractor
+    extends AbstractNgram
 {
 
     public static final String PARAM_SKIP_SIZE = "skipSize";
     @ConfigurationParameter(name = PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
     protected int skipSize;
+    
+    private Set<Feature> prepFeatSet;
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        Set<Feature> features = new HashSet<Feature>();
+        if (prepFeatSet == null) {
+            prepare();
+        }
 
         FrequencyDistribution<String> documentNgrams = SkipWordNGramMC.getDocumentSkipNgrams(jcas,
                 aTarget, ngramLowerCase, filterPartialStopwordMatches, ngramMinN, ngramMaxN,
                 skipSize, stopwords);
 
-        for (String topNgram : topKSet.getKeys()) {
-            if (documentNgrams.getKeys().contains(topNgram)) {
-                features.add(
-                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
-            }
-            else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
-                        FeatureType.BOOLEAN));
-            }
-        }
-        return features;
+       
+        return getFeatureSet(documentNgrams);
     }
-
+    
     @Override
     public List<MetaCollectorConfiguration> getMetaCollectorClasses(
             Map<String, Object> parameterSettings)

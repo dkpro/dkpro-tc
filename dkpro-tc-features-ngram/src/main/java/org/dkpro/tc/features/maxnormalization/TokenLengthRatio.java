@@ -30,7 +30,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.MaximumNormalizationExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.MaximumNormalizationExtractorBase;
 import org.dkpro.tc.features.ngram.meta.maxnormalization.MaxTokenLenMC;
 
 /**

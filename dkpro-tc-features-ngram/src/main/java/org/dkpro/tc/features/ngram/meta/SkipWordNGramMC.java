@@ -35,8 +35,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.SkipWordNGram;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.LuceneFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.SkipNgramStringListIterable;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
