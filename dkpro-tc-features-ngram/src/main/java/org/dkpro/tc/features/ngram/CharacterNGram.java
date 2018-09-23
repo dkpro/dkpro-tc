@@ -18,7 +18,6 @@
 package org.dkpro.tc.features.ngram;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +47,17 @@ public class CharacterNGram
     implements FeatureExtractor
 {
     
+    private Set<Feature> map;
+    
     @Override
     public Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
+        if (map == null) {
+            prepare();
+        }
         
-        Set<Feature> features = new HashSet<Feature>();
+        
         FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC
                 .getAnnotationCharacterNgrams(aTarget, 
                                               ngramLowerCase, 
@@ -61,18 +65,54 @@ public class CharacterNGram
                                               ngramMaxN, 
                                               CharacterNGramMC.CHAR_WORD_BEGIN,
                                               CharacterNGramMC.CHAR_WORD_END);
-
-        for (String topNgram : topKSet.getKeys()) {
-            if (documentCharNgrams.getKeys().contains(topNgram)) {
-                features.add(
-                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
-            }
-            else {
-                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
-                        FeatureType.BOOLEAN));
+        
+        /*
+         * Instead of iterating all top-k ngrams comparing them to all document ngrams for each
+         * iteration (expensive for large top-Ks),we build all features that might be created only once.
+         * We copy this feature map then for each call, which is cheaper and update only the values of those ngrams that are found.
+         * (TH 2018-09-23) 
+         */
+        Set<Feature> features = new HashSet<>(map);
+        
+        for (String docNgram : documentCharNgrams.getKeys()) {
+            if (topKSet.contains(docNgram)) {
+                // remove default value from set, i.e. feature name and value are part of the
+                // features identity. Thus, remove feature with value 0 and add new one with value
+                // 1. Just adding the same feature with a new value will NOT override the existing
+                // entry.
+                Feature feature = new Feature(getFeaturePrefix() + "_" + docNgram, 0, true, FeatureType.BOOLEAN);
+                features.remove(feature);
+                
+                //Set value to 1, i.e. feature found and mark the feature value as non-default value
+                feature.setValue(1);
+                feature.setDefault(false);
+                
+                //add to set
+                features.add(feature);
             }
         }
+        
+//        for (String topNgram : topKSet.getKeys()) {
+//            if (documentCharNgrams.getKeys().contains(topNgram)) {
+//                features.add(
+//                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
+//            }
+//            else {
+//                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
+//                        FeatureType.BOOLEAN));
+//            }
+//        }
         return features;
+    }
+
+    private void prepare() throws TextClassificationException
+    {
+        map = new HashSet<>(1024);
+        //Iterate once all topK and init features  
+        for(String topNgram : topKSet.getKeys()) {
+            Feature feature = new Feature(getFeaturePrefix() + "_"  + topNgram, 0, true, FeatureType.BOOLEAN);
+            map.add(feature);
+        }
     }
 
     @Override
@@ -84,7 +124,7 @@ public class CharacterNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return "chrng";
+        return getClass().getSimpleName();
     }
 
     @Override
