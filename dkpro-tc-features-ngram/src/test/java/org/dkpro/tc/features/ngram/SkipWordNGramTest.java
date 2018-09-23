@@ -62,7 +62,7 @@ public class SkipWordNGramTest
         List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
         assertEquals(1, features.size());
 
-        assertEquals("SkipWordNGram_a_mice", features.get(0).getName());
+        assertEquals(SkipWordNGram.FEATURE_PREFIX + "_a_mice", features.get(0).getName());
     }
 
     @Override

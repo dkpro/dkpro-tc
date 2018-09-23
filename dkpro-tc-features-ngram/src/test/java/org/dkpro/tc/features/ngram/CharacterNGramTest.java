@@ -64,8 +64,8 @@ public class CharacterNGramTest
         assertEquals(2, instances.get(0).getFeatures().size());
 
         List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
-        assertEquals("CharacterNGram_ly", features.get(0).getName());
-        assertEquals("CharacterNGram_u163u32", features.get(1).getName());
+        assertEquals(CharacterNGram.FEATURE_PREFIX + "_ly", features.get(0).getName());
+        assertEquals(CharacterNGram.FEATURE_PREFIX + "_u163u32", features.get(1).getName());
     }
 
     @Override

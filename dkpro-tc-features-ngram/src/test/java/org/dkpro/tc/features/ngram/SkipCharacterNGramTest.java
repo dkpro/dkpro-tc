@@ -62,7 +62,7 @@ public class SkipCharacterNGramTest
         assertEquals(1, instances.get(0).getFeatures().size());
 
         List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
-        assertEquals("SkipCharacterNGram_a_a", features.get(0).getName());
+        assertEquals(SkipCharacterNGram.FEATURE_PREFIX + "_a_a", features.get(0).getName());
     }
 
     @Override

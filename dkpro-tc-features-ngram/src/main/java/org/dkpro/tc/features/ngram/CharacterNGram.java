@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 public class CharacterNGram
     extends AbstractNgram
 {
-    
+    public static final String FEATURE_PREFIX = "cNg";
     private Set<Feature> prepFeatSet;
     
     @Override
@@ -73,7 +73,7 @@ public class CharacterNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return getClass().getSimpleName();
+        return FEATURE_PREFIX;
     }
 
     @Override
