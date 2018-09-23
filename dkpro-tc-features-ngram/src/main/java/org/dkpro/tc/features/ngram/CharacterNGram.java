@@ -18,6 +18,7 @@
 package org.dkpro.tc.features.ngram;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,15 +47,20 @@ public class CharacterNGram
     extends LuceneFeatureExtractorBase
     implements FeatureExtractor
 {
-
+    
     @Override
-    public Set<Feature> extract(JCas jCas, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
+        
         Set<Feature> features = new HashSet<Feature>();
         FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC
-                .getAnnotationCharacterNgrams(aTarget, ngramLowerCase, ngramMinN, ngramMaxN, '^',
-                        '$');
+                .getAnnotationCharacterNgrams(aTarget, 
+                                              ngramLowerCase, 
+                                              ngramMinN, 
+                                              ngramMaxN, 
+                                              CharacterNGramMC.CHAR_WORD_BEGIN,
+                                              CharacterNGramMC.CHAR_WORD_END);
 
         for (String topNgram : topKSet.getKeys()) {
             if (documentCharNgrams.getKeys().contains(topNgram)) {
@@ -78,7 +84,7 @@ public class CharacterNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return getClass().getSimpleName();
+        return "chrng";
     }
 
     @Override

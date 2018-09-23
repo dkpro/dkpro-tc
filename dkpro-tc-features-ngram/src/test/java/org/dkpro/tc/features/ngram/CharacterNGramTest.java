@@ -51,7 +51,7 @@ public class CharacterNGramTest
     {
         Set<String> entriesFromIndex = getEntriesFromIndex(luceneFolder);
 
-        assertEquals(27, entriesFromIndex.size());
+        assertEquals(29, entriesFromIndex.size());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CharacterNGramTest
 
         List<Feature> features = new ArrayList<Feature>(instances.get(0).getFeatures());
         assertEquals("CharacterNGram_ly", features.get(0).getName());
-        assertEquals("CharacterNGram_yu32", features.get(1).getName());
+        assertEquals("CharacterNGram_u163u32", features.get(1).getName());
     }
 
     @Override
