@@ -99,6 +99,19 @@ public class Feature
     {
         return isDefaultValue;
     }
+    
+    /**
+     * Marks the feature value as being either the default value for this feature or not. Providing
+     * the value 'false' means that a non-default feature value is set, providing 'true' marks a
+     * feature value as the default value.
+     * 
+     * @param isDefault
+     *      boolean that expresses whether the feature value is the default value for a feature
+     */
+    public void setDefault(boolean isDefault)
+    {
+        this.isDefaultValue = isDefault;
+    }
 
     @Override
     public String toString()
