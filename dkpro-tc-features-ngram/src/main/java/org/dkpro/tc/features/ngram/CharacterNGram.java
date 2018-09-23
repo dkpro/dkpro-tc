@@ -57,7 +57,6 @@ public class CharacterNGram
             prepare();
         }
         
-        
         FrequencyDistribution<String> documentCharNgrams = CharacterNGramMC
                 .getAnnotationCharacterNgrams(aTarget, 
                                               ngramLowerCase, 
@@ -92,16 +91,6 @@ public class CharacterNGram
             }
         }
         
-//        for (String topNgram : topKSet.getKeys()) {
-//            if (documentCharNgrams.getKeys().contains(topNgram)) {
-//                features.add(
-//                        new Feature(getFeaturePrefix() + "_" + topNgram, 1, FeatureType.BOOLEAN));
-//            }
-//            else {
-//                features.add(new Feature(getFeaturePrefix() + "_" + topNgram, 0, true,
-//                        FeatureType.BOOLEAN));
-//            }
-//        }
         return features;
     }
 
