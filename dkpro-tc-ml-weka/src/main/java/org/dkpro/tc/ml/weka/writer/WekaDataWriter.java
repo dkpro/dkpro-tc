@@ -116,7 +116,7 @@ public class WekaDataWriter
     }
 
     @Override
-    public void writeGenericFormat(Collection<Instance> instances)
+    public void writeGenericFormat(List<Instance> instances)
         throws AnalysisEngineProcessException
     {
         try {
@@ -235,7 +235,7 @@ public class WekaDataWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> instances)
+    public void writeClassifierFormat(List<Instance> instances)
         throws AnalysisEngineProcessException
     {
 

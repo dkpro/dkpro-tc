@@ -76,7 +76,7 @@ public class LibsvmDataFormatWriter
     private Map<String, Integer> outcomeMap;
 
     @Override
-    public void writeGenericFormat(Collection<Instance> instances)
+    public void writeGenericFormat(List<Instance> instances)
         throws AnalysisEngineProcessException
     {
 
@@ -128,7 +128,7 @@ public class LibsvmDataFormatWriter
     }
 
     @Override
-    public void writeClassifierFormat(Collection<Instance> in) throws AnalysisEngineProcessException
+    public void writeClassifierFormat(List<Instance> instances) throws AnalysisEngineProcessException
     {
 
         try {
@@ -137,8 +137,6 @@ public class LibsvmDataFormatWriter
             }
 
             initClassifierFormat();
-
-            List<Instance> instances = new ArrayList<>(in);
 
             for (Instance instance : instances) {
                 Map<Integer, Double> entry = new HashMap<>();
