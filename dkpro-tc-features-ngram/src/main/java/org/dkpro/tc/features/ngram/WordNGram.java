@@ -45,7 +45,6 @@ public class WordNGram
 {
     
     public static final String FEATURE_PREFIX = "wNg";
-    private Set<Feature> prepFeatSet;
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
