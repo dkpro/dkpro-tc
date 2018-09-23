@@ -22,7 +22,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -36,6 +35,8 @@ public class CharacterNGramMC
     extends LuceneMC
 {
     public static final String LUCENE_CHAR_NGRAM_FIELD = "charngram";
+    public static final char CHAR_WORD_BEGIN = '£';
+    public static final char CHAR_WORD_END = '@';
 
     @ConfigurationParameter(name = CharacterNGram.PARAM_NGRAM_MIN_N, mandatory = true, defaultValue = "1")
     private int ngramMinN;
@@ -58,13 +59,9 @@ public class CharacterNGramMC
     }
 
     @Override
-    protected FrequencyDistribution<String> getNgramsFD(JCas jcas)
+    protected FrequencyDistribution<String> getNgramsFD(JCas aJCas)
     {
-        TextClassificationTarget fullDoc = new TextClassificationTarget(jcas, 0,
-                jcas.getDocumentText().length());
-        FrequencyDistribution<String> fd = getAnnotationCharacterNgrams(fullDoc, lowerCase,
-                ngramMinN, ngramMaxN, '^', '$');
-        return fd;
+        return getCharacterNgramsFromCasText(aJCas.getDocumentText(), lowerCase, ngramMinN, ngramMaxN);
     }
 
     @Override
@@ -107,6 +104,25 @@ public class CharacterNGramMC
         FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
         for (String charNgram : new CharacterNGramStringIterable(boundaryBegin + text + boundaryEnd,
                 minN, maxN)) {
+            charNgrams.inc(charNgram);
+        }
+
+        return charNgrams;
+    }
+    
+    
+    private FrequencyDistribution<String> getCharacterNgramsFromCasText(
+            String text, boolean lowerCaseNgrams, int minN, int maxN)
+    {
+        
+        if (lowerCaseNgrams) {
+            text = text.toLowerCase();
+        }
+        
+        text = CHAR_WORD_BEGIN + text.replaceAll(" ", CHAR_WORD_BEGIN + " " + CHAR_WORD_END) + CHAR_WORD_END;
+
+        FrequencyDistribution<String> charNgrams = new FrequencyDistribution<String>();
+        for (String charNgram : new CharacterNGramStringIterable(text, minN, maxN)) {
             charNgrams.inc(charNgram);
         }
 
