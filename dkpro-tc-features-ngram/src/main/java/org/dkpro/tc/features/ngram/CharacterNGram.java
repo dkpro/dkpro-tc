@@ -47,13 +47,13 @@ public class CharacterNGram
     implements FeatureExtractor
 {
     
-    private Set<Feature> map;
+    private Set<Feature> prepFeatSet;
     
     @Override
     public Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        if (map == null) {
+        if (prepFeatSet == null) {
             prepare();
         }
         
@@ -71,7 +71,7 @@ public class CharacterNGram
          * We copy this feature map then for each call, which is cheaper and update only the values of those ngrams that are found.
          * (TH 2018-09-23) 
          */
-        Set<Feature> features = new HashSet<>(map);
+        Set<Feature> features = new HashSet<>(prepFeatSet);
         
         for (String docNgram : documentCharNgrams.getKeys()) {
             if (topKSet.contains(docNgram)) {
@@ -96,11 +96,11 @@ public class CharacterNGram
 
     private void prepare() throws TextClassificationException
     {
-        map = new HashSet<>(1024);
+        prepFeatSet = new HashSet<>(1024);
         //Iterate once all topK and init features  
         for(String topNgram : topKSet.getKeys()) {
             Feature feature = new Feature(getFeaturePrefix() + "_"  + topNgram, 0, true, FeatureType.BOOLEAN);
-            map.add(feature);
+            prepFeatSet.add(feature);
         }
     }
 
