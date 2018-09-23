@@ -47,6 +47,8 @@ public class SkipWordNGram
     @ConfigurationParameter(name = PARAM_SKIP_SIZE, mandatory = true, defaultValue = "2")
     protected int skipSize;
     
+    public static final String FEATURE_PREFIX = "wSkNg";
+    
     private Set<Feature> prepFeatSet;
 
     @Override
@@ -85,7 +87,7 @@ public class SkipWordNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return getClass().getSimpleName();
+        return FEATURE_PREFIX;
     }
 
     @Override

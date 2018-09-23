@@ -79,9 +79,9 @@ public class WordNGramTest
             }
         }
         assertEquals(3, featureNames.size());
-        assertTrue(featureNames.contains("ngram_4"));
-        assertTrue(featureNames.contains("ngram_5"));
-        assertTrue(featureNames.contains("ngram_5_5"));
+        assertTrue(featureNames.contains(WordNGram.FEATURE_PREFIX+"_4"));
+        assertTrue(featureNames.contains(WordNGram.FEATURE_PREFIX+"_5"));
+        assertTrue(featureNames.contains(WordNGram.FEATURE_PREFIX+"_5_5"));
     }
 
     @Override

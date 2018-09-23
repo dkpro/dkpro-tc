@@ -44,6 +44,7 @@ public class WordNGram
     extends AbstractNgram
 {
     
+    public static final String FEATURE_PREFIX = "wNg";
     private Set<Feature> prepFeatSet;
 
     @Override
@@ -96,7 +97,7 @@ public class WordNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return "ngram";
+        return FEATURE_PREFIX;
     }
 
     @Override

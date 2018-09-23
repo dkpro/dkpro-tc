@@ -44,6 +44,8 @@ public class SkipCharacterNGram
     public static final String PARAM_CHAR_SKIP_SIZE = "charSkipSize";
     @ConfigurationParameter(name = PARAM_CHAR_SKIP_SIZE, mandatory = true)
     protected int charSkipSize;
+    
+    public static final String FEATURE_PREFIX = "cSkNg";
 
     private Set<Feature> prepFeatSet;
     
@@ -83,7 +85,7 @@ public class SkipCharacterNGram
     @Override
     protected String getFeaturePrefix()
     {
-        return getClass().getSimpleName();
+        return FEATURE_PREFIX;
     }
 
     @Override
