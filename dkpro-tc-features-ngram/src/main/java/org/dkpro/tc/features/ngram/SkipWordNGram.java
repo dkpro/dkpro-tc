@@ -48,8 +48,6 @@ public class SkipWordNGram
     protected int skipSize;
     
     public static final String FEATURE_PREFIX = "wSkNg";
-    
-    private Set<Feature> prepFeatSet;
 
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)

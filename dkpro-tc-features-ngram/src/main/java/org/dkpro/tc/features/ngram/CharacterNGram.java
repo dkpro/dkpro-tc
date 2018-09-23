@@ -42,7 +42,6 @@ public class CharacterNGram
     extends AbstractNgram
 {
     public static final String FEATURE_PREFIX = "cNg";
-    private Set<Feature> prepFeatSet;
     
     @Override
     public Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)

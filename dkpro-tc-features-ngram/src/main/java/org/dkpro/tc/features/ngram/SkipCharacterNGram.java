@@ -46,8 +46,6 @@ public class SkipCharacterNGram
     protected int charSkipSize;
     
     public static final String FEATURE_PREFIX = "cSkNg";
-
-    private Set<Feature> prepFeatSet;
     
     @Override
     public Set<Feature> extract(JCas jcas, TextClassificationTarget aTarget)
