@@ -35,7 +35,7 @@ import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;

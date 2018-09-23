@@ -36,7 +36,7 @@ import org.dkpro.tc.api.features.PairFeatureExtractor;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.NGramFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.KeywordNGramUtils;
 import org.dkpro.tc.features.pair.core.ngram.meta.LuceneKeywordPMetaCollector;
 import org.dkpro.tc.features.pair.core.ngram.meta.LucenePFEBase;

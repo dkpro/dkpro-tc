@@ -28,8 +28,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
-import org.dkpro.tc.features.ngram.base.NGramFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.LuceneFeatureExtractorBase;
+import org.dkpro.tc.features.ngram.meta.base.NGramFeatureExtractorBase;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 

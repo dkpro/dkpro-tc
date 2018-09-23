@@ -18,7 +18,6 @@
 package org.dkpro.tc.features.ngram;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +28,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractor;
-import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.features.ngram.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.meta.CharacterNGramMC;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -43,8 +39,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
  */
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
 public class CharacterNGram
-    extends LuceneFeatureExtractorBase
-    implements FeatureExtractor
+    extends AbstractNgram
 {
     
     private Set<Feature> prepFeatSet;
@@ -65,43 +60,8 @@ public class CharacterNGram
                                               CharacterNGramMC.CHAR_WORD_BEGIN,
                                               CharacterNGramMC.CHAR_WORD_END);
         
-        /*
-         * Instead of iterating all top-k ngrams comparing them to all document ngrams for each
-         * iteration (expensive for large top-Ks),we build all features that might be created only once.
-         * We copy this feature map then for each call, which is cheaper and update only the values of those ngrams that are found.
-         * (TH 2018-09-23) 
-         */
-        Set<Feature> features = new HashSet<>(prepFeatSet);
         
-        for (String docNgram : documentCharNgrams.getKeys()) {
-            if (topKSet.contains(docNgram)) {
-                // remove default value from set, i.e. feature name and value are part of the
-                // features identity. Thus, remove feature with value 0 and add new one with value
-                // 1. Just adding the same feature with a new value will NOT override the existing
-                // entry.
-                Feature feature = new Feature(getFeaturePrefix() + "_" + docNgram, 0, true, FeatureType.BOOLEAN);
-                features.remove(feature);
-                
-                //Set value to 1, i.e. feature found and mark the feature value as non-default value
-                feature.setValue(1);
-                feature.setDefault(false);
-                
-                //add to set
-                features.add(feature);
-            }
-        }
-        
-        return features;
-    }
-
-    private void prepare() throws TextClassificationException
-    {
-        prepFeatSet = new HashSet<>(1024);
-        //Iterate once all topK and init features  
-        for(String topNgram : topKSet.getKeys()) {
-            Feature feature = new Feature(getFeaturePrefix() + "_"  + topNgram, 0, true, FeatureType.BOOLEAN);
-            prepFeatSet.add(feature);
-        }
+        return getFeatureSet(documentCharNgrams);
     }
 
     @Override
