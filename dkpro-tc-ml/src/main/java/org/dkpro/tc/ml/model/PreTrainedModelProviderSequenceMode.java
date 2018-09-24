@@ -40,9 +40,10 @@ public class PreTrainedModelProviderSequenceMode extends PreTrainedModelProvider
 	/**
 	 * This parameters ensures that the needed DKPro TC annotation are created that
 	 * specify what is considered a sequence and the target in the sequence. If this
-	 * is set to true (default is false) then {@link #PARAM_NAME_SEQUENCE_ANNOTATION
-	 * (e.g. {@link Sentence}) and {@link #PARAM_NAME_TARGET_ANNOTATION} (e.g.
-	 * {@link Token}) has to be provided additionally.
+	 * is set to true (default is false) then
+	 * {@link #PARAM_NAME_SEQUENCE_ANNOTATION} (e.g. {@link Sentence}) and
+	 * {@link #PARAM_NAME_TARGET_ANNOTATION} (e.g. {@link Token}) has to be provided
+	 * additionally.
 	 */
 	public static final String PARAM_ADD_TC_BACKEND_ANNOTATION = "addTcBackendAnnotation";
 	@ConfigurationParameter(name = PARAM_ADD_TC_BACKEND_ANNOTATION, mandatory = false, defaultValue = "false")

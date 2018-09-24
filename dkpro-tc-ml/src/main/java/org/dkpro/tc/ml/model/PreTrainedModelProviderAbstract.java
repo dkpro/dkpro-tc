@@ -182,11 +182,6 @@ public abstract class PreTrainedModelProviderAbstract
         return prop.getProperty(DIM_LEARNING_MODE);
     }
 
-    /**
-     * @param featureExtractorClassNames
-     * @return A fully configured feature extractor connector
-     * @throws ResourceInitializationException
-     */
     protected AnalysisEngineDescription getSaveModelConnector(String outputPath,
             TcShallowLearningAdapter adapter, String learningMode, String featureMode,
             List<ExternalResourceDescription> featureExtractor)
@@ -209,42 +204,6 @@ public abstract class PreTrainedModelProviderAbstract
         return AnalysisEngineFactory.createEngineDescription(mlAdapter.getLoadModelConnectorClass(),
                 parameters.toArray());
     }
-
-//    @Override
-//    public void process(JCas aJCas) throws AnalysisEngineProcessException
-//    {
-//        if (!JCasUtil.exists(aJCas, JCasId.class)) {
-//            JCasId id = new JCasId(aJCas);
-//            id.setId(jcasId++);
-//            id.addToIndexes();
-//        }
-//
-//        switch (featureMode) {
-//        case Constants.FM_DOCUMENT:
-//            processDocument(aJCas);
-//            break;
-//        case Constants.FM_PAIR:
-//            // same as document
-//            processDocument(aJCas);
-//            break;
-//        case Constants.FM_SEQUENCE:
-//            processSequence(aJCas);
-//            break;
-//        case Constants.FM_UNIT:
-//            processUnit(aJCas);
-//            break;
-//        default:
-//            throw new IllegalStateException("Feature mode [" + featureMode + "] is unknown");
-//        }
-//
-//        if (conversionAnnotator != null && conversionAnnotator.length > 0) {
-//            callConversionEngine(aJCas);
-//        }
-//
-//        if (!retainTargets) {
-//            removeTargets(aJCas);
-//        }
-//    }
 
     protected void removeTargets(JCas aJCas)
     {
@@ -278,99 +237,4 @@ public abstract class PreTrainedModelProviderAbstract
             o.removeFromIndexes();
         }
     }
-
-//    private void processUnit(JCas aJCas) throws AnalysisEngineProcessException
-//    {
-//        Type type = aJCas.getCas().getTypeSystem().getType(targetName);
-//        Collection<AnnotationFS> typeSelection = CasUtil.select(aJCas.getCas(), type);
-//        List<AnnotationFS> targetAnnotation = new ArrayList<AnnotationFS>(typeSelection);
-//        TextClassificationOutcome tco = null;
-//        List<String> outcomes = new ArrayList<String>();
-//
-//        // iterate the units and set on each a prepared dummy outcome
-//        for (AnnotationFS target : targetAnnotation) {
-//            TextClassificationTarget tcs = new TextClassificationTarget(aJCas, target.getBegin(),
-//                    target.getEnd());
-//            tcs.addToIndexes();
-//
-//            tco = new TextClassificationOutcome(aJCas, target.getBegin(), target.getEnd());
-//            tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
-//            tco.addToIndexes();
-//
-//            engine.process(aJCas);
-//
-//            // store the outcome
-//            outcomes.add(tco.getOutcome());
-//            tcs.removeFromIndexes();
-//            tco.removeFromIndexes();
-//        }
-//
-//        // iterate again to set for each unit the outcome
-//        for (int i = 0; i < targetAnnotation.size(); i++) {
-//            AnnotationFS target = targetAnnotation.get(i);
-//            tco = new TextClassificationOutcome(aJCas, target.getBegin(), target.getEnd());
-//            tco.setOutcome(outcomes.get(i));
-//            tco.addToIndexes();
-//        }
-//
-//    }
-//
-//    private void processSequence(JCas aJCas) throws AnalysisEngineProcessException
-//    {
-//
-//		addTCSequenceAnnotation(aJCas);
-//		addTcTargetAndOutcomeAnnotation(aJCas);
-//
-//        // process and classify
-//        engine.process(aJCas);
-//    }
-//
-//    private void addTcTargetAndOutcomeAnnotation(JCas aJCas)
-//    {
-//        Type type = aJCas.getCas().getTypeSystem().getType(targetName);
-//
-//        Collection<AnnotationFS> unitAnnotation = CasUtil.select(aJCas.getCas(), type);
-//        for (AnnotationFS unit : unitAnnotation) {
-//            TextClassificationTarget tcs = new TextClassificationTarget(aJCas, unit.getBegin(),
-//                    unit.getEnd());
-//            tcs.addToIndexes();
-//            TextClassificationOutcome tco = new TextClassificationOutcome(aJCas, unit.getBegin(),
-//                    unit.getEnd());
-//            tco.setOutcome(Constants.TC_OUTCOME_DUMMY_VALUE);
-//            tco.addToIndexes();
-//        }
-//    }
-//
-//    private void addTCSequenceAnnotation(JCas jcas)
-//    {
-//        Type type = jcas.getCas().getTypeSystem().getType(sequenceName);
-//
-//        Collection<AnnotationFS> sequenceAnnotation = CasUtil.select(jcas.getCas(), type);
-//        for (AnnotationFS seq : sequenceAnnotation) {
-//            TextClassificationSequence tcs = new TextClassificationSequence(jcas, seq.getBegin(),
-//                    seq.getEnd());
-//            tcs.addToIndexes();
-//        }
-//    }
-//
-//    private void processDocument(JCas aJCas) throws AnalysisEngineProcessException
-//    {
-//		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length());
-//		aTarget.addToIndexes();
-//
-//		TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
-//		outcome.setOutcome("");
-//		outcome.addToIndexes();
-//
-//        // create new UIMA annotator in order to separate the parameter spaces
-//        // this annotator will get initialized with its own set of parameters
-//        // loaded from the model
-//        try {
-//            engine.process(aJCas);
-//        }
-//        catch (Exception e) {
-//            throw new AnalysisEngineProcessException(e);
-//        }
-//    }
-
 }
