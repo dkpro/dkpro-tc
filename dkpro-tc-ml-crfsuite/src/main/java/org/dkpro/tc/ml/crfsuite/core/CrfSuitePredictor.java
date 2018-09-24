@@ -182,7 +182,7 @@ public class CrfSuitePredictor
     {
         InputStream src = aProcess.getInputStream();
         Scanner sc = new Scanner(src, "utf-8");
-        StringBuilder dest = new StringBuilder();
+        StringBuilder dest = new StringBuilder(1024);
         while (sc.hasNextLine()) {
             String l = sc.nextLine();
             dest.append(l + "\n");

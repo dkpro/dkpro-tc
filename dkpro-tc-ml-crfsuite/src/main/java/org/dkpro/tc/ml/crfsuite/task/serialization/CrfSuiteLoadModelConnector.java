@@ -79,7 +79,7 @@ public class CrfSuiteLoadModelConnector
     {
         try {
             int sequenceId = 0;
-            
+
             List<Instance> instance = new ArrayList<>(2048);
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
@@ -98,7 +98,7 @@ public class CrfSuiteLoadModelConnector
                 StringBuilder buffer = new StringBuilder();
                 int limit = 5000;
                 int idx = 0;
-                
+
                 while (iterator.hasNext()) {
                     StringBuilder seqInfo = iterator.next();
                     buffer.append(seqInfo);
@@ -121,10 +121,10 @@ public class CrfSuiteLoadModelConnector
 
     }
 
-    private void setPredictedOutcome(JCas jcas, String aLabels)
+    private void setPredictedOutcome(JCas aJCas, String aLabels)
     {
         List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
+                JCasUtil.select(aJCas, TextClassificationOutcome.class));
         String[] labels = aLabels.split("\n");
 
         for (int i = 0, labelIdx = 0; i < outcomes.size(); i++) {
@@ -140,27 +140,27 @@ public class CrfSuiteLoadModelConnector
     }
 
     private List<Instance> getInstancesInSequence(
-            FeatureExtractorResource_ImplBase[] featureExtractors, JCas jcas,
-            TextClassificationSequence sequence, boolean addInstanceId, int sequenceId)
+            FeatureExtractorResource_ImplBase[] aFeatureExtractors, JCas aJCas,
+            TextClassificationSequence aSequencd, boolean addInstanceId, int aSequenceId)
         throws Exception
     {
 
         List<Instance> instances = new ArrayList<Instance>();
-        int jcasId = JCasUtil.selectSingle(jcas, JCasId.class).getId();
-        List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(jcas,
-                TextClassificationTarget.class, sequence);
+        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
+        List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(aJCas,
+                TextClassificationTarget.class, aSequencd);
 
         for (TextClassificationTarget aTarget : seqTargets) {
 
             Instance instance = new Instance();
             if (addInstanceId) {
-                instance.addFeature(InstanceIdFeature.retrieve(jcas, aTarget, sequenceId));
+                instance.addFeature(InstanceIdFeature.retrieve(aJCas, aTarget, aSequenceId));
             }
 
             // execute feature extractors and add features to instance
             try {
-                for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, aTarget);
+                for (FeatureExtractorResource_ImplBase featExt : aFeatureExtractors) {
+                    Set<Feature> features = ((FeatureExtractor) featExt).extract(aJCas, aTarget);
                     features.forEach(x -> {
                         if (!x.isDefaultValue()) {
                             instance.addFeature(x);
@@ -173,9 +173,9 @@ public class CrfSuiteLoadModelConnector
             }
 
             // set and write outcome label(s)
-            instance.setOutcomes(getOutcomes(jcas, aTarget));
+            instance.setOutcomes(getOutcomes(aJCas, aTarget));
             instance.setJcasId(jcasId);
-            instance.setSequenceId(sequenceId);
+            instance.setSequenceId(aSequenceId);
             instance.setSequencePosition(aTarget.getId());
 
             instances.add(instance);
@@ -184,19 +184,21 @@ public class CrfSuiteLoadModelConnector
         return instances;
     }
 
-    private List<String> getOutcomes(JCas jcas, AnnotationFS unit)
+    private List<String> getOutcomes(JCas aJCas, AnnotationFS aTarget)
         throws TextClassificationException
     {
         Collection<TextClassificationOutcome> outcomes;
-        if (unit == null) {
-            outcomes = JCasUtil.select(jcas, TextClassificationOutcome.class);
+        if (aTarget == null) {
+            outcomes = JCasUtil.select(aJCas, TextClassificationOutcome.class);
         }
         else {
-            outcomes = JCasUtil.selectCovered(jcas, TextClassificationOutcome.class, unit);
+            outcomes = JCasUtil.selectCovered(aJCas, TextClassificationOutcome.class, aTarget);
         }
 
         if (outcomes.size() == 0) {
-            throw new TextClassificationException("No outcome annotations present in current CAS.");
+            throw new TextClassificationException(
+                    "No [" + TextClassificationOutcome.class.getName()
+                            + "] annotations present in current CAS.");
         }
 
         List<String> stringOutcomes = new ArrayList<String>();
