@@ -35,7 +35,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
  * the folder name is a suited label.
  * 
  * The text of a file in a folder is read as self-contained document into a JCas and the entire
- * text-span is {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is set as
+ * text-span is the {@link org.dkpro.tc.api.type.TextClassificationTarget}. The folder name is set as the expected 
  * {@link org.dkpro.tc.api.type.TextClassificationOutcome}.
  */
 public class FolderwiseDataReader
