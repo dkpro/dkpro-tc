@@ -61,4 +61,17 @@ public class DelimiterSeparatedValuesReaderTest
         assertEquals(15, readOutcomes.size());
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testSplitException() throws Exception {
+    	 // all in one
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_DELIMITER_CHAR, "XD",
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt");
+        
+        while(reader.hasNext()) {
+        	reader.getNext(JCasFactory.createJCas().getCas());
+        }
+    }
 }

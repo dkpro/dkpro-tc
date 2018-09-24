@@ -137,6 +137,8 @@ public class DelimiterSeparatedSequenceValuesReader
             for (int i = 0; i < sequence.size(); i++) {
                 String e = sequence.get(i);
                 String[] entry = e.split(delimiter);
+                
+                checkSplit(entry);
 
                 String token = entry[tokenIdx];
                 String outcome = entry[outcomeIdx];
@@ -166,7 +168,14 @@ public class DelimiterSeparatedSequenceValuesReader
         sequenceBuffer = new ArrayList<>();
     }
 
-    protected String performAdditionalOutcomeOperation(String outcome)
+	protected void checkSplit(String[] entry) {
+		if (entry.length < 2) {
+			throw new IllegalStateException("Expected two values but got [" + entry.length
+					+ "] after splitting with delimiter [" + delimiter + "]");
+		}
+	}
+
+	protected String performAdditionalOutcomeOperation(String outcome)
     {
         // opportunity to modify token information by overloading
         return outcome;

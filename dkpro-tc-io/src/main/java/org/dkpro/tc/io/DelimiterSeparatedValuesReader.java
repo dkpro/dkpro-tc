@@ -103,6 +103,8 @@ public class DelimiterSeparatedValuesReader
 
         String[] split = nextDocument.split(delimiter);
 
+        checkSplit(split);
+        
         String text = split[textIdx].trim();
         String outcome = split[outcomeIdx].trim();
 
@@ -119,6 +121,13 @@ public class DelimiterSeparatedValuesReader
 
         aJCas.setDocumentText(documentText.toString().trim());
     }
+    
+	protected void checkSplit(String[] entry) {
+		if (entry.length < 2) {
+			throw new IllegalStateException("Expected two values but got [" + entry.length
+					+ "] after splitting with delimiter [" + delimiter + "]");
+		}
+	}
 
     protected String performAdditionalOutcomeOperation(String outcome)
     {

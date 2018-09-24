@@ -377,5 +377,20 @@ public class DelimiterSeparatedSequenceValuesReaderTest
         assertEquals(5, sentCount);
         assertEquals(25, tokenCount);
     }
+    
+    @Test(expected = IllegalStateException.class)
+    public void testSplitException() throws Exception {
+    	 // all in one
+        CollectionReader reader = CollectionReaderFactory.createReader(
+                DelimiterSeparatedSequenceValuesReader.class,
+                DelimiterSeparatedSequenceValuesReader.PARAM_DELIMITER_CHAR, "XD",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SOURCE_LOCATION,
+                "src/test/resources/sequence/posDummy.txt",
+                DelimiterSeparatedSequenceValuesReader.PARAM_SEQUENCES_PER_CAS, 10);
+        
+        while(reader.hasNext()) {
+        	reader.getNext(JCasFactory.createJCas().getCas());
+        }
+    }
 
 }
