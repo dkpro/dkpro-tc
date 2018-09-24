@@ -49,8 +49,8 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderSequenceMode;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
-import org.dkpro.tc.ml.uima.TcAnnotator;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -138,11 +138,11 @@ public class SVMHMMSaveAndLoadModelTest
                                 50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
                         TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
-        Map<String, Object> wekaConfig = new HashMap<>();
-        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter() });
-        wekaConfig.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
-        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
+        Map<String, Object> svmhmmConfig = new HashMap<>();
+        svmhmmConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new SvmHmmAdapter() });
+        svmhmmConfig.put(DIM_DATA_WRITER, new SvmHmmAdapter().getDataWriterClass());
+        svmhmmConfig.put(DIM_FEATURE_USE_SPARSE, new SvmHmmAdapter().useSparseFeatures());
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", svmhmmConfig);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
@@ -164,10 +164,11 @@ public class SVMHMMSaveAndLoadModelTest
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderSequenceMode.class,
+        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+        		PreTrainedModelProviderSequenceMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);

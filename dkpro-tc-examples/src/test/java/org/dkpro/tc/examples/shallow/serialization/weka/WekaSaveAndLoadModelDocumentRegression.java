@@ -49,13 +49,12 @@ import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.LinearRegression;
 
@@ -124,9 +123,8 @@ public class WekaSaveAndLoadModelDocumentRegression
 
         AnalysisEngine segmenter = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderDocumentMode.class,
+        		PreTrainedModelProviderDocumentMode.PARAM_TC_MODEL_LOCATION, modelFolder);
 
         JCas jcas = JCasFactory.createJCas();
         reader.hasNext();

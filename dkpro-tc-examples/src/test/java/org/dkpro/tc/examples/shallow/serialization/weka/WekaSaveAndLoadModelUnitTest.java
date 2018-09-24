@@ -47,7 +47,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderUnitMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -151,9 +151,10 @@ public class WekaSaveAndLoadModelUnitTest
                 TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en",
                 TeiReader.PARAM_PATTERNS, "*.xml");
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(
+        		PreTrainedModelProviderUnitMode.class,
+        		PreTrainedModelProviderUnitMode.PARAM_TC_MODEL_LOCATION, modelFolder,
+        		PreTrainedModelProviderUnitMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         JCas jcas = JCasFactory.createJCas();
         reader.getNext(jcas.getCas());

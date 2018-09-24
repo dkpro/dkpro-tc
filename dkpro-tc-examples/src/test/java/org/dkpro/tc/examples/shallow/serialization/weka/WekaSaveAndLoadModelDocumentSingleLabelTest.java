@@ -50,7 +50,7 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
@@ -61,128 +61,114 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.bayes.NaiveBayes;
 
 /**
- * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
- * as well as all learning models (single-label, multi-label, regression).
+ * Round-trip tests for save/load model experiments. Tests all feature modes
+ * (document, pair, unit), as well as all learning models (single-label,
+ * multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentSingleLabelTest
-    extends TestCaseSuperClass
-    implements Constants
-{
-    static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
-    static String documentTrainFolderReuters = "src/main/resources/data/reuters/training";
-    static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
+public class WekaSaveAndLoadModelDocumentSingleLabelTest extends TestCaseSuperClass implements Constants {
+	static String documentTrainFolder = "src/main/resources/data/twentynewsgroups/bydate-train";
+	static String documentTrainFolderReuters = "src/main/resources/data/reuters/training";
+	static String documentGoldLabelsReuters = "src/main/resources/data/reuters/cats.txt";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
-    public void setup() throws Exception
-    {
-        super.setup();
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-    }
+	@Before
+	public void setup() throws Exception {
+		super.setup();
+		DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+	}
 
-    private ParameterSpace documentGetParameterSpaceSingleLabel()
-        throws ResourceInitializationException
-    {
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	private ParameterSpace documentGetParameterSpaceSingleLabel() throws ResourceInitializationException {
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
-                documentTrainFolder, FolderwiseDataReader.PARAM_LANGUAGE, "en",
-                FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
+		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, documentTrainFolder,
+				FolderwiseDataReader.PARAM_LANGUAGE, "en", FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Map<String, Object> wekaConfig = new HashMap<>();
-        wekaConfig.put(DIM_CLASSIFICATION_ARGS,
-                new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
+		Map<String, Object> wekaConfig = new HashMap<>();
+		wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), NaiveBayes.class.getName() });
+		wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
+		wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+		Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(
-                        TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K,
-                                50, WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
-                        TcFeatureFactory.create(TokenRatioPerDocument.class)));
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(
+						TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 50,
+								WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3),
+						TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL),
-                Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT), dimFeatureSets, mlas);
-        return pSpace;
-    }
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
+				dimFeatureSets, mlas);
+		return pSpace;
+	}
 
-    @Test
-    public void documentRoundTripWekaSingleLabel() throws Exception
-    {
+	@Test
+	public void documentRoundTripWekaSingleLabel() throws Exception {
 
-        DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
-        File modelFolder = folder.newFolder();
+		DemoUtils.setDkproHome(WekaSaveAndLoadModelDocumentSingleLabelTest.class.getSimpleName());
+		File modelFolder = folder.newFolder();
 
-        ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
-        documentWriteModel(docParamSpace, modelFolder);
-        documentLoadModelSingleLabel(modelFolder);
+		ParameterSpace docParamSpace = documentGetParameterSpaceSingleLabel();
+		documentWriteModel(docParamSpace, modelFolder);
+		documentLoadModelSingleLabel(modelFolder);
 
-        // verify created files
+		// verify created files
 
-        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        assertTrue(classifierFile.exists());
+		File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+		assertTrue(classifierFile.exists());
 
-        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertTrue(metaOverride.exists());
+		File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+		assertTrue(metaOverride.exists());
 
-        File extractorOverride = new File(
-                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertTrue(extractorOverride.exists());
+		File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+		assertTrue(extractorOverride.exists());
 
-        File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
-        assertTrue(modelMetaFile.exists());
+		File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
+		assertTrue(modelMetaFile.exists());
 
-        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
-        assertTrue(featureMode.exists());
+		File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+		assertTrue(featureMode.exists());
 
-        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
-        assertTrue(learningMode.exists());
+		File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+		assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
-        assertTrue(bipartitionThreshold.exists());
+		File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
+		assertTrue(bipartitionThreshold.exists());
 
-        modelFolder.deleteOnExit();
-    }
+		modelFolder.deleteOnExit();
+	}
 
-    private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder)
-        throws Exception
-    {
-        ExperimentSaveModel batch;
-        batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(
-                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
-    }
+	private static void documentWriteModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
+		ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+		experiment.setPreprocessing(createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+		experiment.setParameterSpace(paramSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		Lab.getInstance().run(experiment);
+	}
 
-    private static void documentLoadModelSingleLabel(File modelFolder) throws Exception
-    {
+	private static void documentLoadModelSingleLabel(File modelFolder) throws Exception {
 
-        AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+		AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderDocumentMode.class,
+				PreTrainedModelProviderDocumentMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+				PreTrainedModelProviderDocumentMode.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
 
-        JCas jcas = JCasFactory.createJCas();
-        jcas.setDocumentText("This is an example text");
-        jcas.setDocumentLanguage("en");
+		JCas jcas = JCasFactory.createJCas();
+		jcas.setDocumentText("This is an example text");
+		jcas.setDocumentLanguage("en");
 
-        tokenizer.process(jcas);
-        tcAnno.process(jcas);
+		tokenizer.process(jcas);
+		tcAnno.process(jcas);
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
-        assertEquals(1, outcomes.size());
-        assertEquals("comp.graphics", outcomes.get(0).getOutcome());
-    }
+		List<TextClassificationOutcome> outcomes = new ArrayList<>(
+				JCasUtil.select(jcas, TextClassificationOutcome.class));
+		assertEquals(1, outcomes.size());
+		assertEquals("comp.graphics", outcomes.get(0).getOutcome());
+	}
 
 }

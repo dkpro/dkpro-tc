@@ -49,7 +49,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderAbstract;
 import org.dkpro.tc.ml.weka.core._eka;
 import org.dkpro.tc.ml.weka.util.AttributeStore;
 import org.dkpro.tc.ml.weka.writer.WekaDataWriter;
@@ -64,7 +64,7 @@ public class WekaLoadModelConnector
     implements Constants
 {
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+    @ConfigurationParameter(name = PreTrainedModelProviderAbstract.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)

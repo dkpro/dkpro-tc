@@ -30,7 +30,7 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationTarget;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderSequenceMode;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
@@ -38,7 +38,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-public class TcAnnotatorTest
+public class ModelProviderConversionFeatureTest
 {
 
     @Test
@@ -54,12 +54,14 @@ public class TcAnnotatorTest
 
         String[] converter = new String[] { ConversionAnnotator.class.getName(),
                 ConversionAnnotator.PARAM_SUFFIX, "-X" };
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName(),
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, "src/test/resources/TcAnnotatorTestModelDummy",
-                TcAnnotator.PARAM_CONVERTION_ANNOTATOR, converter, TcAnnotator.PARAM_RETAIN_TARGETS,
-                false);
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(
+        		PreTrainedModelProviderSequenceMode.class,
+        		PreTrainedModelProviderSequenceMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName(),
+        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, "src/test/resources/TcAnnotatorTestModelDummy",
+        		PreTrainedModelProviderSequenceMode.PARAM_CONVERTION_ANNOTATOR, converter, 
+        		PreTrainedModelProviderSequenceMode.PARAM_RETAIN_TARGETS, false);
         tcAnno.process(aJCas);
 
         assertEquals(0, JCasUtil.select(aJCas, TextClassificationTarget.class).size());

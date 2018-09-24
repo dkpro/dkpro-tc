@@ -50,7 +50,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.weka.MekaAdapter;
 import org.junit.Before;
 import org.junit.Rule;
@@ -159,12 +159,11 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
             boolean singlelabel)
         throws Exception
     {
-        ExperimentSaveModel batch;
-        batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+        experiment.setPreprocessing(createEngineDescription(BreakIteratorSegmenter.class));
+        experiment.setParameterSpace(paramSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private static void documentLoadModelMultiLabel(File modelFolder) throws Exception
@@ -172,8 +171,10 @@ public class WekaSaveAndLoadModelDocumentMultiLabelTest
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(
+        		PreTrainedModelProviderDocumentMode.class,
+        		PreTrainedModelProviderDocumentMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderDocumentMode.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
 
         JCas jcas = JCasFactory.createJCas();
         jcas.setDocumentText("This is an example text");

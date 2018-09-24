@@ -56,7 +56,8 @@ import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderUnitMode;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -170,12 +171,12 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
     private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
         throws Exception
     {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(
+        ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+        experiment.setPreprocessing(
                 createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
+        experiment.setParameterSpace(paramSpace);
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+        Lab.getInstance().run(experiment);
     }
 
     private static void documentLoadAndUseModel(File modelFolder,
@@ -184,8 +185,9 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
     {
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderDocumentMode.class,
+        		PreTrainedModelProviderDocumentMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderDocumentMode.PARAM_TC_MODEL_LOCATION, modelFolder);
 
         CollectionReader reader = CollectionReaderFactory.createReader(TextReader.class,
                 TextReader.PARAM_SOURCE_LOCATION, documentTestFolder, TextReader.PARAM_LANGUAGE,
@@ -262,9 +264,9 @@ public class XgboostSaveAndLoadModelDocumentSingleLabelTest
 
     private static void unitLoadAndUseModel(File modelFolder) throws Exception
     {
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderUnitMode.class,
+        		PreTrainedModelProviderUnitMode.PARAM_TC_MODEL_LOCATION, modelFolder,
+        		PreTrainedModelProviderUnitMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         CollectionReader reader = CollectionReaderFactory.createReader(TeiReader.class,
                 TeiReader.PARAM_SOURCE_LOCATION, unitTrainFolder, TeiReader.PARAM_LANGUAGE, "en",

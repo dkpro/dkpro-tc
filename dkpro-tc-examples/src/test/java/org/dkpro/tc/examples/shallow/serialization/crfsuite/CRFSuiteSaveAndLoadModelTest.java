@@ -51,7 +51,7 @@ import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderSequenceMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.After;
 import org.junit.Before;
@@ -241,10 +241,12 @@ public class CRFSuiteSaveAndLoadModelTest
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(
+        		PreTrainedModelProviderSequenceMode.class,
+        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
+        		PreTrainedModelProviderSequenceMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);
@@ -282,10 +284,11 @@ public class CRFSuiteSaveAndLoadModelTest
 
         AnalysisEngine tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
+        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderSequenceMode.class,
+        		PreTrainedModelProviderSequenceMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
+        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, modelFolder,
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
+        		PreTrainedModelProviderSequenceMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);

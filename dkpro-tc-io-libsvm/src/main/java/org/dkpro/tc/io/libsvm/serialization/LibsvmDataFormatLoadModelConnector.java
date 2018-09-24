@@ -45,7 +45,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderAbstract;
 
 public abstract class LibsvmDataFormatLoadModelConnector
     extends ModelSerialization_ImplBase
@@ -53,7 +53,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
 
     protected String OUTCOME_PLACEHOLDER = "-1";
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+    @ConfigurationParameter(name = PreTrainedModelProviderAbstract.PARAM_TC_MODEL_LOCATION, mandatory = true)
     protected File tcModelLocation;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)

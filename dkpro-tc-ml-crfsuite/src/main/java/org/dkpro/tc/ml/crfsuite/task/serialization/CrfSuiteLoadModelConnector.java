@@ -43,13 +43,13 @@ import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
 import org.dkpro.tc.ml.crfsuite.writer.CrfSuiteFeatureFormatExtractionIterator;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderAbstract;
 
 public class CrfSuiteLoadModelConnector
     extends ModelSerialization_ImplBase
 {
 
-    @ConfigurationParameter(name = TcAnnotator.PARAM_TC_MODEL_LOCATION, mandatory = true)
+    @ConfigurationParameter(name = PreTrainedModelProviderAbstract.PARAM_TC_MODEL_LOCATION, mandatory = true)
     private File tcModelLocation;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)

@@ -49,7 +49,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.uima.TcAnnotator;
+import org.dkpro.tc.ml.model.PreTrainedModelProviderPairMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,112 +59,101 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import weka.classifiers.functions.SMOreg;
 
 /**
- * Round-trip tests for save/load model experiments. Tests all feature modes (document, pair, unit),
- * as well as all learning models (single-label, multi-label, regression).
+ * Round-trip tests for save/load model experiments. Tests all feature modes
+ * (document, pair, unit), as well as all learning models (single-label,
+ * multi-label, regression).
  *
  */
-public class WekaSaveAndLoadModelDocumentPairRegression
-    extends TestCaseSuperClass
-    implements Constants
-{
-    static String pairTrainFiles = "src/main/resources/data/sts2012/STS.input.MSRpar.txt";
-    static String pairGoldFiles = "src/main/resources/data/sts2012/STS.gs.MSRpar.txt";
+public class WekaSaveAndLoadModelDocumentPairRegression extends TestCaseSuperClass implements Constants {
+	static String pairTrainFiles = "src/main/resources/data/sts2012/STS.input.MSRpar.txt";
+	static String pairGoldFiles = "src/main/resources/data/sts2012/STS.gs.MSRpar.txt";
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
-    @Test
-    public void pairRoundTripWekaRegression() throws Exception
-    {
+	@Test
+	public void pairRoundTripWekaRegression() throws Exception {
 
-        File modelFolder = folder.newFolder();
+		File modelFolder = folder.newFolder();
 
-        ParameterSpace pairParamSpace = pairGetParameterSpace();
-        pairWriteModel(pairParamSpace, modelFolder);
-        pairLoadModelRegression(modelFolder);
+		ParameterSpace pairParamSpace = pairGetParameterSpace();
+		pairWriteModel(pairParamSpace, modelFolder);
+		pairLoadModelRegression(modelFolder);
 
-        // verify created files
+		// verify created files
 
-        File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
-        assertTrue(classifierFile.exists());
+		File classifierFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_CLASSIFIER);
+		assertTrue(classifierFile.exists());
 
-        File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
-        assertFalse(metaOverride.exists());
+		File metaOverride = new File(modelFolder.getAbsolutePath() + "/" + META_COLLECTOR_OVERRIDE);
+		assertFalse(metaOverride.exists());
 
-        File extractorOverride = new File(
-                modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
-        assertFalse(extractorOverride.exists());
+		File extractorOverride = new File(modelFolder.getAbsolutePath() + "/" + META_EXTRACTOR_OVERRIDE);
+		assertFalse(extractorOverride.exists());
 
-        File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
-        assertTrue(modelMetaFile.exists());
+		File modelMetaFile = new File(modelFolder.getAbsolutePath() + "/" + MODEL_META);
+		assertTrue(modelMetaFile.exists());
 
-        File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
-        assertTrue(featureMode.exists());
+		File featureMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_FEATURE_MODE);
+		assertTrue(featureMode.exists());
 
-        File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
-        assertTrue(learningMode.exists());
+		File learningMode = new File(modelFolder.getAbsolutePath() + "/" + MODEL_LEARNING_MODE);
+		assertTrue(learningMode.exists());
 
-        File bipartitionThreshold = new File(
-                modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
-        assertTrue(bipartitionThreshold.exists());
+		File bipartitionThreshold = new File(modelFolder.getAbsolutePath() + "/" + MODEL_BIPARTITION_THRESHOLD);
+		assertTrue(bipartitionThreshold.exists());
 
-        modelFolder.deleteOnExit();
-    }
+		modelFolder.deleteOnExit();
+	}
 
-    private static void pairWriteModel(ParameterSpace paramSpace, File modelFolder) throws Exception
-    {
-        ExperimentSaveModel batch = new ExperimentSaveModel("TestSaveModel", modelFolder);
-        batch.setPreprocessing(
-                createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
-        batch.setParameterSpace(paramSpace);
-        batch.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        Lab.getInstance().run(batch);
-    }
+	private static void pairWriteModel(ParameterSpace paramSpace, File modelFolder) throws Exception {
+		ExperimentSaveModel experiment = new ExperimentSaveModel("TestSaveModel", modelFolder);
+		experiment.setPreprocessing(createEngineDescription(createEngineDescription(BreakIteratorSegmenter.class)));
+		experiment.setParameterSpace(paramSpace);
+		experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+		Lab.getInstance().run(experiment);
+	}
 
-    private static ParameterSpace pairGetParameterSpace() throws ResourceInitializationException
-    {
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
+	private static ParameterSpace pairGetParameterSpace() throws ResourceInitializationException {
+		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
-        Object readerTrain = CollectionReaderFactory.createReaderDescription(STSReader.class,
-                STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,
-                pairGoldFiles);
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-        
-        Map<String, Object> wekaConfig = new HashMap<>();
-        wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] {  new WekaAdapter(), SMOreg.class.getName() });
-        wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-        wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
+		Object readerTrain = CollectionReaderFactory.createReaderDescription(STSReader.class,
+				STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE, pairGoldFiles);
+		dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET, new TcFeatureSet(
-                TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
+		Map<String, Object> wekaConfig = new HashMap<>();
+		wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), SMOreg.class.getName() });
+		wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
+		wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+		Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", wekaConfig);
 
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION),
-                Dimension.create(DIM_FEATURE_MODE, FM_PAIR), dimFeatureSets, mlas);
+		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
+				new TcFeatureSet(TcFeatureFactory.create(DiffNrOfTokensPairFeatureExtractor.class)));
 
-        return pSpace;
-    }
+		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_PAIR),
+				dimFeatureSets, mlas);
 
-    private static void pairLoadModelRegression(File modelFolder) throws Exception
-    {
-        CollectionReader reader = CollectionReaderFactory.createReader(STSReader.class,
-                STSReader.PARAM_INPUT_FILE, pairTrainFiles, STSReader.PARAM_GOLD_FILE,
-                pairGoldFiles);
+		return pSpace;
+	}
 
-        AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
-                TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath());
+	private static void pairLoadModelRegression(File modelFolder) throws Exception {
+		CollectionReader reader = CollectionReaderFactory.createReader(STSReader.class, STSReader.PARAM_INPUT_FILE,
+				pairTrainFiles, STSReader.PARAM_GOLD_FILE, pairGoldFiles);
 
-        JCas jcas = JCasFactory.createJCas();
+		AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(PreTrainedModelProviderPairMode.class,
+				PreTrainedModelProviderPairMode.PARAM_TC_MODEL_LOCATION, modelFolder);
 
-        reader.getNext(jcas.getCas());
-        tcAnno.process(jcas);
+		JCas jcas = JCasFactory.createJCas();
 
-        List<TextClassificationOutcome> outcomes = new ArrayList<>(
-                JCasUtil.select(jcas, TextClassificationOutcome.class));
-        assertEquals(1, outcomes.size());
-        assertEquals("4.0958", outcomes.get(0).getOutcome());
+		reader.getNext(jcas.getCas());
+		tcAnno.process(jcas);
 
-    }
+		List<TextClassificationOutcome> outcomes = new ArrayList<>(
+				JCasUtil.select(jcas, TextClassificationOutcome.class));
+		assertEquals(1, outcomes.size());
+		assertEquals("4.0958", outcomes.get(0).getOutcome());
+
+	}
 
 }
