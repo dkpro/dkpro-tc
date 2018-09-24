@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -32,6 +33,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.exception.TextClassificationException;
+import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
@@ -77,7 +79,8 @@ public class CrfSuiteLoadModelConnector
     {
         try {
             int sequenceId = 0;
-            List<Instance> instance = new ArrayList<>();
+            
+            List<Instance> instance = new ArrayList<>(2048);
             for (TextClassificationSequence seq : JCasUtil.select(jcas,
                     TextClassificationSequence.class)) {
                 instance.addAll(
@@ -89,12 +92,13 @@ public class CrfSuiteLoadModelConnector
 
             // takes N sequences and classifies them - all results are hold in
             // memory
-            StringBuilder output = new StringBuilder();
+            StringBuilder output = new StringBuilder(1024);
             while (iterator.hasNext()) {
 
                 StringBuilder buffer = new StringBuilder();
                 int limit = 5000;
                 int idx = 0;
+                
                 while (iterator.hasNext()) {
                     StringBuilder seqInfo = iterator.next();
                     buffer.append(seqInfo);
@@ -156,7 +160,12 @@ public class CrfSuiteLoadModelConnector
             // execute feature extractors and add features to instance
             try {
                 for (FeatureExtractorResource_ImplBase featExt : featureExtractors) {
-                    instance.addFeatures(((FeatureExtractor) featExt).extract(jcas, aTarget));
+                    Set<Feature> features = ((FeatureExtractor) featExt).extract(jcas, aTarget);
+                    features.forEach(x -> {
+                        if (!x.isDefaultValue()) {
+                            instance.addFeature(x);
+                        }
+                    });
                 }
             }
             catch (TextClassificationException e) {
