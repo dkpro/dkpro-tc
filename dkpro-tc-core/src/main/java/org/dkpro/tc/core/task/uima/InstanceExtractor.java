@@ -62,20 +62,17 @@ public class InstanceExtractor
         throws AnalysisEngineProcessException
     {
 
-        List<Instance> extractedInstances = new ArrayList<>();
-
         try {
             if (isSequenceMode()) {
-                List<Instance> instances = getSequenceInstances(aJCas, extractSparse);
-                extractedInstances.addAll(instances);
+                return getSequenceInstances(aJCas, extractSparse);
             }
             else if (isUnitMode()) {
-                List<Instance> instances = getUnitInstances(aJCas, extractSparse);
-                extractedInstances.addAll(instances);
+                return getUnitInstances(aJCas, extractSparse);
             }
             else {
-                Instance instance = getSingleInstance(aJCas, extractSparse);
-                extractedInstances.add(instance);
+                List<Instance> instances = new ArrayList<>();
+                instances.add(getSingleInstance(aJCas, extractSparse));
+                return instances;
             }
 
         }
@@ -83,7 +80,6 @@ public class InstanceExtractor
             throw new AnalysisEngineProcessException(e);
         }
 
-        return extractedInstances;
     }
 
     private boolean isUnitMode()
