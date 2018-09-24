@@ -72,12 +72,12 @@ public class TcAnnotator
      * document classification. This name of this annotation marks the span which will be considered
      * as consecutive sequence, which is annotated internally as {@link TextClassificationSequence}.
      * The span of this annotation is expected to contain two or more annotations of the annotation
-     * provided as {@link #PARAM_NAME_UNIT_ANNOTATION}. Typically, a sequence is a {@link Sentence}
+     * provided as {@link #PARAM_NAME_TARGET_ANNOTATION}. Typically, a sequence is a {@link Sentence}
      * annotation with {@link Token} as units.
      */
-    public static final String PARAM_NAME_SEQUENCE_ANNOTATION = "sequenceAnnotation";
+    public static final String PARAM_NAME_SEQUENCE_ANNOTATION = "tcSequenceAnnotation";
     @ConfigurationParameter(name = PARAM_NAME_SEQUENCE_ANNOTATION, mandatory = false)
-    private String nameSequence;
+    private String sequenceName;
 
     /**
      * This parameter is relevant for sequence and unit classification tasks but is not needed for
@@ -85,9 +85,9 @@ public class TcAnnotator
      * unit is the {@link Token} annotation but other annotations can be specified by providing the
      * respective type name.
      */
-    public static final String PARAM_NAME_UNIT_ANNOTATION = "unitAnnotation";
-    @ConfigurationParameter(name = PARAM_NAME_UNIT_ANNOTATION, mandatory = false)
-    private String theName;
+    public static final String PARAM_NAME_TARGET_ANNOTATION = "tcTargetAnnotation";
+    @ConfigurationParameter(name = PARAM_NAME_TARGET_ANNOTATION, mandatory = false)
+    private String targetName;
 
     /**
      * This parameter allows to remove the created {@link TextClassificationTarget} annotation after
@@ -215,7 +215,7 @@ public class TcAnnotator
         switch (featureMode) {
 
         case Constants.FM_UNIT: {
-            boolean unitAnno = theName != null && !theName.isEmpty();
+            boolean unitAnno = targetName != null && !targetName.isEmpty();
 
             if (unitAnno) {
                 return;
@@ -225,14 +225,14 @@ public class TcAnnotator
         }
 
         case Constants.FM_SEQUENCE: {
-            boolean seqAnno = nameSequence != null && !nameSequence.isEmpty();
-            boolean unitAnno = theName != null && !theName.isEmpty();
+            boolean seqAnno = sequenceName != null && !sequenceName.isEmpty();
+            boolean unitAnno = targetName != null && !targetName.isEmpty();
 
             if (seqAnno && unitAnno) {
                 return;
             }
             throw new IllegalArgumentException("Learning mode [" + Constants.FM_SEQUENCE
-                    + "] requires an annotation name for [sequence] (e.g. Sentence) and [unit] (e.g. Token)");
+                    + "] requires an annotation name for [sequence] (e.g. Sentence) and [target] (e.g. Token)");
         }
         }
     }
@@ -336,7 +336,7 @@ public class TcAnnotator
 
     private void processUnit(JCas aJCas) throws AnalysisEngineProcessException
     {
-        Type type = aJCas.getCas().getTypeSystem().getType(theName);
+        Type type = aJCas.getCas().getTypeSystem().getType(targetName);
         Collection<AnnotationFS> typeSelection = CasUtil.select(aJCas.getCas(), type);
         List<AnnotationFS> targetAnnotation = new ArrayList<AnnotationFS>(typeSelection);
         TextClassificationOutcome tco = null;
@@ -373,16 +373,16 @@ public class TcAnnotator
     private void processSequence(JCas aJCas) throws AnalysisEngineProcessException
     {
 
-        addTCSequenceAnnotation(aJCas);
-        addTCUnitAndOutcomeAnnotation(aJCas);
+		addTCSequenceAnnotation(aJCas);
+		addTcTargetAndOutcomeAnnotation(aJCas);
 
         // process and classify
         engine.process(aJCas);
     }
 
-    private void addTCUnitAndOutcomeAnnotation(JCas aJCas)
+    private void addTcTargetAndOutcomeAnnotation(JCas aJCas)
     {
-        Type type = aJCas.getCas().getTypeSystem().getType(theName);
+        Type type = aJCas.getCas().getTypeSystem().getType(targetName);
 
         Collection<AnnotationFS> unitAnnotation = CasUtil.select(aJCas.getCas(), type);
         for (AnnotationFS unit : unitAnnotation) {
@@ -398,7 +398,7 @@ public class TcAnnotator
 
     private void addTCSequenceAnnotation(JCas jcas)
     {
-        Type type = jcas.getCas().getTypeSystem().getType(nameSequence);
+        Type type = jcas.getCas().getTypeSystem().getType(sequenceName);
 
         Collection<AnnotationFS> sequenceAnnotation = CasUtil.select(jcas.getCas(), type);
         for (AnnotationFS seq : sequenceAnnotation) {
@@ -410,18 +410,12 @@ public class TcAnnotator
 
     private void processDocument(JCas aJCas) throws AnalysisEngineProcessException
     {
-        if (!JCasUtil.exists(aJCas, TextClassificationTarget.class)) {
-            TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0,
-                    aJCas.getDocumentText().length());
-            aTarget.addToIndexes();
-        }
+		TextClassificationTarget aTarget = new TextClassificationTarget(aJCas, 0, aJCas.getDocumentText().length());
+		aTarget.addToIndexes();
 
-        // we need an outcome annotation to be present
-        if (!JCasUtil.exists(aJCas, TextClassificationOutcome.class)) {
-            TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
-            outcome.setOutcome("");
-            outcome.addToIndexes();
-        }
+		TextClassificationOutcome outcome = new TextClassificationOutcome(aJCas);
+		outcome.setOutcome("");
+		outcome.addToIndexes();
 
         // create new UIMA annotator in order to separate the parameter spaces
         // this annotator will get initialized with its own set of parameters

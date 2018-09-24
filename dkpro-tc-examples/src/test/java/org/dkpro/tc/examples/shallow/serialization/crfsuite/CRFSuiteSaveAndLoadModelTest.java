@@ -244,7 +244,7 @@ public class CRFSuiteSaveAndLoadModelTest
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
                 TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);
@@ -285,7 +285,7 @@ public class CRFSuiteSaveAndLoadModelTest
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
                 TcAnnotator.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
-                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         tokenizer.process(jcas);
         tcAnno.process(jcas);

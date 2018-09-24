@@ -153,7 +153,7 @@ public class WekaSaveAndLoadModelUnitTest
 
         AnalysisEngine tcAnno = AnalysisEngineFactory.createEngine(TcAnnotator.class,
                 TcAnnotator.PARAM_TC_MODEL_LOCATION, modelFolder.getAbsolutePath(),
-                TcAnnotator.PARAM_NAME_UNIT_ANNOTATION, Token.class.getName());
+                TcAnnotator.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName());
 
         JCas jcas = JCasFactory.createJCas();
         reader.getNext(jcas.getCas());
