@@ -42,8 +42,8 @@ public class ResultPerCategoryCalculator
         }
 
     }
-
-    public void writeResults(File fscoreFile) throws Exception
+    
+    public String getResults() throws Exception
     {
 
         List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2o, learningMode);
@@ -54,16 +54,22 @@ public class ResultPerCategoryCalculator
         sb.append(String.format("%25s\t%5s\t%-6s\t%-6s\t%-6s%n", "#Label", "FREQ", "P", "R", "F1"));
         
         for(String [] s : computeFScores) {
-        	sb.append(String.format(Locale.getDefault(), "%25s\t%5d\t%.4f\t%.4f\t%.4f%n", 
+            sb.append(String.format(Locale.getDefault(), "%25s\t%5d\t%.4f\t%.4f\t%.4f%n", 
                     s[0],
                     Long.parseLong(s[1]),
                     nf.parse(catchNan(s[2])).doubleValue(),
                     nf.parse(catchNan(s[3])).doubleValue(),
                     nf.parse(catchNan(s[4])).doubleValue()
-        			));
+                    ));
         }
         
-        FileUtils.writeStringToFile(fscoreFile, sb.toString(), "utf-8");
+        return sb.toString();
+    }
+
+    public void writeResults(File fscoreFile) throws Exception
+    {
+        String results = getResults();
+        FileUtils.writeStringToFile(fscoreFile, results, "utf-8");
     }
     
     private String catchNan(String s)

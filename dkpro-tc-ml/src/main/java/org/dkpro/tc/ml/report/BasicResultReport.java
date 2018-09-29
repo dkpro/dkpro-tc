@@ -37,7 +37,7 @@ public class BasicResultReport
     extends TcBatchReportBase
     implements Constants
 {
-    static boolean sysoutResults = true;
+    public static boolean sysoutResults = true;
 
     private static String OUTPUT_FILE = "results.txt";
     
@@ -113,10 +113,14 @@ public class BasicResultReport
         Map<String, String> resultMap = MetricComputationUtil.getResults(id2outcomeFile,
                 learningMode);
 
+        
         for (Entry<String, String> e : resultMap.entrySet()) {
             pa.setProperty(e.getKey(), e.getValue());
-            
-            if(sysoutResults) {
+        }
+
+        if (sysoutResults) {
+            System.out.println("\n-- Results of [" + getContext().getId() + "]");
+            for (Entry<String, String> e : resultMap.entrySet()) {
                 System.out.println(e.getKey() + " " + e.getValue());
             }
         }

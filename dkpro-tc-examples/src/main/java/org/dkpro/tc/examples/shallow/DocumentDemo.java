@@ -63,6 +63,7 @@ public class DocumentDemo
 
         DocumentDemo experiment = new DocumentDemo();
         experiment.runTrainTest();
+        experiment.runCrossValidation();
     }
 
     public CollectionReaderDescription getReaderTrain() throws Exception
@@ -125,7 +126,7 @@ public class DocumentDemo
                         new MLBackend(new XgboostAdapter(), "objective=multi:softmax"))
                 .run();
     }
-
+    
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(BreakIteratorSegmenter.class);
