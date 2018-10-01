@@ -70,7 +70,7 @@ public class BasicResultReport
         }
 
         File fscoreFile = getContext().getStorageService().locateKey(getContext().getId(),
-                FILE_SCORE_PER_CATEGORY);
+                FILE_SCORE_PER_CATEGORY + ".tsv");
 
         File id2o = getContext().getStorageService().locateKey(getContext().getId(),
                 ID_OUTCOME_KEY);

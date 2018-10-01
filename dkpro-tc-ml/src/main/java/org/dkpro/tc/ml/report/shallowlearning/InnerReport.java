@@ -44,11 +44,11 @@ import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
  * level task context.
  */
-public class InnerBatchReport
+public class InnerReport
     extends TcBatchReportBase
     implements Constants
 {
-    public InnerBatchReport()
+    public InnerReport()
     {
         // required by groovy
     }

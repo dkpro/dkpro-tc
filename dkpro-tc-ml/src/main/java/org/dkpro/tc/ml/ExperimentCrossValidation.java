@@ -45,7 +45,7 @@ import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.shallowlearning.InnerBatchReport;
+import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
 /**
  * Crossvalidation setup
@@ -317,7 +317,7 @@ public class ExperimentCrossValidation
         // report of the inner batch task (sums up results for the folds)
         // we want to re-use the old CV report, we need to collect the evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(InnerBatchReport.class);
+        crossValidationTask.addReport(InnerReport.class);
         crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
         // DKPro Lab issue 38: must be added as *first* task

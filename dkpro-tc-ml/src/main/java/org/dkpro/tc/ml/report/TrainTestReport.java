@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -206,7 +207,7 @@ public class TrainTestReport extends TcBatchReportBase implements Constants {
 	private String catchNan(String v) {
 
 		if (v.equals("NaN")) {
-			return "0,000000";
+			return String.format(Locale.getDefault(), "%f", 0.0);
 		}
 
 		return v;
