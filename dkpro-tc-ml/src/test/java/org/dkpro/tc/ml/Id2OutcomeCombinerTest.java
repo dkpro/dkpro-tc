@@ -49,7 +49,7 @@ public class Id2OutcomeCombinerTest
                 new File("src/test/resources/id2outcome/combine/singleLabelID2outcome_3.txt"),
                 Constants.LM_SINGLE_LABEL);
 
-        assertEquals(63, aggregator.generateId2OutcomeFile().split("\n").length);
+        assertEquals(64, aggregator.generateId2OutcomeFile().split("\n").length);
     }
 
     @Test
@@ -61,8 +61,7 @@ public class Id2OutcomeCombinerTest
         aggregator.add(new File("src/test/resources/id2outcome/combine/regressionID2outcome_2.txt"),
                 Constants.LM_REGRESSION);
 
-        assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
-        System.out.println(aggregator.generateId2OutcomeFile());
+        assertEquals(9, aggregator.generateId2OutcomeFile().split("\n").length);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class Id2OutcomeCombinerTest
         aggregator.add(new File("src/test/resources/id2outcome/combine/multiLabelId2outcome_2.txt"),
                 Constants.LM_MULTI_LABEL);
 
-        assertEquals(8, aggregator.generateId2OutcomeFile().split("\n").length);
+        assertEquals(9, aggregator.generateId2OutcomeFile().split("\n").length);
     }
 
 }

@@ -143,6 +143,8 @@ public class Tc2LtlabEvalConverter
         reader.readLine(); // pop first line
 
         Map<String, String> map = buildMappingFromHeader(reader.readLine());
+        
+        reader.readLine(); // pop timestamp
 
         EvaluationData<String> data = new EvaluationData<>();
 
@@ -196,6 +198,7 @@ public class Tc2LtlabEvalConverter
 
         reader.readLine(); // pop first line
         reader.readLine(); // pop header
+        reader.readLine(); // pop time stamp
 
         EvaluationData<Integer> data = new EvaluationData<>();
 
