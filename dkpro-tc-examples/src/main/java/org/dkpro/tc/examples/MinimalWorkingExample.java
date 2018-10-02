@@ -45,6 +45,7 @@ public class MinimalWorkingExample
 
     public static void main(String[] args) throws Exception
     {
+    	System.setProperty("java.util.logging.config.file", "logging.properties");
         DemoUtils.setDkproHome("target/");
         runExperiment();
     }

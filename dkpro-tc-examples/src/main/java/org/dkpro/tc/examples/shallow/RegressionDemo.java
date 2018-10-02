@@ -54,6 +54,7 @@ public class RegressionDemo
     public static void main(String[] args) throws Exception
     {
 
+    	System.setProperty("java.util.logging.config.file", "logging.properties");
         DemoUtils.setDkproHome(RegressionDemo.class.getSimpleName());
 
         RegressionDemo experiment = new RegressionDemo();

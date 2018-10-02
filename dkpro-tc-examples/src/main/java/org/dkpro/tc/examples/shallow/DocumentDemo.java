@@ -59,6 +59,7 @@ public class DocumentDemo
     public static void main(String[] args) throws Exception
     {
 
+    	System.setProperty("java.util.logging.config.file", "logging.properties");
         DemoUtils.setDkproHome(DocumentDemo.class.getSimpleName());
 
         DocumentDemo experiment = new DocumentDemo();
@@ -123,7 +124,10 @@ public class DocumentDemo
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.DOCUMENT)
                 .machineLearningBackend(
-                        new MLBackend(new XgboostAdapter(), "objective=multi:softmax"))
+                        new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
+                                PolyKernel.class.getName() + " " + "-C -1 -E 2"),
+                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3")
+                )
                 .run();
     }
     

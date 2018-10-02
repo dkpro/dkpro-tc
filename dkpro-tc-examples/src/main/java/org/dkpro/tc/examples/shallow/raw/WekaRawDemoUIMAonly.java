@@ -31,6 +31,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.uima.ExtractFeaturesConnector;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.features.ngram.meta.WordNGramMC;
 import org.dkpro.tc.io.FolderwiseDataReader;
@@ -50,10 +51,12 @@ import weka.classifiers.functions.SMO;
  */
 public class WekaRawDemoUIMAonly
 {
-    public static void main(String[] args) throws Exception
-    {
-      new WekaRawDemoUIMAonly().run();
-    }
+	public static void main(String[] args) throws Exception {
+		System.setProperty("java.util.logging.config.file", "logging.properties");
+		DemoUtils.setDkproHome("target/");
+
+		new WekaRawDemoUIMAonly().run();
+	}
 
     private static File runFeatureExtraction(String train, Object[] ngramParameter,
             String outputPathTrain)

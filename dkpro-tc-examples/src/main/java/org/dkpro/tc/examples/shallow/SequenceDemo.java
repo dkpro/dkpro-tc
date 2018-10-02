@@ -58,6 +58,7 @@ public class SequenceDemo
 
     public static void main(String[] args) throws Exception
     {
+    	System.setProperty("java.util.logging.config.file", "logging.properties");
         DemoUtils.setDkproHome(SequenceDemo.class.getSimpleName());
 
         SequenceDemo demo = new SequenceDemo();

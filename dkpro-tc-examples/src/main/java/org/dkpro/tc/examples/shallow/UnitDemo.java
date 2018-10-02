@@ -59,10 +59,11 @@ public class UnitDemo
 
     public static void main(String[] args) throws Exception
     {
+    	System.setProperty("java.util.logging.config.file", "logging.properties");
         DemoUtils.setDkproHome(UnitDemo.class.getSimpleName());
 
         new UnitDemo().runTrainTest();
-//        new UnitDemo().runCrossValidation();
+        new UnitDemo().runCrossValidation();
     }
     
     public CollectionReaderDescription getReaderTrain() throws Exception {
