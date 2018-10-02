@@ -123,7 +123,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
         try {
 
-        		documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+			documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 
             instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
                     addInstanceId);
@@ -161,12 +161,12 @@ public class ExtractFeaturesConnector
             getFeatureNames(aJCas);
         }
         
-        LogFactory.getLog(getClass()).info("--- feature extraction for CAS with id ["
+        LogFactory.getLog(getClass()).debug("--- feature extraction for CAS with id ["
                 + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
         
-        LogFactory.getLog(getClass()).info("--- Extracted ["
+        LogFactory.getLog(getClass()).trace("--- Extracted ["
                 + instances.size() + " feature instances] ---");
         
         if(enforceMatchingFeatures) {

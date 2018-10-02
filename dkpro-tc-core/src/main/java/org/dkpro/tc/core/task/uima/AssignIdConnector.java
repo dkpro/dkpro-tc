@@ -32,7 +32,7 @@ public class AssignIdConnector
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
-        LogFactory.getLog(getClass()).info("--- validating CAS with id [" + jcasId + "] ---");
+        LogFactory.getLog(getClass()).debug("--- validating CAS with id [" + jcasId + "] ---");
 
         boolean exists = JCasUtil.exists(aJCas, JCasId.class);
         if (!exists) {
