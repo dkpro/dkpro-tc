@@ -147,9 +147,9 @@ public class CrossValidationReport
                 r.writeResults(fscoreFile);
 
 				if (printResultsToSysout) {
-					System.out.println("\n\n--- Accumulated results of all folds in the CrossValidation run [" + id
+					System.out.println("\n\nAccumulated results of all folds in the CrossValidation run\n\t[" + id
 							+ "/" + getMLSetup(id) + "]");
-					results.keySet().forEach(x -> System.out.println(x + "\t" + results.get(x)));
+					results.keySet().forEach(x -> System.out.println("\t\t" + x + "\t" + results.get(x)));
 					System.out.println("\nAccumulated results per category:\n" + r.getResults());
 					System.out.println("\n");
 				} else {
