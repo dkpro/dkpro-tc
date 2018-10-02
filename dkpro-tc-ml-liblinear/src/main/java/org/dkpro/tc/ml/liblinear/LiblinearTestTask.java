@@ -199,7 +199,7 @@ public class LiblinearTestTask
             type = SolverType.L2R_LR;
         }
 
-        LogFactory.getLog(LiblinearTestTask.class).info("Will use solver " + type.toString() + ")");
+        LogFactory.getLog(LiblinearTestTask.class).debug("Will use solver " + type.toString() + ")");
         return type;
     }
 
@@ -232,7 +232,7 @@ public class LiblinearTestTask
         }
 
         LogFactory.getLog(LiblinearTestTask.class)
-                .info("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
+                .debug("Parameter c is set to default value [" + PARAM_C_DEFAULT + "]");
         return PARAM_C_DEFAULT;
     }
 
@@ -264,7 +264,7 @@ public class LiblinearTestTask
             }
         }
 
-        LogFactory.getLog(LiblinearTestTask.class).info("Parameter epsilon is set to [0.01]");
+        LogFactory.getLog(LiblinearTestTask.class).debug("Parameter epsilon is set to [0.01]");
         return EPISILON_DEFAULT;
     }
 
