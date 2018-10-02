@@ -122,7 +122,7 @@ public class BasicResultReport
 		if (printResultsToSysout) {
 			System.out.println("\n[" + getContext().getId() + "]");
 			for (Entry<String, String> e : resultMap.entrySet()) {
-				System.out.println(e.getKey() + " " + e.getValue());
+				System.out.println("\t" + e.getKey() + ": " + e.getValue());
 			}
 			System.out.println("\n");
 		} else {

@@ -319,7 +319,13 @@ public interface Constants
      * Name of the meta task file which holds the tc unit text and context for all test instances.
      */
     String ID_CONTEXT_KEY = "id2context.txt";
-
+    
+    /**
+     * Name of the file containing the mapping from the id number to the entire dimension set of an experiment. 
+     */
+    String FILE_CONFIGURATION_MAPPING = "configurationMapping.tsv";
+    
+    
     /**
      * This is the character for joining strings for pair ngrams.
      */

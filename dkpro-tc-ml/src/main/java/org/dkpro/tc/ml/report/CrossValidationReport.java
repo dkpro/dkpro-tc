@@ -147,9 +147,9 @@ public class CrossValidationReport
                 r.writeResults(fscoreFile);
 
 				if (printResultsToSysout) {
-					System.out.println("\n\nAccumulated results of all folds in the CrossValidation run\n\t[" + id
+					System.out.println("\n\nRESULT SUMMARY CROSSVALIDATION\n[" + id
 							+ "/" + getMLSetup(id) + "]");
-					results.keySet().forEach(x -> System.out.println("\t\t" + x + "\t" + results.get(x)));
+					results.keySet().forEach(x -> System.out.println("\t\t" + x + ": " + results.get(x)));
 					System.out.println("\nAccumulated results per category:\n" + r.getResults());
 					System.out.println("\n");
 				} else {
@@ -247,7 +247,7 @@ public class CrossValidationReport
         }
 
         FileUtils.writeStringToFile(
-                getContext().getFile("configurationMapping.tsv", AccessMode.READWRITE),
+                getContext().getFile(FILE_CONFIGURATION_MAPPING, AccessMode.READWRITE),
                 sb.toString(), "utf-8");
 
     }
