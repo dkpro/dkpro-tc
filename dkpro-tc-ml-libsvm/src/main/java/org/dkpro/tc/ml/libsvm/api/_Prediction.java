@@ -61,10 +61,10 @@ public class _Prediction
             int predict_probability)
         throws IOException
     {
-        int correct = 0;
-        int total = 0;
-        double error = 0;
-        double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
+//        int correct = 0;
+//        int total = 0;
+//        double error = 0;
+//        double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
 
         int svm_type = svm.svm_get_svm_type(model);
         int nr_class = svm.svm_get_nr_class(model);
@@ -92,7 +92,9 @@ public class _Prediction
 
             StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
 
-            double target = atof(st.nextToken());
+//            double target = atof(st.nextToken());
+            st.nextToken(); //remove entry - not needed
+            
             int m = st.countTokens() / 2;
             svm_node[] x = new svm_node[m];
             for (int j = 0; j < m; j++) {
@@ -115,26 +117,26 @@ public class _Prediction
                 output.writeBytes(v + "\n");
             }
 
-            if (v == target)
-                ++correct;
-            error += (v - target) * (v - target);
-            sumv += v;
-            sumy += target;
-            sumvv += v * v;
-            sumyy += target * target;
-            sumvy += v * target;
-            ++total;
+//            if (v == target)
+//                ++correct;
+//            error += (v - target) * (v - target);
+//            sumv += v;
+//            sumy += target;
+//            sumvv += v * v;
+//            sumyy += target * target;
+//            sumvy += v * target;
+//            ++total;
         }
-        if (svm_type == svm_parameter.EPSILON_SVR || svm_type == svm_parameter.NU_SVR) {
-            info("Mean squared error = " + error / total + " (regression)\n");
-            info("Squared correlation coefficient = "
-                    + ((total * sumvy - sumv * sumy) * (total * sumvy - sumv * sumy))
-                            / ((total * sumvv - sumv * sumv) * (total * sumyy - sumy * sumy))
-                    + " (regression)\n");
-        }
-        else
-            info("Accuracy = " + (double) correct / total * 100 + "% (" + correct + "/" + total
-                    + ") (classification)\n");
+//        if (svm_type == svm_parameter.EPSILON_SVR || svm_type == svm_parameter.NU_SVR) {
+//            info("Mean squared error = " + error / total + " (regression)\n");
+//            info("Squared correlation coefficient = "
+//                    + ((total * sumvy - sumv * sumy) * (total * sumvy - sumv * sumy))
+//                            / ((total * sumvv - sumv * sumv) * (total * sumyy - sumy * sumy))
+//                    + " (regression)\n");
+//        }
+//        else
+//            info("Accuracy = " + (double) correct / total * 100 + "% (" + correct + "/" + total
+//                    + ") (classification)\n");
     }
 
     private void exit_with_help()
