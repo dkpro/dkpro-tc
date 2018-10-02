@@ -49,21 +49,21 @@ import org.dkpro.tc.ml.report.TrainTestReport;
 public class ExperimentBuilder
     implements Constants
 {
-    List<TcShallowLearningAdapter> backends;
-    List<List<String>> arguments;
-    List<ReportBase> reports;
-    String learningMode;
-    String featureMode;
-    Map<String, Object> readerMap;
-    List<TcFeatureSet> featureSets;
-    List<Dimension<?>> additionalDimensions;
-    ShallowLearningExperiment_ImplBase experiment;
-    ParameterSpace parameterSpace;
-    String experimentName;
-    ExperimentType type;
-    AnalysisEngineDescription preprocessing;
-    List<String> featureFilter;
-    List<Map<String, Object>> additionalMapDimensions;
+	protected List<TcShallowLearningAdapter> backends;
+	protected List<List<String>> arguments;
+	protected List<ReportBase> reports;
+	protected String learningMode;
+	protected String featureMode;
+	protected Map<String, Object> readerMap;
+	protected List<TcFeatureSet> featureSets;
+	protected List<Dimension<?>> additionalDimensions;
+	protected ShallowLearningExperiment_ImplBase experiment;
+	protected ParameterSpace parameterSpace;
+	protected String experimentName;
+	protected ExperimentType type;
+	protected AnalysisEngineDescription preprocessing;
+	protected List<String> featureFilter;
+	protected List<Map<String, Object>> additionalMapDimensions;
 
     int numFolds = -1;
     double bipartitionThreshold = -1;
@@ -140,18 +140,18 @@ public class ExperimentBuilder
         return parameterSpace;
     }
 
-    private Dimension<?> getAsDimensionsBipartionThreshold()
+    protected Dimension<?> getAsDimensionsBipartionThreshold()
     {
         return Dimension.create(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
     }
 
     @SuppressWarnings("unchecked")
-    private Dimension<?> getFeatureFilters()
+    protected Dimension<?> getFeatureFilters()
     {
         return Dimension.create(DIM_FEATURE_FILTERS, featureFilter);
     }
 
-    private Dimension<?> getAsDimensionMachineLearningAdapter()
+    protected Dimension<?> getAsDimensionMachineLearningAdapter()
     {
         List<Map<String, Object>> adapterMaps = getAdapterInfo();
 
@@ -162,7 +162,7 @@ public class ExperimentBuilder
         return mlaDim;
     }
 
-    private Dimension<?> getAsDimensionReaders()
+    protected Dimension<?> getAsDimensionReaders()
     {
         if (!readerMap.keySet().contains(DIM_READER_TRAIN)) {
             throw new IllegalStateException("You must provide at least a training data reader");
@@ -171,7 +171,7 @@ public class ExperimentBuilder
         return Dimension.createBundle(DIM_READERS, readerMap);
     }
 
-    private Dimension<?> getAsDimensionFeatureSets()
+    protected Dimension<?> getAsDimensionFeatureSets()
     {
         if (featureSets == null) {
             throw new NullPointerException("Set either a feature set ["
@@ -187,7 +187,7 @@ public class ExperimentBuilder
         return Dimension.create(DIM_FEATURE_SET, featureSets.toArray(new TcFeatureSet[0]));
     }
 
-    private Dimension<?> getAsDimensionLearningMode()
+    protected Dimension<?> getAsDimensionLearningMode()
     {
         if (learningMode == null) {
             throw new NullPointerException(
@@ -197,7 +197,7 @@ public class ExperimentBuilder
         return Dimension.create(DIM_LEARNING_MODE, learningMode);
     }
 
-    private Dimension<?> getAsDimensionFeatureMode()
+    protected Dimension<?> getAsDimensionFeatureMode()
     {
         if (featureMode == null) {
             throw new NullPointerException(
@@ -207,7 +207,7 @@ public class ExperimentBuilder
         return Dimension.create(DIM_FEATURE_MODE, featureMode);
     }
 
-    private List<Map<String, Object>> getAdapterInfo()
+    protected List<Map<String, Object>> getAdapterInfo()
     {
         if (backends.size() == 0) {
             throw new IllegalStateException(
@@ -302,7 +302,7 @@ public class ExperimentBuilder
         return this;
     }
 
-    private void sanityCheckFeatureSet(TcFeatureSet featureSet)
+    protected void sanityCheckFeatureSet(TcFeatureSet featureSet)
     {
         if (featureSet == null) {
             throw new NullPointerException("The provided feature set is null");
@@ -470,7 +470,7 @@ public class ExperimentBuilder
         return this;
     }
 
-    private ExperimentBuilder configureExperiment(ExperimentType type, String experimentName)
+    protected ExperimentBuilder configureExperiment(ExperimentType type, String experimentName)
         throws Exception
     {
         switch (type) {
@@ -493,14 +493,14 @@ public class ExperimentBuilder
         return this;
     }
 
-    private void sanityCheckTrainTestExperiment()
+    protected void sanityCheckTrainTestExperiment()
     {
         if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
             throw new IllegalStateException("Train test requires two readers");
         }
     }
 
-    private int getCvFolds()
+    protected int getCvFolds()
     {
         if (numFolds == -1) {
             numFolds = 10;
@@ -509,7 +509,7 @@ public class ExperimentBuilder
         return numFolds;
     }
 
-    private void sanityCheckSaveModelExperiment()
+    protected void sanityCheckSaveModelExperiment()
     {
         if (outputFolder == null) {
             throw new IllegalStateException(
@@ -527,13 +527,13 @@ public class ExperimentBuilder
         }
     }
 
-    /**
-     * Sets reports for the experiments
-     * 
-     * @param reports
-     *            One or more reports
-     * @return The builder object
-     */
+	/**
+	 * Sets user-specific reports for the experiments. Calling this method multiple
+	 * times overwrites all changes from the previous calls.
+	 * 
+	 * @param reports One or more reports
+	 * @return The builder object
+	 */
     public ExperimentBuilder reports(ReportBase... reports)
     {
         this.reports = new ArrayList<>();
@@ -625,7 +625,7 @@ public class ExperimentBuilder
         return experiment;
     }
 
-    private void setReports()
+    protected void setReports()
     {
         if (reports != null) {
             for (ReportBase r : reports) {
@@ -634,14 +634,14 @@ public class ExperimentBuilder
         }
     }
 
-    private void setPreprocessing()
+    protected void setPreprocessing()
     {
         if (preprocessing != null) {
             experiment.setPreprocessing(preprocessing);
         }
     }
 
-    private void setParameterSpace()
+    protected void setParameterSpace()
     {
         if (parameterSpace == null) {
             parameterSpace = getParameterSpace();
@@ -649,7 +649,7 @@ public class ExperimentBuilder
         experiment.setParameterSpace(parameterSpace);
     }
 
-    private void setExperiment() throws Exception
+    protected void setExperiment() throws Exception
     {
         if (experiment == null && type != null) {
             configureExperiment(type, experimentName);
