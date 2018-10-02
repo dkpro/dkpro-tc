@@ -36,7 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.weka.core._eka;
 import org.dkpro.tc.ml.weka.task.WekaOutcomeHarmonizer;
 import org.dkpro.tc.ml.weka.task.WekaTestTask;
@@ -50,7 +50,7 @@ import weka.core.Instances;
  * Writes a instanceId / outcome data for each classification instance.
  */
 public class WekaOutcomeIDReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
 {
     /**
      * Character that is used for separating fields in the output file

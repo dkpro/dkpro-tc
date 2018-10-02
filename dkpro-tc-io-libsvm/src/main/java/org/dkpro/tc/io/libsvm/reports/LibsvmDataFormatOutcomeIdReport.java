@@ -34,10 +34,10 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 
 public class LibsvmDataFormatOutcomeIdReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
     implements Constants
 {
 

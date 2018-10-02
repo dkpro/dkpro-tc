@@ -42,7 +42,7 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-public class TrainTestReport extends TcBatchReportBase implements Constants {
+public class TrainTestReport extends TcAbstractReport implements Constants {
 	private final List<String> discriminatorsToExclude = Arrays
 			.asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 

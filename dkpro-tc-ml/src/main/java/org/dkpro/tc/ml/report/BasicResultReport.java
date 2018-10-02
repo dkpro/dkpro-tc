@@ -34,7 +34,7 @@ import org.dkpro.tc.ml.report.util.SortedKeyProperties;
  * to provide by default at least some result values.
  */
 public class BasicResultReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
     implements Constants
 {
     public static boolean sysoutResults = true;

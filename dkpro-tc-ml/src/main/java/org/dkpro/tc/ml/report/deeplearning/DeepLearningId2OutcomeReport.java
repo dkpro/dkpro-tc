@@ -37,10 +37,10 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 
 public class DeepLearningId2OutcomeReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
     implements Constants, DeepLearningConstants
 {
 

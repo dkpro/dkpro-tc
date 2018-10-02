@@ -41,7 +41,7 @@ import org.dkpro.tc.ml.report.util.MetricComputationUtil;
  * 
  */
 public class CrossValidationReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
     implements Constants
 {
     private Map<String, String> taskMapping = new HashMap<>();

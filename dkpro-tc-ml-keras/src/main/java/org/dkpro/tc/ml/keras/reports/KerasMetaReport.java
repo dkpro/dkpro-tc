@@ -30,11 +30,11 @@ import java.util.Properties;
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 public class KerasMetaReport
-    extends TcBatchReportBase implements DeepLearningConstants
+    extends TcAbstractReport implements DeepLearningConstants
 {
 
     @Override

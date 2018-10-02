@@ -36,7 +36,7 @@ import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 
 /**
@@ -44,7 +44,7 @@ import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
  * level task context.
  */
 public class DeepLearningInnerBatchReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
     implements Constants
 {
     public DeepLearningInnerBatchReport()

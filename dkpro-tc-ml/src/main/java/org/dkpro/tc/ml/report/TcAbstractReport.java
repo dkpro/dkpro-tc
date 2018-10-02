@@ -34,7 +34,7 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 
-public abstract class TcBatchReportBase
+public abstract class TcAbstractReport
     extends BatchReportBase
     implements Constants
 {

@@ -33,14 +33,14 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
 import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
-import org.dkpro.tc.ml.report.TcBatchReportBase;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
 /**
  * Writes a instanceId / outcome pair for each classification instance.
  */
 public class CrfSuiteOutcomeIDReport
-    extends TcBatchReportBase
+    extends TcAbstractReport
 {
 
     /**
