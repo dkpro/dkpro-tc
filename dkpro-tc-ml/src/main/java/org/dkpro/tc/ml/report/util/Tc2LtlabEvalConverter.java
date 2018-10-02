@@ -89,8 +89,8 @@ public class Tc2LtlabEvalConverter
                 new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
 
         reader.readLine(); // pop first line
-
         Map<String, String> map = buildMappingFromHeader(reader.readLine());
+        reader.readLine(); // time stamp
 
         EvaluationData<String> data = new EvaluationData<>();
 
@@ -121,7 +121,7 @@ public class Tc2LtlabEvalConverter
 
     private static boolean skipLine(String line)
     {
-        return line.trim().isEmpty() || line.startsWith("#");
+        return line.trim().isEmpty();
     }
 
     /**
