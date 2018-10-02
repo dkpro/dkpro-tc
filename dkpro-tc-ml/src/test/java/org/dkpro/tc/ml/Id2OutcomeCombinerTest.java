@@ -25,7 +25,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
 import org.junit.Test;
 
-public class Id2OutcomeAggregatorTest
+public class Id2OutcomeCombinerTest
 {
 
     @Test(expected = IllegalArgumentException.class)

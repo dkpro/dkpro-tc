@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +45,8 @@ public class ID2OutcomeCombiner<T>
 
     Set<String> uniqueNames = new HashSet<>();
     Map<String, String> multilabelIndexMapping;
+    
+    static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public ID2OutcomeCombiner(String mode)
     {
@@ -89,10 +93,16 @@ public class ID2OutcomeCombiner<T>
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
         reader.readLine(); // pop first line
+        reader.readLine(); // mapping - does not exist in regression
+        reader.readLine(); // time stamp
 
+        /*
+         * Careful with skippig lines starting with a '#' - this might be actual information content
+         */
+        
         String line = null;
         while ((line = reader.readLine()) != null) {
-            if (line.isEmpty() || line.startsWith("#")) {
+            if (line.isEmpty()) {
                 continue;
             }
 
@@ -135,12 +145,18 @@ public class ID2OutcomeCombiner<T>
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
-        reader.readLine(); // pop first line
-        Map<String, String> map = buildMappingFromHeader(reader.readLine());
+        reader.readLine(); // pop first line with header
+        String header = reader.readLine();
+        Map<String, String> map = buildMappingFromHeader(header);
+        reader.readLine(); // time stamp
 
+        /*
+         * Careful with skippig lines starting with a '#' - this might be actual information content
+         */
+        
         String line = null;
         while ((line = reader.readLine()) != null) {
-            if (line.isEmpty() || line.startsWith("#")) {
+            if (line.isEmpty()) {
                 continue;
             }
             
@@ -169,7 +185,6 @@ public class ID2OutcomeCombiner<T>
 
         }
         reader.close();
-
     }
 
 
@@ -196,10 +211,12 @@ public class ID2OutcomeCombiner<T>
 
         Map<String, String> map = buildMappingFromHeader(reader.readLine());
         multilabelIndexMapping.putAll(map);
+        
+        reader.readLine(); // time stamp
 
         String line = null;
         while ((line = reader.readLine()) != null) {
-            if (line.isEmpty() || line.startsWith("#")) {
+            if (line.isEmpty()) {
                 continue;
             }
 
@@ -268,6 +285,7 @@ public class ID2OutcomeCombiner<T>
         case Constants.LM_SINGLE_LABEL:
             String header = buildHeader(map);
             sb.append(header + "\n");
+            sb.append("#" + sdf.format(new Timestamp(System.currentTimeMillis()))+"\n");
 
             for (int i = 0; i < names.size(); i++) {
                 sb.append(names.get(i) + "=" + map.get(prediction.get(i).get(0)) + ";"
@@ -277,6 +295,7 @@ public class ID2OutcomeCombiner<T>
 
         case Constants.LM_REGRESSION:
             sb.append("#labels\n");
+            sb.append("#" + sdf.format(new Timestamp(System.currentTimeMillis()))+"\n");
 
             for (int i = 0; i < names.size(); i++) {
                 sb.append(names.get(i) + "=" + prediction.get(i).get(0) + ";" + gold.get(i).get(0)
@@ -286,6 +305,7 @@ public class ID2OutcomeCombiner<T>
 
         case Constants.LM_MULTI_LABEL:
             sb.append("#labels");
+            sb.append("#" + sdf.format(new Timestamp(System.currentTimeMillis()))+"\n");
             List<String> keySet = new ArrayList<String>(multilabelIndexMapping.keySet());
             for (int i = 0; i < keySet.size(); i++) {
                 String s = keySet.get(i);
