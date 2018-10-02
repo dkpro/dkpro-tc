@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -145,13 +146,18 @@ public class CrossValidationReport
                         learningMode);
                 r.writeResults(fscoreFile);
 
-                if (printResultsToSysout) {
-                    System.out.println(
-                            "\n\n--- Accumulated results of all folds in the CrossValidation run ["
-                                    + id + "/" + getMLSetup(id) + "]");
-                    results.keySet().forEach(x -> System.out.println(x + "\t" + results.get(x)));
-                    System.out.println("\nAccumulated results per category:\n" + r.getResults());
-                }
+				if (printResultsToSysout) {
+					System.out.println("\n\n--- Accumulated results of all folds in the CrossValidation run [" + id
+							+ "/" + getMLSetup(id) + "]");
+					results.keySet().forEach(x -> System.out.println(x + "\t" + results.get(x)));
+					System.out.println("\nAccumulated results per category:\n" + r.getResults());
+					System.out.println("\n");
+				} else {
+					StringBuilder logMsg = new StringBuilder();
+					logMsg.append("[" + id + "/" + getMLSetup(id) + "]: ");
+					results.keySet().forEach(x -> logMsg.append(x + "=" + results.get(x)+ " |"));
+					LogFactory.getLog(getClass()).info(logMsg.toString());
+				}
             }
 
         }

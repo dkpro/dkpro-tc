@@ -258,7 +258,7 @@ public class TrainTestReport extends TcAbstractReport implements Constants {
 				Collections.sort(mapKeys);
 
 				if (writeHeader) {
-					sb.append("ID"+SEP+"TaskLabel");
+					sb.append("ID" + SEP + "TaskLabel");
 					mapKeys.forEach(x -> sb.append(SEP + x));
 					sb.append("\n");
 					writeHeader = false;

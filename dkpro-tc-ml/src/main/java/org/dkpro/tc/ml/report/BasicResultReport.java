@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
@@ -37,7 +38,7 @@ public class BasicResultReport
     extends TcAbstractReport
     implements Constants
 {
-    public static boolean sysoutResults = true;
+    public static boolean printResultsToSysout = true;
 
     private static String OUTPUT_FILE = "results.txt";
     
@@ -118,11 +119,17 @@ public class BasicResultReport
             pa.setProperty(e.getKey(), e.getValue());
         }
 
-        if (sysoutResults) {
-            System.out.println("\n-- Results of [" + getContext().getId() + "]");
-            for (Entry<String, String> e : resultMap.entrySet()) {
-                System.out.println(e.getKey() + " " + e.getValue());
-            }
+		if (printResultsToSysout) {
+			System.out.println("\n[" + getContext().getId() + "]");
+			for (Entry<String, String> e : resultMap.entrySet()) {
+				System.out.println(e.getKey() + " " + e.getValue());
+			}
+			System.out.println("\n");
+		} else {
+			StringBuilder logMsg = new StringBuilder();
+			logMsg.append("Run [" + getContext().getId() + "]: ");
+			resultMap.keySet().forEach(x -> logMsg.append(x + "=" + resultMap.get(x) + " |"));
+			LogFactory.getLog(getClass()).info(logMsg.toString());
         }
 
         return pa;
