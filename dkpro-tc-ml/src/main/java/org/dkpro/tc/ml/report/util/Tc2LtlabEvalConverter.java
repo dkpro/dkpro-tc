@@ -29,10 +29,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
 import de.unidue.ltl.evaluation.core.EvaluationData;
 
 public class Tc2LtlabEvalConverter
 {
+	
+	 /**
+     * Loads a single-label DKPro TC id2outcome file and extracts the mapping between label name and assigned id
+     * 
+     * @param id2OutcomeFile
+     *            the id2outcome file
+     * @param indexOfHeaderInformation
+     * 			  index of the line in the id2outcome file in which the header information is stored
+     * @return a map of strings mapping between label and id
+     * @throws Exception
+     *             in case of error
+     */
+    public static Map<String, String> extractLabelIdMapping(File id2OutcomeFile, int indexOfHeaderInformation)
+        throws Exception
+    {
+    	List<String> lines = FileUtils.readLines(id2OutcomeFile, "utf-8");
+        Map<String, String> map = buildMappingFromHeader(lines.get(indexOfHeaderInformation));
+
+        return map;
+    }
+	
+	/**
+	 * Loads a single-label DKPro TC id2outcome file and extracts the mapping
+	 * between label name and assigned id Assumes that the header information is in
+	 * the second line of the file. Use {@link #extractLabelIdMapping(File, int)} to
+	 * access another line from which the dictionary shall be build
+	 * 
+	 * @param id2OutcomeFile the id2outcome file
+	 * @return a map of strings mapping between label and id
+	 * @throws Exception in case of error
+	 */
+    public static Map<String, String> extractLabelIdMapping(File id2OutcomeFile)
+        throws Exception
+    {
+		return extractLabelIdMapping(id2OutcomeFile, 1);
+    }
 
     /**
      * Loads a single-label DKPro TC id2outcome file into the evaluation data format
