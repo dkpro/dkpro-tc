@@ -124,7 +124,7 @@ public class ExperimentCrossValidation
         if (numFolds < 2) {
             throw new IllegalStateException(
                     "Number of folds is not configured correctly. Number of folds needs to be at "
-                            + "least 2 (but was " + numFolds + ")");
+                            + "least 2 (but was [" + numFolds + "])");
         }
 
         // initialize the setup
