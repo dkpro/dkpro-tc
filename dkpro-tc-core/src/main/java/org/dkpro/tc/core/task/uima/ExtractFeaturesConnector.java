@@ -230,7 +230,7 @@ public class ExtractFeaturesConnector
     private void getFeatureNames(JCas aJCas) throws AnalysisEngineProcessException
     {
     	
-		LogFactory.getLog(getClass()).info("--- collecting feature names ---");
+		LogFactory.getLog(getClass()).debug("--- collecting feature names ---");
     	
         // We run one time through feature extraction to get all features names
         try {
