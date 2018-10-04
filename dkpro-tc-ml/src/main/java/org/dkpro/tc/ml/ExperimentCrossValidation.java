@@ -121,10 +121,10 @@ public class ExperimentCrossValidation
             throw new IllegalStateException("You must set an experiment name");
         }
 
-        if (numFolds < 2) {
+        if (numFolds < 2 && numFolds != -1) {
             throw new IllegalStateException(
                     "Number of folds is not configured correctly. Number of folds needs to be at "
-                            + "least 2 (but was [" + numFolds + "])");
+                            + "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
         }
 
         // initialize the setup
