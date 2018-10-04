@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -502,9 +503,14 @@ public class ExperimentBuilder
 
     protected int getCvFolds()
     {
-        if (numFolds == -1) {
-            numFolds = 10;
+		// -1 defines leave one out and is, thus, valid as parameter. Any lower number
+		// is not
+        if (numFolds < -1) {
+			throw new IllegalArgumentException("Specified number of folds [" + numFolds
+					+ "] is invlaid, set either [-1] for LEAVE-ONE-OUT or a positive value");
         }
+        
+        LogFactory.getLog(getClass()).debug("Number of folds set to ["+numFolds+"]");
 
         return numFolds;
     }
@@ -538,6 +544,7 @@ public class ExperimentBuilder
     {
         this.reports = new ArrayList<>();
         for (ReportBase r : reports) {
+        	LogFactory.getLog(getClass()).debug("Add report ["+r.getClass().getSimpleName()+"] to experimental setup");
             this.reports.add(r);
         }
 
