@@ -106,7 +106,9 @@ public class LearningCurveDimensionBundle<T>
             }
             maxCount++;
             validationBucket=0;
-        }      
+        }    
+        LogFactory.getLog(getClass())
+                .info("Created [" + runs.size() + "] runs for the learning curve experiment");
     }
 
     /**
