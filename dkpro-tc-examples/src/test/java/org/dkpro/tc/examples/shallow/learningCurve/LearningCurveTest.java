@@ -55,11 +55,11 @@ public class LearningCurveTest
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";
     private static final int NUM_FOLDS = 3;
 
-    @Test
-    public void testLearningCurve() throws Exception
-    {
-        runExperiment();
-    }
+//    @Test
+//    public void testLearningCurve() throws Exception
+//    {
+//        runExperiment();
+//    }
     
     private void runExperiment() throws Exception
     {
