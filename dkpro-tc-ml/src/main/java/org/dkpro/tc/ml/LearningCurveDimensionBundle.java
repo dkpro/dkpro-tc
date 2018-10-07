@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
@@ -45,6 +46,7 @@ public class LearningCurveDimensionBundle<T>
         folds = aFolds;
     }
 
+    @SuppressWarnings("unchecked")
     private void init()
     {
         buckets = new List[folds];
@@ -91,21 +93,20 @@ public class LearningCurveDimensionBundle<T>
     {
         runs = new ArrayList<>();
         int maxCount = 1; //
-        int keptOutValidationBucketIdx = 0;
+        int validationBucket = 0;
         for (int j = 0; j < buckets.length-1; j++) {
             for (int k = 0; k < buckets.length; k++) {
-                List<List<Integer>> s = getLearningCurveStage(maxCount, keptOutValidationBucketIdx);
+                List<List<Integer>> s = getLearningCurveStage(maxCount, validationBucket);
                 for (List<Integer> train : s) {
-                    runs.add(new TrainTestSplit(train, keptOutValidationBucketIdx));
+                    LearningCurveDimensionBundle<T>.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
+                    LogFactory.getLog(getClass()).info(trainTestSplit.toString());
+                    runs.add(trainTestSplit);
                 }
-                keptOutValidationBucketIdx++;
+                validationBucket++;
             }
             maxCount++;
-            keptOutValidationBucketIdx=0;
+            validationBucket=0;
         }      
-        
-        int a=0;
-        a++;
     }
 
     /**
@@ -137,8 +138,8 @@ public class LearningCurveDimensionBundle<T>
             }
             else {
                 subList = it.subList(i, buckets.length - 1);
-                List<Integer> subList2 = it.subList(0, maxCount - subList.size());
-                subList.addAll(subList2);
+                List<Integer> end = it.subList(0, maxCount - subList.size());
+                subList.addAll(end);
             }
             trainData.add(new ArrayList<>(subList));
         }
@@ -149,14 +150,14 @@ public class LearningCurveDimensionBundle<T>
     @Override
     public boolean hasNext()
     {
-        return numFoldsIdx < runs.size();
+        return numFoldsIdx + 1 < runs.size();
     }
 
     @Override
     public void rewind()
     {
         init();
-        numFoldsIdx = 0;
+        numFoldsIdx = -1;
     }
 
     @Override
@@ -202,14 +203,14 @@ public class LearningCurveDimensionBundle<T>
         
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            sb.append("Train: [");
+            sb.append("[Train: (");
             for(int i=0; i < train.size(); i++) {
                 sb.append(train.get(i));
                 if (i+1 < train.size()) {
                     sb.append(" ");
                 }
             }
-            sb.append("], Test: ["+test+"]");
+            sb.append("), Test: ("+test+")]");
             return sb.toString();
         }
     

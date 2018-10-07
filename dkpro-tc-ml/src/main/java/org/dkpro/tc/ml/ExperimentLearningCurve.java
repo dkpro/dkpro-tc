@@ -33,7 +33,6 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
-import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
@@ -287,7 +286,7 @@ public class ExperimentLearningCurve
         reports.add(new BasicResultReport());
 
         testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask,
-                collectionTask, reports, experimentName);
+                collectionTask, new ArrayList<>(), experimentName);
         testTask.setType(testTask.getType() + "-" + experimentName);
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
