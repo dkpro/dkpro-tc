@@ -25,7 +25,9 @@ public enum ExperimentType
 {
     TRAIN_TEST,
 
-    CROSS_VALIDATION, 
+    CROSS_VALIDATION,
+    
+    LEARNING_CURVE,
     
     SAVE_MODEL
 }

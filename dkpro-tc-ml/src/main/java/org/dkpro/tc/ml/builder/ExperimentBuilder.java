@@ -38,10 +38,12 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.ExperimentLearningCurve;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.CrossValidationReport;
+import org.dkpro.tc.ml.report.LearningCurveReport;
 import org.dkpro.tc.ml.report.TrainTestReport;
 
 /**
@@ -484,6 +486,11 @@ public class ExperimentBuilder
             int folds = getCvFolds();
             experiment = new ExperimentCrossValidation(experimentName, folds);
             experiment.addReport(new CrossValidationReport());
+            break;
+        case LEARNING_CURVE:
+            folds = getCvFolds();
+            experiment = new ExperimentLearningCurve(experimentName, folds);
+            experiment.addReport(new LearningCurveReport(folds));
             break;
         case SAVE_MODEL:
             sanityCheckSaveModelExperiment();
