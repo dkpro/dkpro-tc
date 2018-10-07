@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.report;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.dkpro.lab.reporting.ChartUtil;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -36,6 +38,14 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.DefaultXYDataset;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
@@ -76,6 +86,8 @@ public class LearningCurveReport
         // writeResultsPerFold(learningMode, store, idPool, ID_OUTCOME_KEY, false, "");
 
     }
+    
+    // FIXME: Only a single ML run supported at the moment no multiple feature set or multiple classifier runs!
 
     private void writeOverallResults(String learningMode, StorageService store, Set<String> idPool)
         throws Exception
@@ -90,7 +102,6 @@ public class LearningCurveReport
                 continue;
             }
             collectSubtasks = collectSubtasks(id);
-            // FIXME: Only a single ML run supported at the moment
             break;
         }
 
@@ -101,10 +112,10 @@ public class LearningCurveReport
             if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, sId)) {
                 continue;
             }
-            System.out.println(sId);
             File f = store.locateKey(sId, ID_OUTCOME_KEY);
             stage.add(f);
 
+            //the number of folds decide how many MLA runs belong to the same stage
             if (stage.size() % numFolds == 0) {
                 stageId2outcomeFiles.add(stage);
                 stage = new ArrayList<>();
@@ -123,10 +134,58 @@ public class LearningCurveReport
                 Accuracy<String> acc = new Accuracy<>(stageData);
                 stageAveraged.add(acc.getResult());
             }
-
-            stageAveraged.forEach(x -> System.out.println(x));
+            
+            writePlot(stageAveraged);
+            
+            
+                
+            stageAveraged.forEach(v -> System.out.println(v));
         }
 
+    }
+
+    private void writePlot(List<Double> stageAveraged) throws Exception
+    {
+        double x [] = new double[stageAveraged.size()+1];
+        double y [] = new double[stageAveraged.size()+1];
+        for(int i=1; i<x.length; i++) {
+            x[i]=i;
+            y[i]=stageAveraged.get(i-1);
+        }
+        
+        DefaultXYDataset dataset = new DefaultXYDataset();
+        double[][] data = new double[2][x.length];
+        data[0] = x;
+        data[1] = y;
+        dataset.addSeries("LearningCurve", data);
+        
+        
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Learning Curve",
+                "number of training folds",
+                "performance",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false
+            );
+            XYPlot plot = (XYPlot) chart.getPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+            renderer.setSeriesLinesVisible(0, true);
+            renderer.setSeriesShapesVisible(0, false);
+            plot.setRenderer(renderer);
+            NumberAxis domain = (NumberAxis) plot.getDomainAxis();
+            domain.setRange(0.00, numFolds);
+            domain.setTickUnit(new NumberTickUnit(1.0));
+            NumberAxis range = (NumberAxis) plot.getRangeAxis();
+            range.setRange(0.0, 1.0);
+            range.setTickUnit(new NumberTickUnit(0.1));
+        
+            File file = getContext().getFile("learningCurve.pdf", AccessMode.READWRITE);
+            FileOutputStream fos = new FileOutputStream(file);
+            ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
+            fos.close();        
     }
 
     private String getMLSetup(String id) throws Exception

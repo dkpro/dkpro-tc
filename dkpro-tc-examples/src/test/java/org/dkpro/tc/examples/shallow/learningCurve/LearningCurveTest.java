@@ -36,7 +36,7 @@ import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
+import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.ExperimentLearningCurve;
@@ -81,7 +81,9 @@ public class LearningCurveTest
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", crfsuite);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
+                new TcFeatureSet(
+                        TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_MIN_N, 2,
+                                CharacterNGram.PARAM_NGRAM_MAX_N, 4),
                         TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                                 TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -2),
                         TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,

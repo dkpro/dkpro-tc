@@ -99,7 +99,7 @@ public class LearningCurveDimensionBundle<T>
                 List<List<Integer>> s = getLearningCurveStage(maxCount, validationBucket);
                 for (List<Integer> train : s) {
                     LearningCurveDimensionBundle<T>.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
-                    LogFactory.getLog(getClass()).info(trainTestSplit.toString());
+                    LogFactory.getLog(getClass()).debug(trainTestSplit.toString());
                     runs.add(trainTestSplit);
                 }
                 validationBucket++;
