@@ -190,6 +190,11 @@ public interface Constants
     String DIM_FILES_VALIDATION = "files_validation";
     
     /**
+     * This dimensions contains the training folds on which this classification run is based
+     */
+    String DIM_NUM_TRAINING_FOLDS = "files_numTrainingFolds";
+    
+    /**
      * Enforces that during writing of the test feature file only features are written that did
      * occur during training. This enforcement is computational extremely expensive and will
      * increase testing time considerably.

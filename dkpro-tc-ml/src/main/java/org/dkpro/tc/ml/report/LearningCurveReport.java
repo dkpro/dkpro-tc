@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,6 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
-import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -66,7 +64,8 @@ public class LearningCurveReport
     private static final String FILE_ENDING = ".tsv";
 
     private int numFolds = Integer.MIN_VALUE;
-
+    
+    
     public LearningCurveReport(int numFolds)
     {
         this.numFolds = numFolds;
@@ -83,7 +82,10 @@ public class LearningCurveReport
         writeId2DiscriminatorMapping(store, learningMode, idPool);
 
         writeOverallResults(learningMode, store, idPool);
-        // writeResultsPerFold(learningMode, store, idPool, ID_OUTCOME_KEY, false, "");
+        
+        if(isSingleLabelMode(learningMode)) {
+        	writeCategoricalResults(learningMode, store, idPool);
+        }
 
     }
     
@@ -114,6 +116,10 @@ public class LearningCurveReport
             }
             File f = store.locateKey(sId, ID_OUTCOME_KEY);
             stage.add(f);
+            
+//            Map<String, String> values = getDiscriminatorsOfMlaSetup(sId);
+//            values = ReportUtils.removeKeyRedundancy(values);
+//            String string = values.get(Constants.DIM_NUM_TRAINING_FOLDS);
 
             //the number of folds decide how many MLA runs belong to the same stage
             if (stage.size() % numFolds == 0) {
@@ -299,86 +305,11 @@ public class LearningCurveReport
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }
 
-    private void writeResultsPerFold(String learningMode, StorageService store, Set<String> idPool,
-            String outcomeFileName, boolean isBaseline, String prefix)
+    private void writeCategoricalResults(String learningMode, StorageService store, Set<String> idPool)
         throws Exception
     {
 
-        Set<String> allTasks = collectTasks(idPool);
-
-        StringBuilder sb = new StringBuilder();
-        boolean writeHeader = true;
-
-        List<String> content = new ArrayList<>();
-
-        for (String id : allTasks) {
-            if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
-                continue;
-            }
-
-            Map<String, String> values = new HashMap<String, String>();
-
-            // The classification result is always there
-            File foldId2Outcome = store.locateKey(id, outcomeFileName);
-
-            if (!foldId2Outcome.exists()) {
-                return;
-            }
-
-            Map<String, String> results = MetricComputationUtil.getResults(foldId2Outcome,
-                    learningMode);
-            values.putAll(results);
-
-            // add keys and values sorted by keys
-            List<String> mapKeys = new ArrayList<String>(values.keySet());
-            Collections.sort(mapKeys);
-            if (writeHeader) {
-                sb.append("Id" + SEP + "TaskLabel");
-                mapKeys.forEach(x -> sb.append(SEP + x));
-                sb.append("\n");
-                writeHeader = false;
-            }
-            StringBuilder line = new StringBuilder();
-
-            line.append(registerGetMapping(id) + SEP + getContextLabel(id));
-            for (String k : mapKeys) {
-                line.append(SEP + values.get(k));
-            }
-            content.add(line.toString());
-        }
-
-        // Sort lines by id
-        Collections.sort(content, new Comparator<String>()
-        {
-
-            @Override
-            public int compare(String o1, String o2)
-            {
-
-                String[] split = o1.split(SEP);
-                Integer id1 = Integer.valueOf(split[0]);
-
-                split = o2.split(SEP);
-                Integer id2 = Integer.valueOf(split[0]);
-
-                return id1.compareTo(id2);
-            }
-        });
-
-        content.forEach(x -> sb.append(x + "\n"));
-
-        File targetFile = null;
-        if (isBaseline) {
-            File folder = getContext().getFolder(baselineFolder, AccessMode.READWRITE);
-            targetFile = new File(folder, prefix + EVAL_FILE_NAME_PER_FOLD + FILE_ENDING);
-        }
-        else {
-            targetFile = getContext().getFile(prefix + EVAL_FILE_NAME_PER_FOLD + FILE_ENDING,
-                    AccessMode.READWRITE);
-        }
-
-        FileUtils.writeStringToFile(targetFile, sb.toString(), "utf-8");
-
+       
     }
 
     private String determineLearningMode(StorageService store, Set<String> idPool) throws Exception

@@ -30,17 +30,17 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
 
-public class LearningCurveDimensionBundle<T>
-    extends DimensionBundle<Collection<T>>
+public class LearningCurveDimensionBundle
+    extends DimensionBundle<Collection<String>>
     implements DynamicDimension
 {
-    private Dimension<T> foldedDimension;
-    private List<T>[] buckets;
+    private Dimension<String> foldedDimension;
+    private List<String>[] buckets;
     private int folds;
     private List<TrainTestSplit> runs = new ArrayList<>();
     private int numFoldsIdx=0;
 
-    public LearningCurveDimensionBundle(String aName, Dimension<T> aFoldedDimension, int aFolds)
+    public LearningCurveDimensionBundle(String aName, Dimension<String> aFoldedDimension, int aFolds)
     {
         super(aName, new Object[0]);
         foldedDimension = aFoldedDimension;
@@ -52,7 +52,7 @@ public class LearningCurveDimensionBundle<T>
     {
         buckets = new List[folds];
         for (int bucket = 0; bucket < buckets.length; bucket++) {
-            buckets[bucket] = new ArrayList<T>();
+            buckets[bucket] = new ArrayList<String>();
         }
 
         // Capture all data from the dimension into buckets, one per fold
@@ -63,7 +63,7 @@ public class LearningCurveDimensionBundle<T>
             int bucket = i % folds;
 
             if (buckets[bucket] == null) {
-                buckets[bucket] = new ArrayList<T>();
+                buckets[bucket] = new ArrayList<String>();
             }
 
             buckets[bucket].add(foldedDimension.next());
@@ -105,7 +105,7 @@ public class LearningCurveDimensionBundle<T>
                 }
                 
                 for (List<Integer> train : s) {
-                    LearningCurveDimensionBundle<T>.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
+                    LearningCurveDimensionBundle.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
                     LogFactory.getLog(getClass()).debug(trainTestSplit.toString());
                     runs.add(trainTestSplit);
                 }
@@ -171,25 +171,28 @@ public class LearningCurveDimensionBundle<T>
     }
 
     @Override
-    public Map<String, Collection<T>> next()
+    public Map<String, Collection<String>> next()
     {
         numFoldsIdx++;
         return current();
     }
 
     @Override
-    public Map<String, Collection<T>> current()
+    public Map<String, Collection<String>> current()
     {
-        List<T> trainingData = new ArrayList<T>();
-        LearningCurveDimensionBundle<T>.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
+        List<String> trainingData = new ArrayList<String>();
+        List<String> bucketCount= new ArrayList<>();
+        LearningCurveDimensionBundle.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
         
         for(Integer idx : learningCurveRun.train) {
             trainingData.addAll(buckets[idx]);
+            bucketCount.add("bucket_" + idx);
         }
 
-        Map<String, Collection<T>> data = new HashMap<String, Collection<T>>();
+        Map<String, Collection<String>> data = new HashMap<String, Collection<String>>();
         data.put(getName() + "_training", trainingData);
         data.put(getName() + "_validation", buckets[learningCurveRun.test]);
+        data.put(getName() + "_numTrainingFolds", bucketCount);
 
         return data;
     }
