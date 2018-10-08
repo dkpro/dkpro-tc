@@ -20,6 +20,7 @@ package org.dkpro.tc.ml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,12 +98,19 @@ public class LearningCurveDimensionBundle<T>
         for (int j = 0; j < buckets.length-1; j++) {
             for (int k = 0; k < buckets.length; k++) {
                 List<List<Integer>> s = getLearningCurveStage(maxCount, validationBucket);
+                
+                if(maxCount == buckets.length-1) {
+                	// in this case, the train-set variations will always be the same - so one of the generated sets is sufficient
+                	s = s.subList(0, 1);
+                }
+                
                 for (List<Integer> train : s) {
                     LearningCurveDimensionBundle<T>.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
                     LogFactory.getLog(getClass()).debug(trainTestSplit.toString());
                     runs.add(trainTestSplit);
                 }
                 validationBucket++;
+                
             }
             maxCount++;
             validationBucket=0;
@@ -200,6 +208,7 @@ public class LearningCurveDimensionBundle<T>
 
         TrainTestSplit(List<Integer> train, Integer test){
             this.train = train;
+            Collections.sort(this.train);
             this.test = test;
         }
         
