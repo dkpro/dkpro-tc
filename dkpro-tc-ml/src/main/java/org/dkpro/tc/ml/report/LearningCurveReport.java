@@ -54,6 +54,8 @@ import org.jfree.data.xy.DefaultXYDataset;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
+import de.unidue.ltl.evaluation.measures.categorial.Fscore;
+import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
 /**
@@ -64,6 +66,7 @@ public class LearningCurveReport
     extends TcAbstractReport
     implements Constants
 {
+    @SuppressWarnings("rawtypes")
     @Override
     public void execute() throws Exception
     {
@@ -79,6 +82,7 @@ public class LearningCurveReport
 
     }
 
+    @SuppressWarnings("rawtypes")
     private void writeOverallResults(String learningMode, StorageService store, Set<String> idPool)
         throws Exception
     {
@@ -97,21 +101,24 @@ public class LearningCurveReport
             dataMap.putAll(run);
         }
 
-        @SuppressWarnings("rawtypes")
-        Class<? extends EvaluationMeasure> metric = null;
         if (learningMode.equals(LM_SINGLE_LABEL)) {
-            metric = Accuracy.class;
             for (RunIdentifier configId : dataMap.keySet()) {
-                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), metric);
-                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), metric.getSimpleName());
+                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class);
+                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), Accuracy.class.getSimpleName());
                 stageAveraged.forEach(v -> System.out.println(v));
             }
+            
         } else if (learningMode.equals(LM_REGRESSION)) {
-            metric = SpearmanCorrelation.class;
+            List<Class<? extends EvaluationMeasure>> regMetrics = new ArrayList<>();
+            regMetrics.add(PearsonCorrelation.class);
+            regMetrics.add(SpearmanCorrelation.class);
+            for(Class<? extends EvaluationMeasure> m : regMetrics) {
+           
             for (RunIdentifier configId : dataMap.keySet()) {
-                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), metric);
-                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), metric.getSimpleName());
+                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
+                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), m.getSimpleName());
                 stageAveraged.forEach(v -> System.out.println(v));
+            }
             }
         }
 
