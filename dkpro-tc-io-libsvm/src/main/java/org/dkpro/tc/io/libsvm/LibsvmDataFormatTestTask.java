@@ -23,13 +23,12 @@ import java.util.List;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.TcClassifierTaskBase;
 
 public abstract class LibsvmDataFormatTestTask
-    extends ExecutableTaskBase
-    implements Constants
+    extends TcClassifierTaskBase
 {
 
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
@@ -44,6 +43,7 @@ public abstract class LibsvmDataFormatTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
+    	super.execute(aContext);
         throwExceptionIfMultiLabelMode();
 
         Object model = trainModel(aContext);

@@ -29,9 +29,9 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.TcClassifierTaskBase;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
@@ -41,8 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 public class CrfSuiteTestTask
-    extends ExecutableTaskBase
-    implements Constants
+    extends TcClassifierTaskBase
 {
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
@@ -53,6 +52,7 @@ public class CrfSuiteTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
+    	super.execute(aContext);
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         if (multiLabel) {

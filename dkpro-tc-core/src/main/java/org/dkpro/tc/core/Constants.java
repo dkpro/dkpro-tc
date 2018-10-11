@@ -192,7 +192,7 @@ public interface Constants
     /**
      * This dimensions contains the training folds on which this classification run is based
      */
-    String DIM_NUM_TRAINING_FOLDS = "files_numTrainingFolds";
+    String DIM_NUM_TRAINING_FOLDS = "numTrainingFolds";
     
     /**
      * Enforces that during writing of the test feature file only features are written that did
@@ -464,5 +464,8 @@ public interface Constants
      * amounts of data.
      */
     String DIM_SKIP_SANITY_CHECKS = "skipSanityChecks";
+    
+    
+    String CONFIGURATION_DKPRO_LAB = "CONFIGURATION.txt";
 
 }

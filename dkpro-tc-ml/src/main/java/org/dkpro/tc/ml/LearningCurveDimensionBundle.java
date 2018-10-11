@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
+import org.dkpro.tc.core.Constants;
 
 public class LearningCurveDimensionBundle
     extends DimensionBundle<Collection<String>>
@@ -181,18 +182,18 @@ public class LearningCurveDimensionBundle
     public Map<String, Collection<String>> current()
     {
         List<String> trainingData = new ArrayList<String>();
-        List<String> bucketCount= new ArrayList<>();
+        List<String> usedBucketSet= new ArrayList<>();
         LearningCurveDimensionBundle.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
         
         for(Integer idx : learningCurveRun.train) {
             trainingData.addAll(buckets[idx]);
-            bucketCount.add("bucket_" + idx);
+            usedBucketSet.add("bucket_" + idx);
         }
 
         Map<String, Collection<String>> data = new HashMap<String, Collection<String>>();
         data.put(getName() + "_training", trainingData);
         data.put(getName() + "_validation", buckets[learningCurveRun.test]);
-        data.put(getName() + "_numTrainingFolds", bucketCount);
+        data.put(Constants.DIM_NUM_TRAINING_FOLDS, usedBucketSet);
 
         return data;
     }

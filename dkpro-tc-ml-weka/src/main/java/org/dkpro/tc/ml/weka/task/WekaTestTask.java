@@ -32,8 +32,8 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.ml.TcClassifierTaskBase;
 import org.dkpro.tc.ml.weka.core.MekaTrainer;
 import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.dkpro.tc.ml.weka.core._eka;
@@ -56,8 +56,7 @@ import weka.filters.unsupervised.attribute.Add;
  * Base class for test task and save model tasks
  */
 public class WekaTestTask
-    extends ExecutableTaskBase
-    implements Constants
+    extends TcClassifierTaskBase
 {
 
     public final static String featureSelectionFile = "featureSelection.txt";
@@ -94,6 +93,7 @@ public class WekaTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
+    	super.execute(aContext);
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         File arffFileTrain = getFile(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA,
