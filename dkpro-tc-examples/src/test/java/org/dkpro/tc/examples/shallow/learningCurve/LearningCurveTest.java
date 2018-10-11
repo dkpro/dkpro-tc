@@ -53,13 +53,13 @@ public class LearningCurveTest
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";
-    private static final int NUM_FOLDS = 3;
+    private static final int NUM_FOLDS = 2;
 
-//    @Test
-//    public void testLearningCurve() throws Exception
-//    {
-//        runExperiment();
-//    }
+    @Test
+    public void testLearningCurve() throws Exception
+    {
+        runExperiment();
+    }
     
     private void runExperiment() throws Exception
     {
@@ -71,14 +71,20 @@ public class LearningCurveTest
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
-        Map<String, Object> crfsuite = new HashMap<>();
-        crfsuite.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
+        Map<String, Object> crfsuiteVersion1 = new HashMap<>();
+        crfsuiteVersion1.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
                 CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR });
-        crfsuite.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
-        crfsuite.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        crfsuiteVersion1.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
+        crfsuiteVersion1.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
+        
+        Map<String, Object> crfsuiteVersion2 = new HashMap<>();
+        crfsuiteVersion2.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
+                CrfSuiteAdapter.ALGORITHM_L2_STOCHASTIC_GRADIENT_DESCENT });
+        crfsuiteVersion2.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
+        crfsuiteVersion2.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
         
         
-        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", crfsuite);
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", crfsuiteVersion1);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(
@@ -100,7 +106,7 @@ public class LearningCurveTest
                 "NamedEntitySequenceDemoTrainTest", NUM_FOLDS);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
-        experiment.addReport(new LearningCurveReport(NUM_FOLDS));
+        experiment.addReport(new LearningCurveReport());
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
         
         Lab.getInstance().run(experiment);

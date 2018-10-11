@@ -490,7 +490,7 @@ public class ExperimentBuilder
         case LEARNING_CURVE:
             folds = getCvFolds();
             experiment = new ExperimentLearningCurve(experimentName, folds);
-            experiment.addReport(new LearningCurveReport(folds));
+            experiment.addReport(new LearningCurveReport());
             break;
         case SAVE_MODEL:
             sanityCheckSaveModelExperiment();
