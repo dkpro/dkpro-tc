@@ -25,7 +25,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,6 +57,8 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
 import de.unidue.ltl.evaluation.measures.EvaluationMeasure;
 import de.unidue.ltl.evaluation.measures.categorial.Fscore;
+import de.unidue.ltl.evaluation.measures.categorial.Precision;
+import de.unidue.ltl.evaluation.measures.categorial.Recall;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
@@ -66,7 +70,6 @@ public class LearningCurveReport
     extends TcAbstractReport
     implements Constants
 {
-    @SuppressWarnings("rawtypes")
     @Override
     public void execute() throws Exception
     {
@@ -74,16 +77,18 @@ public class LearningCurveReport
         Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
         String learningMode = determineLearningMode(store, idPool);
 
-        writeOverallResults(learningMode, store, idPool);
+        Map<RunIdentifier, Map<Integer, List<File>>> dataMap = writeOverallResults(learningMode,
+                store, idPool);
 
         if (isSingleLabelMode(learningMode)) {
-            writeCategoricalResults(learningMode, store, idPool);
+            writeCategoricalResults(learningMode, store, dataMap);
         }
 
     }
 
     @SuppressWarnings("rawtypes")
-    private void writeOverallResults(String learningMode, StorageService store, Set<String> idPool)
+    private Map<RunIdentifier, Map<Integer, List<File>>> writeOverallResults(String learningMode,
+            StorageService store, Set<String> idPool)
         throws Exception
     {
 
@@ -104,21 +109,24 @@ public class LearningCurveReport
         if (learningMode.equals(LM_SINGLE_LABEL)) {
             for (RunIdentifier configId : dataMap.keySet()) {
                 List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class);
-                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), Accuracy.class.getSimpleName());
+                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)),
+                        Accuracy.class.getSimpleName());
                 stageAveraged.forEach(v -> System.out.println(v));
             }
-            
-        } else if (learningMode.equals(LM_REGRESSION)) {
+
+        }
+        else if (learningMode.equals(LM_REGRESSION)) {
             List<Class<? extends EvaluationMeasure>> regMetrics = new ArrayList<>();
             regMetrics.add(PearsonCorrelation.class);
             regMetrics.add(SpearmanCorrelation.class);
-            for(Class<? extends EvaluationMeasure> m : regMetrics) {
-           
-            for (RunIdentifier configId : dataMap.keySet()) {
-                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
-                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)), m.getSimpleName());
-                stageAveraged.forEach(v -> System.out.println(v));
-            }
+            for (Class<? extends EvaluationMeasure> m : regMetrics) {
+
+                for (RunIdentifier configId : dataMap.keySet()) {
+                    List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
+                    writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)),
+                            m.getSimpleName());
+                    stageAveraged.forEach(v -> System.out.println(v));
+                }
             }
         }
 
@@ -129,6 +137,8 @@ public class LearningCurveReport
 
         FileUtils.writeStringToFile(getContext().getFile("md5Mapping.txt", AccessMode.READWRITE),
                 sb.toString(), "utf-8");
+
+        return dataMap;
     }
 
     private int getMaxValue(Map<Integer, List<File>> map)
@@ -160,7 +170,8 @@ public class LearningCurveReport
                         .convertSingleLabelModeId2Outcome(f);
                 stageData.registerBulk(run);
             }
-            EvaluationMeasure measure = class1.getDeclaredConstructor(EvaluationData.class).newInstance(stageData);
+            EvaluationMeasure measure = class1.getDeclaredConstructor(EvaluationData.class)
+                    .newInstance(stageData);
             stageAveraged.add(measure.getResult());
         }
         return stageAveraged;
@@ -255,7 +266,8 @@ public class LearningCurveReport
         return 1;
     }
 
-    private void writePlot(String id, List<Double> stageAveraged, int maxFolds, String metricName) throws Exception
+    private void writePlot(String id, List<Double> stageAveraged, int maxFolds, String metricName)
+        throws Exception
     {
         double x[] = new double[stageAveraged.size() + 1];
         double y[] = new double[stageAveraged.size() + 1];
@@ -271,7 +283,7 @@ public class LearningCurveReport
         dataset.addSeries(metricName, data);
 
         JFreeChart chart = ChartFactory.createXYLineChart("Learning Curve",
-                "number of training folds", "performance", dataset, PlotOrientation.VERTICAL, true,
+                "number of training folds", metricName, dataset, PlotOrientation.VERTICAL, true,
                 false, false);
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
@@ -285,7 +297,8 @@ public class LearningCurveReport
         range.setRange(0.0, 1.0);
         range.setTickUnit(new NumberTickUnit(0.1));
 
-        File file = getContext().getFile(id + "_learningCurve_" + metricName +".pdf", AccessMode.READWRITE);
+        File file = getContext().getFile(id + "_learningCurve_" + metricName + ".pdf",
+                AccessMode.READWRITE);
         FileOutputStream fos = new FileOutputStream(file);
         ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
         fos.close();
@@ -297,10 +310,120 @@ public class LearningCurveReport
     }
 
     private void writeCategoricalResults(String learningMode, StorageService store,
-            Set<String> idPool)
+            Map<RunIdentifier, Map<Integer, List<File>>> dataMap)
         throws Exception
     {
 
+        for (RunIdentifier configId : dataMap.keySet()) {
+            List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(
+                    dataMap.get(configId));
+            writeCategoricalPlots(configId.md5, stageAvg, getMaxValue(dataMap.get(configId)));
+        }
+
+    }
+
+    private void writeCategoricalPlots(String md5, List<List<CategoricalPerformance>> stageAvg,
+            int maxValue)
+        throws Exception
+    {
+        
+        
+
+        for (int i = 0; i < stageAvg.get(0).size(); i++) {
+            for (int j = 0; j < stageAvg.size(); j++) {
+
+                DefaultXYDataset dataset = new DefaultXYDataset();
+                for (String key : new String[] { CategoricalPerformance.PRECISION,
+                        CategoricalPerformance.RECALL, CategoricalPerformance.FSCORE }) {
+                    double x[] = new double[stageAvg.size() + 1];
+                    double y[] = new double[stageAvg.size() + 1];
+
+                    int idx = 1;
+                    for (List<CategoricalPerformance> currentStage : stageAvg) {
+                        x[idx] = idx;
+                        y[idx] = currentStage.get(i).getValue(key);
+                        idx++;
+                    }
+
+                    double[][] data = new double[2][x.length];
+                    data[0] = x;
+                    data[1] = y;
+                    dataset.addSeries(key, data);
+                }
+
+                JFreeChart chart = ChartFactory.createXYLineChart("CategoricalCurve",
+                        "number of training folds", "Performance", dataset, PlotOrientation.VERTICAL, true,
+                        false, false);
+                XYPlot plot = (XYPlot) chart.getPlot();
+                XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+                renderer.setSeriesLinesVisible(0, true);
+                renderer.setSeriesShapesVisible(0, false);
+                plot.setRenderer(renderer);
+                NumberAxis domain = (NumberAxis) plot.getDomainAxis();
+                domain.setRange(0.00, maxValue);
+                domain.setTickUnit(new NumberTickUnit(1.0));
+                NumberAxis range = (NumberAxis) plot.getRangeAxis();
+                range.setRange(0.0, 1.0);
+                range.setTickUnit(new NumberTickUnit(0.1));
+
+                System.out.println(j + " " + i);
+                File file = getContext().getFile(
+                        md5 + "_categorical_" + stageAvg.get(j).get(i).categoryName + ".pdf",
+                        AccessMode.READWRITE);
+                System.out.println(j + " " + i + " " + file.getAbsolutePath());
+                FileOutputStream fos = new FileOutputStream(file);
+                ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
+                fos.close();
+
+            }
+        }
+    }
+
+    private List<List<CategoricalPerformance>> averagePerStageCategorical(
+            Map<Integer, List<File>> map)
+        throws Exception
+    {
+        List<List<CategoricalPerformance>> stageAveraged = new ArrayList<>();
+
+        List<Integer> keys = new ArrayList<Integer>(map.keySet());
+        Collections.sort(keys);
+        for (Integer numFolds : keys) {
+            List<File> st = map.get(numFolds);
+            EvaluationData<String> stageData = new EvaluationData<>();
+            for (File f : st) {
+                EvaluationData<String> run = Tc2LtlabEvalConverter
+                        .convertSingleLabelModeId2Outcome(f);
+                stageData.registerBulk(run);
+            }
+
+            Set<String> categories = new HashSet<>();
+            stageData.forEach(x -> {
+                categories.add(x.getGold());
+                categories.add(x.getPredicted());
+            });
+
+            Precision<String> precision = new Precision<>(stageData);
+            Recall<String> recall = new Recall<>(stageData);
+            Fscore<String> fscore = new Fscore<>(stageData);
+            List<CategoricalPerformance> cp = new ArrayList<>();
+            for (String c : categories) {
+                cp.add(new CategoricalPerformance(c, precision.getPrecisionForLabel(c),
+                        recall.getRecallForLabel(c), fscore.getScoreForLabel(c)));
+            }
+
+            Collections.sort(cp, new Comparator<CategoricalPerformance>()
+            {
+
+                @Override
+                public int compare(CategoricalPerformance o1, CategoricalPerformance o2)
+                {
+                    return o1.categoryName.compareTo(o2.categoryName);
+                }
+            });
+
+            stageAveraged.add(cp);
+        }
+        return stageAveraged;
     }
 
     private String determineLearningMode(StorageService store, Set<String> idPool) throws Exception
@@ -358,6 +481,41 @@ public class LearningCurveReport
                 return true;
             }
             return false;
+        }
+    }
+
+    class CategoricalPerformance
+    {
+        static final String PRECISION = "PRECISION";
+        static final String RECALL = "RECALL";
+        static final String FSCORE = "FSCORE";
+        String categoryName;
+        double precision;
+        double recall;
+        double fscore;
+
+        public CategoricalPerformance(String categoryName, double precision, double recall,
+                double fscore)
+        {
+            this.categoryName = categoryName;
+            this.precision = precision;
+            this.recall = recall;
+            this.fscore = fscore;
+        }
+
+        double getValue(String key)
+        {
+            switch (key) {
+            case PRECISION:
+                return precision;
+            case RECALL:
+                return recall;
+            case FSCORE:
+                return fscore;
+            }
+
+            throw new IllegalArgumentException(
+                    "The key [" + key + "] is unknown as categorical measure");
         }
     }
 }
