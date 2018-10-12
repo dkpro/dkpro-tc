@@ -322,24 +322,25 @@ public class LearningCurveReport
 
     }
 
-    private void writeCategoricalPlots(String md5, List<List<CategoricalPerformance>> stageAvg,
+    private void writeCategoricalPlots(String md5, List<List<CategoricalPerformance>> allData,
             int maxValue)
         throws Exception
     {
-        
-        
 
-        for (int i = 0; i < stageAvg.get(0).size(); i++) {
-            for (int j = 0; j < stageAvg.size(); j++) {
+        List<List<CategoricalPerformance>> allDataNormalized = ensureThatEachCategoryOccursAtEachStage(
+                allData);
+
+        for (int i = 0; i < allDataNormalized.get(0).size(); i++) {
+            for (int j = 0; j < allData.size(); j++) {
 
                 DefaultXYDataset dataset = new DefaultXYDataset();
                 for (String key : new String[] { CategoricalPerformance.PRECISION,
                         CategoricalPerformance.RECALL, CategoricalPerformance.FSCORE }) {
-                    double x[] = new double[stageAvg.size() + 1];
-                    double y[] = new double[stageAvg.size() + 1];
+                    double x[] = new double[allData.size() + 1];
+                    double y[] = new double[allData.size() + 1];
 
                     int idx = 1;
-                    for (List<CategoricalPerformance> currentStage : stageAvg) {
+                    for (List<CategoricalPerformance> currentStage : allDataNormalized) {
                         x[idx] = idx;
                         y[idx] = currentStage.get(i).getValue(key);
                         idx++;
@@ -352,8 +353,8 @@ public class LearningCurveReport
                 }
 
                 JFreeChart chart = ChartFactory.createXYLineChart("CategoricalCurve",
-                        "number of training folds", "Performance", dataset, PlotOrientation.VERTICAL, true,
-                        false, false);
+                        "number of training folds", "Performance", dataset,
+                        PlotOrientation.VERTICAL, true, false, false);
                 XYPlot plot = (XYPlot) chart.getPlot();
                 XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
                 renderer.setSeriesLinesVisible(0, true);
@@ -366,17 +367,71 @@ public class LearningCurveReport
                 range.setRange(0.0, 1.0);
                 range.setTickUnit(new NumberTickUnit(0.1));
 
-                System.out.println(j + " " + i);
-                File file = getContext().getFile(
-                        md5 + "_categorical_" + stageAvg.get(j).get(i).categoryName + ".pdf",
+                File file = getContext().getFile(md5 + "_categorical_"
+                        + allDataNormalized.get(j).get(i).categoryName + ".pdf",
                         AccessMode.READWRITE);
-                System.out.println(j + " " + i + " " + file.getAbsolutePath());
                 FileOutputStream fos = new FileOutputStream(file);
                 ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
                 fos.close();
 
             }
         }
+    }
+
+    /**
+     * It might happen that some categories did not occur in the training set depending on the data
+     * distribution and how they were assigned to folds. We check this condition and add
+     * zero-entries to ensure that on each learning curve stage all categories occur.
+     */
+    private List<List<CategoricalPerformance>> ensureThatEachCategoryOccursAtEachStage(
+            List<List<CategoricalPerformance>> allData)
+    {
+
+        Set<String> setOfNames = new HashSet<>();
+        for (List<CategoricalPerformance> cp : allData) {
+            for (CategoricalPerformance c : cp) {
+                setOfNames.add(c.categoryName);
+            }
+        }
+        List<String> catogryNames = new ArrayList<>(setOfNames);
+        Collections.sort(catogryNames);
+
+        boolean needNormalization = false;
+        for (List<CategoricalPerformance> stage : allData) {
+            if (stage.size() != catogryNames.size()) {
+                needNormalization = true;
+                break;
+            }
+        }
+
+        if (!needNormalization) {
+            return allData;
+        }
+
+        List<List<CategoricalPerformance>> allDataNormalized = new ArrayList<>();
+
+        for (List<CategoricalPerformance> stage : allData) {
+            List<CategoricalPerformance> stageNormalized = new ArrayList<>();
+            for (String name : catogryNames) {
+                boolean added = false;
+                for (CategoricalPerformance p : stage) {
+                    if (p.categoryName.equals(name)) {
+                        stageNormalized.add(p);
+                        added = true;
+                        break;
+                    }
+                    if (added) {
+                        break;
+                    }
+                }
+                if (!added) {
+                    stageNormalized.add(new CategoricalPerformance(name, 0, 0, 0));
+                }
+            }
+            allDataNormalized.add(stageNormalized);
+        }
+
+        return allDataNormalized;
     }
 
     private List<List<CategoricalPerformance>> averagePerStageCategorical(
@@ -516,6 +571,11 @@ public class LearningCurveReport
 
             throw new IllegalArgumentException(
                     "The key [" + key + "] is unknown as categorical measure");
+        }
+
+        public String toString()
+        {
+            return String.format("%s/%.3f/%.3f/%.3f", categoryName, precision, recall, fscore);
         }
     }
 }
