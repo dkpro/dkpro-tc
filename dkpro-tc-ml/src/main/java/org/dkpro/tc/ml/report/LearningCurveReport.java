@@ -70,6 +70,8 @@ public class LearningCurveReport
     extends TcAbstractReport
     implements Constants
 {
+    int maxNumberFolds=-1;
+    
     @Override
     public void execute() throws Exception
     {
@@ -109,9 +111,8 @@ public class LearningCurveReport
         if (learningMode.equals(LM_SINGLE_LABEL)) {
             for (RunIdentifier configId : dataMap.keySet()) {
                 List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class);
-                writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)),
+                writePlot(configId.md5, stageAveraged, maxNumberFolds,
                         Accuracy.class.getSimpleName());
-                stageAveraged.forEach(v -> System.out.println(v));
             }
 
         }
@@ -123,9 +124,8 @@ public class LearningCurveReport
 
                 for (RunIdentifier configId : dataMap.keySet()) {
                     List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
-                    writePlot(configId.md5, stageAveraged, getMaxValue(dataMap.get(configId)),
+                    writePlot(configId.md5, stageAveraged, maxNumberFolds,
                             m.getSimpleName());
-                    stageAveraged.forEach(v -> System.out.println(v));
                 }
             }
         }
@@ -139,18 +139,6 @@ public class LearningCurveReport
                 sb.toString(), "utf-8");
 
         return dataMap;
-    }
-
-    private int getMaxValue(Map<Integer, List<File>> map)
-    {
-        int maxFolds = -1;
-        for (List<File> f : map.values()) {
-            if (f.size() > maxFolds) {
-                maxFolds = f.size();
-            }
-        }
-
-        return maxFolds;
     }
 
     @SuppressWarnings("rawtypes")
@@ -190,6 +178,9 @@ public class LearningCurveReport
             }
 
             int numberOfTrainFolds = getNumberOfTrainingFolds(store, sId);
+            if(numberOfTrainFolds > maxNumberFolds) {
+                maxNumberFolds = numberOfTrainFolds;
+            }
 
             RunIdentifier configurationId = generateId(store, sId);
             Map<Integer, List<File>> idRun = dataMap.get(configurationId);
@@ -315,9 +306,10 @@ public class LearningCurveReport
     {
 
         for (RunIdentifier configId : dataMap.keySet()) {
+            Map<Integer, List<File>> map = dataMap.get(configId);
             List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(
-                    dataMap.get(configId));
-            writeCategoricalPlots(configId.md5, stageAvg, getMaxValue(dataMap.get(configId)));
+                    map);
+            writeCategoricalPlots(configId.md5, stageAvg, maxNumberFolds);
         }
 
     }
