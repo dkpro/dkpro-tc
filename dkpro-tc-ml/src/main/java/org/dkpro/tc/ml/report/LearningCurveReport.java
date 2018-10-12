@@ -70,8 +70,8 @@ public class LearningCurveReport
     extends TcAbstractReport
     implements Constants
 {
-    int maxNumberFolds=-1;
-    
+    int maxNumberFolds = -1;
+
     @Override
     public void execute() throws Exception
     {
@@ -124,8 +124,7 @@ public class LearningCurveReport
 
                 for (RunIdentifier configId : dataMap.keySet()) {
                     List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
-                    writePlot(configId.md5, stageAveraged, maxNumberFolds,
-                            m.getSimpleName());
+                    writePlot(configId.md5, stageAveraged, maxNumberFolds, m.getSimpleName());
                 }
             }
         }
@@ -178,7 +177,7 @@ public class LearningCurveReport
             }
 
             int numberOfTrainFolds = getNumberOfTrainingFolds(store, sId);
-            if(numberOfTrainFolds > maxNumberFolds) {
+            if (numberOfTrainFolds > maxNumberFolds) {
                 maxNumberFolds = numberOfTrainFolds;
             }
 
@@ -260,11 +259,15 @@ public class LearningCurveReport
     private void writePlot(String id, List<Double> stageAveraged, int maxFolds, String metricName)
         throws Exception
     {
+        StringBuilder sb = new StringBuilder();
+        sb.append(metricName + "\n");
+
         double x[] = new double[stageAveraged.size() + 1];
         double y[] = new double[stageAveraged.size() + 1];
         for (int i = 1; i < x.length; i++) {
             x[i] = i;
             y[i] = stageAveraged.get(i - 1);
+            sb.append("Stage " + i + ": " + y[i] + "\n");
         }
 
         DefaultXYDataset dataset = new DefaultXYDataset();
@@ -288,11 +291,23 @@ public class LearningCurveReport
         range.setRange(0.0, 1.0);
         range.setTickUnit(new NumberTickUnit(0.1));
 
-        File file = getContext().getFile(id + "_learningCurve_" + metricName + ".pdf",
+        File pdfPlot = getContext().getFile(id + "/learningCurve_" + metricName + ".pdf",
                 AccessMode.READWRITE);
-        FileOutputStream fos = new FileOutputStream(file);
+        verifySuccess(pdfPlot.getParentFile().mkdirs(), pdfPlot);
+        FileOutputStream fos = new FileOutputStream(pdfPlot);
         ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
         fos.close();
+
+        File txtFile = new File(pdfPlot.getParentFile(), metricName + ".txt");
+        FileUtils.writeStringToFile(txtFile, sb.toString(), "utf-8");
+    }
+
+    private void verifySuccess(boolean mkdirs, File folder)
+    {
+        if (!mkdirs && !folder.exists()) {
+            throw new IllegalStateException(
+                    "Could not create folders [" + folder.getAbsolutePath() + "]");
+        }
     }
 
     private boolean isSingleLabelMode(String learningMode)
@@ -307,8 +322,7 @@ public class LearningCurveReport
 
         for (RunIdentifier configId : dataMap.keySet()) {
             Map<Integer, List<File>> map = dataMap.get(configId);
-            List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(
-                    map);
+            List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(map);
             writeCategoricalPlots(configId.md5, stageAvg, maxNumberFolds);
         }
 
@@ -344,7 +358,8 @@ public class LearningCurveReport
                     dataset.addSeries(key, data);
                 }
 
-                JFreeChart chart = ChartFactory.createXYLineChart("CategoricalCurve",
+                JFreeChart chart = ChartFactory.createXYLineChart(
+                        allDataNormalized.get(j).get(i).categoryName + "-CategoricalCurve",
                         "number of training folds", "Performance", dataset,
                         PlotOrientation.VERTICAL, true, false, false);
                 XYPlot plot = (XYPlot) chart.getPlot();
@@ -359,9 +374,12 @@ public class LearningCurveReport
                 range.setRange(0.0, 1.0);
                 range.setTickUnit(new NumberTickUnit(0.1));
 
-                File file = getContext().getFile(md5 + "_categorical_"
+                File file = getContext().getFile(md5 + "/categorical/"
                         + allDataNormalized.get(j).get(i).categoryName + ".pdf",
                         AccessMode.READWRITE);
+                if (!file.getParentFile().exists()) {
+                    verifySuccess(file.getParentFile().mkdir(), file.getParentFile());
+                }
                 FileOutputStream fos = new FileOutputStream(file);
                 ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
                 fos.close();
