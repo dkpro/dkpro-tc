@@ -186,23 +186,40 @@ public class ExtractFeaturesTask
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
         throws ResourceInitializationException, IOException
     {
-        // TrainTest setup: input files are set as imports
-        if (filesRoot == null) {
+    	if(isLearningCurveTaskWithFixedTestSet()) {
+    		if(isTesting) {
+    			 File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
+    	            Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
+    	            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+    	                    files);
+    		}else {
+    	            return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
+    	            		files_training);
+    		}
+    	}
+    	//Train-test setups
+    	else if (filesRoot == null) {
             File root = aContext.getFolder(INPUT_KEY, AccessMode.READONLY);
             Collection<File> files = FileUtils.listFiles(root, new String[] { "bin" }, true);
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
-        // CV setup: filesRoot and files_atrining have to be set as dimension
+        // Cross-validation setup: filesRoot and files_training / validation have both to be set as dimension
         else {
-
             Collection<String> files = isTesting ? files_validation : files_training;
             return createReaderDescription(BinaryCasReader.class, BinaryCasReader.PARAM_PATTERNS,
                     files);
         }
     }
 
-    private Set<String> getRequiredTypesFromFeatureExtractors(
+    private boolean isLearningCurveTaskWithFixedTestSet() {
+		// This a hybrid that has N CV folds which are exclusively used for training but
+		// without validation set (from the CV dimension) but defines the validation set
+		// as in a normal train-test setup.
+    	return filesRoot != null && files_training != null && files_validation == null;
+	}
+
+	private Set<String> getRequiredTypesFromFeatureExtractors(
             List<ExternalResourceDescription> featureSet)
         throws Exception
     {

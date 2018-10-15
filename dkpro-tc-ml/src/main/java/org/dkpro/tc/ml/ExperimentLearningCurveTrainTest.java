@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -47,86 +46,61 @@ import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
 /**
- * Runs a learning curve experiment that splits the data into N folds. Each fold
- * will be in the test set and all fold combinations will be used as training
- * set from which averaged performance results are computed. If you have a fixed
- * test set against which a learning curve shall be run, then use
- * {@link ExperimentLearningCurveTrainTest}
+ * Runs a learning curve experiment, which uses a fixed test set. The training
+ * data is split into N folds and all fold-variations will be used to test
+ * against the fixed test set.This experiment type should be used if testing
+ * against a fixed development or test set. If no fixed test set is required use
+ * {@see ExperimentLearningCurve} instead.
  */
-public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase implements Constants {
+public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_ImplBase implements Constants {
 
-	protected Comparator<String> comparator;
-	protected int numFolds = 10;
-
-	protected InitTask initTask;
+	protected InitTask initTaskTrain;
+	protected InitTask initTaskTest;
 	protected OutcomeCollectionTask collectionTask;
 	protected MetaInfoTask metaTask;
-	protected ExtractFeaturesTask extractFeaturesTrainTask;
-	protected ExtractFeaturesTask extractFeaturesTestTask;
+	protected ExtractFeaturesTask featuresTrainTask;
+	protected ExtractFeaturesTask featuresTestTask;
 	protected TaskBase testTask;
+	private int numFolds;
 
-	public ExperimentLearningCurve() {/* needed for Groovy */
+	public ExperimentLearningCurveTrainTest() {/* needed for Groovy */
 	}
 
-	/**
-	 * 
-	 * @param aExperimentName the experiment name
-	 * @param aNumFolds       the number of folds
-	 * @throws TextClassificationException in case of errors
+	/*
+	 * Preconfigured train-test setup.
 	 */
-	public ExperimentLearningCurve(String aExperimentName, int aNumFolds) throws TextClassificationException {
-		this(aExperimentName, aNumFolds, null);
-	}
-
-	/**
-	 * Use this constructor for CV fold control. The Comparator is used to determine
-	 * which instances must occur together in the same CV fold.
-	 * 
-	 * @param aExperimentName the experiment name
-	 * @param aNumFolds       the number of folds
-	 * @param aComparator     the comparator
-	 * @throws TextClassificationException in case of errors
-	 */
-	public ExperimentLearningCurve(String aExperimentName, int aNumFolds, Comparator<String> aComparator)
-			throws TextClassificationException {
+	public ExperimentLearningCurveTrainTest(String aExperimentName, int numFolds) throws TextClassificationException {
+		this.numFolds = numFolds;
 		setExperimentName(aExperimentName);
-		setNumFolds(aNumFolds);
-		setComparator(aComparator);
 		// set name of overall batch task
 		setType("Evaluation-" + experimentName);
+		setAttribute(TC_TASK_TYPE, TcTaskType.EVALUATION.toString());
 	}
 
 	/**
 	 * Initializes the experiment. This is called automatically before execution.
 	 * It's not done directly in the constructor, because we want to be able to use
-	 * setters instead of the three-argument constructor.
+	 * setters instead of the arguments in the constructor.
+	 * 
 	 */
-	protected void init() throws IllegalStateException {
-
+	@Override
+	protected void init() {
 		if (experimentName == null) {
 			throw new IllegalStateException("You must set an experiment name");
 		}
 
-		if (numFolds < 2 && numFolds != -1) {
-			throw new IllegalStateException(
-					"Number of folds is not configured correctly. Number of folds needs to be at "
-							+ "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
-		}
-
-		// initialize the setup
-		initTask = new InitTask();
-		initTask.setPreprocessing(getPreprocessing());
-		initTask.setOperativeViews(operativeViews);
-		initTask.setType(initTask.getType() + "-" + experimentName);
-		initTask.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
+		// init the train part of the experiment
+		initTaskTrain = new InitTask();
+		initTaskTrain.setPreprocessing(getPreprocessing());
+		initTaskTrain.setOperativeViews(operativeViews);
+		initTaskTrain.setTesting(false);
+		initTaskTrain.setType(initTaskTrain.getType() + "-Train-" + experimentName);
+		initTaskTrain.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TRAIN.toString());
 
 		// inner batch task (carried out numFolds times)
 		DefaultBatchTask crossValidationTask = new DefaultBatchTask() {
 			@Discriminator(name = DIM_FEATURE_MODE)
 			private String featureMode;
-
-			@Discriminator(name = DIM_CROSS_VALIDATION_MANUAL_FOLDS)
-			private boolean useCrossValidationManualFolds;
 
 			@Override
 			public void initialize(TaskContext aContext) {
@@ -142,14 +116,8 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 					i++;
 				}
 				Arrays.sort(fileNames);
-				if (numFolds == LEAVE_ONE_OUT) {
-					numFolds = fileNames.length;
-				}
 
-				// is executed if we have less CAS than requested folds and manual mode is
-				// turned
-				// off
-				if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
+				if (fileNames.length < numFolds) {
 					xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
 					files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
 					fileNames = new String[files.size()];
@@ -161,11 +129,20 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 					}
 				}
 				// don't change any names!!
-				LearningCurveDimBundleCrossValidation foldDim = getFoldDim(fileNames);
+				LearningCurveDimBundleFixedTestSet foldDim = getFoldDim(fileNames);
 				Dimension<File> filesRootDim = Dimension.create(DIM_FILES_ROOT, xmiPathRoot);
 
 				ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
 				setParameterSpace(pSpace);
+			}
+
+			/**
+			 * 
+			 * @param fileNames the file names
+			 * @return fold dimension bundle
+			 */
+			protected LearningCurveDimBundleFixedTestSet getFoldDim(String[] fileNames) {
+				return new LearningCurveDimBundleFixedTestSet("files", Dimension.create("", fileNames), numFolds);
 			}
 
 			/**
@@ -215,47 +192,57 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 			}
 		};
 
-		// ================== SUBTASKS OF THE INNER BATCH TASK =======================
+		// init the test part of the experiment
+		initTaskTest = new InitTask();
+		initTaskTest.setTesting(true);
+		initTaskTest.setPreprocessing(getPreprocessing());
+		initTaskTest.setOperativeViews(operativeViews);
+		initTaskTest.setType(initTaskTest.getType() + "-Test-" + experimentName);
+		initTaskTest.setAttribute(TC_TASK_TYPE, TcTaskType.INIT_TEST.toString());
 
-		// collecting meta features only on the training data (numFolds times)
 		collectionTask = new OutcomeCollectionTask();
 		collectionTask.setType(collectionTask.getType() + "-" + experimentName);
 		collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
-		collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
+		collectionTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
+		collectionTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST);
 
+		// get some meta data depending on the whole document collection that we need
+		// for training
 		metaTask = new MetaInfoTask();
 		metaTask.setOperativeViews(operativeViews);
 		metaTask.setType(metaTask.getType() + "-" + experimentName);
+
+		metaTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, MetaInfoTask.INPUT_KEY);
 		metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
 
-		// extracting features from training data (numFolds times)
-		extractFeaturesTrainTask = new ExtractFeaturesTask();
-		extractFeaturesTrainTask.setTesting(false);
-		extractFeaturesTrainTask.setType(extractFeaturesTrainTask.getType() + "-Train-" + experimentName);
-		extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-		extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
-		extractFeaturesTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+		// feature extraction on training data
+		featuresTrainTask = new ExtractFeaturesTask();
+		featuresTrainTask.setType(featuresTrainTask.getType() + "-Train-" + experimentName);
+		featuresTrainTask.setTesting(false);
+		featuresTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
+		featuresTrainTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
+		featuresTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
 				ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-		extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+		featuresTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
 
-		// extracting features from test data (numFolds times)
-		extractFeaturesTestTask = new ExtractFeaturesTask();
-		extractFeaturesTestTask.setTesting(true);
-		extractFeaturesTestTask.setType(extractFeaturesTestTask.getType() + "-Test-" + experimentName);
-		extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
-		extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-		extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN, ExtractFeaturesTask.INPUT_KEY);
-		extractFeaturesTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
+		// feature extraction on test data
+		featuresTestTask = new ExtractFeaturesTask();
+		featuresTestTask.setType(featuresTestTask.getType() + "-Test-" + experimentName);
+		featuresTestTask.setTesting(true);
+		featuresTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
+		featuresTestTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST, ExtractFeaturesTask.INPUT_KEY);
+		featuresTestTask.addImport(featuresTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
+		featuresTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
 				ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-		extractFeaturesTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
+		featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
 		// test task operating on the models of the feature extraction train and test
 		// tasks
 		List<ReportBase> reports = new ArrayList<>();
 		reports.add(new BasicResultReport());
 
-		testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask,
-				reports, experimentName);
+		testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports,
+				experimentName);
 		testTask.setType(testTask.getType() + "-" + experimentName);
 		testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
@@ -265,18 +252,13 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 			}
 		}
 
-		testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY, TEST_TASK_INPUT_KEY_TRAINING_DATA);
-		testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY, TEST_TASK_INPUT_KEY_TEST_DATA);
-		testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY, Constants.OUTCOMES_INPUT_KEY);
-
-		// ================== CONFIG OF THE INNER BATCH TASK =======================
-
-		crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
+		crossValidationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN);
+		crossValidationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST);
 		crossValidationTask.setType(crossValidationTask.getType() + "-" + experimentName);
 		crossValidationTask.addTask(collectionTask);
 		crossValidationTask.addTask(metaTask);
-		crossValidationTask.addTask(extractFeaturesTrainTask);
-		crossValidationTask.addTask(extractFeaturesTestTask);
+		crossValidationTask.addTask(featuresTrainTask);
+		crossValidationTask.addTask(featuresTestTask);
 		crossValidationTask.addTask(testTask);
 		crossValidationTask.setExecutionPolicy(ExecutionPolicy.USE_EXISTING);
 		// report of the inner batch task (sums up results for the folds)
@@ -287,35 +269,8 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 		crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
 		// DKPro Lab issue 38: must be added as *first* task
-		addTask(initTask);
+		addTask(initTaskTrain);
+		addTask(initTaskTest);
 		addTask(crossValidationTask);
 	}
-
-	/**
-	 * 
-	 * @param fileNames the file names
-	 * @return fold dimension bundle
-	 */
-	protected LearningCurveDimBundleCrossValidation getFoldDim(String[] fileNames) {
-		return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), numFolds);
-	}
-
-	/**
-	 * sets the number of folds
-	 * 
-	 * @param numFolds folds
-	 */
-	public void setNumFolds(int numFolds) {
-		this.numFolds = numFolds;
-	}
-
-	/**
-	 * Sets a comparator
-	 * 
-	 * @param aComparator the comparator
-	 */
-	public void setComparator(Comparator<String> aComparator) {
-		comparator = aComparator;
-	}
-
 }

@@ -19,15 +19,40 @@ package org.dkpro.tc.ml.builder;
 
 import org.dkpro.tc.core.Constants;
 
-public enum ExperimentType
-    implements
-    Constants
-{
-    TRAIN_TEST,
+public enum ExperimentType implements Constants {
+	/**
+	 * Runs a train test experiment in which a single train set is evaluated against
+	 * a single test set.
+	 */
+	TRAIN_TEST,
 
-    CROSS_VALIDATION,
-    
-    LEARNING_CURVE,
-    
-    SAVE_MODEL
+	/**
+	 * Runs a cross-validation experiment in which the training data is split into N
+	 * folds. Each fold will be in the test set once while the remaining N-1 folds
+	 * will be in the training set.
+	 */
+	CROSS_VALIDATION,
+
+	/**
+	 * Runs a learning curve experiment that splits the data into N folds. Each fold
+	 * will be in the test set and all fold combinations will be used as training
+	 * set from which averaged performance results are computed. If you have a fixed
+	 * test set against which a learning curve shall be run, then use
+	 * {@link LEARNING_CURVE_FIXED_TEST_SET}
+	 */
+	LEARNING_CURVE,
+
+	/**
+	 * Runs a model training and persists the model to an external file for later usage
+	 */
+	SAVE_MODEL,
+
+	/**
+	 * Runs a learning curve experiment, which uses a fixed test set. The training
+	 * data is split into N folds and all fold-variations will be used to test
+	 * against the fixed test set.This experiment type should be used if testing
+	 * against a fixed development or test set. If no fixed test set is required use
+	 * {@see LEARNING_CURVE} instead.
+	 */
+	LEARNING_CURVE_FIXED_TEST_SET
 }

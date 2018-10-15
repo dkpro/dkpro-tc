@@ -39,6 +39,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.ExperimentCrossValidation;
 import org.dkpro.tc.ml.ExperimentLearningCurve;
+import org.dkpro.tc.ml.ExperimentLearningCurveTrainTest;
 import org.dkpro.tc.ml.ExperimentSaveModel;
 import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
@@ -492,6 +493,11 @@ public class ExperimentBuilder
             experiment = new ExperimentLearningCurve(experimentName, folds);
             experiment.addReport(new LearningCurveReport());
             break;
+        case LEARNING_CURVE_FIXED_TEST_SET:
+            folds = getCvFolds();
+            experiment = new ExperimentLearningCurveTrainTest(experimentName, folds);
+            experiment.addReport(new LearningCurveReport());
+            break;            
         case SAVE_MODEL:
             sanityCheckSaveModelExperiment();
             experiment = new ExperimentSaveModel(experimentName, outputFolder);
