@@ -700,7 +700,9 @@ public class ExperimentBuilder
      * model
      * 
      * @param filePath
+     * 			path to the file
      * @return
+     * 			the builder itself
      */
     public ExperimentBuilder outputFolder(String filePath)
     {

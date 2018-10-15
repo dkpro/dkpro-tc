@@ -52,7 +52,7 @@ public enum ExperimentType implements Constants {
 	 * data is split into N folds and all fold-variations will be used to test
 	 * against the fixed test set.This experiment type should be used if testing
 	 * against a fixed development or test set. If no fixed test set is required use
-	 * {@see LEARNING_CURVE} instead.
+	 * {@link LEARNING_CURVE} instead.
 	 */
 	LEARNING_CURVE_FIXED_TEST_SET
 }
