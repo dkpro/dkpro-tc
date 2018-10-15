@@ -31,7 +31,7 @@ import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
 import org.dkpro.tc.core.Constants;
 
-public class LearningCurveDimensionBundle
+public class LearningCurveDimBundleCrossValidation
     extends DimensionBundle<Collection<String>>
     implements DynamicDimension
 {
@@ -41,7 +41,7 @@ public class LearningCurveDimensionBundle
     private List<TrainTestSplit> runs = new ArrayList<>();
     private int numFoldsIdx=0;
 
-    public LearningCurveDimensionBundle(String aName, Dimension<String> aFoldedDimension, int aFolds)
+    public LearningCurveDimBundleCrossValidation(String aName, Dimension<String> aFoldedDimension, int aFolds)
     {
         super(aName, new Object[0]);
         foldedDimension = aFoldedDimension;
@@ -106,7 +106,7 @@ public class LearningCurveDimensionBundle
                 }
                 
                 for (List<Integer> train : s) {
-                    LearningCurveDimensionBundle.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
+                    LearningCurveDimBundleCrossValidation.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
                     LogFactory.getLog(getClass()).debug(trainTestSplit.toString());
                     runs.add(trainTestSplit);
                 }
@@ -183,7 +183,7 @@ public class LearningCurveDimensionBundle
     {
         List<String> trainingData = new ArrayList<String>();
         List<String> usedBucketSet= new ArrayList<>();
-        LearningCurveDimensionBundle.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
+        LearningCurveDimBundleCrossValidation.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
         
         for(Integer idx : learningCurveRun.train) {
             trainingData.addAll(buckets[idx]);

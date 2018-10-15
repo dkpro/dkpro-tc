@@ -178,7 +178,7 @@ public class ExperimentLearningCurve
                     }
                 }
                 // don't change any names!!
-                LearningCurveDimensionBundle foldDim = getFoldDim(fileNames);
+                LearningCurveDimBundleCrossValidation foldDim = getFoldDim(fileNames);
                 Dimension<File> filesRootDim = Dimension.create(DIM_FILES_ROOT, xmiPathRoot);
 
                 ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
@@ -330,9 +330,9 @@ public class ExperimentLearningCurve
      *            the file names
      * @return fold dimension bundle
      */
-    protected LearningCurveDimensionBundle getFoldDim(String[] fileNames)
+    protected LearningCurveDimBundleCrossValidation getFoldDim(String[] fileNames)
     {
-        return new LearningCurveDimensionBundle("files", Dimension.create("", fileNames), numFolds);
+        return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), numFolds);
     }
 
     /**
