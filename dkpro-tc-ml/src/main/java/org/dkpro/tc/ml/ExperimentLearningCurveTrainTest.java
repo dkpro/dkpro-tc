@@ -50,7 +50,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * data is split into N folds and all fold-variations will be used to test
  * against the fixed test set.This experiment type should be used if testing
  * against a fixed development or test set. If no fixed test set is required use
- * {@see ExperimentLearningCurve} instead.
+ * {@link ExperimentLearningCurve} instead.
  */
 public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_ImplBase implements Constants {
 
