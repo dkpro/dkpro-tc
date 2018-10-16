@@ -95,11 +95,11 @@ public class LearningCurveDimBundleFixedTestSet
     {
         runs = new ArrayList<>();
         int maxCount = 1; //
-        for (int j = 0; j < buckets.length-1; j++) {
-            for (int k = 0; k < buckets.length; k++) {
+        for (int j = 0; j < buckets.length; j++) {
+//            for (int k = 0; k < buckets.length; k++) {
                 List<List<Integer>> s = getLearningCurveStage(maxCount);
                 
-                if(maxCount == buckets.length-1) {
+                if(maxCount > buckets.length) {
                 	// in this case, the train-set variations will always be the same - so one of the generated sets is sufficient
                 	s = s.subList(0, 1);
                 }
@@ -109,7 +109,7 @@ public class LearningCurveDimBundleFixedTestSet
                     LogFactory.getLog(getClass()).debug(trainSet.toString());
                     runs.add(trainSet);
                 }
-            }
+//            }
             maxCount++;
         }    
         LogFactory.getLog(getClass())
@@ -136,17 +136,23 @@ public class LearningCurveDimBundleFixedTestSet
         }
 
         List<Integer> it = new ArrayList<>(seq);
-        for (int i = 0; i < buckets.length-1; i++) {
+        for (int i = 0; i < buckets.length; i++) {
             List<Integer> subList = null;
             if (i + maxCount < buckets.length) {
                 subList = it.subList(i, i + maxCount);
             }
             else {
-                subList = it.subList(i, buckets.length - 1);
+                subList = it.subList(i, buckets.length);
                 List<Integer> end = it.subList(0, maxCount - subList.size());
                 subList.addAll(end);
             }
             trainData.add(new ArrayList<>(subList));
+            
+            if(maxCount == buckets.length) {
+				// if we reached the length of maximum N = bucket size we need only one entry
+				// otherwise we create N times the same entry.
+            	break;
+            }
         }
         
         return trainData;
