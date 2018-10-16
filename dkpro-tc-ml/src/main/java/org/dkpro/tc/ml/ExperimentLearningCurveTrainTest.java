@@ -62,15 +62,48 @@ public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_
 	protected ExtractFeaturesTask featuresTestTask;
 	protected TaskBase testTask;
 	private int numFolds;
+	private int limitPerStage = -1;
 
 	public ExperimentLearningCurveTrainTest() {/* needed for Groovy */
 	}
 
-	/*
-	 * Preconfigured train-test setup.
+	/**
+	 * Creates a train test experiment that runs a learning curve in which an
+	 * increasing amount of training data is added to the training data set. For
+	 * avoiding using of all possible training set permutations:
+	 * {@see #ExperimentLearningCurveTrainTest(String, int, int)}, which allows
+	 * setting a limit
+	 * 
+	 * @param aExperimentName Name of the experiment
+	 * @param numFolds        Number of folds
+	 * @throws TextClassificationException In case of an error
 	 */
 	public ExperimentLearningCurveTrainTest(String aExperimentName, int numFolds) throws TextClassificationException {
 		this.numFolds = numFolds;
+		this.limitPerStage = -1;
+		setExperimentName(aExperimentName);
+		// set name of overall batch task
+		setType("Evaluation-" + experimentName);
+		setAttribute(TC_TASK_TYPE, TcTaskType.EVALUATION.toString());
+	}
+
+	/**
+	 * Creates a train test experiment that runs a learning curve in which an
+	 * increasing amount of training data is added to the training data set.
+	 * 
+	 * @param aExperimentName Name of the experiment
+	 * @param numFolds        Number of folds
+	 * @param limitPerStage   Limits the number of training runs per stage. This is
+	 *                        an optional parameter. If not set all training set
+	 *                        permutations will be used once for training, which is
+	 *                        a rather expensive operation. Must be a non-zero,
+	 *                        positive integer value smaller than numFolds.
+	 * @throws TextClassificationException In case of an error
+	 */
+	public ExperimentLearningCurveTrainTest(String aExperimentName, int numFolds, int limitPerStage)
+			throws TextClassificationException {
+		this.numFolds = numFolds;
+		this.limitPerStage = limitPerStage;
 		setExperimentName(aExperimentName);
 		// set name of overall batch task
 		setType("Evaluation-" + experimentName);
@@ -142,7 +175,8 @@ public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_
 			 * @return fold dimension bundle
 			 */
 			protected LearningCurveDimBundleFixedTestSet getFoldDim(String[] fileNames) {
-				return new LearningCurveDimBundleFixedTestSet("files", Dimension.create("", fileNames), numFolds);
+				return new LearningCurveDimBundleFixedTestSet("files", Dimension.create("", fileNames), numFolds,
+						limitPerStage);
 			}
 
 			/**

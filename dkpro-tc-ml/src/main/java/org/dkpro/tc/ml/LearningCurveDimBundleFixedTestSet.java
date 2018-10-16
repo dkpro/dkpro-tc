@@ -31,200 +31,193 @@ import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.DynamicDimension;
 import org.dkpro.tc.core.Constants;
 
-public class LearningCurveDimBundleFixedTestSet
-    extends DimensionBundle<Collection<String>>
-    implements DynamicDimension
-{
-    private Dimension<String> foldedDimension;
-    private List<String>[] buckets;
-    private int folds;
-    private List<TrainSet> runs = new ArrayList<>();
-    private int numFoldsIdx=0;
+public class LearningCurveDimBundleFixedTestSet extends DimensionBundle<Collection<String>>
+		implements DynamicDimension {
+	private Dimension<String> foldedDimension;
+	private List<String>[] buckets;
+	private int folds;
+	private List<TrainSet> runs = new ArrayList<>();
+	private int numFoldsIdx = 0;
+	private int aStageLimit;
 
-    public LearningCurveDimBundleFixedTestSet(String aName, Dimension<String> aFoldedDimension, int aFolds)
-    {
-        super(aName, new Object[0]);
-        foldedDimension = aFoldedDimension;
-        folds = aFolds;
-    }
+	public LearningCurveDimBundleFixedTestSet(String aName, Dimension<String> aFoldedDimension, int aFolds,
+			int aLimit) {
+		super(aName, new Object[0]);
+		this.foldedDimension = aFoldedDimension;
+		this.folds = aFolds;
+		this.aStageLimit = aLimit;
+	}
 
-    @SuppressWarnings("unchecked")
-    private void init()
-    {
-        buckets = new List[folds];
-        for (int bucket = 0; bucket < buckets.length; bucket++) {
-            buckets[bucket] = new ArrayList<String>();
-        }
+	@SuppressWarnings("unchecked")
+	private void init() {
+		buckets = new List[folds];
+		for (int bucket = 0; bucket < buckets.length; bucket++) {
+			buckets[bucket] = new ArrayList<String>();
+		}
 
-        // Capture all data from the dimension into buckets, one per fold
-        foldedDimension.rewind();
-        
-        int i = 0;
-        while (foldedDimension.hasNext()) {
-            int bucket = i % folds;
+		// Capture all data from the dimension into buckets, one per fold
+		foldedDimension.rewind();
 
-            if (buckets[bucket] == null) {
-                buckets[bucket] = new ArrayList<String>();
-            }
+		int i = 0;
+		while (foldedDimension.hasNext()) {
+			int bucket = i % folds;
 
-            buckets[bucket].add(foldedDimension.next());
-            i++;
-        }
+			if (buckets[bucket] == null) {
+				buckets[bucket] = new ArrayList<String>();
+			}
 
-        if (i < folds) {
-            throw new IllegalStateException("Requested [" + folds + "] folds, but only got [" + i
-                    + "] values. There must be at least as many values as folds.");
-        }
+			buckets[bucket].add(foldedDimension.next());
+			i++;
+		}
 
-        String foldsAndSizes = "";
-        for (int bucket = 0; bucket < buckets.length; bucket++) {
-            foldsAndSizes = foldsAndSizes + " fold " + bucket + ": size " + buckets[bucket].size()
-                    + ".  ";
-            if (buckets[bucket].size() == 0) {
-                throw new IllegalStateException("Detected an empty fold: " + bucket + ". "
-                        + "Maybe your fold control is causing all of your instances to be put in very few buckets?  "
-                        + "Previous folds and buckets: " + foldsAndSizes);
-            }
-        }
-        
-        
-        createLearningCurveRuns();
-    }
+		if (i < folds) {
+			throw new IllegalStateException("Requested [" + folds + "] folds, but only got [" + i
+					+ "] values. There must be at least as many values as folds.");
+		}
 
-    private void createLearningCurveRuns()
-    {
-        runs = new ArrayList<>();
-        int maxCount = 1; //
-        for (int j = 0; j < buckets.length; j++) {
-//            for (int k = 0; k < buckets.length; k++) {
-                List<List<Integer>> s = getLearningCurveStage(maxCount);
-                
-                if(maxCount > buckets.length) {
-                	// in this case, the train-set variations will always be the same - so one of the generated sets is sufficient
-                	s = s.subList(0, 1);
-                }
-                
-                for (List<Integer> train : s) {
-                    LearningCurveDimBundleFixedTestSet.TrainSet trainSet = new TrainSet(train);
-                    LogFactory.getLog(getClass()).debug(trainSet.toString());
-                    runs.add(trainSet);
-                }
-//            }
-            maxCount++;
-        }    
-        LogFactory.getLog(getClass())
-                .info("Created [" + runs.size() + "] runs for the learning curve experiment");
-    }
+		String foldsAndSizes = "";
+		for (int bucket = 0; bucket < buckets.length; bucket++) {
+			foldsAndSizes = foldsAndSizes + " fold " + bucket + ": size " + buckets[bucket].size() + ".  ";
+			if (buckets[bucket].size() == 0) {
+				throw new IllegalStateException("Detected an empty fold: " + bucket + ". "
+						+ "Maybe your fold control is causing all of your instances to be put in very few buckets?  "
+						+ "Previous folds and buckets: " + foldsAndSizes);
+			}
+		}
 
-    /**
-     * Creates a single learning curve run. A run consists of N buckets in the training set a single
-     * fold in the test set.
-     * 
-     * @param maxCount
-     *            the maximal number of training buckets to be used in the training set
-     * @param keptOutValidationBucketIdx
-     *            the index of the validation bucket that is not included into the training set
-     * @return
-     */
-    private List<List<Integer>> getLearningCurveStage(int maxCount)
-    {
-        List<List<Integer>> trainData = new ArrayList<>();
-        
-        List<Integer> seq = new ArrayList<>();
-        for (int i = 0; i < buckets.length; i++) {
-                seq.add(i);
-        }
+		createLearningCurveRuns();
+	}
 
-        List<Integer> it = new ArrayList<>(seq);
-        for (int i = 0; i < buckets.length; i++) {
-            List<Integer> subList = null;
-            if (i + maxCount < buckets.length) {
-                subList = it.subList(i, i + maxCount);
-            }
-            else {
-                subList = it.subList(i, buckets.length);
-                List<Integer> end = it.subList(0, maxCount - subList.size());
-                subList.addAll(end);
-            }
-            trainData.add(new ArrayList<>(subList));
-            
-            if(maxCount == buckets.length) {
+	private void createLearningCurveRuns() {
+		runs = new ArrayList<>();
+		int maxCount = 1; //
+		for (int j = 0; j < buckets.length; j++) {
+			List<List<Integer>> s = getLearningCurveStage(maxCount);
+
+			if (aStageLimit != -1 && s.size() > aStageLimit) {
+				LogFactory.getLog(getClass())
+						.debug("Reducing number of runs per stage from [" + s.size() + "] to [" + aStageLimit + "]");
+				s = s.subList(0, aStageLimit);
+			}
+
+			if (maxCount > buckets.length) {
+				// in this case, the train-set variations will always be the same - so one of
+				// the generated sets is sufficient
+				s = s.subList(0, 1);
+			}
+
+			for (List<Integer> train : s) {
+				LearningCurveDimBundleFixedTestSet.TrainSet trainSet = new TrainSet(train);
+				LogFactory.getLog(getClass()).debug(trainSet.toString());
+				runs.add(trainSet);
+			}
+			maxCount++;
+		}
+		LogFactory.getLog(getClass()).info("Created [" + runs.size() + "] runs for the learning curve experiment");
+	}
+
+	/**
+	 * Creates a single learning curve run. A run consists of N buckets in the
+	 * training set a single fold in the test set.
+	 * 
+	 * @param maxCount                   the maximal number of training buckets to
+	 *                                   be used in the training set
+	 * @param keptOutValidationBucketIdx the index of the validation bucket that is
+	 *                                   not included into the training set
+	 * @return
+	 */
+	private List<List<Integer>> getLearningCurveStage(int maxCount) {
+		List<List<Integer>> trainData = new ArrayList<>();
+
+		List<Integer> seq = new ArrayList<>();
+		for (int i = 0; i < buckets.length; i++) {
+			seq.add(i);
+		}
+
+		List<Integer> it = new ArrayList<>(seq);
+		for (int i = 0; i < buckets.length; i++) {
+			List<Integer> subList = null;
+			if (i + maxCount < buckets.length) {
+				subList = it.subList(i, i + maxCount);
+			} else {
+				subList = it.subList(i, buckets.length);
+				List<Integer> end = it.subList(0, maxCount - subList.size());
+				subList.addAll(end);
+			}
+			trainData.add(new ArrayList<>(subList));
+
+			if (maxCount == buckets.length) {
 				// if we reached the length of maximum N = bucket size we need only one entry
 				// otherwise we create N times the same entry.
-            	break;
-            }
-        }
-        
-        return trainData;
-    }
+				break;
+			}
+		}
 
-    @Override
-    public boolean hasNext()
-    {
-        return numFoldsIdx + 1 < runs.size();
-    }
+		return trainData;
+	}
 
-    @Override
-    public void rewind()
-    {
-        init();
-        numFoldsIdx = -1;
-    }
+	@Override
+	public boolean hasNext() {
+		return numFoldsIdx + 1 < runs.size();
+	}
 
-    @Override
-    public Map<String, Collection<String>> next()
-    {
-        numFoldsIdx++;
-        return current();
-    }
+	@Override
+	public void rewind() {
+		init();
+		numFoldsIdx = -1;
+	}
 
-    @Override
-    public Map<String, Collection<String>> current()
-    {
-        List<String> trainingData = new ArrayList<String>();
-        List<String> usedBucketSet= new ArrayList<>();
-        LearningCurveDimBundleFixedTestSet.TrainSet learningCurveRun = runs.get(numFoldsIdx);
-        
-        for(Integer idx : learningCurveRun.train) {
-            trainingData.addAll(buckets[idx]);
-            usedBucketSet.add("bucket_" + idx);
-        }
+	@Override
+	public Map<String, Collection<String>> next() {
+		numFoldsIdx++;
+		return current();
+	}
 
-        Map<String, Collection<String>> data = new HashMap<String, Collection<String>>();
-        data.put(getName() + "_training", trainingData);
-        data.put(Constants.DIM_NUM_TRAINING_FOLDS, usedBucketSet);
+	@Override
+	public Map<String, Collection<String>> current() {
+		List<String> trainingData = new ArrayList<String>();
+		List<String> usedBucketSet = new ArrayList<>();
+		LearningCurveDimBundleFixedTestSet.TrainSet learningCurveRun = runs.get(numFoldsIdx);
 
-        return data;
-    }
+		for (Integer idx : learningCurveRun.train) {
+			trainingData.addAll(buckets[idx]);
+			usedBucketSet.add("bucket_" + idx);
+		}
 
-    @Override
-    public void setConfiguration(Map<String, Object> aConfig)
-    {
-        if (foldedDimension instanceof DynamicDimension) {
-            ((DynamicDimension) foldedDimension).setConfiguration(aConfig);
-        }
-    }
-    
-    class TrainSet{
-        List<Integer> train;
+		Map<String, Collection<String>> data = new HashMap<String, Collection<String>>();
+		data.put(getName() + "_training", trainingData);
+		data.put(Constants.DIM_NUM_TRAINING_FOLDS, usedBucketSet);
 
-        TrainSet(List<Integer> train){
-            this.train = train;
-            Collections.sort(this.train);
-        }
-        
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("[Train: (");
-            for(int i=0; i < train.size(); i++) {
-                sb.append(train.get(i));
-                if (i+1 < train.size()) {
-                    sb.append(" ");
-                }
-            }
-            sb.append(")]");
-            return sb.toString();
-        }
-    
-    }
+		return data;
+	}
+
+	@Override
+	public void setConfiguration(Map<String, Object> aConfig) {
+		if (foldedDimension instanceof DynamicDimension) {
+			((DynamicDimension) foldedDimension).setConfiguration(aConfig);
+		}
+	}
+
+	class TrainSet {
+		List<Integer> train;
+
+		TrainSet(List<Integer> train) {
+			this.train = train;
+			Collections.sort(this.train);
+		}
+
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("[Train: (");
+			for (int i = 0; i < train.size(); i++) {
+				sb.append(train.get(i));
+				if (i + 1 < train.size()) {
+					sb.append(" ");
+				}
+			}
+			sb.append(")]");
+			return sb.toString();
+		}
+
+	}
 }
