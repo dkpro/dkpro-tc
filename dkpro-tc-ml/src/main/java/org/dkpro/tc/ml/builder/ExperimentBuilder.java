@@ -479,24 +479,27 @@ public class ExperimentBuilder
     {
         switch (type) {
         case TRAIN_TEST:
-            sanityCheckTrainTestExperiment();
             experiment = new ExperimentTrainTest(experimentName);
             experiment.addReport(new TrainTestReport());
+            readersCheckExperimentTrainTestCheck();
             break;
         case CROSS_VALIDATION:
             int folds = getCvFolds();
             experiment = new ExperimentCrossValidation(experimentName, folds);
             experiment.addReport(new CrossValidationReport());
+            readersCheckExperimentCrossValidation();
             break;
         case LEARNING_CURVE:
             folds = getCvFolds();
             experiment = new ExperimentLearningCurve(experimentName, folds);
             experiment.addReport(new LearningCurveReport());
+            readersCheckExperimentCrossValidation();
             break;
         case LEARNING_CURVE_FIXED_TEST_SET:
             folds = getCvFolds();
             experiment = new ExperimentLearningCurveTrainTest(experimentName, folds);
             experiment.addReport(new LearningCurveReport());
+            readersCheckExperimentTrainTestCheck();
             break;            
         case SAVE_MODEL:
             sanityCheckSaveModelExperiment();
@@ -507,14 +510,32 @@ public class ExperimentBuilder
         return this;
     }
 
-    protected void sanityCheckTrainTestExperiment()
-    {
-        if (experiment instanceof ExperimentTrainTest && readerMap.size() != 2) {
-            throw new IllegalStateException("Train test requires two readers");
-        }
-    }
+	private void readersCheckExperimentCrossValidation() {
+		if (!(experiment instanceof ExperimentCrossValidation) && !(experiment instanceof ExperimentLearningCurve)) {
+			return;
+		}
+		
+		if(readerMap.size() < 1) {
+			throw new IllegalStateException("No reader set for reading training data");
+		}else if (readerMap.size() > 1) {
+			LogFactory.getLog(getClass())
+					.warn("Experiment type [" + experiment.getClass().getSimpleName() + "] requires only one reader ["
+							+ readerMap.size() + "] were found - additional readers will be ignored");
+		}
+	}
 
-    protected int getCvFolds()
+    private void readersCheckExperimentTrainTestCheck() {
+    	if (!(experiment instanceof ExperimentTrainTest) && !(experiment instanceof ExperimentLearningCurveTrainTest)) {
+			return;
+		}	
+    	
+    	if(readerMap.size() < 2) {
+			throw new IllegalStateException("Experiment type [" + experiment.getClass().getSimpleName()
+					+ "] requires two readers (train/test) but [" + readerMap.size() + "] readers were provided");
+		}
+	}
+
+	protected int getCvFolds()
     {
 		// -1 defines leave one out and is, thus, valid as parameter. Any lower number
 		// is not

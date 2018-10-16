@@ -33,6 +33,7 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
+import org.dkpro.tc.ml.ExperimentLearningCurve;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -47,15 +48,34 @@ public class ExperimentBuilderTest
     }
     
     @Test
+    public void preConfiguredExperimentType() {
+    	ExperimentLearningCurve preConfigured = new ExperimentLearningCurve();
+    	builder.experiment(preConfigured);
+    	assertEquals(preConfigured, builder.experiment);
+    }
+    
+    @Test
     public void experimentTypeCV() {
         builder.experiment(ExperimentType.CROSS_VALIDATION, "cv");
         assertEquals(builder.type.toString(), ExperimentType.CROSS_VALIDATION.toString());
     }
     
     @Test
+    public void experimentTypeLearningCurve() {
+        builder.experiment(ExperimentType.LEARNING_CURVE, "cv_learningCurve");
+        assertEquals(builder.type.toString(), ExperimentType.LEARNING_CURVE.toString());
+    }
+    
+    @Test
     public void experimentTypeTrainTest() {
         builder.experiment(ExperimentType.TRAIN_TEST, "trainTest");
         assertEquals(builder.type.toString(), ExperimentType.TRAIN_TEST.toString());
+    }
+    
+    @Test
+    public void experimentTypeLearningCurvedFixedTest() {
+        builder.experiment(ExperimentType.LEARNING_CURVE_FIXED_TEST_SET, "fixedTest");
+        assertEquals(builder.type.toString(), ExperimentType.LEARNING_CURVE_FIXED_TEST_SET.toString());
     }
     
     @Test
@@ -68,6 +88,12 @@ public class ExperimentBuilderTest
     public void outputFolder() {
         builder.outputFolder("target/");
         assertTrue(builder.outputFolder !=null);
+    }
+    
+    @Test
+    public void experimentName() {
+        builder.name("ABC");
+        assertEquals("ABC", builder.experimentName);
     }
     
     @Test
@@ -113,6 +139,11 @@ public class ExperimentBuilderTest
     public void featureMode() {
         builder.featureMode(FeatureMode.DOCUMENT);
         assertEquals(builder.featureMode.toString(), FeatureMode.DOCUMENT.toString());
+    }
+    
+    @Test(expected=NullPointerException.class)
+    public void featureModeNullPointer() {
+        builder.featureMode(null);
     }
     
     @Test
