@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -339,6 +340,9 @@ public class LearningCurveReport
         for (int i = 0; i < allDataNormalized.get(0).size(); i++) {
             for (int j = 0; j < allData.size(); j++) {
 
+            	StringBuilder sb = new StringBuilder();
+            	sb.append(getHeader(allData.size()));
+            	
                 DefaultXYDataset dataset = new DefaultXYDataset();
                 for (String key : new String[] { CategoricalPerformance.PRECISION,
                         CategoricalPerformance.RECALL, CategoricalPerformance.FSCORE }) {
@@ -356,6 +360,15 @@ public class LearningCurveReport
                     data[0] = x;
                     data[1] = y;
                     dataset.addSeries(key, data);
+                    
+					sb.append(String.format("%10s\t", key));
+                    for(int k=0; k<y.length; k++) {
+						sb.append(String.format("%.4f", y[k]));
+						if(k+1 < y.length) {
+							sb.append("\t");
+						}
+                    }
+                    sb.append("\n");
                 }
 
                 JFreeChart chart = ChartFactory.createXYLineChart(
@@ -374,21 +387,36 @@ public class LearningCurveReport
                 range.setRange(0.0, 1.0);
                 range.setTickUnit(new NumberTickUnit(0.1));
 
-                File file = getContext().getFile(md5 + "/categorical/"
-                        + allDataNormalized.get(j).get(i).categoryName + ".pdf",
+                String fileName =  allDataNormalized.get(j).get(i).categoryName.replaceAll(" ", "_");
+                		
+				File plotFile = getContext().getFile(md5 + "/categorical/" + fileName + ".pdf",
                         AccessMode.READWRITE);
-                if (!file.getParentFile().exists()) {
-                    verifySuccess(file.getParentFile().mkdir(), file.getParentFile());
+                if (!plotFile.getParentFile().exists()) {
+                    verifySuccess(plotFile.getParentFile().mkdir(), plotFile.getParentFile());
                 }
-                FileOutputStream fos = new FileOutputStream(file);
+                FileOutputStream fos = new FileOutputStream(plotFile);
                 ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
                 fos.close();
-
+                
+                File textFile = new File(plotFile.getParentFile(), fileName + ".txt");
+                FileUtils.writeStringToFile(textFile, sb.toString(), "utf-8");
             }
         }
     }
 
-    /**
+	private String getHeader(int size) {
+		String pattern = "%10s";
+		List<Object> vals = new ArrayList<>();
+		vals.add("Cat/Stage");
+		for (int i = 0; i <= size; i++) {
+			vals.add(i);
+			pattern = pattern + "\t%6d";
+		}
+		pattern = pattern + "\n";
+		return String.format(Locale.getDefault(), pattern, vals.toArray());
+	}
+
+	/**
      * It might happen that some categories did not occur in the training set depending on the data
      * distribution and how they were assigned to folds. We check this condition and add
      * zero-entries to ensure that on each learning curve stage all categories occur.
