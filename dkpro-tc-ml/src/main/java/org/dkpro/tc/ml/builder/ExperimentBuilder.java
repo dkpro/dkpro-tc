@@ -451,7 +451,7 @@ public class ExperimentBuilder implements Constants {
 	 * This limitations limits the number of runs in each stage to the number
 	 * specified as parameter. This will considerably speed up the learning curve.
 	 * 
-	 * @param learningCurveLimit The limit which must be non-zero positive integer
+	 * @param learningCurveLimit The limit which must be a non-zero positive integer
 	 * @return The builder object
 	 */
 	public ExperimentBuilder learningCurveLimit(int learningCurveLimit) {
