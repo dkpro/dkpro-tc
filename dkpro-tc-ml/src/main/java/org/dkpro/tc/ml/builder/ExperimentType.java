@@ -38,7 +38,7 @@ public enum ExperimentType implements Constants {
 	 * will be in the test set and all fold combinations will be used as training
 	 * set from which averaged performance results are computed. If you have a fixed
 	 * test set against which a learning curve shall be run, then use
-	 * {@link LEARNING_CURVE_FIXED_TEST_SET}
+	 * {@link ExperimentType#LEARNING_CURVE_FIXED_TEST_SET}
 	 */
 	LEARNING_CURVE,
 
@@ -52,7 +52,7 @@ public enum ExperimentType implements Constants {
 	 * data is split into N folds and all fold-variations will be used to test
 	 * against the fixed test set.This experiment type should be used if testing
 	 * against a fixed development or test set. If no fixed test set is required use
-	 * {@link LEARNING_CURVE} instead.
+	 * {@link ExperimentType#LEARNING_CURVE} instead.
 	 */
 	LEARNING_CURVE_FIXED_TEST_SET
 }

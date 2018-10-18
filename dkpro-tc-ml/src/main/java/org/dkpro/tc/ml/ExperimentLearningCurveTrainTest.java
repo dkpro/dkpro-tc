@@ -71,7 +71,7 @@ public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_
 	 * Creates a train test experiment that runs a learning curve in which an
 	 * increasing amount of training data is added to the training data set. For
 	 * avoiding using of all possible training set permutations:
-	 * {@see #ExperimentLearningCurveTrainTest(String, int, int)}, which allows
+	 * {@see ExperimentLearningCurveTrainTest#ExperimentLearningCurveTrainTest(String, int, int)}, which allows
 	 * setting a limit
 	 * 
 	 * @param aExperimentName Name of the experiment
