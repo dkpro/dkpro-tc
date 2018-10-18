@@ -73,11 +73,12 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * 
 	 * @param aExperimentName the experiment name
 	 * @param aNumFolds       the number of folds
+	 * @param aLimitPerStage  maximum number of runs on each learning curve stage
 	 * @throws TextClassificationException in case of errors
 	 */
-	public ExperimentLearningCurve(String aExperimentName, int aNumFolds, int limitPerStage) throws TextClassificationException {
+	public ExperimentLearningCurve(String aExperimentName, int aNumFolds, int aLimitPerStage) throws TextClassificationException {
 		this.aNumFolds = aNumFolds;
-		this.aLimitPerStage = limitPerStage;
+		this.aLimitPerStage = aLimitPerStage;
 		this.experimentName = aExperimentName;
 		setType("Evaluation-" + experimentName);
 	}
