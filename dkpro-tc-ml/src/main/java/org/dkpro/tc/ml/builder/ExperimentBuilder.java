@@ -426,8 +426,8 @@ public class ExperimentBuilder implements Constants {
 	}
 
 	/**
-	 * This switch is relevant for {@see ExperimentType#LEARNING_CURVE} and
-	 * {@see ExperimentType#LEARNING_CURVE_FIXED_TEST_SET} Sets a maximum number of
+	 * This switch is relevant for {@link ExperimentType#LEARNING_CURVE} and
+	 * {@link ExperimentType#LEARNING_CURVE_FIXED_TEST_SET} Sets a maximum number of
 	 * train set permutations on each learning curve stage. For instance, on the
 	 * first stage of a ten fold run you will get the following folds on the first
 	 * two stages: <code>
@@ -454,7 +454,7 @@ public class ExperimentBuilder implements Constants {
 	 * @param learningCurveLimit The limit which must be non-zero positive integer
 	 * @return The builder object
 	 */
-	public ExperimentBuilder learningCuveLimit(int learningCurveLimit) {
+	public ExperimentBuilder learningCurveLimit(int learningCurveLimit) {
 		if(learningCurveLimit <= 0) {
 			throw new IllegalArgumentException("Learning curve limit must be a positive integer greater zero but was ["
 					+ learningCurveLimit + "]");
@@ -491,7 +491,7 @@ public class ExperimentBuilder implements Constants {
 			break;
 		case LEARNING_CURVE:
 			folds = getCvFolds();
-			experiment = new ExperimentLearningCurve(experimentName, folds);
+			experiment = new ExperimentLearningCurve(experimentName, folds, learningCurveLimit);
 			experiment.addReport(new LearningCurveReport());
 			readersCheckExperimentCrossValidation();
 			break;

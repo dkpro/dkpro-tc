@@ -103,6 +103,7 @@ public class LearningCurveDimBundleCrossValidation
                 List<List<Integer>> s = getLearningCurveStage(maxCount, validationBucket);
                 
         		if (aLimitPerStage != -1 && s.size() > aLimitPerStage) {
+        			Collections.shuffle(s);
     				LogFactory.getLog(getClass())
     						.debug("Reducing number of runs per stage from [" + s.size() + "] to [" + aLimitPerStage + "]");
     				s = s.subList(0, aLimitPerStage);
