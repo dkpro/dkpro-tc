@@ -56,7 +56,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase implements Constants {
 
 	protected Comparator<String> comparator;
-	protected int numFolds = 10;
+	protected int aNumFolds = 10;
 
 	protected InitTask initTask;
 	protected OutcomeCollectionTask collectionTask;
@@ -64,6 +64,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	protected ExtractFeaturesTask extractFeaturesTrainTask;
 	protected ExtractFeaturesTask extractFeaturesTestTask;
 	protected TaskBase testTask;
+	private int aLimitPerStage;
 
 	public ExperimentLearningCurve() {/* needed for Groovy */
 	}
@@ -74,8 +75,11 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * @param aNumFolds       the number of folds
 	 * @throws TextClassificationException in case of errors
 	 */
-	public ExperimentLearningCurve(String aExperimentName, int aNumFolds) throws TextClassificationException {
-		this(aExperimentName, aNumFolds, null);
+	public ExperimentLearningCurve(String aExperimentName, int aNumFolds, int limitPerStage) throws TextClassificationException {
+		this.aNumFolds = aNumFolds;
+		this.aLimitPerStage = limitPerStage;
+		this.experimentName = aExperimentName;
+		setType("Evaluation-" + experimentName);
 	}
 
 	/**
@@ -87,13 +91,9 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * @param aComparator     the comparator
 	 * @throws TextClassificationException in case of errors
 	 */
-	public ExperimentLearningCurve(String aExperimentName, int aNumFolds, Comparator<String> aComparator)
+	public ExperimentLearningCurve(String aExperimentName, int aNumFolds)
 			throws TextClassificationException {
-		setExperimentName(aExperimentName);
-		setNumFolds(aNumFolds);
-		setComparator(aComparator);
-		// set name of overall batch task
-		setType("Evaluation-" + experimentName);
+		this(aExperimentName, aNumFolds, -1);
 	}
 
 	/**
@@ -107,10 +107,10 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 			throw new IllegalStateException("You must set an experiment name");
 		}
 
-		if (numFolds < 2 && numFolds != -1) {
+		if (aNumFolds < 2 && aNumFolds != -1) {
 			throw new IllegalStateException(
 					"Number of folds is not configured correctly. Number of folds needs to be at "
-							+ "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
+							+ "least [2] or [-1 (leave one out cross validation)] but was [" + aNumFolds + "]");
 		}
 
 		// initialize the setup
@@ -142,14 +142,14 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 					i++;
 				}
 				Arrays.sort(fileNames);
-				if (numFolds == LEAVE_ONE_OUT) {
-					numFolds = fileNames.length;
+				if (aNumFolds == LEAVE_ONE_OUT) {
+					aNumFolds = fileNames.length;
 				}
 
 				// is executed if we have less CAS than requested folds and manual mode is
 				// turned
 				// off
-				if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
+				if (!useCrossValidationManualFolds && fileNames.length < aNumFolds) {
 					xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length, featureMode);
 					files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
 					fileNames = new String[files.size()];
@@ -179,7 +179,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 			private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode) {
 
 				try {
-					File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), numFolds,
+					File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), aNumFolds,
 							numAvailableJCas, FM_SEQUENCE.equals(featureMode));
 
 					if (outputFolder == null) {
@@ -208,9 +208,9 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 					}
 				}
 
-				if (numCas < numFolds) {
+				if (numCas < aNumFolds) {
 					throw new IllegalStateException(
-							"Not enough TextClassificationUnits found to create at least [" + numFolds + "] folds");
+							"Not enough TextClassificationUnits found to create at least [" + aNumFolds + "] folds");
 				}
 			}
 		};
@@ -297,7 +297,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * @return fold dimension bundle
 	 */
 	protected LearningCurveDimBundleCrossValidation getFoldDim(String[] fileNames) {
-		return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), numFolds);
+		return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), aNumFolds, aLimitPerStage);
 	}
 
 	/**
@@ -306,16 +306,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * @param numFolds folds
 	 */
 	public void setNumFolds(int numFolds) {
-		this.numFolds = numFolds;
-	}
-
-	/**
-	 * Sets a comparator
-	 * 
-	 * @param aComparator the comparator
-	 */
-	public void setComparator(Comparator<String> aComparator) {
-		comparator = aComparator;
+		this.aNumFolds = numFolds;
 	}
 
 }

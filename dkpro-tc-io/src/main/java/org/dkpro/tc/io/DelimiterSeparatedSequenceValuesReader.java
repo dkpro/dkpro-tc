@@ -106,12 +106,11 @@ public class DelimiterSeparatedSequenceValuesReader
     protected Integer sequencesPerCas;
 
     /**
-     * The reader annotates by default the token as {@link TextClassificationTarget} and the read
-     * category label as {@link TextClassificationOutcome} and the sequences as
-     * {@link TextClassificationSequence}. When using this reader together with a trained model, it
-     * might be necessary to suppress these annotations as downstream components provide them. This
-     * switch turns off the automatic annotation.
-     */
+	 * The reader annotates by default the token as {@link TextClassificationTarget}
+	 * and the read category label as {@link TextClassificationOutcome} and the
+	 * sequences as {@link TextClassificationSequence}. This switch turns off the
+	 * automatic annotation.
+	 */
     public static final String PARAM_ANNOTATE_TC_BACKEND_ANNOTATIONS = "PARAM_ANNOTATE_TC_BACKEND_ANNOTATIONS";
     @ConfigurationParameter(name = PARAM_ANNOTATE_TC_BACKEND_ANNOTATIONS, mandatory = true, defaultValue = "true")
     protected boolean addBackendTcAnnotations;

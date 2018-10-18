@@ -40,12 +40,14 @@ public class LearningCurveDimBundleCrossValidation
     private int folds;
     private List<TrainTestSplit> runs = new ArrayList<>();
     private int numFoldsIdx=0;
+	private int aLimitPerStage;
 
-    public LearningCurveDimBundleCrossValidation(String aName, Dimension<String> aFoldedDimension, int aFolds)
+    public LearningCurveDimBundleCrossValidation(String aName, Dimension<String> aFoldedDimension, int aFolds, int aLimitPerStage)
     {
         super(aName, new Object[0]);
-        foldedDimension = aFoldedDimension;
-        folds = aFolds;
+        this.foldedDimension = aFoldedDimension;
+        this.folds = aFolds;
+		this.aLimitPerStage = aLimitPerStage;
     }
 
     @SuppressWarnings("unchecked")
@@ -99,6 +101,12 @@ public class LearningCurveDimBundleCrossValidation
         for (int j = 0; j < buckets.length-1; j++) {
             for (int k = 0; k < buckets.length; k++) {
                 List<List<Integer>> s = getLearningCurveStage(maxCount, validationBucket);
+                
+        		if (aLimitPerStage != -1 && s.size() > aLimitPerStage) {
+    				LogFactory.getLog(getClass())
+    						.debug("Reducing number of runs per stage from [" + s.size() + "] to [" + aLimitPerStage + "]");
+    				s = s.subList(0, aLimitPerStage);
+    			}
                 
                 if(maxCount == buckets.length-1) {
                 	// in this case, the train-set variations will always be the same - so one of the generated sets is sufficient
