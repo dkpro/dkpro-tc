@@ -89,7 +89,6 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 	 * 
 	 * @param aExperimentName the experiment name
 	 * @param aNumFolds       the number of folds
-	 * @param aComparator     the comparator
 	 * @throws TextClassificationException in case of errors
 	 */
 	public ExperimentLearningCurve(String aExperimentName, int aNumFolds)
