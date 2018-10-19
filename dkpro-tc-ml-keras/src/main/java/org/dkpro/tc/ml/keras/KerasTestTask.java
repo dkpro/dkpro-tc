@@ -35,15 +35,13 @@ import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.PythonConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.ml.TcClassifierTaskBase;
 
 public class KerasTestTask
-    extends ExecutableTaskBase
-    implements Constants
+	extends TcClassifierTaskBase
 {
     @Discriminator(name = DIM_PYTHON_INSTALLATION)
     private String python;
@@ -69,6 +67,7 @@ public class KerasTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
+    	super.execute(aContext);
         File kerasResultOut = getResultLocation(aContext);
         List<String> command = buildTrainCommand(aContext, kerasResultOut);
         dumpDebug(aContext, command);

@@ -430,10 +430,12 @@ public class ExperimentBuilder implements Constants {
 
 	/**
 	 * This switch is relevant for {@link ExperimentType#LEARNING_CURVE} and
-	 * {@link ExperimentType#LEARNING_CURVE_FIXED_TEST_SET} Sets a maximum number of
-	 * train set permutations on each learning curve stage. For instance, on the
+	 * {@link ExperimentType#LEARNING_CURVE_FIXED_TEST_SET}. Sets a maximum number
+	 * of train set permutations on each learning curve stage. For instance, on the
 	 * first stage of a ten fold run you will get the following folds on the first
-	 * two stages: <code>
+	 * two stages:
+	 * 
+	 * <pre>
 	 * Stage 1
 	 * [0]
 	 * [1]
@@ -449,10 +451,24 @@ public class ExperimentBuilder implements Constants {
 	 * [2, 3]
 	 * ...
 	 * [9, 0]
-	 * </code>
 	 * 
-	 * This limitations limits the number of runs in each stage to the number
-	 * specified as parameter. This will considerably speed up the learning curve.
+	 * Stage 3
+	 * [0, 1, 2]
+	 * [1, 2, 3]
+	 * [2, 3, 4]
+	 * ...
+	 * Stage 4
+	 * ...
+	 * Stage 10
+	 * ...
+	 * </pre>
+	 * 
+	 * Even for a small number of folds, the number of created train set
+	 * permutations is rather high leading to a long runtime. It is usually not
+	 * necessary to use all permutations of the train set to receive a smooth
+	 * learning curve. This parameter limits the number of runs in each stage to the
+	 * number specified as parameter. This will considerably speed up the learning
+	 * curve.
 	 * 
 	 * @param learningCurveLimit The limit which must be a non-zero positive integer
 	 * @return The builder object

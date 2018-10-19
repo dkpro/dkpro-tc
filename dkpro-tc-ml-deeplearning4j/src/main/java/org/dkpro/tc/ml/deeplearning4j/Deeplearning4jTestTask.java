@@ -24,15 +24,13 @@ import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
-import org.dkpro.lab.task.impl.ExecutableTaskBase;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.ml.TcClassifierTaskBase;
 import org.dkpro.tc.ml.deeplearning4j.user.TcDeepLearning4jUser;
 
 public class Deeplearning4jTestTask
-    extends ExecutableTaskBase
-    implements Constants
+    extends TcClassifierTaskBase
 {
     public static final String PREDICTION_FILE = "prediction.txt";
 
@@ -51,6 +49,7 @@ public class Deeplearning4jTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
+    	super.execute(aContext);
         File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
