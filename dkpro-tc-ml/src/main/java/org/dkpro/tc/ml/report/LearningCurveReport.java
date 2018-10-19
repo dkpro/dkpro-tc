@@ -72,6 +72,7 @@ public class LearningCurveReport
     implements Constants
 {
     int maxNumberFolds = -1;
+	public static final String MD5_MAPPING_FILE = "md5Mapping.txt";
 
     @Override
     public void execute() throws Exception
@@ -135,7 +136,7 @@ public class LearningCurveReport
             sb.append(configId.md5 + "\t" + configId.configAsString + "\n");
         }
 
-        FileUtils.writeStringToFile(getContext().getFile("md5Mapping.txt", AccessMode.READWRITE),
+        FileUtils.writeStringToFile(getContext().getFile(MD5_MAPPING_FILE, AccessMode.READWRITE),
                 sb.toString(), "utf-8");
 
         return dataMap;

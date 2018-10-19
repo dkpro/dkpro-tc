@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -40,32 +41,32 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.shallow.feature.LengthFeatureNominal;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
+import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
+import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.LearningCurveReport;
-import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import weka.classifiers.functions.LinearRegression;
 
 /**
  * This test just ensures that the experiment runs without throwing any
  * exception.
  */
-public class LearningCurveCrossValidationRegressionTest extends TestCaseSuperClass implements Constants {
+public class LearningCurveCrossValidationSingleLabelTest extends TestCaseSuperClass implements Constants {
+
 	ContextMemoryReport contextReport;
 
+	public static final String corpusFilePathTrain = "src/main/resources/data/twentynewsgroups/bydate-train";
+	public static final String corpusFilePathTest = "src/main/resources/data/twentynewsgroups/bydate-test";
+
 	@Test
-	public void testLearningCurve() throws Exception {
+	public void testJavaTrainTest() throws Exception {
 		runExperimentTrainTest();
 		evaluateResults(contextReport.evaluationFolder);
-
 	}
 
 	private void evaluateResults(File evaluationFolder) {
@@ -79,56 +80,70 @@ public class LearningCurveCrossValidationRegressionTest extends TestCaseSuperCla
 			}
 		}
 		assertEquals(2, folders.size());
+		
+		for(File folder : folders) {
+			
+			assertTrue(new File(folder, "categorical").isDirectory());
+			
+			long countFiles = Stream.of(folder.listFiles()).map(File::isFile).count();
+			long countHidden = Stream.of(folder.listFiles()).map(File::isHidden).count();
+			assertTrue(countFiles-countHidden >= 2);
+			
+			for(File f : folder.listFiles()) {
+				if(f.isHidden()) {
+					continue;
+				}
+				assertTrue(f.getName().endsWith(".txt"));
+				assertTrue(f.getName().endsWith(".pdf"));
+			}
+		}
 
 	}
 
-	private ParameterSpace getParameterSpace() throws Exception {
+	private ParameterSpace getParameterSpace() throws ResourceInitializationException {
 		Map<String, Object> dimReaders = new HashMap<String, Object>();
 
 		CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-				DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
-				DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
-				DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/train/essay_train.txt", DelimiterSeparatedValuesReader.PARAM_LANGUAGE,
-				"en");
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+				FolderwiseDataReader.PARAM_LANGUAGE, "en", FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
+		//
 		CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-				DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
-				DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
-				DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
-				"src/main/resources/data/essays/test/essay_test.txt", DelimiterSeparatedValuesReader.PARAM_LANGUAGE,
-				"en");
+				FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+				FolderwiseDataReader.PARAM_LANGUAGE, "en", FolderwiseDataReader.PARAM_PATTERNS, "*/*.txt");
 		dimReaders.put(DIM_READER_TEST, readerTest);
 
-		Map<String, Object> xgboostConfig = new HashMap<>();
-		xgboostConfig.put(DIM_CLASSIFICATION_ARGS,
-				new Object[] { new XgboostAdapter(), "booster=gbtree", "reg:linear" });
-		xgboostConfig.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
-		xgboostConfig.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
+		Map<String, Object> config3 = new HashMap<>();
+		config3.put(DIM_CLASSIFICATION_ARGS, new Object[] { new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3" });
+		config3.put(DIM_DATA_WRITER, new LibsvmAdapter().getDataWriterClass());
+		config3.put(DIM_FEATURE_USE_SPARSE, new LibsvmAdapter().useSparseFeatures());
 
-		Map<String, Object> wekaConfig = new HashMap<>();
-		wekaConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new WekaAdapter(), LinearRegression.class.getName() });
-		wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
-		wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+		Map<String, Object> config4 = new HashMap<>();
+		config4.put(DIM_CLASSIFICATION_ARGS, new Object[] { new XgboostAdapter(), "objective=multi:softmax" });
+		config4.put(DIM_DATA_WRITER, new XgboostAdapter().getDataWriterClass());
+		config4.put(DIM_FEATURE_USE_SPARSE, new XgboostAdapter().useSparseFeatures());
 
-		Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig, wekaConfig);
+		Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config3, config4);
 
-		Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-				new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
-						TcFeatureFactory.create(LengthFeatureNominal.class),
-						TcFeatureFactory.create(TokenRatioPerDocument.class)));
+		Dimension<String> dimLearningMode = Dimension.create(DIM_LEARNING_MODE, LM_SINGLE_LABEL);
+		Dimension<String> dimFeatureMode = Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT);
+		Dimension<TcFeatureSet> dimFeatureSet = Dimension.create(DIM_FEATURE_SET, getFeatureSet());
 
-		ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-				Dimension.create(DIM_LEARNING_MODE, LM_REGRESSION), Dimension.create(DIM_FEATURE_MODE, FM_DOCUMENT),
-				dimFeatureSets, mlas);
-		return pSpace;
+		ParameterSpace ps = new ParameterSpace(dimLearningMode, dimFeatureMode, dimFeatureMode, dimFeatureSet, mlas,
+				Dimension.createBundle(DIM_READERS, dimReaders));
+
+		return ps;
+	}
+
+	private static TcFeatureSet getFeatureSet() {
+		return new TcFeatureSet(TcFeatureFactory.create(WordNGram.class, WordNGram.PARAM_NGRAM_USE_TOP_K, 500,
+				WordNGram.PARAM_NGRAM_MIN_N, 1, WordNGram.PARAM_NGRAM_MAX_N, 3));
 	}
 
 	private void runExperimentTrainTest() throws Exception {
 		contextReport = new ContextMemoryReport();
 
-		ExperimentLearningCurve experiment = new ExperimentLearningCurve("learningCurve", 2, 2);
+		ExperimentLearningCurve experiment = new ExperimentLearningCurve("LearningCurveSingleLabel", 2, 2);
 		experiment.setPreprocessing(getPreprocessing());
 		experiment.setParameterSpace(getParameterSpace());
 		experiment.addReport(LearningCurveReport.class);
@@ -141,5 +156,4 @@ public class LearningCurveCrossValidationRegressionTest extends TestCaseSuperCla
 	protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException {
 		return createEngineDescription(BreakIteratorSegmenter.class);
 	}
-
 }
