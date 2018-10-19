@@ -86,15 +86,13 @@ public class LearningCurveCrossValidationSingleLabelTest extends TestCaseSuperCl
 			assertTrue(new File(folder, "categorical").isDirectory());
 			
 			long countFiles = Stream.of(folder.listFiles()).map(File::isFile).count();
-			long countHidden = Stream.of(folder.listFiles()).map(File::isHidden).count();
-			assertTrue(countFiles-countHidden >= 2);
+			assertEquals(3, countFiles);
 			
 			for(File f : folder.listFiles()) {
-				if(f.isHidden()) {
+				if(f.isHidden() || f.isDirectory()) {
 					continue;
 				}
-				assertTrue(f.getName().endsWith(".txt"));
-				assertTrue(f.getName().endsWith(".pdf"));
+				assertTrue(f.getName().endsWith(".txt") || f.getName().endsWith(".pdf"));
 			}
 		}
 
