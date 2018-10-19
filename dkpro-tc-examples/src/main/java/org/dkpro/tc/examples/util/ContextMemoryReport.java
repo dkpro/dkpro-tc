@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcAbstractReport;
@@ -40,12 +41,15 @@ public class ContextMemoryReport
     public List<File> id2outcomeFiles = new ArrayList<>();
     public List<File> crossValidationCombinedIdFiles = new ArrayList<>();
     public List<String> allIds = new ArrayList<String>();
+    public File evaluationFolder;
 
     @Override
     public void execute() throws Exception
     {
 
         StorageService storageService = getContext().getStorageService();
+        
+        evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
 
         Set<String> taskIds = getTaskIdsFromMetaData(getSubtasks());
         allIds.addAll(collectTasks(taskIds));

@@ -111,7 +111,7 @@ public class LearningCurveReport
 
         if (learningMode.equals(LM_SINGLE_LABEL)) {
             for (RunIdentifier configId : dataMap.keySet()) {
-                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class);
+                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class, true);
                 writePlot(configId.md5, stageAveraged, maxNumberFolds,
                         Accuracy.class.getSimpleName());
             }
@@ -124,7 +124,7 @@ public class LearningCurveReport
             for (Class<? extends EvaluationMeasure> m : regMetrics) {
 
                 for (RunIdentifier configId : dataMap.keySet()) {
-                    List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m);
+                    List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m, false);
                     writePlot(configId.md5, stageAveraged, maxNumberFolds, m.getSimpleName());
                 }
             }
@@ -132,7 +132,7 @@ public class LearningCurveReport
 
         StringBuilder sb = new StringBuilder();
         for (RunIdentifier configId : dataMap.keySet()) {
-            sb.append(configId.md5 + "\t" + configId.classification + configId.featureset + "\n");
+            sb.append(configId.md5 + "\t" + configId.configAsString + "\n");
         }
 
         FileUtils.writeStringToFile(getContext().getFile("md5Mapping.txt", AccessMode.READWRITE),
@@ -141,9 +141,9 @@ public class LearningCurveReport
         return dataMap;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private List<Double> averagePerStage(Map<Integer, List<File>> map,
-            Class<? extends EvaluationMeasure> class1)
+            Class<? extends EvaluationMeasure> class1, boolean isSingleLabel)
         throws Exception
     {
         List<Double> stageAveraged = new ArrayList<>();
@@ -152,10 +152,16 @@ public class LearningCurveReport
         Collections.sort(keys);
         for (Integer numFolds : keys) {
             List<File> st = map.get(numFolds);
-            EvaluationData<String> stageData = new EvaluationData<>();
+            EvaluationData stageData = new EvaluationData<>();
             for (File f : st) {
-                EvaluationData<String> run = Tc2LtlabEvalConverter
+            	EvaluationData run=null;
+            	if(isSingleLabel) {
+                run = Tc2LtlabEvalConverter
                         .convertSingleLabelModeId2Outcome(f);
+            	}else {
+            		run = Tc2LtlabEvalConverter
+                            .convertRegressionModeId2Outcome(f);
+            	}
                 stageData.registerBulk(run);
             }
             EvaluationMeasure measure = class1.getDeclaredConstructor(EvaluationData.class)
@@ -221,10 +227,17 @@ public class LearningCurveReport
 
         m = ReportUtils.removeKeyRedundancy(m);
 
-        String classification = m.get(DIM_CLASSIFICATION_ARGS);
-        String featureSet = m.get(DIM_FEATURE_SET);
-
-        return new RunIdentifier(classification, featureSet);
+		// Remove these keys as they tend to change in every setup (which is normal) but
+		// prevent us from grouping runs together that are the same (except for the data
+		// they used)
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_READERS, "<REMOVED>");
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_READER_TEST, "<REMOVED>");
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_READER_TRAIN, "<REMOVED>");
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_FILES_ROOT, "<REMOVED>");
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_FILES_TRAINING, "<REMOVED>");
+        m = ReportUtils.replaceKeyWithConstant(m, DIM_FILES_VALIDATION, "<REMOVED>");
+        
+        return new RunIdentifier(m);
     }
 
     private int getNumberOfTrainingFolds(StorageService store, String sId) throws Exception
@@ -294,7 +307,9 @@ public class LearningCurveReport
 
         File pdfPlot = getContext().getFile(id + "/learningCurve_" + metricName + ".pdf",
                 AccessMode.READWRITE);
-        verifySuccess(pdfPlot.getParentFile().mkdirs(), pdfPlot);
+        if(!pdfPlot.getParentFile().exists()) {
+        	verifySuccess(pdfPlot.getParentFile().mkdirs(), pdfPlot);
+        }
         FileOutputStream fos = new FileOutputStream(pdfPlot);
         ChartUtil.writeChartAsPDF(fos, chart, 400, 400);
         fos.close();
@@ -537,21 +552,24 @@ public class LearningCurveReport
     class RunIdentifier
     {
         String md5;
-        String classification;
-        String featureset;
+		Map<String, String> configMap;
+		String configAsString;
 
-        public RunIdentifier(String classification, String featureset)
+        public RunIdentifier(Map<String,String> configMap)
             throws NoSuchAlgorithmException
         {
-            this.classification = classification;
-            this.featureset = featureset;
+        	this.configMap = configMap;
+        	StringBuilder sb = new StringBuilder();
+        	configMap.forEach((x,y)-> sb.append(x+"=" + y+", "));
+        	configAsString = sb.toString();
 
-            byte[] digest = MessageDigest.getInstance("MD5")
-                    .digest((classification + featureset).getBytes());
+			byte[] digest = MessageDigest.getInstance("MD5")
+                    .digest((configAsString).getBytes());
             BigInteger bigInt = new BigInteger(1, digest);
             String md5 = bigInt.toString(16);
             this.md5 = md5;
         }
+        
 
         @Override
         public int hashCode()
