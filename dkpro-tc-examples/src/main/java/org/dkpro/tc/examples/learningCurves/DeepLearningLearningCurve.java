@@ -28,18 +28,16 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.Lab;
-import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.deeplearning.dl4j.document.Dl4jDocumentUserCode;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
+import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentLearningCurve;
+import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.LearningCurveReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
@@ -49,49 +47,39 @@ public class DeepLearningLearningCurve
 {
     public static final String LANGUAGE_CODE = "en";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/LabelledNews/train";
-    public static final String corpusFilePathTest = "src/main/resources/data/LabelledNews/test";
+    public static final String corpusFilePath = "src/main/resources/data/twentynewsgroups/bydate-train";
 
     public static void main(String[] args) throws Exception
     {
-
     	DemoUtils.setDkproHome(DeepLearningLearningCurve.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace();
+        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
 
-        DeepLearningLearningCurve experiment = new DeepLearningLearningCurve();
-        experiment.runTrainTest(pSpace, new ContextMemoryReport());
+        DeepLearningLearningCurve.runLearningCurve(pSpace, new ContextMemoryReport());
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    public static ParameterSpace getParameterSpace(String python3)
+        throws ResourceInitializationException
     {
         // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
+        // train/test will use both, while cross-validation will only use the
+        // train part
         Map<String, Object> dimReaders = new HashMap<String, Object>();
 
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, 
-                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain, 
-                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0, 
-                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1, 
-                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "/**/*.txt");
+                FolderwiseDataReader.class, FolderwiseDataReader.PARAM_SOURCE_LOCATION,
+                corpusFilePath, FolderwiseDataReader.PARAM_LANGUAGE, LANGUAGE_CODE,
+                FolderwiseDataReader.PARAM_PATTERNS, "**/*.txt");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, 
-                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
-                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0, 
-                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1, 
-                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, LANGUAGE_CODE,
-                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "/**/*.txt");
-        dimReaders.put(DIM_READER_TEST, readerTest);
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jDocumentUserCode()),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 15),
+                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
+                        "/usr/local/bin/python3"),
+                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
+                        "src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
+                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 250),
                 Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                 Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
                         "src/test/resources/wordvector/glove.6B.50d_250.txt"));
@@ -100,21 +88,22 @@ public class DeepLearningLearningCurve
     }
 
     // ##### TRAIN-TEST #####
-    public void runTrainTest(ParameterSpace pSpace, Report r) throws Exception
+    public static void runLearningCurve(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
     {
-        DeepLearningExperimentLearningCurve experiment = new DeepLearningExperimentLearningCurve(
-                "DL4jLearningCurve", Deeplearning4jAdapter.class, 2);
+    	DeepLearningExperimentLearningCurve experiment = new DeepLearningExperimentLearningCurve(
+                "KerasCrossValidation", KerasAdapter.class, 3, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(LearningCurveReport.class);
-        experiment.addReport(r);
+        experiment.addReport(contextReport);
         experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
 
         // Run
         Lab.getInstance().run(experiment);
     }
 
-    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
     {
         return createEngineDescription(BreakIteratorSegmenter.class);
     }
