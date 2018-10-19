@@ -46,7 +46,7 @@ import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderUnitMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;

@@ -24,7 +24,7 @@ import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 
 /**
  * Train-Test setup

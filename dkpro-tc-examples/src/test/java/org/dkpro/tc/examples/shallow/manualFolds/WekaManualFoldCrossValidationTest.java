@@ -34,7 +34,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.annotators.UnitOutcomeAnnotator;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Test;
 

@@ -49,7 +49,7 @@ import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
-import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Before;

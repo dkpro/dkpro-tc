@@ -36,7 +36,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
-import org.dkpro.tc.ml.ExperimentCrossValidation
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.CrossValidationReport
 import org.dkpro.tc.ml.weka.WekaAdapter
 

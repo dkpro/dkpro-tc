@@ -35,11 +35,11 @@ import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.weka.MekaAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;

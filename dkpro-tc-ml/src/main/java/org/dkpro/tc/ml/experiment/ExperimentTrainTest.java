@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml;
+package org.dkpro.tc.ml.experiment;
 
 import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 

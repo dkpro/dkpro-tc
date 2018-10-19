@@ -45,7 +45,7 @@ import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.WordNGram;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.RuntimeReport;
 import org.dkpro.tc.ml.weka.MekaAdapter;
 import org.junit.Test;

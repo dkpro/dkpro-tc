@@ -37,8 +37,8 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.report.RuntimeReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;

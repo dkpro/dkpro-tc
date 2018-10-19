@@ -31,8 +31,8 @@ import org.dkpro.tc.core.Constants
 import org.dkpro.tc.examples.shallow.io.STSReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor
-import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.ml.ExperimentTrainTest
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest
 import org.dkpro.tc.ml.report.CrossValidationReport
 import org.dkpro.tc.ml.report.TrainTestReport
 import org.dkpro.tc.ml.weka.WekaAdapter

@@ -40,7 +40,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.TrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.dkpro.tc.ml.weka.WekaAdapter;

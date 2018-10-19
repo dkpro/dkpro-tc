@@ -48,7 +48,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.features.maxnormalization.SentenceRatioPerDocument;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;

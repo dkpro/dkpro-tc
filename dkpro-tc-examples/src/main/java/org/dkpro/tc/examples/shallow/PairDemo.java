@@ -31,12 +31,12 @@ import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import org.dkpro.tc.ml.ExperimentTrainTest;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 
 import weka.classifiers.bayes.NaiveBayes;

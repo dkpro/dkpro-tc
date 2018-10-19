@@ -35,8 +35,8 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.report.TrainTestReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;

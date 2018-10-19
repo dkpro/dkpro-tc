@@ -48,7 +48,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.io.STSReader;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
-import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderPairMode;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Rule;

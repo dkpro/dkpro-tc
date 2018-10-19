@@ -15,19 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml;
+package org.dkpro.tc.ml.experiment.deep;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
@@ -37,72 +34,87 @@ import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.task.DKProTcShallowTestTask;
-import org.dkpro.tc.core.task.ExtractFeaturesTask;
+import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.task.InitTask;
-import org.dkpro.tc.core.task.MetaInfoTask;
-import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.core.task.deep.EmbeddingTask;
+import org.dkpro.tc.core.task.deep.InitTaskDeep;
+import org.dkpro.tc.core.task.deep.PreparationTask;
+import org.dkpro.tc.core.task.deep.VectorizationTask;
+import org.dkpro.tc.ml.FoldUtil;
+import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
+import org.dkpro.tc.ml.report.deeplearning.DeepLearningInnerBatchReport;
 
 /**
  * Crossvalidation setup
  * 
  */
-public class ExperimentCrossValidation
-    extends ShallowLearningExperiment_ImplBase
+public class DeepLearningExperimentCrossValidation
+    extends DeepLearningExperiment_ImplBase
     implements Constants
 {
 
     protected Comparator<String> comparator;
     protected int numFolds = 10;
 
-    protected InitTask initTask;
-    protected OutcomeCollectionTask collectionTask;
-    protected MetaInfoTask metaTask;
-    protected ExtractFeaturesTask extractFeaturesTrainTask;
-    protected ExtractFeaturesTask extractFeaturesTestTask;
-    protected TaskBase testTask;
+    protected InitTaskDeep initTask;
+    protected PreparationTask preparationTask;
+    protected EmbeddingTask embeddingTask;
+    protected VectorizationTask vectorizationTrainTask;
+    protected VectorizationTask vectorizationTestTask;
+    protected TaskBase learningTask;
 
-    public ExperimentCrossValidation()
+    public DeepLearningExperimentCrossValidation()
     {/* needed for Groovy */
     }
 
     /**
+     * Cross-validation experiment
      * 
      * @param aExperimentName
-     *            the experiment name
+     *            Name of the experiment
+     * @param mlAdapter
+     *            ML adapter
      * @param aNumFolds
-     *            the number of folds
+     *            number of folds
      * @throws TextClassificationException
      *             in case of errors
      */
-    public ExperimentCrossValidation(String aExperimentName, int aNumFolds)
+    public DeepLearningExperimentCrossValidation(String aExperimentName,
+            Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds)
         throws TextClassificationException
     {
-        this(aExperimentName, aNumFolds, null);
+        setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
+        setNumFolds(aNumFolds);
+        // set name of overall batch task
+        setType("Evaluation-" + experimentName);
     }
 
     /**
-     * Use this constructor for CV fold control. The Comparator is used to determine which instances
-     * must occur together in the same CV fold.
+     * Cross-validation experiment with control over instances in folds
      * 
      * @param aExperimentName
-     *            the experiment name
+     *            Name of the experiment
+     * @param mlAdapter
+     *            ML adapter
      * @param aNumFolds
-     *            the number of folds
+     *            number of folds
      * @param aComparator
-     *            the comparator
+     *            keeps data together
+     * @throws TextClassificationException
+     *             in case of errors
      * @throws TextClassificationException
      *             in case of errors
      */
-    public ExperimentCrossValidation(String aExperimentName, int aNumFolds,
+    public DeepLearningExperimentCrossValidation(String aExperimentName,
+            Class<? extends TcDeepLearningAdapter> mlAdapter, int aNumFolds,
             Comparator<String> aComparator)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
+        setMachineLearningAdapter(mlAdapter);
         setNumFolds(aNumFolds);
         setComparator(aComparator);
         // set name of overall batch task
@@ -113,6 +125,9 @@ public class ExperimentCrossValidation
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
      * three-argument constructor.
+     * 
+     * @throws IllegalStateException
+     *             in case of errors
      */
     protected void init() throws IllegalStateException
     {
@@ -122,13 +137,13 @@ public class ExperimentCrossValidation
         }
 
         if (numFolds < 2 && numFolds != -1) {
-            throw new IllegalStateException(
+        	throw new IllegalStateException(
                     "Number of folds is not configured correctly. Number of folds needs to be at "
                             + "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
         }
 
         // initialize the setup
-        initTask = new InitTask();
+        initTask = new InitTaskDeep();
         initTask.setPreprocessing(getPreprocessing());
         initTask.setOperativeViews(operativeViews);
         initTask.setType(initTask.getType() + "-" + experimentName);
@@ -164,8 +179,8 @@ public class ExperimentCrossValidation
                     numFolds = fileNames.length;
                 }
 
-                // is executed if we have less CAS than requested folds and manual mode is turned
-                // off
+                // is executed if we have less CAS than requested folds and
+                // manual mode is turned off
                 if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length,
                             featureMode);
@@ -242,82 +257,95 @@ public class ExperimentCrossValidation
             }
         };
 
-        // ================== SUBTASKS OF THE INNER BATCH TASK =======================
+        // ================== SUBTASKS OF THE INNER BATCH TASK
+        // =======================
 
         // collecting meta features only on the training data (numFolds times)
-        collectionTask = new OutcomeCollectionTask();
-        collectionTask.setType(collectionTask.getType() + "-" + experimentName);
-        collectionTask.setAttribute(TC_TASK_TYPE, TcTaskType.COLLECTION.toString());
-        collectionTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
+        // get some meta data depending on the whole document collection
+        preparationTask = new PreparationTask();
+        preparationTask.setType(preparationTask.getType() + "-" + experimentName);
+        preparationTask.setMachineLearningAdapter(mlAdapter);
+        preparationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
+                PreparationTask.INPUT_KEY_TRAIN);
+        preparationTask.setAttribute(TC_TASK_TYPE, TcTaskType.PREPARATION.toString());
 
-        metaTask = new MetaInfoTask();
-        metaTask.setOperativeViews(operativeViews);
-        metaTask.setType(metaTask.getType() + "-" + experimentName);
-        metaTask.setAttribute(TC_TASK_TYPE, TcTaskType.META.toString());
+        embeddingTask = new EmbeddingTask();
+        embeddingTask.setType(embeddingTask.getType() + "-" + experimentName);
+        embeddingTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
+                EmbeddingTask.INPUT_MAPPING);
+        embeddingTask.setAttribute(TC_TASK_TYPE, TcTaskType.EMBEDDING.toString());
 
-        // extracting features from training data (numFolds times)
-        extractFeaturesTrainTask = new ExtractFeaturesTask();
-        extractFeaturesTrainTask.setTesting(false);
-        extractFeaturesTrainTask
-                .setType(extractFeaturesTrainTask.getType() + "-Train-" + experimentName);
-        extractFeaturesTrainTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        extractFeaturesTrainTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
-                ExtractFeaturesTask.INPUT_KEY);
-        extractFeaturesTrainTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-        extractFeaturesTrainTask.setAttribute(TC_TASK_TYPE,
-                TcTaskType.FEATURE_EXTRACTION_TRAIN.toString());
+        // feature extraction on training data
+        vectorizationTrainTask = new VectorizationTask();
+        vectorizationTrainTask
+                .setType(vectorizationTrainTask.getType() + "-Train-" + experimentName);
+        vectorizationTrainTask.setTesting(false);
+        vectorizationTrainTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
+                VectorizationTask.MAPPING_INPUT_KEY);
+        vectorizationTrainTask.setAttribute(TC_TASK_TYPE,
+                TcTaskType.VECTORIZATION_TRAIN.toString());
 
-        // extracting features from test data (numFolds times)
-        extractFeaturesTestTask = new ExtractFeaturesTask();
-        extractFeaturesTestTask.setTesting(true);
-        extractFeaturesTestTask
-                .setType(extractFeaturesTestTask.getType() + "-Test-" + experimentName);
-        extractFeaturesTestTask.addImport(metaTask, MetaInfoTask.META_KEY);
-        extractFeaturesTestTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY);
-        extractFeaturesTestTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN,
-                ExtractFeaturesTask.INPUT_KEY);
-        extractFeaturesTestTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                ExtractFeaturesTask.COLLECTION_INPUT_KEY);
-        extractFeaturesTestTask.setAttribute(TC_TASK_TYPE,
-                TcTaskType.FEATURE_EXTRACTION_TEST.toString());
+        // feature extraction on test data
+        vectorizationTestTask = new VectorizationTask();
+        vectorizationTestTask.setType(vectorizationTestTask.getType() + "-Test-" + experimentName);
+        vectorizationTestTask.setTesting(true);
+        vectorizationTestTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
+                VectorizationTask.MAPPING_INPUT_KEY);
+        vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TEST.toString());
 
-        // test task operating on the models of the feature extraction train and test tasks
-        List<ReportBase> reports = new ArrayList<>();
-        reports.add(new BasicResultReport());
-
-        testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask,
-                collectionTask, reports, experimentName);
-        testTask.setType(testTask.getType() + "-" + experimentName);
-        testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
+        // test task operating on the models of the feature extraction train and
+        // test tasks
+        learningTask = mlAdapter.getTestTask();
+        learningTask.setType(learningTask.getType() + "-" + experimentName);
+        learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
-                testTask.addReport(report);
+                learningTask.addReport(report);
             }
         }
 
-        testTask.addImport(extractFeaturesTrainTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        testTask.addImport(extractFeaturesTestTask, ExtractFeaturesTask.OUTPUT_KEY,
-                TEST_TASK_INPUT_KEY_TEST_DATA);
-        testTask.addImport(collectionTask, OutcomeCollectionTask.OUTPUT_KEY,
-                Constants.OUTCOMES_INPUT_KEY);
+        // // always add OutcomeIdReport
+        learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
+        learningTask.addReport(mlAdapter.getMajorityBaselineIdReportClass());
+        learningTask.addReport(mlAdapter.getRandomBaselineIdReportClass());
+        learningTask.addReport(mlAdapter.getMetaCollectionReport());
+        learningTask.addReport(BasicResultReport.class);
+        learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.PREPARATION_FOLDER);
+        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
+                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        // ================== CONFIG OF THE INNER BATCH TASK =======================
+        learningTask.addImport(embeddingTask, EmbeddingTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.EMBEDDING_FOLDER);
+        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.VECTORIZIATION_TRAIN_OUTPUT);
+        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.TARGET_ID_MAPPING_TRAIN);
+
+        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT);
+        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
+                TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST);
+
+        // ================== CONFIG OF THE INNER BATCH TASK
+        // =======================
 
         crossValidationTask.addImport(initTask, InitTask.OUTPUT_KEY_TRAIN);
         crossValidationTask.setType(crossValidationTask.getType() + "-" + experimentName);
-        crossValidationTask.addTask(collectionTask);
-        crossValidationTask.addTask(metaTask);
-        crossValidationTask.addTask(extractFeaturesTrainTask);
-        crossValidationTask.addTask(extractFeaturesTestTask);
-        crossValidationTask.addTask(testTask);
+        crossValidationTask.addTask(preparationTask);
+        crossValidationTask.addTask(embeddingTask);
+        crossValidationTask.addTask(vectorizationTrainTask);
+        crossValidationTask.addTask(vectorizationTestTask);
+        crossValidationTask.addTask(learningTask);
         crossValidationTask.setExecutionPolicy(ExecutionPolicy.USE_EXISTING);
         // report of the inner batch task (sums up results for the folds)
-        // we want to re-use the old CV report, we need to collect the evaluation.bin files from
+        // we want to re-use the old CV report, we need to collect the
+        // evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(InnerReport.class);
+        crossValidationTask.addReport(DeepLearningInnerBatchReport.class);
         crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
         // DKPro Lab issue 38: must be added as *first* task

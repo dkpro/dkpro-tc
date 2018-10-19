@@ -16,7 +16,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.dkpro.tc.ml;
+package org.dkpro.tc.ml.experiment.dim;
 
 import java.util.ArrayList;
 import java.util.Collection;

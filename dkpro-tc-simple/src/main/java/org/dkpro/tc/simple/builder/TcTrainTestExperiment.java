@@ -25,10 +25,10 @@ import org.dkpro.lab.Lab;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
-import org.dkpro.tc.ml.builder.ExperimentBuilder;
-import org.dkpro.tc.ml.builder.ExperimentType;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 
 public class TcTrainTestExperiment
     extends SimpleBaseExperiment

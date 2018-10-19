@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml;
+package org.dkpro.tc.ml.experiment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,9 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
+import org.dkpro.tc.ml.FoldUtil;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.experiment.dim.LearningCurveDimBundleFixedTestSet;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 

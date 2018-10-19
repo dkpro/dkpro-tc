@@ -38,7 +38,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;

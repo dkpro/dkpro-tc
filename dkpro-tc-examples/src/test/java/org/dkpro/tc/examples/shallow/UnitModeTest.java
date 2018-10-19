@@ -44,7 +44,7 @@ import org.dkpro.tc.examples.shallow.annotators.UnitOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.RuntimeReport;

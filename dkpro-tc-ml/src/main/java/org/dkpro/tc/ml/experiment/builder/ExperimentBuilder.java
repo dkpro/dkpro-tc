@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.builder;
+package org.dkpro.tc.ml.experiment.builder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,12 +37,15 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.ExperimentCrossValidation;
-import org.dkpro.tc.ml.ExperimentLearningCurve;
-import org.dkpro.tc.ml.ExperimentLearningCurveTrainTest;
-import org.dkpro.tc.ml.ExperimentSaveModel;
-import org.dkpro.tc.ml.ExperimentTrainTest;
 import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation;
+import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
+import org.dkpro.tc.ml.experiment.ExperimentLearningCurveTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.LearningCurveReport;
 import org.dkpro.tc.ml.report.TrainTestReport;

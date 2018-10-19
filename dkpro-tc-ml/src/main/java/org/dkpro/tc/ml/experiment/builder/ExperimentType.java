@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.builder;
+package org.dkpro.tc.ml.experiment.builder;
 
 import org.dkpro.tc.core.Constants;
 

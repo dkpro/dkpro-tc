@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.builder;
+package org.dkpro.tc.ml.experiment.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +33,12 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.ExperimentLearningCurve;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
+import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

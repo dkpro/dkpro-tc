@@ -39,8 +39,8 @@ import org.dkpro.tc.examples.shallow.io.ReutersCorpusReader
 import org.dkpro.tc.examples.util.DemoUtils
 import org.dkpro.tc.features.ngram.WordNGram
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument
-import org.dkpro.tc.ml.ExperimentCrossValidation
-import org.dkpro.tc.ml.ExperimentTrainTest
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter
 import org.dkpro.tc.ml.report.CrossValidationReport
 import org.dkpro.tc.ml.report.TrainTestReport

@@ -55,7 +55,7 @@ import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
 import org.dkpro.tc.io.FolderwiseDataReader;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
-import org.dkpro.tc.ml.ExperimentSaveModel;
+import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderDocumentMode;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderUnitMode;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;

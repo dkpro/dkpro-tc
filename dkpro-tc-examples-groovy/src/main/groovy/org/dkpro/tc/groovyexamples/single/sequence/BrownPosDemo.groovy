@@ -36,8 +36,8 @@ import org.dkpro.tc.examples.util.DemoUtils
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.ml.ExperimentCrossValidation
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter
+import org.dkpro.tc.ml.experiment.ExperimentCrossValidation
 import org.dkpro.tc.ml.report.CrossValidationReport
 /**
  * This a Groovy experiment setup of POS tagging as sequence tagging.

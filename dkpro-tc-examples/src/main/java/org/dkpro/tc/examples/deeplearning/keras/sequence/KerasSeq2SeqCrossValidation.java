@@ -37,7 +37,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.DeepLearningExperimentCrossValidation;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.CrossValidationReport;
 

@@ -45,7 +45,7 @@ import org.dkpro.tc.examples.shallow.io.PairTwentyNewsgroupsReader;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.features.pair.core.length.DiffNrOfTokensPairFeatureExtractor;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
-import org.dkpro.tc.ml.ExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.ExperimentTrainTest;
 import org.dkpro.tc.ml.report.TrainTestReport;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Test;

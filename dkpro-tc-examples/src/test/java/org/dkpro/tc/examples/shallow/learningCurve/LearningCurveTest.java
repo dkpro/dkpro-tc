@@ -39,8 +39,8 @@ import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
-import org.dkpro.tc.ml.ExperimentLearningCurve;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
+import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
 import org.dkpro.tc.ml.report.LearningCurveReport;
 import org.junit.Test;
 
