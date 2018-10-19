@@ -39,7 +39,7 @@ import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
-import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
+import org.dkpro.tc.ml.experiment.ExperimentLearningCurveTrainTest;
 import org.dkpro.tc.ml.report.LearningCurveReport;
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 /**
  * This test just ensures that the experiment runs without throwing any exception.
  */
-public class LearningCurveTest
+public class LearningCurveFixedTestSetTest
     extends TestCaseSuperClass implements Constants
 {
     public static final String corpusFilePath = "src/main/resources/data/brown_tei/";
@@ -65,10 +65,16 @@ public class LearningCurveTest
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
                 TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TeiReader.PARAM_PATTERNS, "*.xml");
+                TeiReader.PARAM_PATTERNS, "e24.xml");
+        
+        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
+                TeiReader.PARAM_PATTERNS, "a*.xml");
 
         Map<String, Object> dimReaders = new HashMap<String, Object>();
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
+        dimReaders.put(DIM_READER_TEST, readerTest);
 
         Map<String, Object> crfsuite = new HashMap<>();
         crfsuite.put(DIM_CLASSIFICATION_ARGS, new Object[] { new CrfSuiteAdapter(),
@@ -92,8 +98,8 @@ public class LearningCurveTest
                 Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                 Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE), dimFeatureSets, mlas);
         
-        ExperimentLearningCurve experiment = new ExperimentLearningCurve(
-                "NamedEntitySequenceDemoTrainTest", NUM_FOLDS, 2);
+        ExperimentLearningCurveTrainTest experiment = new ExperimentLearningCurveTrainTest(
+                "LearningCurveFixedTest", NUM_FOLDS, 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(pSpace);
         experiment.addReport(new LearningCurveReport());
