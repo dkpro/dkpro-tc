@@ -64,7 +64,7 @@ public class WekaManualFoldCrossValidationTest
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "de",
                 TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, "*.xml");
+                TeiReader.PARAM_PATTERNS, "a*.xml");
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
