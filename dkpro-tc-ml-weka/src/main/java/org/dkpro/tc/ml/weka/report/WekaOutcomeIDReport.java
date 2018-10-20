@@ -234,7 +234,7 @@ public class WekaOutcomeIDReport
         return gold;
     }
 
-    private String assignKeyFromMetaData(String key, boolean isUnit2, Map<Integer, MetaData> documentIdMap,
+    private String assignKeyFromMetaData(String key, boolean isUnit, Map<Integer, MetaData> documentIdMap,
             int mapIdx)
     {
         if (documentIdMap == null) {
@@ -248,9 +248,6 @@ public class WekaOutcomeIDReport
             else {
                 key = metaData.id;
             }
-        }
-        else {
-            key = metaData.id;
         }
 
         return key;
@@ -326,6 +323,11 @@ public class WekaOutcomeIDReport
             this.id = id;
             this.title = title;
             
+        }
+        
+        @Override
+        public String toString() {
+            return "[" + id + "] = [" + title + "]";
         }
     }
 }
