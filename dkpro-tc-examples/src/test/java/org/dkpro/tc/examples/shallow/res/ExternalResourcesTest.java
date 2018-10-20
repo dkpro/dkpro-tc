@@ -85,8 +85,8 @@ public class ExternalResourcesTest
                 lines.get(1));
         // 2nd line time stamp
 
-        assertTrue(lines.get(3).matches("alt.atheism/51120.txt_alt.atheism/49960.txt=1;1;-1"));
-        assertTrue(lines.get(4).matches("alt.atheism/51120.txt_alt.atheism/51060.txt=1;1;-1"));
+        assertTrue(lines.get(3).matches("src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/49960.txt=1;1;-1"));
+        assertTrue(lines.get(4).matches("src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51060.txt=1;1;-1"));
         
         
     }
