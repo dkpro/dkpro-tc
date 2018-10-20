@@ -94,7 +94,7 @@ public class WekaOutcomeIDReport
             content = generateMlProperties(predictions, labels, r);
         }
         else {
-            Map<Integer, String> documentIdMap = loadDocumentMap();
+            Map<Integer, MetaData> documentIdMap = loadDocumentMap();
             content = generateSlProperties(predictions, isRegression, isUnit, documentIdMap, labels);
         }
 
@@ -172,7 +172,7 @@ public class WekaOutcomeIDReport
     }
 
     protected String generateSlProperties(Instances predictions, boolean isRegression,
-            boolean isUnit, Map<Integer, String> documentIdMap, List<String> labels)
+            boolean isUnit, Map<Integer, MetaData> documentIdMap, List<String> labels)
         throws Exception
     {
 
@@ -187,48 +187,79 @@ public class WekaOutcomeIDReport
         prepareBaseline();
 
         StringBuilder sb = new StringBuilder();
-        
+
         int idx = 0;
         for (Instance inst : predictions) {
-            Double gold;
-            try {
-                gold = new Double(inst.value(predictions
-                        .attribute(CLASS_ATTRIBUTE_NAME + WekaOutcomeHarmonizer.COMPATIBLE_OUTCOME_CLASS)));
-            }
-            catch (NullPointerException e) {
-                // if train and test data have not been balanced
-                gold = new Double(inst.value(predictions.attribute(CLASS_ATTRIBUTE_NAME)));
-            }
+            Double gold = getGold(inst, predictions);
+           
             Attribute gsAtt = predictions.attribute(WekaTestTask.PREDICTION_CLASS_LABEL_NAME);
             Double prediction = new Double(inst.value(gsAtt));
-            if (!isRegression) {
-                Map<String, Integer> class2number = classNamesToMapping(labels);
-                // Integer predictionAsNumber = class2number
-                // .get(gsAtt.value(prediction.intValue()));
-                Integer goldAsNumber = class2number.get(classValues[gold.intValue()]);
 
-                String key = inst.stringValue(attOffset);
-                if (!isUnit && documentIdMap != null) {
-                    key = documentIdMap.get(idx++);
-                }
-                sb.append(key + "=" + getPrediction(prediction, class2number, gsAtt) + SEPARATOR_CHAR + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1) + "\n");
+            String key = inst.stringValue(attOffset);
+            if (!isRegression) {
+                String goldAsNumber = getIntValueOfGoldLabel(classValues, labels, gold);
+                String predicitonAsNumber = getPrediction(prediction, labels, gsAtt);
+                key = assignKeyFromMetaData(key, isUnit, documentIdMap, idx++);
+                
+                sb.append(
+                        key + "=" + predicitonAsNumber + SEPARATOR_CHAR
+                                + goldAsNumber + SEPARATOR_CHAR + String.valueOf(-1) + "\n");
             }
             else {
-                // the outcome is numeric
-                String key = inst.stringValue(attOffset);
-                if (documentIdMap != null) {
-                    key = documentIdMap.get(idx++);
-                }
-                sb.append(key + "=" + prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "-1" + "\n");
+                sb.append(key + "=" + prediction + SEPARATOR_CHAR + gold + SEPARATOR_CHAR + "-1"
+                        + "\n");
             }
         }
         return sb.toString();
     }
 
-    protected String getPrediction(Double prediction, Map<String, Integer> class2number,
+    private String getIntValueOfGoldLabel(String[] classValues, List<String> labels, Double gold)
+    {
+        Map<String, Integer> class2number = classNamesToMapping(labels);
+        return class2number.get(classValues[gold.intValue()]).toString();
+    }
+
+    private Double getGold(Instance inst, Instances predictions)
+    {
+        Double gold;
+        try {
+            gold = new Double(inst.value(predictions.attribute(
+                    CLASS_ATTRIBUTE_NAME + WekaOutcomeHarmonizer.COMPATIBLE_OUTCOME_CLASS)));
+        }
+        catch (NullPointerException e) {
+            // if train and test data have not been balanced
+            gold = new Double(inst.value(predictions.attribute(CLASS_ATTRIBUTE_NAME)));
+        }
+        
+        return gold;
+    }
+
+    private String assignKeyFromMetaData(String key, boolean isUnit2, Map<Integer, MetaData> documentIdMap,
+            int mapIdx)
+    {
+        if (documentIdMap == null) {
+            return key;
+        }
+        MetaData metaData = documentIdMap.get(mapIdx);
+        if (!isUnit) {
+            if (metaData.title != null && !metaData.title.isEmpty()) {
+                key = metaData.title;
+            }
+            else {
+                key = metaData.id;
+            }
+        }
+        else {
+            key = metaData.id;
+        }
+
+        return key;
+    }
+
+    protected String getPrediction(Double prediction, List<String> labels,
             Attribute gsAtt)
     {
-        // is overwritten in baseline reports
+        Map<String, Integer> class2number = classNamesToMapping(labels);
         return class2number.get(gsAtt.value(prediction.intValue())).toString();
     }
 
@@ -237,7 +268,7 @@ public class WekaOutcomeIDReport
         // is overwritten in baseline reports
     }
 
-    private static Map<String, Integer> classNamesToMapping(List<String> labels)
+    protected static Map<String, Integer> classNamesToMapping(List<String> labels)
     {
         Map<String, Integer> mapping = new HashMap<String, Integer>();
         for (int i = 0; i < labels.size(); i++) {
@@ -246,10 +277,10 @@ public class WekaOutcomeIDReport
         return mapping;
     }
 
-    private Map<Integer, String> loadDocumentMap() throws IOException
+    private Map<Integer, MetaData> loadDocumentMap() throws IOException
     {
 
-        Map<Integer, String> documentIdMap = new HashMap<>();
+        Map<Integer, MetaData> documentIdMap = new HashMap<>();
 
         File f = new File(
                 getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
@@ -262,7 +293,8 @@ public class WekaOutcomeIDReport
                 continue;
             }
             String[] split = l.split("\t");
-            documentIdMap.put(idx, split[0]);
+            MetaData md = new MetaData(split[0], split[1]);
+            documentIdMap.put(idx, md);
             idx++;
         }
 
@@ -284,5 +316,16 @@ public class WekaOutcomeIDReport
         String pathToArff = path + "/" + entry;
 
         return new File(pathToArff);
+    }
+    
+    class MetaData{
+        String id;
+        String title;
+
+        public MetaData(String id, String title) {
+            this.id = id;
+            this.title = title;
+            
+        }
     }
 }

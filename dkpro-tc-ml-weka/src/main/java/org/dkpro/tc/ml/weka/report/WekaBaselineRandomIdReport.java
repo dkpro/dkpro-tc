@@ -63,9 +63,10 @@ public class WekaBaselineRandomIdReport
     }
 
     @Override
-    protected String getPrediction(Double prediction, Map<String, Integer> class2number,
+    protected String getPrediction(Double prediction, List<String> labels,
             Attribute gsAtt)
     {
+        Map<String, Integer> class2number = classNamesToMapping(labels);
         Integer idx = random.nextInt(pool.size());
         return class2number.get(pool.get(idx)).toString();
     }

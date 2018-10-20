@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -58,10 +59,11 @@ public class WekaBaselineMajorityClassIdReport
     }
 
     @Override
-    protected String getPrediction(Double prediction, Map<String, Integer> class2number,
+    protected String getPrediction(Double prediction, List<String> labels,
             Attribute gsAtt)
     {
         // is overwritten in baseline reports
+        Map<String, Integer> class2number = classNamesToMapping(labels);
         return class2number.get(majorityClass).toString();
     }
 
