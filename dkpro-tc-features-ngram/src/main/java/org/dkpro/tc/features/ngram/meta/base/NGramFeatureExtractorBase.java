@@ -50,10 +50,6 @@ public abstract class NGramFeatureExtractorBase
     @ConfigurationParameter(name = PARAM_NGRAM_USE_TOP_K, mandatory = true, defaultValue = "500")
     protected int ngramUseTopK;
 
-    public static final String PARAM_TF_IDF_CALCULATION = "tfIdfCalculation";
-    @ConfigurationParameter(name = PARAM_TF_IDF_CALCULATION, mandatory = true, defaultValue = "false")
-    protected boolean tfIdfCalculation;
-
     public static final String PARAM_NGRAM_STOPWORDS_FILE = "ngramStopwordsFile";
     @ConfigurationParameter(name = PARAM_NGRAM_STOPWORDS_FILE, mandatory = false)
     protected String ngramStopwordsFile;
@@ -61,10 +57,6 @@ public abstract class NGramFeatureExtractorBase
     public static final String PARAM_FILTER_PARTIAL_STOPWORD_MATCHES = "filterPartialStopwordMatches";
     @ConfigurationParameter(name = PARAM_FILTER_PARTIAL_STOPWORD_MATCHES, mandatory = true, defaultValue = "false")
     protected boolean filterPartialStopwordMatches;
-
-    public static final String PARAM_NGRAM_FREQ_THRESHOLD = "ngramFreqThreshold";
-    @ConfigurationParameter(name = PARAM_NGRAM_FREQ_THRESHOLD, mandatory = true, defaultValue = "0.0")
-    protected float ngramFreqThreshold;
 
     public static final String PARAM_NGRAM_LOWER_CASE = "ngramLowerCase";
     @ConfigurationParameter(name = PARAM_NGRAM_LOWER_CASE, mandatory = true, defaultValue = "true")

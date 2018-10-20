@@ -48,12 +48,11 @@ public abstract class LuceneFeatureExtractorBase
 
     public static final String LUCENE_NGRAM_FIELD = "ngram";
 
-    private MinMaxPriorityQueue<TermFreqTuple> topN;
-    private long maxNgramSum = 0;
+    protected MinMaxPriorityQueue<TermFreqTuple> topN;
 
     protected boolean forceRereadFromIndex = false; // hack for pair-mode
 
-    private FrequencyDistribution<String> topNGrams = null;
+    protected FrequencyDistribution<String> topNGrams = null;
 
     @Override
     protected FrequencyDistribution<String> getTopNgrams() throws ResourceInitializationException
@@ -62,7 +61,6 @@ public abstract class LuceneFeatureExtractorBase
             return topNGrams;
         }
 
-        maxNgramSum = 0;
         topN = readIndex();
 
         topNGrams = new FrequencyDistribution<String>();
@@ -70,12 +68,7 @@ public abstract class LuceneFeatureExtractorBase
         int size = topN.size();
         for (int i = 0; i < size; i++) {
             TermFreqTuple tuple = topN.poll();
-            long absCount = tuple.getFreq();
-            double relFrequency = ((double) absCount) / maxNgramSum;
-
-            if (relFrequency >= ngramFreqThreshold) {
-                topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
-            }
+            topNGrams.addSample(tuple.getTerm(), tuple.getFreq());
         }
 
         logSelectionProcess(topNGrams.getB());
@@ -83,7 +76,7 @@ public abstract class LuceneFeatureExtractorBase
         return topNGrams;
     }
 
-    private MinMaxPriorityQueue<TermFreqTuple> readIndex() throws ResourceInitializationException
+    protected MinMaxPriorityQueue<TermFreqTuple> readIndex() throws ResourceInitializationException
     {
         MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN())
                 .create();
@@ -108,7 +101,6 @@ public abstract class LuceneFeatureExtractorBase
                 long freq = termsEnum.totalTermFreq();
                 if (passesScreening(term)) {
                     topN.add(new TermFreqTuple(term, freq));
-                    maxNgramSum += freq;
                 }
             }
             reader.close();

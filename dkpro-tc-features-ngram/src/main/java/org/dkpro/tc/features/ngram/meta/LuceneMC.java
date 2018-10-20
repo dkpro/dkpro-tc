@@ -51,7 +51,7 @@ public abstract class LuceneMC
 
     public static final String PARAM_TARGET_LOCATION = ComponentParameters.PARAM_TARGET_LOCATION;
     @ConfigurationParameter(name = PARAM_TARGET_LOCATION, mandatory = true)
-    private File luceneDir;
+    protected File luceneDir;
 
     // this is a static singleton as different Lucene-based meta collectors will
     // use the same writer
@@ -83,7 +83,7 @@ public abstract class LuceneMC
         activeWriter.incrementAndGet();
     }
 
-    private synchronized void initializeWriter() throws ResourceInitializationException
+    protected synchronized void initializeWriter() throws ResourceInitializationException
     {
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_44, null);
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -102,7 +102,7 @@ public abstract class LuceneMC
         }
     }
 
-    private void initDocument()
+    protected void initDocument()
     {
         currentDocument = new Document();
         currentDocument.add(new StringField(LUCENE_ID_FIELD,
@@ -140,7 +140,7 @@ public abstract class LuceneMC
     // one CAS, we write one fat document which might require unreasonable much
     // memory. This attempts to keep the index in a constant range of 'costs' that
     // is independent of the number of actually processed CAS objects.
-    private void documentSizeControll() throws IOException
+    protected void documentSizeControll() throws IOException
     {
         entryCounter++;
         if (entryCounter > 10000) {
