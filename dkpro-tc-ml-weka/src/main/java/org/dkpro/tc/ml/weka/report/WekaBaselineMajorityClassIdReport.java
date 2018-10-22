@@ -91,8 +91,8 @@ public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 				if (line.isEmpty() || line.startsWith("@")) {
 					if (line.startsWith("@attribute")) {
 						attributeCounter++;
+						outcomesLine=line;
 					}
-					outcomesLine=line;
 					continue;
 				}
 				
