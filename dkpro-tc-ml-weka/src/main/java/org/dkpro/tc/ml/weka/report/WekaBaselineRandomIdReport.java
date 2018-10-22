@@ -23,10 +23,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -36,93 +39,131 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaBaselineRandomIdReport
-    extends WekaOutcomeIDReport
-{
+public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 
-    private Random random = new Random(42);
+	private static final String X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME = "x-undefined";
 
-    private List<String> pool = new ArrayList<>();
+	private Random random = new Random(42);
 
-    public WekaBaselineRandomIdReport()
-    {
-        // required by groovy
-    }
+	private List<String> pool = new ArrayList<>();
 
-    @Override
-    public void execute() throws Exception
-    {
+	public WekaBaselineRandomIdReport() {
+		// required by groovy
+	}
 
-        init();
+	@Override
+	public void execute() throws Exception {
 
-        if (isRegression) {
-            return;
-        }
+		init();
 
-        super.execute();
-    }
+		if (isRegression) {
+			return;
+		}
 
-    @Override
-    protected String getPrediction(Double prediction, List<String> labels,
-            Attribute gsAtt)
-    {
-        Map<String, Integer> class2number = classNamesToMapping(labels);
-        Integer idx = random.nextInt(pool.size());
-        return class2number.get(pool.get(idx)).toString();
-    }
+		super.execute();
+	}
 
-    @Override
-    protected void prepareBaseline() throws Exception
-    {
-        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        buildPool(file);
-    }
+	@Override
+	protected String getPrediction(Double prediction, List<String> labels, Attribute gsAtt) {
+		Map<String, Integer> class2number = classNamesToMapping(labels);
+		Integer idx = random.nextInt(pool.size());
+		return class2number.get(pool.get(idx)).toString();
+	}
 
-    @Override
-    protected File getTargetOutputFile()
-    {
-        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-        return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
-    }
+	@Override
+	protected void prepareBaseline() throws Exception {
+		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		buildPool(file);
+	}
 
-    private void buildPool(File file) throws Exception
-    {
+	@Override
+	protected File getTargetOutputFile() {
+		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+		return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
+	}
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+	private void buildPool(File file) throws Exception {
 
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                if (line.isEmpty() || line.startsWith("@")) {
-                    continue;
-                }
+		Set<String> outcomes = new HashSet<>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-                String[] split = line.split(",");
+			String line = null;
+			boolean isSparseMode = false;
+			Integer attributeCounter = -1;
+			String outcomesLine = "";
+			while ((line = reader.readLine()) != null) {
+				if (line.isEmpty() || line.startsWith("@")) {
+					if (line.startsWith("@attribute")) {
+						attributeCounter++;
+						outcomesLine=line;
+					}
+					continue;
+				}
+				
+				if(outcomesLine!=null) {
+					String tmp = outcomesLine.replaceAll(".*\\{", "");
+					tmp = tmp.replaceAll("\\}", "");
+					String[] split = tmp.split(",");
+					outcomes.addAll(Arrays.asList(split));
+				}
 
-                String v = split[split.length - 1];
-                if (hasInstanceWeighting(v)) {
-                    v = split[split.length - 2];
-                }
+				if (line.contains("{")) {
+					line = line.replaceAll("\\{", "");
+					line = line.replaceAll("\\}", "");
+					isSparseMode = true;
+				}
 
-                if (!pool.contains(v)) {
-                    pool.add(v);
-                }
-            }
+				String[] split = line.split(",");
 
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
-        }
+				String v = split[split.length - 1];
+				if (!isSparseMode) {
+					if (hasInstanceWeighting(v)) {
+						v = split[split.length - 2];
+					}
+				} else {
+					String[] outcomeField = v.split(" ");
+					if (attributeCounter.toString().equals(outcomeField[0])) {
+						v = outcomeField[1];
+					} else {
+						// if the label is mapped to the value zero it is omitted by Weka policy in the
+						// .arff in sparse feature mode.
+						// its not a missing value, just zero values are not explicitly shown anymore.
+						// Thus, the outcome will not be listed in sparse mode if it is zero!
+						v = X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME;
+					}
+				}
 
-        Collections.shuffle(pool);
-    }
+				if (!pool.contains(v)) {
+					pool.add(v);
+				}
+			}
 
-    private boolean hasInstanceWeighting(String v)
-    {
-        return v.startsWith("{") && v.endsWith("}");
-    }
+		} finally {
+			IOUtils.closeQuietly(reader);
+		}
+		
+		List<String> restoredZeroLabel = new ArrayList<>();
+		for(String s : pool) {
+			if (outcomes.contains(s)) {
+				restoredZeroLabel.add(s);
+				outcomes.remove(s);
+			}
+		}
+		if(outcomes.size()==1) {
+			//there should only be the zero-valued remaining now - add this label to the pool
+			pool.addAll(outcomes);
+			pool.remove(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME);
+		}
+		
+
+ 		Collections.shuffle(pool);
+	}
+
+	private boolean hasInstanceWeighting(String v) {
+		return v.startsWith("{") && v.endsWith("}");
+	}
 
 }

@@ -22,8 +22,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -34,91 +38,126 @@ import weka.core.Attribute;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
-public class WekaBaselineMajorityClassIdReport
-    extends WekaOutcomeIDReport
-{
+public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 
-    private String majorityClass;
+	private static final String X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME = "x-undefined";
+	private String majorityClass;
 
-    public WekaBaselineMajorityClassIdReport()
-    {
-        // required by groovy
-    }
+	public WekaBaselineMajorityClassIdReport() {
+		// required by groovy
+	}
 
-    @Override
-    public void execute() throws Exception
-    {
+	@Override
+	public void execute() throws Exception {
 
-        init();
+		init();
 
-        if (isRegression) {
-            return;
-        }
+		if (isRegression) {
+			return;
+		}
 
-        super.execute();
-    }
+		super.execute();
+	}
 
-    @Override
-    protected String getPrediction(Double prediction, List<String> labels,
-            Attribute gsAtt)
-    {
-        // is overwritten in baseline reports
-        Map<String, Integer> class2number = classNamesToMapping(labels);
-        return class2number.get(majorityClass).toString();
-    }
+	@Override
+	protected String getPrediction(Double prediction, List<String> labels, Attribute gsAtt) {
+		// is overwritten in baseline reports
+		Map<String, Integer> class2number = classNamesToMapping(labels);
+		return class2number.get(majorityClass).toString();
+	}
 
-    @Override
-    protected void prepareBaseline() throws Exception
-    {
-        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
-                AccessMode.READONLY);
-        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        determineMajorityClass(file);
-    }
+	@Override
+	protected void prepareBaseline() throws Exception {
+		File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
+		File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+		determineMajorityClass(file);
+	}
 
-    @Override
-    protected File getTargetOutputFile()
-    {
-        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-        return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
-    }
+	@Override
+	protected File getTargetOutputFile() {
+		File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+		return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
+	}
 
-    private void determineMajorityClass(File file) throws Exception
-    {
+	private void determineMajorityClass(File file) throws Exception {
 
-        FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
+		Set<String> outcomes = new HashSet<>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+			String line = null;
+			boolean isSparseMode = false;
+			Integer attributeCounter = -1;
+			String outcomesLine = "";
+			while ((line = reader.readLine()) != null) {
+				if (line.isEmpty() || line.startsWith("@")) {
+					if (line.startsWith("@attribute")) {
+						attributeCounter++;
+					}
+					outcomesLine=line;
+					continue;
+				}
+				
+				if(outcomesLine!=null) {
+					String tmp = outcomesLine.replaceAll(".*\\{", "");
+					tmp = tmp.replaceAll("\\}", "");
+					String[] split = tmp.split(",");
+					outcomes.addAll(Arrays.asList(split));
+				}
 
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                if (line.isEmpty() || line.startsWith("@")) {
-                    continue;
-                }
+				if (line.contains("{")) {
+					line = line.replaceAll("\\{", "");
+					line = line.replaceAll("\\}", "");
+					isSparseMode = true;
+				}
 
-                String[] split = line.split(",");
+				String[] split = line.split(",");
 
-                String v = split[split.length - 1];
-                if (hasInstanceWeighting(v)) {
-                    v = split[split.length - 2];
-                }
+				String v = split[split.length - 1];
+				if (!isSparseMode) {
+					if (hasInstanceWeighting(v)) {
+						v = split[split.length - 2];
+					}
+				} else {
+					String[] outcomeField = v.split(" ");
 
-                fd.addSample(v, 1);
-            }
+					if (attributeCounter.toString().equals(outcomeField[0])) {
+						v = outcomeField[1];
+					} else {
+						// if the label is mapped to the value zero it is omitted by Weka policy in the
+						// .arff in sparse feature mode.
+						// its not a missing value, just zero values are not explizitly shown anymore.
+						// Thus, the outcome will not be listed in sparse mode if it is zero!
+						v = X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME;
+					}
+				}
 
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
-        }
+				fd.addSample(v, 1);
+			}
 
-        majorityClass = fd.getSampleWithMaxFreq();
-    }
+		} finally {
+			IOUtils.closeQuietly(reader);
+		}
+		
+		//drain the pool to determine the name of the label at position 0
+		for(String s : fd.getKeys()) {
+			if (!outcomes.contains(s)) {
+				outcomes.remove(s);
+			}
+		}
+		
+		majorityClass = fd.getSampleWithMaxFreq();
+		
+		//if the zero-label is the most frequent one assigned the restored label
+		if (outcomes.size() == 1 && majorityClass.equals(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME)) {
+				majorityClass = new ArrayList<String>(outcomes).get(0);
+		}
+	}
 
-    private boolean hasInstanceWeighting(String v)
-    {
-        return v.startsWith("{") && v.endsWith("}");
-    }
+	private boolean hasInstanceWeighting(String v) {
+		return v.startsWith("{") && v.endsWith("}");
+	}
 
 }

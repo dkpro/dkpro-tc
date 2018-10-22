@@ -97,7 +97,7 @@ public class WekaAdapter
     @Override
     public boolean useSparseFeatures()
     {
-        return false;
+        return true;
     }
 
     @Override
