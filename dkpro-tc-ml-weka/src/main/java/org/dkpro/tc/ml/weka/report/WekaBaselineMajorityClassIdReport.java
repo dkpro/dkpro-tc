@@ -125,7 +125,7 @@ public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 					} else {
 						// if the label is mapped to the value zero it is omitted by Weka policy in the
 						// .arff in sparse feature mode.
-						// its not a missing value, just zero values are not explizitly shown anymore.
+						// its not a missing value, just zero values are not explicitly shown anymore.
 						// Thus, the outcome will not be listed in sparse mode if it is zero!
 						v = X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME;
 					}
