@@ -22,12 +22,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -82,7 +78,7 @@ public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 	private void determineMajorityClass(File file) throws Exception {
 
 		FrequencyDistribution<String> fd = new FrequencyDistribution<>();
-		Set<String> outcomes = new HashSet<>();
+		String zeroOutcome = "x-init";
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
@@ -100,11 +96,12 @@ public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 					continue;
 				}
 				
-				if(outcomesLine!=null) {
+				if (outcomesLine != null) {
 					String tmp = outcomesLine.replaceAll(".*\\{", "");
 					tmp = tmp.replaceAll("\\}", "");
 					String[] split = tmp.split(",");
-					outcomes.addAll(Arrays.asList(split));
+					zeroOutcome = split[0];
+					outcomesLine = null;
 				}
 
 				if (line.contains("{")) {
@@ -141,18 +138,11 @@ public class WekaBaselineMajorityClassIdReport extends WekaOutcomeIDReport {
 			IOUtils.closeQuietly(reader);
 		}
 		
-		//drain the pool to determine the name of the label at position 0
-		for(String s : fd.getKeys()) {
-			if (!outcomes.contains(s)) {
-				outcomes.remove(s);
-			}
-		}
-		
 		majorityClass = fd.getSampleWithMaxFreq();
-		
-		//if the zero-label is the most frequent one assigned the restored label
-		if (outcomes.size() == 1 && majorityClass.equals(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME)) {
-				majorityClass = new ArrayList<String>(outcomes).get(0);
+
+		// if the zero-label is the most frequent one assigned the restored label
+		if (majorityClass.equals(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME)) {
+			majorityClass = zeroOutcome;
 		}
 	}
 

@@ -23,13 +23,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -85,7 +82,7 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 
 	private void buildPool(File file) throws Exception {
 
-		Set<String> outcomes = new HashSet<>();
+		String zeroOutcome="x-init";
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
@@ -103,11 +100,12 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 					continue;
 				}
 				
-				if(outcomesLine!=null) {
+				if (outcomesLine != null) {
 					String tmp = outcomesLine.replaceAll(".*\\{", "");
 					tmp = tmp.replaceAll("\\}", "");
 					String[] split = tmp.split(",");
-					outcomes.addAll(Arrays.asList(split));
+					zeroOutcome = split[0];
+					outcomesLine = null;
 				}
 
 				if (line.contains("{")) {
@@ -145,17 +143,9 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 			IOUtils.closeQuietly(reader);
 		}
 		
-		List<String> restoredZeroLabel = new ArrayList<>();
-		for(String s : pool) {
-			if (outcomes.contains(s)) {
-				restoredZeroLabel.add(s);
-				outcomes.remove(s);
-			}
-		}
-		if(outcomes.size()==1) {
-			//there should only be the zero-valued remaining now - add this label to the pool
-			pool.addAll(outcomes);
-			pool.remove(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME);
+		pool.remove(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME);
+		if (!pool.contains(zeroOutcome)) {
+			pool.add(zeroOutcome);
 		}
 		
 
