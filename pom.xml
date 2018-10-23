@@ -110,6 +110,7 @@
     <module>dkpro-tc-ml-liblinear</module>
     <module>dkpro-tc-ml-libsvm</module>
     <module>dkpro-tc-ml-svmhmm</module>
+    <module>dkpro-tc-ml-vowpalwabbit</module>
     <module>dkpro-tc-ml-weka</module>
     <module>dkpro-tc-ml-xgboost</module>
     <module>dkpro-tc-simple</module>
