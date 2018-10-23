@@ -56,18 +56,21 @@
 				src="target/download/vowpalwabbit-8.6.1.osx-x86_64.tar"
 				dest="target/download/osx-x86_64">
 			<patternset>
-				<include name="*/vw" />
+				<include name="*/*" />
 				<include name="*/.libs/*" />
 			</patternset>
 		</untar>
 
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/vw"/>
+		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw.la" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw.la"/>
+		
+		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/liballreduce.la" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/liballreduce.la"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/liballreduce.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/liballreduce.0.dylib"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/liballreduce.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/liballreduce.a"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/libvw_c_wrapper.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/libvw_c_wrapper.0.dylib"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/libvw_c_wrapper.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/libvw_c_wrapper.a"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/libvw.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/libvw.0.dylib"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/libvw.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/libvw.a"/>								
+		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/libvw.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/libvw.a"/>
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/.libs/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/.libs/vw"/>								
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/README">

@@ -10,7 +10,17 @@ public class TestDummy {
 	static RuntimeProvider runtimeProvider = null;
 	public static void main(String[] args) throws Exception {
 		runtimeProvider = new RuntimeProvider(classpath);
-		File file = runtimeProvider.getFile("vw");
+		File file = null;
+		
+		try{
+		    file = runtimeProvider.getFile("vw");
+		}catch(Exception e) {
+		    System.out.println(e.getMessage());
+		    int a=0;
+		    a++;
+		}
+		
+		
 		
 		System.out.println(file.getAbsolutePath());
 	}
