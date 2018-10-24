@@ -61,19 +61,7 @@
 			</patternset>
 		</untar>
 
-		<!-- the top-level vw script file is customized to look in the local directory for the libraries - i.e. removed aboslute paths to the installation folder -->
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/vw"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/vw_exec" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/vw_exec"/>
-		
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw.la" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw.la"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/liballreduce.la" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/liballreduce.la"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/liballreduce.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/liballreduce.0.dylib"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/liballreduce.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/liballreduce.a"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw_c_wrapper.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw_c_wrapper.0.dylib"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw_c_wrapper.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw_c_wrapper.a"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw.0.dylib" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw.0.dylib"/>
-		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/libvw.a" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/libvw.a"/>
-		<!-- this file resides under the name "vw" in the .libs folder, it is just renamed in order to place all files top-level in the .jar otherwise we would get a name conflict-->
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/README">
 			VowpalWabbit 8.6.1
@@ -82,16 +70,6 @@
 		<propertyfile
 		    file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/manifest.properties">
 			<entry  key="vw" value="executable"/>
-			<entry  key="vw_exec" value="executable"/>
-			<!-- libs -->
-			<entry  key="libvw.la" value=""/>
-			<entry  key="liballreduce.la" value=""/>
-			<entry  key="liballreduce.0.dylib" value=""/>
-			<entry  key="liballreduce.a" value=""/>
-			<entry  key="libvw_c_wrapper.0.dylib" value=""/>
-			<entry  key="libvw_c_wrapper.a" value=""/>	
-			<entry  key="libvw.0.dylib" value=""/>	
-			<entry  key="libvw.a" value=""/>	
 		</propertyfile>
 
 		<jar 
