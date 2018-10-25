@@ -15,31 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.vowpalwabbit;
+package org.dkpro.tc.ml.vowpalwabbit.core;
 
-import java.io.File;
+public enum VowpalWabbitAlgo 
+{
+    
+    L2SGD("l2sgd"); // Stochastic Gradient Descent 
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+    private String name;
 
-public class TestDummy {
-	
-	private static final String classpath = "classpath:/org/dkpro/tc/ml/vowpalwabbit/";
-	static RuntimeProvider runtimeProvider = null;
-	public static void main(String[] args) throws Exception {
-		runtimeProvider = new RuntimeProvider(classpath);
-		File file = null;
-		
-		try{
-		    file = runtimeProvider.getFile("vw");
-		}catch(Exception e) {
-		    System.out.println(e.getMessage());
-		    int a=0;
-		    a++;
-		}
-		
-		
-		
-		System.out.println(file.getAbsolutePath());
-	}
+    private VowpalWabbitAlgo(String name){this.name = name;}
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -15,31 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.vowpalwabbit;
+package org.dkpro.tc.ml.vowpalwabbit.report;
 
-import java.io.File;
+/**
+ * Writes a instanceId / outcome data for each classification instance.
+ */
+public class VowpalWabbitBaselineMajorityClassIdReport extends VowpalWabbitOutcomeIDReport {
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+	public VowpalWabbitBaselineMajorityClassIdReport() {
+		// required by groovy
+	}
 
-public class TestDummy {
-	
-	private static final String classpath = "classpath:/org/dkpro/tc/ml/vowpalwabbit/";
-	static RuntimeProvider runtimeProvider = null;
-	public static void main(String[] args) throws Exception {
-		runtimeProvider = new RuntimeProvider(classpath);
-		File file = null;
-		
-		try{
-		    file = runtimeProvider.getFile("vw");
-		}catch(Exception e) {
-		    System.out.println(e.getMessage());
-		    int a=0;
-		    a++;
-		}
-		
-		
-		
-		System.out.println(file.getAbsolutePath());
+	@Override
+	public void execute() throws Exception {
+
+
+		super.execute();
 	}
 
 }

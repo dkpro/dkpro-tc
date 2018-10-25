@@ -15,31 +15,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.dkpro.tc.ml.vowpalwabbit;
+package org.dkpro.tc.ml.vowpalwabbit.report;
 
-import java.io.File;
+import org.dkpro.tc.ml.report.TcAbstractReport;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+/**
+ * Writes a instanceId / outcome data for each classification instance.
+ */
+public class VowpalWabbitOutcomeIDReport
+    extends TcAbstractReport
+{
+    public VowpalWabbitOutcomeIDReport()
+    {
+        // required by groovy
+    }
 
-public class TestDummy {
-	
-	private static final String classpath = "classpath:/org/dkpro/tc/ml/vowpalwabbit/";
-	static RuntimeProvider runtimeProvider = null;
-	public static void main(String[] args) throws Exception {
-		runtimeProvider = new RuntimeProvider(classpath);
-		File file = null;
-		
-		try{
-		    file = runtimeProvider.getFile("vw");
-		}catch(Exception e) {
-		    System.out.println(e.getMessage());
-		    int a=0;
-		    a++;
-		}
-		
-		
-		
-		System.out.println(file.getAbsolutePath());
-	}
+    boolean isRegression;
+    boolean isUnit;
+    boolean isMultiLabel;
 
+    protected void init()
+    {
+        isRegression = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_REGRESSION);
+        isUnit = getDiscriminator(getContext(), DIM_FEATURE_MODE).equals(FM_UNIT);
+        isMultiLabel = getDiscriminator(getContext(), DIM_LEARNING_MODE).equals(LM_MULTI_LABEL);
+    }
+
+    @Override
+    public void execute() throws Exception
+    {
+        init();
+    }
 }
