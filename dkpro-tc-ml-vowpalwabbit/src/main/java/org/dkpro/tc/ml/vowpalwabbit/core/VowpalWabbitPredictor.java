@@ -22,12 +22,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.lang.ProcessBuilder.Redirect;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.ml.base.TcPredictor;
 
 public class VowpalWabbitPredictor
@@ -40,7 +41,7 @@ public class VowpalWabbitPredictor
     }
 
     /**
-     * Executes CrfSuites with the provided model and data file
+     * Executes the binary with the provided model and data file. The data is read from file.
      * 
      * @param data
      *            The feature file
@@ -53,17 +54,19 @@ public class VowpalWabbitPredictor
     @Override
     public List<String> predict(File data, File model) throws Exception
     {
-        List<String> testingCommand = getTestCommand(data, model);
-        String predictions = executePrediction(testingCommand);
+    	File tempFile = Files.createTempFile("vowpalWabbitPrediction" + System.currentTimeMillis(), ".txt").toFile();
+    	tempFile.deleteOnExit();
+        List<String> testingCommand = getTestCommand(data, model, tempFile);
         
-        List<String> asList = Arrays.asList(predictions.split("\n"));
+        executePrediction(testingCommand);
         
-        return asList;
+        List<String> readLines = FileUtils.readLines(tempFile, "utf-8");
+        return readLines;
     }
 
     /**
-     * Executes CrfSuites with the provided model, the feature informaiton are provided loaded into
-     * a string
+     * Executes the binary with the provided model, the feature information are provided loaded into
+     * a string which is provided via stdin
      * 
      * @param dataAsString
      *            The string representation of the features
@@ -81,7 +84,7 @@ public class VowpalWabbitPredictor
     }
 
     /**
-     * Builds a command that can be executed with a {@link ProcessBuilder}, which calls CrfSuite
+     * Builds a command that can be executed with a {@link ProcessBuilder}, which calls the binary
      * with the provided model
      * 
      * @param aModel
@@ -94,10 +97,11 @@ public class VowpalWabbitPredictor
     {
 
         List<String> command = new ArrayList<String>();
-        command.add("tag");
-        command.add("-m");
+        command.add("-testonly");
+        command.add("-initial_regressor");
         command.add(aModel.getAbsolutePath());
-        command.add("-"); // Read from STDIN
+        command.add("--predictions");
+        command.add("/dev/stdout");
 
         return assembleCommand(getExecutable(), command.toArray(new String[0]));
     }
@@ -130,7 +134,7 @@ public class VowpalWabbitPredictor
             IOUtils.closeQuietly(writer);
         }
 
-        return captureProcessOutput(process);
+        return readProcessOutput(process);
     }
 
     /**
@@ -138,19 +142,22 @@ public class VowpalWabbitPredictor
      *          A file with the feature information for prediction
      * @param aModel
      *          The model to be used
+     * @param tempFile 
      * @return
      *      The assembled test command
      * @throws Exception 
      *          In case of an exception
      */
-    public static List<String> getTestCommand(File aTestFile, File aModel) throws Exception
+    public static List<String> getTestCommand(File aTestFile, File aModel, File anOutputTargetFile) throws Exception
     {
         List<String> parameters = new ArrayList<String>();
-        parameters.add("tag");
-        parameters.add("-r");
-        parameters.add("-m");
+        parameters.add("--testonly");
+        parameters.add("--initial_regressor");
         parameters.add(aModel.getAbsolutePath());
+        parameters.add("--data");
         parameters.add(aTestFile.getAbsolutePath());
+        parameters.add("--predictions");
+        parameters.add(anOutputTargetFile.getAbsolutePath());
 
         return assembleCommand(getExecutable(), parameters.toArray(new String[0]));
     }
@@ -164,28 +171,20 @@ public class VowpalWabbitPredictor
      * @throws Exception
      *             In case of errors
      */
-    public static String executePrediction(List<String> command) throws Exception
+    public static void executePrediction(List<String> command) throws Exception
     {
         Process process = new ProcessBuilder().command(command).start();
-        String output = captureProcessOutput(process);
-        return output;
+        readProcessOutput(process);
     }
 
-    /**
-     * Takes a process object and reads the process output
-     * 
-     * @param aProcess
-     *            The process
-     * @return The output as string
-     */
-    public static String captureProcessOutput(Process aProcess)
+    public static String readProcessOutput(Process aProcess)
     {
         InputStream src = aProcess.getInputStream();
         Scanner sc = new Scanner(src, "utf-8");
         StringBuilder dest = new StringBuilder(1024);
         while (sc.hasNextLine()) {
             String l = sc.nextLine();
-            dest.append(l + "\n");
+            System.err.println(l);
         }
         sc.close();
         return dest.toString();

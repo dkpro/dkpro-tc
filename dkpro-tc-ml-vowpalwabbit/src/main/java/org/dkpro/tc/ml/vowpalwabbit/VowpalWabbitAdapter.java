@@ -36,7 +36,9 @@ public class VowpalWabbitAdapter
     implements TcShallowLearningAdapter
 {
 
-    public static TcShallowLearningAdapter getInstance()
+    public static final String CLASSIFICATION = "useClassificationMode";
+
+	public static TcShallowLearningAdapter getInstance()
     {
         return new VowpalWabbitAdapter();
     }

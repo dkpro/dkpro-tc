@@ -73,7 +73,6 @@ public class VowpalWabbitTestTask
                 AccessMode.READWRITE);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Prediction\tGold\n");
         for (String p : predictionValues) {
             sb.append(p + "\n");
         }
@@ -126,9 +125,7 @@ public class VowpalWabbitTestTask
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
 
-        List<String> parameters = getParameters(classificationArguments.subList(1, classificationArguments.size()));
-        
-        trainer.train(train, modelLocation, parameters);
+        trainer.train(train, modelLocation, getParameters(classificationArguments));
 
         deleteTmpFeatureFileIfCreated(aContext, train, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
@@ -152,10 +149,10 @@ public class VowpalWabbitTestTask
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 
-        VowpalWabbitPredictor crfPredict = new VowpalWabbitPredictor();
-        List<String> prediction = crfPredict.predict(testFile, model);
+        VowpalWabbitPredictor predictor = new VowpalWabbitPredictor();
+        List<String> prediction = predictor.predict(testFile, model);
 
-        deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
+//        deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
 
         return prediction;
     }
