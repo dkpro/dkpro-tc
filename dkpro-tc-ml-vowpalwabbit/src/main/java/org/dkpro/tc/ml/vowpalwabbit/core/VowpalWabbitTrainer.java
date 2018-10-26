@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.LogFactory;
 import org.dkpro.tc.ml.base.TcTrainer;
 
 public class VowpalWabbitTrainer extends VowpalWabbit implements TcTrainer {
@@ -40,7 +42,7 @@ public class VowpalWabbitTrainer extends VowpalWabbit implements TcTrainer {
 	public static List<String> getTrainCommand(List<String> parameters, File aBinary, File aData, File aModel)
 			throws Exception {
 		List<String> trainCommand = new ArrayList<>();
-		trainCommand.addAll(minimalTrainingArguments(parameters, aData));
+		trainCommand.addAll(parameters);
 		trainCommand.addAll(Arrays.asList(new String[] { "--final_regressor", aModel.getAbsolutePath() }));
 		trainCommand.addAll(Arrays.asList(new String[] { "--data", aData.getAbsolutePath() }))	;
 
@@ -48,6 +50,7 @@ public class VowpalWabbitTrainer extends VowpalWabbit implements TcTrainer {
 	}
 
 	public static void executeTrainingCommand(List<String> aCommand) throws Exception {
+		LogFactory.getLog(VowpalWabbitTrainer.class).debug("Training command: " + StringUtils.join(aCommand, " "));
 		Process process = new ProcessBuilder().inheritIO().command(aCommand).start();
 		process.waitFor();
 	}
