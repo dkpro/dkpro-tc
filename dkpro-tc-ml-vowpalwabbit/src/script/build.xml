@@ -57,7 +57,6 @@
 				dest="target/download/osx-x86_64">
 			<patternset>
 				<include name="*/*" />
-				<include name="*/.libs/*" />
 			</patternset>
 		</untar>
 
