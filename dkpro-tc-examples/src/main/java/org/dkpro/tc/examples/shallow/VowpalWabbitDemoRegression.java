@@ -52,7 +52,7 @@ public class VowpalWabbitDemoRegression
 
         VowpalWabbitDemoRegression experiment = new VowpalWabbitDemoRegression();
         experiment.runTrainTest();
-        experiment.runCrossValidation();
+//        experiment.runCrossValidation();
     }
 
     public CollectionReaderDescription getReaderTrain() throws Exception
@@ -94,7 +94,7 @@ public class VowpalWabbitDemoRegression
                 .featureMode(FeatureMode.DOCUMENT)
                 .preprocessing(getPreprocessing())
                 .machineLearningBackend(
-                        new MLBackend(new VowpalWabbitAdapter())
+                        new MLBackend(new VowpalWabbitAdapter(), "--nn", "100", "--passes", "10", "--cache_file")
                         )
                 .run();
     }
