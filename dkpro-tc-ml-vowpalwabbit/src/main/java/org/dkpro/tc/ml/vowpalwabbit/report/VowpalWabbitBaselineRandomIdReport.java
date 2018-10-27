@@ -17,10 +17,92 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.vowpalwabbit.report;
 
-public class VowpalWabbitBaselineRandomIdReport extends VowpalWabbitOutcomeIDReport {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
-	public VowpalWabbitBaselineRandomIdReport() {
-		// required by groovy
-	}
+import org.apache.commons.compress.utils.IOUtils;
+import org.dkpro.lab.storage.StorageService.AccessMode;
+
+public class VowpalWabbitBaselineRandomIdReport
+    extends VowpalWabbitOutcomeIDReport
+{
+
+    private Random random = new Random(42);
+    private List<String> pool = new ArrayList<>();
+
+    public VowpalWabbitBaselineRandomIdReport()
+    {
+
+    }
+
+    @Override
+    public void execute() throws Exception
+    {
+        init();
+
+        if (isRegression) {
+            return;
+        }
+
+        super.execute();
+    }
+
+    @Override
+    protected void baslinePreparation() throws Exception
+    {
+        File folder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
+                AccessMode.READONLY);
+        File file = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        buildPool(file);
+    }
+
+    private void buildPool(File file) throws Exception
+    {
+
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                String[] split = line.split(" ");
+                String o = split[0];
+                if (!pool.contains(o)) {
+                    pool.add(o);
+                }
+            }
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
+
+        Collections.shuffle(pool);
+    }
+
+    @Override
+    protected String getPrediction(String p)
+    {
+        if(pool.size() == 1) {
+            return pool.get(0);
+        }
+        
+        Integer idx = random.nextInt(pool.size() - 1);
+        return pool.get(idx);
+    }
+
+    @Override
+    protected File getTargetOutputFile()
+    {
+        File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
+        return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
+    }
 
 }

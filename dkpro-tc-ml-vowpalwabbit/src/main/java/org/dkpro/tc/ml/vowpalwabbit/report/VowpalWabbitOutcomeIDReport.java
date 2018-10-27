@@ -68,6 +68,7 @@ public class VowpalWabbitOutcomeIDReport
     public void execute() throws Exception
     {
         init();
+        baslinePreparation();
         
         Map<Integer, String> id2label = getId2LabelMapping(isRegression);
         String header = buildHeader(id2label, isRegression);
@@ -84,7 +85,7 @@ public class VowpalWabbitOutcomeIDReport
 
         StringBuilder sb = new StringBuilder();
         for (int i=0; i < goldValues.size(); i++) {
-        	String p = predictionValues.get(i);
+        	String p = getPrediction(predictionValues.get(i));
         	String g = goldValues.get(i);
         	
             String key = index2instanceIdMap.get(i + "");
@@ -110,6 +111,12 @@ public class VowpalWabbitOutcomeIDReport
         String content = header + "\n#" + timeStamp + "\n" + sb.toString();
         FileUtils.writeStringToFile(targetFile, content, "utf-8");
         
+    }
+    
+    protected void baslinePreparation() throws Exception
+    {
+        // This method is overloaded in a subclass for performing some
+        // initialization for computing baseline values
     }
     
     private List<String> readGoldValuesFromTestFile() throws Exception {

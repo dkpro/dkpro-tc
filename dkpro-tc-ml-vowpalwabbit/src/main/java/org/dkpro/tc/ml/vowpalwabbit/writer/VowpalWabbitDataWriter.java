@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -107,26 +106,15 @@ public class VowpalWabbitDataWriter
                 new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
                 "utf-8"));
 
-        BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile), "utf-8"));
-
         String line = null;
         while ((line = reader.readLine()) != null) {
             Instance[] instance = gson.fromJson(line, Instance[].class);
-            List<Instance> ins = Arrays.asList(instance);
-
-            Iterator<StringBuilder> sequenceIterator = null;
-
-            while (sequenceIterator.hasNext()) {
-                String features = sequenceIterator.next().toString();
-                writer.write(features);
-                writer.write("\n");
-            }
-
+            List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+            writeClassifierFormat(ins);
         }
 
         reader.close();
-        writer.close();
+        FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
     }
 
     @Override
