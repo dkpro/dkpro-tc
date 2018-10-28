@@ -70,6 +70,35 @@
 		    file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/manifest.properties">
 			<entry  key="vw" value="executable"/>
 		</propertyfile>
+		
+		<!-- Linux 64bit -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64"/>
+
+		<get 
+	    		src="https://bintray.com/inofficalbinarystore/generic/download_file?file_path=vowpalwabbit-8.6.1.linux-x86_64.tar.gz" 
+	    		dest="target/download/vowpalwabbit-8.6.1.linux-x86_64.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/vowpalwabbit-8.6.1.linux-x86_64.tar.gz"
+				dest="target/download/vowpalwabbit-8.6.1.linux-x86_64.tar"/>
+		<untar 
+				src="target/download/vowpalwabbit-8.6.1.linux-x86_64.tar"
+				dest="target/download/linux-x86_64">
+			<patternset>
+				<include name="*/*" />
+			</patternset>
+		</untar>
+
+		<copy file="target/download/linux-x86_64/vowpalwabbit-8.6.1.linux-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/vw"/>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/README">
+			VowpalWabbit 8.6.1
+		</echo>
+
+		<propertyfile
+		    file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/manifest.properties">
+			<entry  key="vw" value="executable"/>
+		</propertyfile>
 
 		<jar 
 			destfile="target/org.dkpro.tc.ml.vowpalwabbit-bin-${version.bin}.jar" 
