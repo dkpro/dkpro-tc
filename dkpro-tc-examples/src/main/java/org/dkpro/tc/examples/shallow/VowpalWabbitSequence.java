@@ -75,7 +75,11 @@ public class VowpalWabbitSequence
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
                .machineLearningBackend(
-                                       new MLBackend(new VowpalWabbitAdapter())
+                                       new MLBackend(new VowpalWabbitAdapter()),
+                                       new MLBackend(new VowpalWabbitAdapter(), "-b", "20"),
+                                       new MLBackend(new VowpalWabbitAdapter(), "-b", "40"),
+                                       new MLBackend(new VowpalWabbitAdapter(), "--search_as_dagger", "0.0001")
+                                       
                                        )
                .preprocessing(getPreprocessing())
                .run();
@@ -99,12 +103,14 @@ public class VowpalWabbitSequence
     {
         return new TcFeatureSet(
                 TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
+                        TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -3),
+                TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -2),
                 TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -1),
                 TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, 0),
-                TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 1000));
+                TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 2500));
     }
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException

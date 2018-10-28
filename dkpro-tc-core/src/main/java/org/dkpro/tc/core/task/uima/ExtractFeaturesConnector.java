@@ -100,7 +100,7 @@ public class ExtractFeaturesConnector
 
     @ConfigurationParameter(name = PARAM_REQUIRED_TYPES, mandatory = false)
     private Set<String> requiredTypes;
-    
+
     @ConfigurationParameter(name = PARAM_ENFORCE_MATCHING_FEATURES, mandatory = false)
     private boolean enforceMatchingFeatures;
 
@@ -123,7 +123,7 @@ public class ExtractFeaturesConnector
         super.initialize(context);
         try {
 
-			documentMetaLogger = new DocumentMetaLogger(outputDirectory);
+            documentMetaLogger = new DocumentMetaLogger(outputDirectory);
 
             instanceExtractor = new InstanceExtractor(featureMode, featureExtractors,
                     addInstanceId);
@@ -137,12 +137,13 @@ public class ExtractFeaturesConnector
             }
 
             if (featureExtractors.length == 0) {
-            		LogFactory.getLog(getClass()).error("No feature extractors have been defined.");
+                LogFactory.getLog(getClass()).error("No feature extractors have been defined.");
                 throw new ResourceInitializationException();
             }
 
             dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            dsw.init(outputDirectory, useSparseFeatures, learningMode, featureMode, applyWeighting, outcomes);
+            dsw.init(outputDirectory, useSparseFeatures, learningMode, featureMode, applyWeighting,
+                    outcomes);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
@@ -160,23 +161,22 @@ public class ExtractFeaturesConnector
         if (!featureMeta.didCollect()) {
             getFeatureNames(aJCas);
         }
-        
+
         LogFactory.getLog(getClass()).debug("--- feature extraction for CAS with id ["
                 + JCasUtil.selectSingle(aJCas, JCasId.class).getId() + "] ---");
 
         List<Instance> instances = instanceExtractor.getInstances(aJCas, useSparseFeatures);
-        
-        LogFactory.getLog(getClass()).trace("--- Extracted ["
-                + instances.size() + " feature instances] ---");
-        
-        if(enforceMatchingFeatures) {
+
+        LogFactory.getLog(getClass())
+                .trace("--- Extracted [" + instances.size() + " feature instances] ---");
+
+        if (enforceMatchingFeatures) {
             /*
              * filter-out feature names which did not occur during training if we are in the testing
              * stage
              */
             instances = enforceMatchingFeatures(instances);
         }
-        
 
         if (isFilteringRequestedOrNoStreamingAvailable()) {
             dsw.writeGenericFormat(instances);
@@ -229,16 +229,16 @@ public class ExtractFeaturesConnector
 
     private void getFeatureNames(JCas aJCas) throws AnalysisEngineProcessException
     {
-    	
-		LogFactory.getLog(getClass()).debug("--- collecting feature names ---");
-    	
+
+        LogFactory.getLog(getClass()).debug("--- collecting feature names ---");
+
         // We run one time through feature extraction to get all features names
         try {
-        	
-			// Create a mock CAS, we don't care about the feature values just
-			// their names. An empty CAS will be a lot faster!
-        		JCas mockCas = buildMockCAS(JCasUtil.selectSingle(aJCas, DocumentMetaData.class));
-        		
+
+            // Create a mock CAS, we don't care about the feature values just
+            // their names. An empty CAS will be a lot faster!
+            JCas mockCas = buildMockCAS(JCasUtil.selectSingle(aJCas, DocumentMetaData.class));
+
             List<Instance> instances = instanceExtractor.getInstances(mockCas, false);
             featureMeta.collectMetaData(instances);
             featureMeta.writeMetaData(outputDirectory);
@@ -249,38 +249,40 @@ public class ExtractFeaturesConnector
         }
     }
 
-	private JCas buildMockCAS(DocumentMetaData aDocMeta) throws UIMAException {
-		JCas mockCas = JCasFactory.createJCas();
-		mockCas.setDocumentLanguage(aDocMeta.getLanguage());
-		
-		DocumentMetaData dmd = new DocumentMetaData(mockCas);
-		dmd.setLanguage(aDocMeta.getLanguage());
-		dmd.setDocumentId(System.currentTimeMillis() + "");
-		dmd.addToIndexes();
-		
-		//Create two views for Pair Mode
-		JCas view1 = mockCas.createView(Constants.PART_ONE);
-		JCas view2 = mockCas.createView(Constants.PART_TWO);
-		
-		String dummyText = "dummyText";
-		mockCas.setDocumentText(dummyText);
-		
-		for(JCas j : new JCas [] {mockCas, view1, view2}){
-		
-		TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
-		s.addToIndexes();
-		TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
-		t.addToIndexes();
-		TextClassificationOutcome o = new TextClassificationOutcome(j, 0, dummyText.length());
-		o.addToIndexes();
-		JCasId id = new JCasId(j);
-		id.addToIndexes();
-		}
-		
-		return mockCas;
-	}
+    private JCas buildMockCAS(DocumentMetaData aDocMeta) throws UIMAException
+    {
+        JCas mockCas = JCasFactory.createJCas();
+        mockCas.setDocumentLanguage(aDocMeta.getLanguage());
 
-	private List<Instance> enforceMatchingFeatures(List<Instance> instances)
+        DocumentMetaData dmd = new DocumentMetaData(mockCas);
+        dmd.setLanguage(aDocMeta.getLanguage());
+        dmd.setDocumentId(System.currentTimeMillis() + "");
+        dmd.addToIndexes();
+
+        // Create two views for Pair Mode
+        JCas view1 = mockCas.createView(Constants.PART_ONE);
+        JCas view2 = mockCas.createView(Constants.PART_TWO);
+
+        String dummyText = "dummyText";
+        mockCas.setDocumentText(dummyText);
+
+        for (JCas j : new JCas[] { mockCas, view1, view2 }) {
+
+            TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
+            s.addToIndexes();
+            TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
+            t.addToIndexes();
+            TextClassificationOutcome o = new TextClassificationOutcome(j, 0, dummyText.length());
+            o.addToIndexes();
+            JCasId id = new JCasId(j);
+            id.setId(Integer.MIN_VALUE);
+            id.addToIndexes();
+        }
+
+        return mockCas;
+    }
+
+    private List<Instance> enforceMatchingFeatures(List<Instance> instances)
     {
         if (!isTesting) {
             return instances;

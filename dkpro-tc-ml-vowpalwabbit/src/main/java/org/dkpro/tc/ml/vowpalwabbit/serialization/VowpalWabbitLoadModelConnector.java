@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -44,6 +45,7 @@ import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
@@ -67,6 +69,8 @@ public class VowpalWabbitLoadModelConnector
     private String featureMode;
     protected Map<String, String> integer2OutcomeMapping;
     protected Map<String, String> stringValue2IntegerMapping;
+    
+    Integer maxStringId=-1;
 
     private String learningMode;
 
@@ -85,12 +89,22 @@ public class VowpalWabbitLoadModelConnector
                     VowpalWabbitDataWriter.OUTCOME_MAPPING);
             stringValue2IntegerMapping = loadMapping(tcModelLocation,
                     VowpalWabbitDataWriter.STRING_MAPPING);
+            determineTheMaxStringsIntIdValue();
+            
             verifyTcVersion(tcModelLocation, getClass());
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);
         }
 
+    }
+
+    private void determineTheMaxStringsIntIdValue()
+    {
+        OptionalInt max = stringValue2IntegerMapping.keySet().stream().mapToInt(Integer::parseInt).max();
+        if(max.isPresent()) {
+            maxStringId = max.getAsInt();
+        }        
     }
 
     private String loadProperty(File file, String key) throws IOException
@@ -231,7 +245,7 @@ public class VowpalWabbitLoadModelConnector
 
                     for (Feature f : instance.getFeatures()) {
                         bw.write(" ");
-                        bw.write(f.getName() + ":" + f.getValue());
+                        bw.write(f.getName() + ":" + mapStringValues(f.getType(), f.getValue().toString()));
                     }
                     bw.write("\n");
                 }
@@ -242,6 +256,18 @@ public class VowpalWabbitLoadModelConnector
         }
 
         return tempFile;
+    }
+
+    private String mapStringValues(FeatureType featureType, String value)
+    {
+        if(featureType == FeatureType.STRING || featureType == FeatureType.NOMINAL) {
+            String string = stringValue2IntegerMapping.get(value);
+            if(string==null) {
+                return (++maxStringId).toString();
+            }
+        }
+        
+        return value;
     }
 
     private boolean isSequence()

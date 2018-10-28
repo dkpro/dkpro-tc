@@ -51,26 +51,25 @@ public class VowpalWabbitDataWriter
     implements DataWriter
 {
     public static final String OUTCOME_MAPPING = "outcomeMapping.txt";
-	public static final String STRING_MAPPING = "stringValueMapping.txt";
-	public static final String INDEX2INSTANCEID = "index2instanceMapping.txt";
-	File outputDirectory;
+    public static final String STRING_MAPPING = "stringValueMapping.txt";
+    public static final String INDEX2INSTANCEID = "index2instanceMapping.txt";
+    File outputDirectory;
     boolean useSparse;
     String learningMode;
     boolean applyWeigthing;
-//    protected int maxId = 1; //vowpalWabbit doesn't like zeros as labels
+    // protected int maxId = 1; //vowpalWabbit doesn't like zeros as labels
     BufferedWriter bw = null;
     Gson gson = new Gson();
     File classifierFormatOutputFile;
     Map<String, String> outcomeMap;
     Map<String, String> stringToIntegerMap;
     Map<String, String> index2instanceId;
-    int maxStringId=1;
-	int maxInstanceId;
+    int maxStringId = 1;
+    int maxInstanceId;
     String featureMode;
 
     @Override
-    public void writeGenericFormat(List<Instance> instances)
-        throws AnalysisEngineProcessException
+    public void writeGenericFormat(List<Instance> instances) throws AnalysisEngineProcessException
     {
         try {
             initGeneric();
@@ -127,14 +126,14 @@ public class VowpalWabbitDataWriter
         try {
             initClassifierFormat();
 
-            
-            if(isSequenceMode()) {
+            if (isSequenceMode()) {
                 writeDataSequentially(instances);
-            }else {
+            }
+            else {
                 writeInstanceData(instances);
             }
             closeStream();
-            
+
             writeMapping(outputDirectory, OUTCOME_MAPPING, outcomeMap);
             writeMapping(outputDirectory, STRING_MAPPING, stringToIntegerMap);
             writeMapping(outputDirectory, INDEX2INSTANCEID, index2instanceId);
@@ -142,9 +141,9 @@ public class VowpalWabbitDataWriter
         catch (Exception e) {
             throw new AnalysisEngineProcessException(e);
         }
-        
+
     }
-    
+
     private void writeDataSequentially(List<Instance> instances) throws Exception
     {
         Collections.sort(instances, new Comparator<Instance>()
@@ -157,24 +156,23 @@ public class VowpalWabbitDataWriter
             }
         });
         List<List<Instance>> groupedBySequenceId = group(instances);
-        
-        for(List<Instance> instOfSeq : groupedBySequenceId) {
+
+        for (List<Instance> instOfSeq : groupedBySequenceId) {
             writeInstanceData(instOfSeq);
             bw.write("\n");
         }
-        
-    }
 
+    }
 
     private List<List<Instance>> group(List<Instance> instances)
     {
         List<List<Instance>> groups = new ArrayList<>();
 
-        //group by sequence id
+        // group by sequence id
         Map<Integer, List<Instance>> collect = instances.stream()
                 .collect(Collectors.groupingBy(Instance::getSequenceId));
 
-        //sort sequences by sequence position
+        // sort sequences by sequence position
         collect.forEach((x, y) -> {
             Collections.sort(y, new Comparator<Instance>()
             {
@@ -198,32 +196,32 @@ public class VowpalWabbitDataWriter
 
     private void writeInstanceData(List<Instance> instances) throws Exception
     {
-        for(Instance instance : instances) {
+        for (Instance instance : instances) {
             recordInstanceId(instance, maxInstanceId++, index2instanceId);
             bw.write(outcome(instance.getOutcome(), isRegression()) + " |");
             List<Feature> features = new ArrayList<Feature>(instance.getFeatures());
-            for(int i=0; i < features.size() ; i++) {
+            for (int i = 0; i < features.size(); i++) {
                 Feature feature = features.get(i);
-                
-                if(feature.getName().equals(Constants.ID_FEATURE_NAME)) {
+
+                if (feature.getName().equals(Constants.ID_FEATURE_NAME)) {
                     continue;
                 }
-                
+
                 String name = feature.getName();
                 String value = getValue(feature);
-                
-                bw.write(name +":" + value);
-                
-                
-                if(i+1 < features.size()) {
+
+                bw.write(name + ":" + value);
+
+                if (i + 1 < features.size()) {
                     bw.write(" ");
                 }
             }
             bw.write("\n");
         }
     }
-    
-    private void closeStream() throws IOException {
+
+    private void closeStream() throws IOException
+    {
         bw.close();
         bw = null;
     }
@@ -239,42 +237,47 @@ public class VowpalWabbitDataWriter
             }
         }
     }
-    
-	private void writeMapping(File outputDirectory, String outcomeMapping, Map<String, String> m) throws IOException {
-		  if (isRegression()) {
-	            return;
-	        }
 
-	        StringBuilder sb = new StringBuilder();
-	        for (Entry<String, String> e : m.entrySet()) {
-	            sb.append(e.getKey() + "\t" + e.getValue() + "\n");
-	        }
+    private void writeMapping(File outputDirectory, String outcomeMapping, Map<String, String> m)
+        throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        if (!isRegression()) {
 
-	        FileUtils.writeStringToFile(new File(outputDirectory, outcomeMapping), sb.toString(), "utf-8");
-	}
+            for (Entry<String, String> e : m.entrySet()) {
+                sb.append(e.getKey() + "\t" + e.getValue() + "\n");
+            }
+        }
 
-	private String getValue(Feature feature) {
+        FileUtils.writeStringToFile(new File(outputDirectory, outcomeMapping), sb.toString(),
+                "utf-8");
+    }
 
-		if (feature.getType().equals(FeatureType.STRING) || feature.getType().equals(FeatureType.NOMINAL)) {
-			String value = feature.getValue().toString();
-			String idx = stringToIntegerMap.get(value);
-			if (idx == null) {
-				stringToIntegerMap.put(value, ""+maxStringId++);
-				idx = stringToIntegerMap.get(value);
-			}
-			return idx.toString();
-		}
-		return feature.getValue().toString();
-	}
+    private String getValue(Feature feature)
+    {
 
-	private String outcome(String outcome, boolean isRegression) {
-    	if(isRegression) {
-    		return outcome;
-    	}
-    	
-		return outcomeMap.get(outcome).toString();
-	}
-    
+        if (feature.getType().equals(FeatureType.STRING)
+                || feature.getType().equals(FeatureType.NOMINAL)) {
+            String value = feature.getValue().toString();
+            String idx = stringToIntegerMap.get(value);
+            if (idx == null) {
+                stringToIntegerMap.put(value, "" + maxStringId++);
+                idx = stringToIntegerMap.get(value);
+            }
+            return idx.toString();
+        }
+        return feature.getValue().toString();
+    }
+
+    private String outcome(String outcome, boolean isRegression)
+    {
+        if (isRegression) {
+            return outcome;
+        }
+
+        return outcomeMap.get(outcome).toString();
+    }
+
     /**
      * Creates a mapping from the label names to integer values to identify labels by integers
      * 
@@ -290,17 +293,17 @@ public class VowpalWabbitDataWriter
         List<String> outcomesSorted = new ArrayList<>(Arrays.asList(outcomes));
         Collections.sort(outcomesSorted);
         for (String o : outcomesSorted) {
-            outcomeMap.put(o, ""+i++);
+            outcomeMap.put(o, "" + i++);
         }
     }
-    
+
     protected Integer getStartIndexForOutcomeMap()
     {
         // We start at one - not zero
         return 1;
     }
 
-	private boolean isRegression()
+    private boolean isRegression()
     {
         return learningMode.equals(Constants.LM_REGRESSION);
     }
@@ -329,7 +332,7 @@ public class VowpalWabbitDataWriter
 
         classifierFormatOutputFile = new File(outputDirectory,
                 Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-        
+
         // Caution: DKPro Lab imports (aka copies!) the data of the train task
         // as test task. We use
         // appending mode for streaming. We might errornously append the old
@@ -340,12 +343,12 @@ public class VowpalWabbitDataWriter
         if (classifierFormatOutputFile.exists()) {
             FileUtils.forceDelete(classifierFormatOutputFile);
         }
-        
+
         File genericOutputFile = new File(outputDirectory, getGenericFileName());
         if (genericOutputFile.exists()) {
             FileUtils.forceDelete(genericOutputFile);
         }
-        
+
         buildOutcomeMap(outcomes);
         stringToIntegerMap = new HashMap<>();
         index2instanceId = new HashMap<>();
@@ -366,7 +369,7 @@ public class VowpalWabbitDataWriter
     @Override
     public void close() throws Exception
     {
-    	
+
     }
 
 }

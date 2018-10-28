@@ -57,12 +57,12 @@ public class TargetSurfaceFormContextFeature
     static final String BEG_OF_SEQUENCE = "BOS";
     static final String OUT_OF_BOUNDARY = "OOB";
 
-    public Set<Feature> extract(JCas aView, TextClassificationTarget unit)
+    public Set<Feature> extract(JCas aView, TextClassificationTarget target)
         throws TextClassificationException
     {
-        super.extract(aView, unit);
+        super.extract(aView, target);
 
-        Integer currentTargetIdx = super.unitBegin2Idx.get(unit.getBegin());
+        Integer currentTargetIdx = super.targetBegin2Idx.get(target.getBegin());
 
         Integer targetIdx = currentTargetIdx + shiftIdx;
 

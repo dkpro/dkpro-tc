@@ -24,12 +24,11 @@ import java.util.Set;
 
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.Feature;
+import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationSequence;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
@@ -47,49 +46,49 @@ public class TcuLookUpTable
     protected HashMap<Integer, Boolean> idx2SequenceBegin = new HashMap<Integer, Boolean>();
     protected HashMap<Integer, Boolean> idx2SequenceEnd = new HashMap<Integer, Boolean>();
 
-    protected HashMap<Integer, TextClassificationTarget> begin2Unit = new HashMap<Integer, TextClassificationTarget>();
-    protected HashMap<Integer, Integer> unitBegin2Idx = new HashMap<Integer, Integer>();
-    protected HashMap<Integer, Integer> unitEnd2Idx = new HashMap<Integer, Integer>();
+    protected HashMap<Integer, TextClassificationTarget> begin2target = new HashMap<Integer, TextClassificationTarget>();
+    protected HashMap<Integer, Integer> targetBegin2Idx = new HashMap<Integer, Integer>();
+    protected HashMap<Integer, Integer> targetEnd2Idx = new HashMap<Integer, Integer>();
     protected List<TextClassificationTarget> units = new ArrayList<TextClassificationTarget>();
 
-    public Set<Feature> extract(JCas aView, TextClassificationTarget aTarget)
+    public Set<Feature> extract(JCas aJCas, TextClassificationTarget aTarget)
         throws TextClassificationException
     {
-        if (isTheSameDocument(aView)) {
+        if (isTheSameDocument(aJCas)) {
             return null;
         }
-        begin2Unit = new HashMap<Integer, TextClassificationTarget>();
-        unitBegin2Idx = new HashMap<Integer, Integer>();
+        begin2target = new HashMap<Integer, TextClassificationTarget>();
+        targetBegin2Idx = new HashMap<Integer, Integer>();
         idx2SequenceBegin = new HashMap<Integer, Boolean>();
         idx2SequenceEnd = new HashMap<Integer, Boolean>();
         units = new ArrayList<TextClassificationTarget>();
 
         int i = 0;
-        for (TextClassificationTarget t : JCasUtil.select(aView, TextClassificationTarget.class)) {
+        for (TextClassificationTarget t : JCasUtil.select(aJCas, TextClassificationTarget.class)) {
             Integer begin = t.getBegin();
             Integer end = t.getEnd();
-            begin2Unit.put(begin, t);
-            unitBegin2Idx.put(begin, i);
-            unitEnd2Idx.put(end, i);
+            begin2target.put(begin, t);
+            targetBegin2Idx.put(begin, i);
+            targetEnd2Idx.put(end, i);
             units.add(t);
             i++;
         }
-        for (TextClassificationSequence sequence : JCasUtil.select(aView,
+        for (TextClassificationSequence sequence : JCasUtil.select(aJCas,
                 TextClassificationSequence.class)) {
             Integer begin = sequence.getBegin();
             Integer end = sequence.getEnd();
-            Integer idxStartUnit = unitBegin2Idx.get(begin);
-            Integer idxEndUnit = unitEnd2Idx.get(end);
+            Integer idxStartUnit = targetBegin2Idx.get(begin);
+            Integer idxEndUnit = targetEnd2Idx.get(end);
             idx2SequenceBegin.put(idxStartUnit, true);
             idx2SequenceEnd.put(idxEndUnit, true);
         }
         return null;
     }
 
-    private boolean isTheSameDocument(JCas aView)
+    private boolean isTheSameDocument(JCas aJCas)
     {
-        DocumentMetaData meta = JCasUtil.selectSingle(aView, DocumentMetaData.class);
-        String currentId = meta.getDocumentId();
+        JCasId casId = JCasUtil.selectSingle(aJCas, JCasId.class);
+        String currentId = casId.getId() + "";
         boolean isSame = currentId.equals(lastSeenDocumentId);
         lastSeenDocumentId = currentId;
         return isSame;

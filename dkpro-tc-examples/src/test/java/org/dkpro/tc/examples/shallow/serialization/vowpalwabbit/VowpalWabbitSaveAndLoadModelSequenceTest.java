@@ -49,6 +49,7 @@ import org.dkpro.tc.examples.TestCaseSuperClass;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
+import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.experiment.ExperimentSaveModel;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderSequenceMode;
 import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
@@ -194,9 +195,9 @@ public class VowpalWabbitSaveAndLoadModelSequenceTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
-                new TcFeatureSet(TcFeatureFactory.create(CharacterNGram.class,
-                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 50, CharacterNGram.PARAM_NGRAM_MIN_N,
-                        1, CharacterNGram.PARAM_NGRAM_MAX_N, 3),
+                new TcFeatureSet(
+                        TcFeatureFactory.create(TargetSurfaceFormContextFeature.class, TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX,0),
+                        TcFeatureFactory.create(CharacterNGram.class),
                         TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
         ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),

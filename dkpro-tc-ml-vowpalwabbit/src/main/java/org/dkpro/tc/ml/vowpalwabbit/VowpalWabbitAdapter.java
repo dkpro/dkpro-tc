@@ -40,7 +40,9 @@ import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
  * overwritten by providing other parameters.
  * 
  * All full list of all parameters that can be provided is here:
- * https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Command-line-arguments
+ * <pre>
+ *      https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Command-line-arguments
+ * </pre>
  * 
  * Following default configurations are used:
  * 
