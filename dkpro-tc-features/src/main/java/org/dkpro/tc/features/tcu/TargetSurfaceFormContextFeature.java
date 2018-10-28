@@ -68,7 +68,7 @@ public class TargetSurfaceFormContextFeature
 
         String featureVal = getTargetText(targetIdx);
         return new Feature(FEATURE_NAME + toHumanReadable(shiftIdx), featureVal,
-                FeatureType.NUMERIC).asSet();
+                FeatureType.STRING).asSet();
     }
 
     private String toHumanReadable(Integer shiftIdx)
