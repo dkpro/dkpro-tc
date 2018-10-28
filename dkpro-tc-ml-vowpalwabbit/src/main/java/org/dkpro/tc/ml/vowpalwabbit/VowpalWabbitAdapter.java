@@ -32,11 +32,36 @@ import org.dkpro.tc.ml.vowpalwabbit.report.VowpalWabbitBaselineRandomIdReport;
 import org.dkpro.tc.ml.vowpalwabbit.report.VowpalWabbitOutcomeIDReport;
 import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
 
+/**
+ * Using VowpalWabbit in DKPro TC: Depending on the learning and feature mode, a default
+ * configuration is used for regression, classification and sequence-classification, which can be
+ * overwritten by providing other parameters.
+ * 
+ * All full list of all parameters that can be provided is here:
+ * https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Command-line-arguments
+ * 
+ * Following default configurations are used:
+ * 
+ * <pre>
+ * Classification (non-sequential): 
+ *      --oaa = Use one-against-all multiclass learning
+ * 
+ * Classification (sequential):
+ *      --search_task = sequential
+ *      --search_passes_per_policy = 2
+ *      --cache = (a cache file is used)
+ *      --search_history_length = 1
+ *
+ * the number of labels that have to predicted are determined in the backend automatically by DKPro TC.
+ * 
+ * </pre>
+ *
+ */
 public class VowpalWabbitAdapter
     implements TcShallowLearningAdapter
 {
 
-	public static TcShallowLearningAdapter getInstance()
+    public static TcShallowLearningAdapter getInstance()
     {
         return new VowpalWabbitAdapter();
     }

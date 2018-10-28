@@ -30,10 +30,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
-import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
-import org.dkpro.tc.features.ngram.WordNGram;
-import org.dkpro.tc.features.style.InitialCharacterUpperCase;
 import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
@@ -53,7 +50,8 @@ public class VowpalWabbitSequence
 
     public static final String LANGUAGE_CODE = "de";
     public static final int NUM_FOLDS = 2;
-    public static final String corpusFilePath = "/Users/toobee/Desktop/mock/";
+    public static final String corpusFilePathTrain = "/Users/toobee/Desktop/mock/train";
+    public static final String corpusFilePathTest = "/Users/toobee/Desktop/mock/test";
 
     public static File outputFolder = null;
 
@@ -86,15 +84,15 @@ public class VowpalWabbitSequence
     public CollectionReaderDescription getReaderTrain() throws Exception {
         return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TeiReader.PARAM_PATTERNS, "a0*");
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                TeiReader.PARAM_PATTERNS, "b*");
     }
     
     public CollectionReaderDescription getReaderTest() throws Exception {
         return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
-                TeiReader.PARAM_PATTERNS, "a1*");
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
+                TeiReader.PARAM_PATTERNS, "a*");
     }
     
     public TcFeatureSet getFeatureSet()
@@ -106,7 +104,7 @@ public class VowpalWabbitSequence
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -1),
                 TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
                         TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, 0),
-                TcFeatureFactory.create(CharacterNGram.class));
+                TcFeatureFactory.create(CharacterNGram.class, CharacterNGram.PARAM_NGRAM_USE_TOP_K, 1000));
     }
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
