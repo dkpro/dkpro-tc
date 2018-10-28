@@ -134,7 +134,8 @@ public class VowpalWabbitTestTask
         List<String> parameters = getParameters(classificationArguments);
         parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
 
-        parameters = automaticallyAddParametersForClassificationMode(aContext, parameters, learningMode, featureMode);
+        parameters = automaticallyAddParametersForClassificationMode(aContext, parameters,
+                learningMode, featureMode);
 
         trainer.train(train, modelLocation, parameters);
 

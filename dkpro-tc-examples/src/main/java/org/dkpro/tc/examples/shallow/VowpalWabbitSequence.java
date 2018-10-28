@@ -75,11 +75,10 @@ public class VowpalWabbitSequence
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
                .machineLearningBackend(
-                                       new MLBackend(new VowpalWabbitAdapter()),
-                                       new MLBackend(new VowpalWabbitAdapter(), "-b", "20"),
-                                       new MLBackend(new VowpalWabbitAdapter(), "-b", "40"),
-                                       new MLBackend(new VowpalWabbitAdapter(), "--search_as_dagger", "0.0001")
-                                       
+                                       new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
+                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "4", "-b", "20")
+                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "5", "-b", "20")
+                                       , new MLBackend(new VowpalWabbitAdapter())
                                        )
                .preprocessing(getPreprocessing())
                .run();
