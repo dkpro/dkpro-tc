@@ -134,7 +134,7 @@ public class VowpalWabbitTestTask
         List<String> parameters = getParameters(classificationArguments);
         parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
 
-        parameters = automaticallyAddParametersForClassificationMode(aContext, parameters);
+        parameters = automaticallyAddParametersForClassificationMode(aContext, parameters, learningMode, featureMode);
 
         trainer.train(train, modelLocation, parameters);
 
@@ -143,15 +143,15 @@ public class VowpalWabbitTestTask
         return writeModel(aContext, modelLocation);
     }
 
-    private List<String> automaticallyAddParametersForClassificationMode(TaskContext aContext,
-            List<String> parameters)
+    public static List<String> automaticallyAddParametersForClassificationMode(TaskContext aContext,
+            List<String> parameters, String learningMode, String featureMode)
         throws IOException
     {
-        if (!isClassification()) {
+        if (!isClassification(learningMode)) {
             return parameters;
         }
 
-        if (isSequenceMode()) {
+        if (isSequenceMode(featureMode)) {
 
             if (!containsRequiredSeqParameter(parameters, "--search")) {
                 parameters = addParameter(parameters, "--search",
@@ -162,7 +162,7 @@ public class VowpalWabbitTestTask
             }
             if (!containsRequiredSeqParameter(parameters, "--search_passes_per_policy")) {
                 parameters = addParameter(parameters, "--search_passes_per_policy", "2");
-                LogFactory.getLog(getClass()).debug(
+                LogFactory.getLog(VowpalWabbitTestTask.class).debug(
                         "Fallback configuration: set parameter [--search_passes_per_policy] to value [2]");
             }
             if (!containsRequiredSeqParameter(parameters, "--cache")) {
@@ -173,7 +173,7 @@ public class VowpalWabbitTestTask
         else {
 
             if (!containsNeededNonSequenceClassificationParameter(parameters)) {
-                LogFactory.getLog(getClass()).info(
+                LogFactory.getLog(VowpalWabbitTestTask.class).info(
                         "No classification strategy provided, falling back to classification strategy [--oaa]");
                 parameters.add("--oaa");
             }
@@ -183,7 +183,7 @@ public class VowpalWabbitTestTask
         return parameters;
     }
 
-    private List<String> addParameter(List<String> parameters, String parameter,
+    protected static List<String> addParameter(List<String> parameters, String parameter,
             String parameterValue)
     {
         parameters.add(parameter);
@@ -194,7 +194,7 @@ public class VowpalWabbitTestTask
         return parameters;
     }
 
-    private boolean containsRequiredSeqParameter(List<String> parameters, String parameter)
+    protected static boolean containsRequiredSeqParameter(List<String> parameters, String parameter)
     {
         for (String s : parameters) {
             if (s.equals(parameter)) {
@@ -205,12 +205,12 @@ public class VowpalWabbitTestTask
         return false;
     }
 
-    private boolean isSequenceMode()
+    protected static boolean isSequenceMode(String featureMode)
     {
         return featureMode.equals(FM_SEQUENCE);
     }
 
-    private boolean containsNeededNonSequenceClassificationParameter(List<String> parameters)
+    public static boolean containsNeededNonSequenceClassificationParameter(List<String> parameters)
     {
         for (String strategy : new String[] { "--csoaa_ldf", "--wap", "--csoaa", "--ect", "--oaa",
                 "--log_multi" }) {
@@ -221,7 +221,7 @@ public class VowpalWabbitTestTask
         return false;
     }
 
-    private Integer determineNumberOfClasses(TaskContext aContext) throws IOException
+    protected static Integer determineNumberOfClasses(TaskContext aContext) throws IOException
     {
         File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
         File file = new File(folder, FILENAME_OUTCOMES);
@@ -229,7 +229,7 @@ public class VowpalWabbitTestTask
         return outcomes.size();
     }
 
-    private boolean isClassification()
+    public static boolean isClassification(String learningMode)
     {
 
         return learningMode.equals(Constants.LM_SINGLE_LABEL);

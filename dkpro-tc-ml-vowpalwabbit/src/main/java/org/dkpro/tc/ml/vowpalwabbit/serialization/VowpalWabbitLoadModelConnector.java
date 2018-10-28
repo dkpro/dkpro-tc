@@ -18,39 +18,39 @@
 
 package org.dkpro.tc.ml.vowpalwabbit.serialization;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
-import org.dkpro.tc.api.features.FeatureExtractor;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.Instance;
-import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationSequence;
-import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.feature.InstanceIdFeature;
 import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
+import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderAbstract;
+import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitPredictor;
 import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
 
 public class VowpalWabbitLoadModelConnector
@@ -130,94 +130,122 @@ public class VowpalWabbitLoadModelConnector
     }
 
     @Override
-    public void process(JCas jcas) throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
+        File file = null;
+        if (isSequence()) {
+            file = createInputFile(aJCas, true);
+        }
+        else {
+            file = createInputFile(aJCas, false);
+        }
 
-    }
+        List<String> prediction = runPrediction(file, isSequence());
 
-    private void setPredictedOutcome(JCas aJCas, String aLabels)
-    {
-        List<TextClassificationOutcome> outcomes = new ArrayList<TextClassificationOutcome>(
-                JCasUtil.select(aJCas, TextClassificationOutcome.class));
-        String[] labels = aLabels.split("\n");
+        List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(aJCas);
 
-        for (int i = 0, labelIdx = 0; i < outcomes.size(); i++) {
-            if (labels[labelIdx].isEmpty()) {
-                // empty lines mark end of sequence
-                // shift label index +1 to begin of next sequence
-                labelIdx++;
+        for (int i = 0; i < outcomes.size(); i++) {
+
+            if (isRegression()) {
+                String val = prediction.get(i);
+                outcomes.get(i).setOutcome(val);
             }
-            TextClassificationOutcome o = outcomes.get(i);
-            o.setOutcome(labels[labelIdx++]);
+            else {
+                String val = prediction.get(i);
+                String pred = integer2OutcomeMapping.get(val);
+                outcomes.get(i).setOutcome(pred);
+            }
+
         }
 
     }
 
-    private List<Instance> getInstancesInSequence(
-            FeatureExtractorResource_ImplBase[] aFeatureExtractors, JCas aJCas,
-            TextClassificationSequence aSequencd, boolean addInstanceId, int aSequenceId)
-        throws Exception
+    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas aJCas)
     {
+        return new ArrayList<TextClassificationOutcome>(
+                JCasUtil.select(aJCas, TextClassificationOutcome.class));
+    }
 
-        List<Instance> instances = new ArrayList<Instance>();
-        int jcasId = JCasUtil.selectSingle(aJCas, JCasId.class).getId();
-        List<TextClassificationTarget> seqTargets = JCasUtil.selectCovered(aJCas,
-                TextClassificationTarget.class, aSequencd);
+    protected List<String> runPrediction(File tempFile, boolean isSequence) throws AnalysisEngineProcessException
+    {
+        List<String> predict = null;
+        try {
+            File prediction = FileUtil
+                    .createTempFile("vowpalWabbitPrediction" + System.currentTimeMillis(), ".txt");
+            prediction.deleteOnExit();
 
-        for (TextClassificationTarget aTarget : seqTargets) {
-
-            Instance instance = new Instance();
-            if (addInstanceId) {
-                instance.addFeature(InstanceIdFeature.retrieve(aJCas, aTarget, aSequenceId));
+            VowpalWabbitPredictor predictor = new VowpalWabbitPredictor();
+            predict = predictor.predict(tempFile, model);
+            
+            if(isSequence) {
+                List<String> seqPred = new ArrayList<>();
+                for(String p : predict) {
+                    seqPred.addAll(Arrays.asList(p.split(" ")));
+                }
+                predict = seqPred;
             }
+            
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
+        }
 
-            // execute feature extractors and add features to instance
-            try {
-                for (FeatureExtractorResource_ImplBase featExt : aFeatureExtractors) {
-                    Set<Feature> features = ((FeatureExtractor) featExt).extract(aJCas, aTarget);
-                    features.forEach(x -> {
-                        if (!x.isDefaultValue()) {
-                            instance.addFeature(x);
+        return predict;
+    }
+
+    private File createInputFile(JCas aJCas, boolean isSequenceMod)
+        throws AnalysisEngineProcessException
+    {
+        File tempFile = null;
+        try {
+            tempFile = FileUtil.createTempFile("vowpalWabbit" + System.currentTimeMillis(), ".txt");
+            tempFile.deleteOnExit();
+
+            try (BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"))) {
+
+                InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors,
+                        false);
+                List<Instance> instances = extractor.getInstances(aJCas, true);
+
+                if (isSequenceMod) {
+                    Collections.sort(instances, new Comparator<Instance>()
+                    {
+
+                        @Override
+                        public int compare(Instance o1, Instance o2)
+                        {
+                            return ((Integer) o1.getSequenceId()).compareTo(o2.getSequenceId());
                         }
                     });
                 }
-            }
-            catch (TextClassificationException e) {
-                throw new AnalysisEngineProcessException(e);
-            }
 
-            // set and write outcome label(s)
-            instance.setOutcomes(getOutcomes(aJCas, aTarget));
-            instance.setJcasId(jcasId);
-            instance.setSequenceId(aSequenceId);
-            instance.setSequencePosition(aTarget.getId());
+                int prevSeqId = -1;
+                for (Instance instance : instances) {
 
-            instances.add(instance);
+                    if (instance.getSequenceId() != prevSeqId && prevSeqId != -1) {
+                        bw.write("\n");
+                    }
+
+                    bw.write("|");
+
+                    for (Feature f : instance.getFeatures()) {
+                        bw.write(" ");
+                        bw.write(f.getName() + ":" + f.getValue());
+                    }
+                    bw.write("\n");
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new AnalysisEngineProcessException(e);
         }
 
-        return instances;
+        return tempFile;
     }
 
-    private List<String> getOutcomes(JCas aJCas, AnnotationFS aTarget)
-        throws TextClassificationException
+    private boolean isSequence()
     {
-        Collection<TextClassificationOutcome> outcomes;
-        if (aTarget == null) {
-            outcomes = JCasUtil.select(aJCas, TextClassificationOutcome.class);
-        }
-        else {
-            outcomes = JCasUtil.selectCovered(aJCas, TextClassificationOutcome.class, aTarget);
-        }
-
-        if (outcomes.size() == 0) {
-            throw new TextClassificationException("No [" + TextClassificationOutcome.class.getName()
-                    + "] annotations present in current CAS.");
-        }
-
-        List<String> stringOutcomes = new ArrayList<String>();
-        for (TextClassificationOutcome outcome : outcomes) {
-            stringOutcomes.add(outcome.getOutcome());
-        }
-        return stringOutcomes;
+        return featureMode.equals(FM_SEQUENCE);
     }
 }

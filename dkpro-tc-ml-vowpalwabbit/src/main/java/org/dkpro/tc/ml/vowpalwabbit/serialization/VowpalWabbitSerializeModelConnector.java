@@ -107,7 +107,7 @@ public class VowpalWabbitSerializeModelConnector
 
         List<String> parameters = getParameters(classificationArguments);
         parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
-
+        parameters = VowpalWabbitTestTask.automaticallyAddParametersForClassificationMode(aContext, parameters, learningMode, featureMode);
         trainer.train(train, model, parameters);
     }
 

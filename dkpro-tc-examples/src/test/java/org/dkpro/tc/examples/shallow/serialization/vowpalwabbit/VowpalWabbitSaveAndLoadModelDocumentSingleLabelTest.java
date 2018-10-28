@@ -83,7 +83,7 @@ public class VowpalWabbitSaveAndLoadModelDocumentSingleLabelTest
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
         Map<String, Object> config = new HashMap<>();
-        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new VowpalWabbitAdapter()});
+        config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new VowpalWabbitAdapter() });
         config.put(DIM_DATA_WRITER, new VowpalWabbitAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new VowpalWabbitAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
@@ -143,6 +143,10 @@ public class VowpalWabbitSaveAndLoadModelDocumentSingleLabelTest
         File id2outcomeMapping = new File(
                 modelFolder.getAbsolutePath() + "/" + VowpalWabbitDataWriter.OUTCOME_MAPPING);
         assertTrue(id2outcomeMapping.exists());
+
+        File stringMapping = new File(
+                modelFolder.getAbsolutePath() + "/" + VowpalWabbitDataWriter.STRING_MAPPING);
+        assertTrue(stringMapping.exists());
     }
 
     private static void documentTrainAndStoreModel(ParameterSpace paramSpace, File modelFolder)
@@ -186,20 +190,11 @@ public class VowpalWabbitSaveAndLoadModelDocumentSingleLabelTest
 
         assertEquals(4, outcomes.size());
 
-        if (evaluateWithClassificationArgs) {
-            assertEquals(4, outcomes.size());
-            assertEquals("neutral", outcomes.get(0).getOutcome());
-            assertEquals("neutral", outcomes.get(1).getOutcome());
-            assertEquals("neutral", outcomes.get(2).getOutcome());
-            assertEquals("neutral", outcomes.get(3).getOutcome());
-        }
-        else {
-            assertEquals(4, outcomes.size());
-            assertEquals("emotional", outcomes.get(0).getOutcome());
-            assertEquals("emotional", outcomes.get(1).getOutcome());
-            assertEquals("emotional", outcomes.get(2).getOutcome());
-            assertEquals("emotional", outcomes.get(3).getOutcome());
-        }
+        assertEquals(4, outcomes.size());
+        assertEquals("emotional", outcomes.get(0).getOutcome());
+        assertEquals("emotional", outcomes.get(1).getOutcome());
+        assertEquals("emotional", outcomes.get(2).getOutcome());
+        assertEquals("emotional", outcomes.get(3).getOutcome());
     }
 
 }

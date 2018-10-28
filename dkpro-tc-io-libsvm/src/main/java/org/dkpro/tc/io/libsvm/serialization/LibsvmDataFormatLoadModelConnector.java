@@ -118,14 +118,14 @@ public abstract class LibsvmDataFormatLoadModelConnector
     }
 
     @Override
-    public void process(JCas jcas) throws AnalysisEngineProcessException
+    public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
         try {
-            File tempFile = createInputFile(jcas);
+            File tempFile = createInputFile(aJCas);
 
             File prediction = runPrediction(tempFile);
 
-            List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(jcas);
+            List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(aJCas);
             List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
 
             checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
