@@ -26,7 +26,10 @@ import java.util.Properties;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.storage.StorageService;
+import org.dkpro.lab.storage.impl.PropertiesAdapter;
+import org.dkpro.lab.task.Task;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
 
@@ -120,19 +123,42 @@ public class BasicResultReport
         }
 
 		if (printResultsToSysout) {
-			System.out.println("\n[" + getContext().getId() + "]");
+		    String id = getContext().getId();
+			System.out.println("\n[" + getContext().getId() + "/" + getMLSetup(id)+ "]");
 			for (Entry<String, String> e : resultMap.entrySet()) {
 				System.out.println("\t" + e.getKey() + ": " + e.getValue());
 			}
 			System.out.println("\n");
 		} else {
+		    String id = getContext().getId();
 			StringBuilder logMsg = new StringBuilder();
-			logMsg.append("Run [" + getContext().getId() + "]: ");
+			logMsg.append("Run [" + getContext().getId() + "/" + getMLSetup(id) + "]: ");
 			resultMap.keySet().forEach(x -> logMsg.append(x + "=" + resultMap.get(x) + " |"));
 			LogFactory.getLog(getClass()).info(logMsg.toString());
         }
 
         return pa;
+    }
+
+    private String getMLSetup(String id) throws Exception {
+
+        Map<String, String> discriminatorsMap = getDiscriminatorsForContext(getContext().getStorageService(), id, Task.DISCRIMINATORS_KEY);
+        discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
+
+        String args = discriminatorsMap.get(Constants.DIM_CLASSIFICATION_ARGS);
+
+        if (args == null || args.isEmpty()) {
+            return "";
+        }
+
+        args = args.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "_");
+
+        return args + "_";
+    }
+    
+    private static Map<String, String> getDiscriminatorsForContext(StorageService store, String contextId,
+            String discriminatorsKey) {
+        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
     }
 
     private Properties addRandomBaselineResult(Properties pa, String learningMode) throws Exception
