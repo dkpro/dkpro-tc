@@ -30,6 +30,8 @@ import org.dkpro.tc.core.task.ModelSerializationTask;
 import org.dkpro.tc.ml.vowpalwabbit.report.VowpalWabbitBaselineMajorityClassIdReport;
 import org.dkpro.tc.ml.vowpalwabbit.report.VowpalWabbitBaselineRandomIdReport;
 import org.dkpro.tc.ml.vowpalwabbit.report.VowpalWabbitOutcomeIDReport;
+import org.dkpro.tc.ml.vowpalwabbit.serialization.VowpalWabbitLoadModelConnector;
+import org.dkpro.tc.ml.vowpalwabbit.serialization.VowpalWabbitSerializeModelConnector;
 import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
 
 /**
@@ -106,13 +108,13 @@ public class VowpalWabbitAdapter
     @Override
     public Class<? extends ModelSerialization_ImplBase> getLoadModelConnectorClass()
     {
-        return null;
+        return VowpalWabbitLoadModelConnector.class;
     }
 
     @Override
     public ModelSerializationTask getSaveModelTask()
     {
-        return null;
+        return new VowpalWabbitSerializeModelConnector();
     }
 
     @Override

@@ -67,7 +67,7 @@ import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
  * This demo demonstrates the usage of the sequence classifier CRFsuite which uses Conditional
  * Random Fields (CRF).
  */
-public class VowpalWabbitSaveAndLoadModelTest
+public class VowpalWabbitSaveAndLoadModelSequenceTest
     extends TestCaseSuperClass
     implements Constants
 {
@@ -129,6 +129,7 @@ public class VowpalWabbitSaveAndLoadModelTest
                 new Object[] { new VowpalWabbitAdapter() });
         config.put(DIM_DATA_WRITER, new VowpalWabbitAdapter().getDataWriterClass());
         config.put(DIM_FEATURE_USE_SPARSE, new VowpalWabbitAdapter().useSparseFeatures());
+        config.put(DIM_FEATURE_MODE, Constants.FM_SEQUENCE);
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         File modelFolder = folder.newFolder();
