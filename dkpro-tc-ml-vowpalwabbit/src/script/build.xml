@@ -71,6 +71,30 @@
 			<entry  key="vw" value="executable"/>
 		</propertyfile>
 		
+		<!-- Linux 32 bit -->
+		<mkdir dir="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32"/>
+
+		<get 
+	    		src="https://bintray.com/inofficalbinarystore/generic/download_file?file_path=vowpalwabbit-8.6.1.linux-x86_32.tar.gz" 
+	    		dest="target/download/vowpalwabbit-8.6.1.linux-x86_32.tar.gz" 
+	    		skipexisting="true"/>
+		<gunzip 
+				src="target/download/vowpalwabbit-8.6.1.linux-x86_32.tar.gz"
+				dest="target/download/vowpalwabbit-8.6.1.linux-x86_32.tar"/>
+		<untar 
+				src="target/download/vowpalwabbit-8.6.1.linux-x86_32.tar"
+				dest="target/download/linux-x86_32">
+			<patternset>
+				<include name="*/*" />
+			</patternset>
+		</untar>
+
+		<copy file="target/download/linux-x86_32/vowpalwabbit-8.6.1.linux-x86_32/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32/vw"/>
+
+		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32/README">
+			VowpalWabbit 8.6.1
+		</echo>
+				
 		<!-- Linux 64bit -->
 		<mkdir dir="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64"/>
 
