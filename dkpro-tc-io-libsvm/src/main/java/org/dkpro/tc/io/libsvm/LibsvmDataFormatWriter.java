@@ -57,23 +57,16 @@ public class LibsvmDataFormatWriter
 
     public static final String INDEX2INSTANCEID = "index2Instanceid.txt";
 
-    private File outputDirectory;
-
-    private String learningMode;
-
-    private File classifierFormatOutputFile;
-
-    private BufferedWriter bw = null;
-
-    private Map<String, String> index2instanceId;
-
-    private Gson gson = new Gson();
-
+    protected File outputDirectory;
+    protected String learningMode;
+    protected File classifierFormatOutputFile;
+    protected BufferedWriter bw = null;
+    protected Map<String, String> index2instanceId;
+    protected Gson gson = new Gson();
     protected int maxId = 0;
-
-    private Map<String, Integer> featureNames2id;
-
-    private Map<String, Integer> outcomeMap;
+    protected Map<String, Integer> featureNames2id;
+    protected Map<String, Integer> outcomeMap;
+    protected String featureMode;
 
     @Override
     public void writeGenericFormat(List<Instance> instances)
@@ -276,11 +269,12 @@ public class LibsvmDataFormatWriter
 
     @Override
     public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting, String[] outcomes)
+            String featureMode, boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputDirectory = outputDirectory;
         this.learningMode = learningMode;
+        this.featureMode = featureMode;
         classifierFormatOutputFile = new File(outputDirectory,
                 Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
@@ -342,7 +336,7 @@ public class LibsvmDataFormatWriter
         return Constants.GENERIC_FEATURE_FILE;
     }
 
-    private void writeMapping(File outputDirectory, String fileName,
+    protected void writeMapping(File outputDirectory, String fileName,
             Map<String, String> index2instanceId)
         throws IOException
     {
@@ -363,7 +357,7 @@ public class LibsvmDataFormatWriter
     }
 
     // build a map between the dkpro instance id and the index in the file
-    private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
+    protected void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
     {
         Collection<Feature> features = instance.getFeatures();
         for (Feature f : features) {
@@ -374,7 +368,7 @@ public class LibsvmDataFormatWriter
         }
     }
 
-    private boolean isRegression()
+    protected boolean isRegression()
     {
         return learningMode.equals(Constants.LM_REGRESSION);
     }

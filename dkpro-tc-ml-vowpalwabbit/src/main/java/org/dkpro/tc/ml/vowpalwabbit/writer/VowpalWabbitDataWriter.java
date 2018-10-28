@@ -30,10 +30,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -56,14 +58,15 @@ public class VowpalWabbitDataWriter
     String learningMode;
     boolean applyWeigthing;
 //    protected int maxId = 1; //vowpalWabbit doesn't like zeros as labels
-    private BufferedWriter bw = null;
-    private Gson gson = new Gson();
-    private File classifierFormatOutputFile;
-    private Map<String, String> outcomeMap;
-    private Map<String, String> stringToIntegerMap;
-    private Map<String, String> index2instanceId;
-    private int maxStringId=1;
-	private int maxInstanceId;
+    BufferedWriter bw = null;
+    Gson gson = new Gson();
+    File classifierFormatOutputFile;
+    Map<String, String> outcomeMap;
+    Map<String, String> stringToIntegerMap;
+    Map<String, String> index2instanceId;
+    int maxStringId=1;
+	int maxInstanceId;
+    String featureMode;
 
     @Override
     public void writeGenericFormat(List<Instance> instances)
@@ -125,32 +128,12 @@ public class VowpalWabbitDataWriter
             initClassifierFormat();
 
             
-            for(Instance instance : instances) {
-            	recordInstanceId(instance, maxInstanceId++, index2instanceId);
-            	bw.write(outcome(instance.getOutcome(), isRegression()) + " |");
-            	List<Feature> features = new ArrayList<Feature>(instance.getFeatures());
-            	for(int i=0; i < features.size() ; i++) {
-            		Feature feature = features.get(i);
-            		
-            		if(feature.getName().equals(Constants.ID_FEATURE_NAME)) {
-            			continue;
-            		}
-            		
-            		String name = feature.getName();
-            		String value = getValue(feature);
-            		
-            		bw.write(name +":" + value);
-            		
-            		
-            		if(i+1 < features.size()) {
-            			bw.write(" ");
-            		}
-            	}
-            	bw.write("\n");
+            if(isSequenceMode()) {
+                writeDataSequentially(instances);
+            }else {
+                writeInstanceData(instances);
             }
-
-            bw.close();
-            bw = null;
+            closeStream();
             
             writeMapping(outputDirectory, OUTCOME_MAPPING, outcomeMap);
             writeMapping(outputDirectory, STRING_MAPPING, stringToIntegerMap);
@@ -162,6 +145,89 @@ public class VowpalWabbitDataWriter
         
     }
     
+    private void writeDataSequentially(List<Instance> instances) throws Exception
+    {
+        Collections.sort(instances, new Comparator<Instance>()
+        {
+            @Override
+            public int compare(Instance o1, Instance o2)
+            {
+
+                return ((Integer) o1.getSequenceId()).compareTo(o2.getSequenceId());
+            }
+        });
+        List<List<Instance>> groupedBySequenceId = group(instances);
+        
+        for(List<Instance> instOfSeq : groupedBySequenceId) {
+            writeInstanceData(instOfSeq);
+            bw.write("\n");
+        }
+        
+    }
+
+
+    private List<List<Instance>> group(List<Instance> instances)
+    {
+        List<List<Instance>> groups = new ArrayList<>();
+
+        //group by sequence id
+        Map<Integer, List<Instance>> collect = instances.stream()
+                .collect(Collectors.groupingBy(Instance::getSequenceId));
+
+        //sort sequences by sequence position
+        collect.forEach((x, y) -> {
+            Collections.sort(y, new Comparator<Instance>()
+            {
+
+                @Override
+                public int compare(Instance o1, Instance o2)
+                {
+                    return ((Integer) o1.getSequencePosition()).compareTo(o2.getSequencePosition());
+                }
+            });
+            groups.add(y);
+        });
+
+        return groups;
+    }
+
+    private boolean isSequenceMode()
+    {
+        return featureMode.equals(Constants.FM_SEQUENCE);
+    }
+
+    private void writeInstanceData(List<Instance> instances) throws Exception
+    {
+        for(Instance instance : instances) {
+            recordInstanceId(instance, maxInstanceId++, index2instanceId);
+            bw.write(outcome(instance.getOutcome(), isRegression()) + " |");
+            List<Feature> features = new ArrayList<Feature>(instance.getFeatures());
+            for(int i=0; i < features.size() ; i++) {
+                Feature feature = features.get(i);
+                
+                if(feature.getName().equals(Constants.ID_FEATURE_NAME)) {
+                    continue;
+                }
+                
+                String name = feature.getName();
+                String value = getValue(feature);
+                
+                bw.write(name +":" + value);
+                
+                
+                if(i+1 < features.size()) {
+                    bw.write(" ");
+                }
+            }
+            bw.write("\n");
+        }
+    }
+    
+    private void closeStream() throws IOException {
+        bw.close();
+        bw = null;
+    }
+
     // build a map between the dkpro instance id and the index in the file
     private void recordInstanceId(Instance instance, int i, Map<String, String> index2instanceId)
     {
@@ -252,12 +318,13 @@ public class VowpalWabbitDataWriter
 
     @Override
     public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting, String[] outcomes)
+            String featureMode, boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputDirectory = outputDirectory;
         this.useSparse = useSparse;
         this.learningMode = learningMode;
+        this.featureMode = featureMode;
         this.applyWeigthing = applyWeighting;
 
         classifierFormatOutputFile = new File(outputDirectory,

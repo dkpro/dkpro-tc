@@ -20,6 +20,8 @@ package org.dkpro.tc.examples.shallow;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import java.io.File;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
@@ -27,11 +29,12 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.examples.shallow.annotators.UnitOutcomeAnnotator;
-import org.dkpro.tc.examples.shallow.filter.UniformClassDistributionFilter;
+import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.ngram.CharacterNGram;
 import org.dkpro.tc.features.ngram.WordNGram;
+import org.dkpro.tc.features.style.InitialCharacterUpperCase;
+import org.dkpro.tc.features.tcu.TargetSurfaceFormContextFeature;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
@@ -42,70 +45,73 @@ import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 /**
- * This is an example for POS tagging as unit classification. Each POS is treated as a
- * classification unit, but unlike sequence tagging the decision for each POS is taken
- * independently. This will usually give worse results, so this is only to showcase the concept.
+ * Example for NER as sequence classification.
  */
-public class VowpalWabbitDemoUnit
+public class VowpalWabbitSequence
     implements Constants
 {
 
-    public static final String LANGUAGE_CODE = "en";
+    public static final String LANGUAGE_CODE = "de";
+    public static final int NUM_FOLDS = 2;
+    public static final String corpusFilePath = "/Users/toobee/Desktop/mock/";
 
-    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/";
+    public static File outputFolder = null;
 
     public static void main(String[] args) throws Exception
     {
     	System.setProperty("java.util.logging.config.file", "logging.properties");
     	System.setProperty("DKPRO_HOME", System.getProperty("user.home")+"/Desktop/");
 
-        new VowpalWabbitDemoUnit().runTrainTest();
-    }
-    
-    public CollectionReaderDescription getReaderTrain() throws Exception {
-        return CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, "*.xml");
-    }
-    
-    public CollectionReaderDescription getReaderTest() throws Exception {
-        return CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
-                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                TeiReader.PARAM_PATTERNS, "*.xml");
-    }
-    
-    public TcFeatureSet getFeatureSet() {
-        return new TcFeatureSet(TcFeatureFactory.create(TokenRatioPerDocument.class),
-        		TcFeatureFactory.create(WordNGram.class,
-        				WordNGram.PARAM_NGRAM_USE_TOP_K, 500),
-                TcFeatureFactory.create(CharacterNGram.class,
-                        CharacterNGram.PARAM_NGRAM_USE_TOP_K, 500));
+        VowpalWabbitSequence demo = new VowpalWabbitSequence();
+        demo.runTrainTest();
     }
 
     // ##### Train Test #####
     public void runTrainTest() throws Exception
     {
-
         ExperimentBuilder builder = new ExperimentBuilder();
-        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
-                .dataReaderTrain(getReaderTrain())
-                .dataReaderTest(getReaderTest())
-                .preprocessing(getPreprocessing())
-                .featureSets(getFeatureSet())
-                .featureFilter(UniformClassDistributionFilter.class.getName())
-                .learningMode(LearningMode.SINGLE_LABEL)
-                .featureMode(FeatureMode.UNIT)
-                .machineLearningBackend(
-                        new MLBackend(new VowpalWabbitAdapter(), "--ect")
-                        )
-                .run();
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTestExperiment")
+               .dataReaderTrain(getReaderTrain())
+               .dataReaderTest(getReaderTest())
+               .featureSets(getFeatureSet())
+               .featureMode(FeatureMode.SEQUENCE)
+               .learningMode(LearningMode.SINGLE_LABEL)
+               .machineLearningBackend(
+                                       new MLBackend(new VowpalWabbitAdapter())
+                                       )
+               .preprocessing(getPreprocessing())
+               .run();
     }
     
+    public CollectionReaderDescription getReaderTrain() throws Exception {
+        return CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
+                TeiReader.PARAM_PATTERNS, "a0*");
+    }
+    
+    public CollectionReaderDescription getReaderTest() throws Exception {
+        return CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                TeiReader.PARAM_SOURCE_LOCATION, corpusFilePath,
+                TeiReader.PARAM_PATTERNS, "a1*");
+    }
+    
+    public TcFeatureSet getFeatureSet()
+    {
+        return new TcFeatureSet(
+                TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
+                        TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -2),
+                TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
+                        TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, -1),
+                TcFeatureFactory.create(TargetSurfaceFormContextFeature.class,
+                        TargetSurfaceFormContextFeature.PARAM_RELATIVE_TARGET_ANNOTATION_INDEX, 0),
+                TcFeatureFactory.create(CharacterNGram.class));
+    }
 
     protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
-        return createEngineDescription(UnitOutcomeAnnotator.class);
+        return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
+
 }

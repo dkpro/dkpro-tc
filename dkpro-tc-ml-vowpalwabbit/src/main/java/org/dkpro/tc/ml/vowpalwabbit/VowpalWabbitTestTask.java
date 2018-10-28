@@ -41,162 +41,249 @@ import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitTrainer;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
-public class VowpalWabbitTestTask extends TcClassifierTaskBase {
-	@Discriminator(name = DIM_LEARNING_MODE)
-	private String learningMode;
+public class VowpalWabbitTestTask
+    extends TcClassifierTaskBase
+{
 
-	@Discriminator(name = DIM_CLASSIFICATION_ARGS)
-	private List<Object> classificationArguments;
+    @Discriminator(name = DIM_LEARNING_MODE)
+    private String learningMode;
 
-	@Override
-	public void execute(TaskContext aContext) throws Exception {
-		super.execute(aContext);
-		boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
+    @Discriminator(name = DIM_FEATURE_MODE)
+    private String featureMode;
 
-		if (multiLabel) {
-			throw new TextClassificationException(
-					"Multi-label requested, but CRFSuite only supports single label setups.");
-		}
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> classificationArguments;
 
-		File model = trainModel(aContext);
-		List<String> predictionValues = testModel(aContext, model);
+    @Override
+    public void execute(TaskContext aContext) throws Exception
+    {
+        super.execute(aContext);
+        boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
-		writeFileWithPredictedLabels(aContext, predictionValues);
+        if (multiLabel) {
+            throw new TextClassificationException(
+                    "Multi-label requested, but CRFSuite only supports single label setups.");
+        }
 
-	}
+        File model = trainModel(aContext);
+        List<String> predictionValues = testModel(aContext, model);
 
-	private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues) throws Exception {
-		File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS, AccessMode.READWRITE);
+        writeFileWithPredictedLabels(aContext, predictionValues);
 
-		StringBuilder sb = new StringBuilder();
-		for (String p : predictionValues) {
-			sb.append(p + "\n");
-		}
-		FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
+    }
 
-	}
+    private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
+        throws Exception
+    {
+        File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS,
+                AccessMode.READWRITE);
 
-	public static File loadAndPrepareFeatureDataFile(TaskContext aContext, File tmpLocation, String sourceFolder)
-			throws Exception {
+        StringBuilder sb = new StringBuilder();
+        for (String p : predictionValues) {
+            sb.append(p + "\n");
+        }
+        FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
 
-		// Depending on a users' setup, we might exceed the path-length limit of 255
-		// character, which is a problem on Windows, we provide all needed files in the
-		// folder where the binary is located to enforce short paths
+    }
 
-		File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
-		File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+    public static File loadAndPrepareFeatureDataFile(TaskContext aContext, File tmpLocation,
+            String sourceFolder)
+        throws Exception
+    {
 
-		if (srcFile.getAbsolutePath().length() < 254 || !isWindows()) {
-			return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
-		}
+        // Depending on a users' setup, we might exceed the path-length limit of 255
+        // character, which is a problem on Windows, we provide all needed files in the
+        // folder where the binary is located to enforce short paths
 
-		File trainDestFile = new File(tmpLocation, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+        File folder = aContext.getFolder(sourceFolder, AccessMode.READONLY);
+        File srcFile = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-		InputStream is = null;
-		try {
-			is = new FileInputStream(srcFile);
-			FileUtils.copyInputStreamToFile(is, trainDestFile);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
+        if (srcFile.getAbsolutePath().length() < 254 || !isWindows()) {
+            return ResourceUtils.getUrlAsFile(srcFile.toURI().toURL(), true);
+        }
 
-		return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
-	}
+        File trainDestFile = new File(tmpLocation, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-	private static boolean isWindows() {
-		return VowpalWabbit.getPlatformDetector().getPlatformId().startsWith(PlatformDetector.OS_WINDOWS);
-	}
+        InputStream is = null;
+        try {
+            is = new FileInputStream(srcFile);
+            FileUtils.copyInputStreamToFile(is, trainDestFile);
+        }
+        finally {
+            IOUtils.closeQuietly(is);
+        }
 
-	private File trainModel(TaskContext aContext) throws Exception {
-		VowpalWabbitTrainer trainer = new VowpalWabbitTrainer();
+        return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
+    }
 
-		File executable = VowpalWabbitTrainer.getExecutable();
-		File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
-				TEST_TASK_INPUT_KEY_TRAINING_DATA);
-		File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
+    private static boolean isWindows()
+    {
+        return VowpalWabbit.getPlatformDetector().getPlatformId()
+                .startsWith(PlatformDetector.OS_WINDOWS);
+    }
 
-		List<String> parameters = getParameters(classificationArguments);
-		parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
-		if (isClassification()) {
-			if(!containsClassificationParameter(parameters)) {
-				LogFactory.getLog(getClass()).info("Fallback to default classification strategy [--oaa]");
-				parameters.add("--oaa");
-			}
-			parameters.add(determineNumberOfClasses(aContext).toString());
-		}
+    private File trainModel(TaskContext aContext) throws Exception
+    {
+        VowpalWabbitTrainer trainer = new VowpalWabbitTrainer();
 
-		trainer.train(train, modelLocation, parameters);
+        File executable = VowpalWabbitTrainer.getExecutable();
+        File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
+                TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
 
-		deleteTmpFeatureFileIfCreated(aContext, train, TEST_TASK_INPUT_KEY_TRAINING_DATA);
+        List<String> parameters = getParameters(classificationArguments);
+        parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
 
-		return writeModel(aContext, modelLocation);
-	}
+        parameters = automaticallyAddParametersForClassificationMode(aContext, parameters);
 
-	private boolean containsClassificationParameter(List<String> parameters) {
-		for (String strategy : new String[] { "--csoaa_ldf", "--wap", "--csoaa", "--ect", "--oaa", "--log_multi" }) {
-			if (parameters.contains(strategy)) {
-				return true;
-			}
-		}
-		return false;
-	}
+        trainer.train(train, modelLocation, parameters);
 
-	private Integer determineNumberOfClasses(TaskContext aContext) throws IOException {
-		File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
-		File file = new File(folder, FILENAME_OUTCOMES);
-		List<String> outcomes = FileUtils.readLines(file, "utf-8");
-		return outcomes.size();
-	}
+        deleteTmpFeatureFileIfCreated(aContext, train, TEST_TASK_INPUT_KEY_TRAINING_DATA);
 
-	private boolean isClassification() {
+        return writeModel(aContext, modelLocation);
+    }
 
-		return learningMode.equals(Constants.LM_SINGLE_LABEL);
-	}
+    private List<String> automaticallyAddParametersForClassificationMode(TaskContext aContext,
+            List<String> parameters)
+        throws IOException
+    {
+        if (!isClassification()) {
+            return parameters;
+        }
 
-	private List<String> getParameters(List<Object> subList) {
-		List<String> s = new ArrayList<>();
+        if (isSequenceMode()) {
 
-		for (Object o : subList) {
-			s.add(o.toString());
-		}
+            if (!containsRequiredSeqParameter(parameters, "--search")) {
+                parameters = addParameter(parameters, "--search",
+                        determineNumberOfClasses(aContext).toString());
+            }
+            if (!containsRequiredSeqParameter(parameters, "--search_task")) {
+                parameters = addParameter(parameters, "--search_task", "sequence");
+            }
+            if (!containsRequiredSeqParameter(parameters, "--search_passes_per_policy")) {
+                parameters = addParameter(parameters, "--search_passes_per_policy", "2");
+                LogFactory.getLog(getClass()).debug(
+                        "Fallback configuration: set parameter [--search_passes_per_policy] to value [2]");
+            }
+            if (!containsRequiredSeqParameter(parameters, "--cache")) {
+                parameters = addParameter(parameters, "--cache", null);
+            }
 
-		return s;
-	}
+        }
+        else {
 
-	private List<String> testModel(TaskContext aContext, File model) throws Exception {
-		File executable = VowpalWabbit.getExecutable();
-		File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
-				TEST_TASK_INPUT_KEY_TEST_DATA);
+            if (!containsNeededNonSequenceClassificationParameter(parameters)) {
+                LogFactory.getLog(getClass()).info(
+                        "No classification strategy provided, falling back to classification strategy [--oaa]");
+                parameters.add("--oaa");
+            }
+            parameters.add(determineNumberOfClasses(aContext).toString());
+        }
 
-		VowpalWabbitPredictor predictor = new VowpalWabbitPredictor();
-		List<String> prediction = predictor.predict(testFile, model);
+        return parameters;
+    }
 
-//        deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
+    private List<String> addParameter(List<String> parameters, String parameter,
+            String parameterValue)
+    {
+        parameters.add(parameter);
+        if (parameterValue != null) {
+            parameters.add(parameterValue.toString());
+        }
 
-		return prediction;
-	}
+        return parameters;
+    }
 
-	private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key) {
-		File folder = aContext.getFolder(key, AccessMode.READONLY);
-		File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+    private boolean containsRequiredSeqParameter(List<String> parameters, String parameter)
+    {
+        for (String s : parameters) {
+            if (s.equals(parameter)) {
+                return true;
+            }
+        }
 
-		if (f.getAbsolutePath().length() >= 254 && isWindows()) {
-			FileUtils.deleteQuietly(input);
-		}
-	}
+        return false;
+    }
 
-	private File writeModel(TaskContext aContext, File model) throws Exception {
+    private boolean isSequenceMode()
+    {
+        return featureMode.equals(FM_SEQUENCE);
+    }
 
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(model);
-			aContext.storeBinary(MODEL_CLASSIFIER, fis);
-		} finally {
-			IOUtils.closeQuietly(fis);
-		}
-		File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
-		FileUtils.deleteQuietly(model);
-		return modelLocation;
-	}
+    private boolean containsNeededNonSequenceClassificationParameter(List<String> parameters)
+    {
+        for (String strategy : new String[] { "--csoaa_ldf", "--wap", "--csoaa", "--ect", "--oaa",
+                "--log_multi" }) {
+            if (parameters.contains(strategy)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Integer determineNumberOfClasses(TaskContext aContext) throws IOException
+    {
+        File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
+        File file = new File(folder, FILENAME_OUTCOMES);
+        List<String> outcomes = FileUtils.readLines(file, "utf-8");
+        return outcomes.size();
+    }
+
+    private boolean isClassification()
+    {
+
+        return learningMode.equals(Constants.LM_SINGLE_LABEL);
+    }
+
+    private List<String> getParameters(List<Object> subList)
+    {
+        List<String> s = new ArrayList<>();
+
+        for (Object o : subList) {
+            s.add(o.toString());
+        }
+
+        return s;
+    }
+
+    private List<String> testModel(TaskContext aContext, File model) throws Exception
+    {
+        File executable = VowpalWabbit.getExecutable();
+        File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
+                TEST_TASK_INPUT_KEY_TEST_DATA);
+
+        VowpalWabbitPredictor predictor = new VowpalWabbitPredictor();
+        List<String> prediction = predictor.predict(testFile, model);
+
+        // deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
+
+        return prediction;
+    }
+
+    private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
+    {
+        File folder = aContext.getFolder(key, AccessMode.READONLY);
+        File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
+
+        if (f.getAbsolutePath().length() >= 254 && isWindows()) {
+            FileUtils.deleteQuietly(input);
+        }
+    }
+
+    private File writeModel(TaskContext aContext, File model) throws Exception
+    {
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(model);
+            aContext.storeBinary(MODEL_CLASSIFIER, fis);
+        }
+        finally {
+            IOUtils.closeQuietly(fis);
+        }
+        File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
+        FileUtils.deleteQuietly(model);
+        return modelLocation;
+    }
 
 }

@@ -49,7 +49,9 @@ public interface DataWriter
      * @param useSparse
      *            use sparse feature
      * @param learningMode
-     *            the learning model
+     *            the learning mode
+     * @param featureMode 
+     *            the feature mode
      * @param applyWeighting
      *            apply weights
      * @param outcomes
@@ -57,7 +59,7 @@ public interface DataWriter
      * @throws java.lang.Exception
      *             in case of error
      */
-    void init(File outputDirectory, boolean useSparse, String learningMode, boolean applyWeighting,
+    void init(File outputDirectory, boolean useSparse, String learningMode, String featureMode, boolean applyWeighting,
             String[] outcomes)
         throws Exception;
 

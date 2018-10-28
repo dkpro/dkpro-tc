@@ -56,7 +56,7 @@ public class CrfSuiteDataWriterTest
         outcomes.add("2");
         outcomes.add("3");
         outcomes.add("4");
-        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false,
+        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, Constants.FM_SEQUENCE, false,
                 outcomes.toArray(new String[0]));
 
         instances = new ArrayList<>();
@@ -132,7 +132,7 @@ public class CrfSuiteDataWriterTest
 
     private void writeFeaturesWithDataWriter() throws Exception
     {
-        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, false,
+        writer.init(outputDirectory, true, Constants.LM_SINGLE_LABEL, Constants.FM_SEQUENCE, false,
                 outcomes.toArray(new String[0]));
         writer.writeClassifierFormat(instances);
     }

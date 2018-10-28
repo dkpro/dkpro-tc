@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class VowpalWabbitOutcomeIDReport
 {
     private static final String THRESHOLD_CONSTANT = "-1";
 
-	public VowpalWabbitOutcomeIDReport()
+    public VowpalWabbitOutcomeIDReport()
     {
         // required by groovy
     }
@@ -69,83 +70,90 @@ public class VowpalWabbitOutcomeIDReport
     {
         init();
         baslinePreparation();
-        
+
         Map<Integer, String> id2label = getId2LabelMapping(isRegression);
         String header = buildHeader(id2label, isRegression);
 
         List<String> predictionValues = readPredictions();
         List<String> goldValues = readGoldValuesFromTestFile();
-        
-		if (predictionValues.size() != goldValues.size()) {
-			throw new IllegalStateException("Prediction and found gold values do not match, predictions ["
-					+ predictionValues.size() + "] vs gold [" + goldValues.size() + "]");
-		}
-        
+
+        if (predictionValues.size() != goldValues.size()) {
+            throw new IllegalStateException(
+                    "Prediction and found gold values do not match, predictions ["
+                            + predictionValues.size() + "] vs gold [" + goldValues.size() + "]");
+        }
+
         Map<String, String> index2instanceIdMap = getMapping(isUnit || isSequence);
 
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i < goldValues.size(); i++) {
-        	String p = getPrediction(predictionValues.get(i));
-        	String g = goldValues.get(i);
-        	
+        for (int i = 0; i < goldValues.size(); i++) {
+            String p = getPrediction(predictionValues.get(i));
+            String g = goldValues.get(i);
+            
+            if(g.isEmpty()) {
+                continue;
+            }
+
             String key = index2instanceIdMap.get(i + "");
 
             if (isRegression) {
-                sb.append(key + "=" + p + ";" + g + ";" + THRESHOLD_CONSTANT
-                        + "\n");
+                sb.append(key + "=" + p + ";" + g + ";" + THRESHOLD_CONSTANT + "\n");
             }
             else {
                 int pred = Double.valueOf(p).intValue();
                 int gold = Double.valueOf(g).intValue();
-                sb.append(key + "=" + pred + ";" + gold + ";" + THRESHOLD_CONSTANT
-                        + "\n");
+                sb.append(key + "=" + pred + ";" + gold + ";" + THRESHOLD_CONSTANT + "\n");
             }
         }
 
         File targetFile = getTargetOutputFile();
-        
+
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String timeStamp = dateFormat.format(cal.getTime());
-        
+
         String content = header + "\n#" + timeStamp + "\n" + sb.toString();
         FileUtils.writeStringToFile(targetFile, content, "utf-8");
-        
+
     }
-    
+
     protected void baslinePreparation() throws Exception
     {
         // This method is overloaded in a subclass for performing some
         // initialization for computing baseline values
     }
-    
-    private List<String> readGoldValuesFromTestFile() throws Exception {
-    	File f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-    			FILENAME_DATA_IN_CLASSIFIER_FORMAT);
-    	
-    	List<String> gold = new ArrayList<>();
-    	try(BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream(f), "utf-8"))){
-    		String line=null;
-    		while((line = reader.readLine()) != null) {
-    			String[] split = line.split(" ");
-    			gold.add(split[0]);
-    		}
-    	}
-    	
-		return gold;
-	}
 
-	protected String getPrediction(String string) {
-		return string;
-	}
+    private List<String> readGoldValuesFromTestFile() throws Exception
+    {
+        File f = new File(
+                getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
+                FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-	private Map<String, String> getMapping(boolean isUnit) throws IOException
+        List<String> gold = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(f), "utf-8"))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                String[] split = line.split(" ");
+                gold.add(split[0]);
+            }
+        }
+
+        return gold;
+    }
+
+    protected String getPrediction(String string)
+    {
+        return string;
+    }
+
+    private Map<String, String> getMapping(boolean isUnit) throws IOException
     {
 
         File f;
         if (isUnit) {
             f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
-            		VowpalWabbitDataWriter.INDEX2INSTANCEID);
+                    VowpalWabbitDataWriter.INDEX2INSTANCEID);
         }
         else {
             f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
@@ -163,10 +171,10 @@ public class VowpalWabbitOutcomeIDReport
                 continue;
             }
             String[] split = l.split("\t");
-            
-            //not title set in the reader that could be retrieved
-            String value="";
-            if(split.length >= 2) {
+
+            // not title set in the reader that could be retrieved
+            String value = "";
+            if (split.length >= 2) {
                 value = split[1];
             }
 
@@ -175,7 +183,7 @@ public class VowpalWabbitOutcomeIDReport
         }
         return m;
     }
-    
+
     protected File getTargetOutputFile()
     {
         File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
@@ -185,7 +193,20 @@ public class VowpalWabbitOutcomeIDReport
     protected List<String> readPredictions() throws IOException
     {
         File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-        List<String> readLines = FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
+        File predictionFile = new File(predFolder, Constants.FILENAME_PREDICTIONS);
+        List<String> readLines = null;
+
+        if (isSequence) {
+            readLines = new ArrayList<>();
+            List<String> tmp = FileUtils.readLines(predictionFile, "utf-8");
+            for (String t : tmp) {
+                readLines.addAll(Arrays.asList(t.split(" ")));
+                readLines.add("");// empty line = end of sequence
+            }
+        }
+        else {
+            readLines = FileUtils.readLines(predictionFile, "utf-8");
+        }
         return readLines;
     }
 

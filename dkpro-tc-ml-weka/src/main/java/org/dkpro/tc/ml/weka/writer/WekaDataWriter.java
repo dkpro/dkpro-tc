@@ -70,15 +70,17 @@ public class WekaDataWriter
     Attribute outcomeAttribute;
     ArffSaver saver;
     Instances masterInstance;
-    private String[] outcomes;
+    String[] outcomes;
+    String featureMode;
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
-            boolean applyWeighting, String[] outcomes)
+            String featureMode, boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputFolder = outputFolder;
         this.useSparse = useSparse;
+        this.featureMode = featureMode;
         this.applyWeighting = applyWeighting;
         this.outcomes = Arrays.copyOf(outcomes, outcomes.length);
 

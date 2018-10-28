@@ -66,7 +66,7 @@ public class LiblinearDataWriterTest {
 		FileUtils.writeStringToFile(new File(outputDirectory, Constants.FILENAME_FEATURES), sb.toString(), "utf-8");
 		File outputFile = new File(outputDirectory, Constants.FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 		LibsvmDataFormatWriter writer = new LibsvmDataFormatWriter();
-		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, false, new String[]{"0", "1"});
+		writer.init(outputDirectory, false, Constants.LM_SINGLE_LABEL, Constants.FM_DOCUMENT, false, new String[]{"0", "1"});
 		writer.writeClassifierFormat(fs);
 
 		Problem problem = Problem.readFromFile(outputFile, 1.0);

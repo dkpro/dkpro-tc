@@ -142,7 +142,7 @@ public class ExtractFeaturesConnector
             }
 
             dsw = (DataWriter) Class.forName(dataWriterClass).newInstance();
-            dsw.init(outputDirectory, useSparseFeatures, learningMode, applyWeighting, outcomes);
+            dsw.init(outputDirectory, useSparseFeatures, learningMode, featureMode, applyWeighting, outcomes);
         }
         catch (Exception e) {
             throw new ResourceInitializationException(e);

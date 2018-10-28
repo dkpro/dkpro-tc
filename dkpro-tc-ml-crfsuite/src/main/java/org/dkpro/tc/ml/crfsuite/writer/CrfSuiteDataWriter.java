@@ -41,14 +41,15 @@ import com.google.gson.Gson;
 public class CrfSuiteDataWriter
     implements DataWriter
 {
-    CrfSuiteFeatureFormatExtractionIterator iterator;
-    File outputDirectory;
-    boolean useSparse;
-    String learningMode;
-    boolean applyWeigthing;
-    private BufferedWriter bw = null;
-    private Gson gson = new Gson();
-    private File classifierFormatOutputFile;
+    protected CrfSuiteFeatureFormatExtractionIterator iterator;
+    protected File outputDirectory;
+    protected boolean useSparse;
+    protected String learningMode;
+    protected boolean applyWeigthing;
+    protected BufferedWriter bw = null;
+    protected Gson gson = new Gson();
+    protected File classifierFormatOutputFile;
+    protected String featureMode;
 
     @Override
     public void writeGenericFormat(List<Instance> instances)
@@ -150,12 +151,13 @@ public class CrfSuiteDataWriter
 
     @Override
     public void init(File outputDirectory, boolean useSparse, String learningMode,
-            boolean applyWeighting, String[] outcomes)
+            String featureMode, boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputDirectory = outputDirectory;
         this.useSparse = useSparse;
         this.learningMode = learningMode;
+        this.featureMode = featureMode;
         this.applyWeigthing = applyWeighting;
 
         classifierFormatOutputFile = new File(outputDirectory,

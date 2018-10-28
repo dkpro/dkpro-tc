@@ -74,7 +74,7 @@ public class MekaDataWriter
 
     @Override
     public void init(File outputFolder, boolean useSparse, String learningMode,
-            boolean applyWeighting, String[] outcomes)
+            String featureMode, boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputFolder = outputFolder;
