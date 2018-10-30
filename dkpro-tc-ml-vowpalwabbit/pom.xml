@@ -33,7 +33,15 @@
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-ml</artifactId>
+		</dependency>
+		<dependency>
+		<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api</artifactId>
 		</dependency>		
+		<dependency>
+			<groupId>org.dkpro.tc</groupId>
+			<artifactId>dkpro-tc-api-features</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.dkpro.lab</groupId>
 			<artifactId>dkpro-lab-core</artifactId>
@@ -45,9 +53,48 @@
   		</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+			<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimafit-core</artifactId>
+		</dependency>		
+		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>org.dkpro.tc.ml.vowpalwabbit-bin</artifactId>
 			<version>20180723.1</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<configuration>
+						<usedDependencies>
+							<usedDependency>org.dkpro.tc:org.dkpro.tc.ml.vowpalwabbit-bin</usedDependency>
+						</usedDependencies>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>	
 </project>
