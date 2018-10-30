@@ -50,16 +50,4 @@
 			<version>20180723.1</version>
 		</dependency>
 	</dependencies>
-	<repositories>
-	    <repository>
-      <id>LTL</id>
-      <url>http://basa.ltl.uni-due.de:34000/artifactory/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>    
-	</repositories>
 </project>

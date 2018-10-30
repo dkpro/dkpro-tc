@@ -70,16 +70,16 @@
 <!-- 			<enabled>true</enabled> -->
 <!-- 		</snapshots> -->
 <!-- 	</repository> -->
-<!--     <repository> -->
-<!--       <id>LTL</id> -->
-<!--       <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url> -->
-<!--       <releases> -->
-<!--         <enabled>false</enabled> -->
-<!--       </releases> -->
-<!--       <snapshots> -->
-<!--         <enabled>true</enabled> -->
-<!--       </snapshots> -->
-<!--     </repository>     -->
+    <repository>
+      <id>LTL</id>
+      <url>http://basa.ltl.uni-due.de:34001/artifactory/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>    
   </repositories>
   <developers>
     <developer>
