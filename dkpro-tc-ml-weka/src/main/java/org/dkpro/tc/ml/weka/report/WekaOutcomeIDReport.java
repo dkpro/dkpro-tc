@@ -289,7 +289,12 @@ public class WekaOutcomeIDReport
             if (l.startsWith("#")) {
                 continue;
             }
+            
             String[] split = l.split("\t");
+			if (!l.contains("\t")) {
+				split = new String[] { l, "" };
+			}
+            
             MetaData md = new MetaData(split[0], split[1]);
             documentIdMap.put(idx, md);
             idx++;
