@@ -30,6 +30,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+import org.dkpro.tc.api.type.JCasId;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 import org.junit.Test;
 
@@ -78,6 +79,10 @@ public class TestTargetSurfaceFormContextFeature
         DocumentMetaData dmd = new DocumentMetaData(jcas);
         dmd.setDocumentId("1");
         dmd.addToIndexes();
+        
+        JCasId id = new JCasId(jcas);
+        id.setId(1);
+        id.addToIndexes();
 
         AnalysisEngine engine = createEngine(BreakIteratorSegmenter.class);
         engine.process(jcas.getCas());
