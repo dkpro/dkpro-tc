@@ -142,7 +142,8 @@ public class VowpalWabbitPredictor
      *          A file with the feature information for prediction
      * @param aModel
      *          The model to be used
-     * @param tempFile 
+     * @param anOutputTargetFile
+     * 			Output target 
      * @return
      *      The assembled test command
      * @throws Exception 
@@ -167,7 +168,6 @@ public class VowpalWabbitPredictor
      * 
      * @param command
      *            The command for execution
-     * @return The output as string
      * @throws Exception
      *             In case of errors
      */
