@@ -61,6 +61,7 @@
 		</untar>
 
 		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/vw"/>
+		<copy file="target/download/osx-x86_64/vowpalwabbit-8.6.1.osx-x86_64/LICENSE.txt" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/LICENSE.txt"/>
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/osx-x86_64/README">
 			VowpalWabbit 8.6.1
@@ -90,6 +91,7 @@
 		</untar>
 
 		<copy file="target/download/linux-x86_32/vowpalwabbit-8.6.1.linux-x86_32/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32/vw"/>
+		<copy file="target/download/linux-x86_32/vowpalwabbit-8.6.1.linux-x86_32/LICENSE.txt" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32/LICENSE.txt"/>
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_32/README">
 			VowpalWabbit 8.6.1
@@ -119,6 +121,7 @@
 		</untar>
 
 		<copy file="target/download/linux-x86_64/vowpalwabbit-8.6.1.linux-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/vw"/>
+		<copy file="target/download/linux-x86_64/vowpalwabbit-8.6.1.linux-x86_64/LICENSE.txt" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/LICENSE.txt"/>
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/linux-x86_64/README">
 			VowpalWabbit 8.6.1
@@ -148,6 +151,7 @@
 		</untar>
 
 		<copy file="target/download/windows-x86_64/vowpalwabbit-8.6.1.windows-x86_64/vw" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/windows-x86_64/vw"/>
+		<copy file="target/download/windows-x86_64/vowpalwabbit-8.6.1.windows-x86_64/LICENSE.txt" tofile="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/windows-x86_64/LICENSE.txt"/>		
 
 		<echo file="target/model-staging/org/dkpro/tc/ml/vowpalwabbit/windows-x86_64/README">
 			VowpalWabbit 8.6.1
