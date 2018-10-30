@@ -39,9 +39,9 @@
 			<artifactId>dkpro-tc-ml</artifactId>
 		</dependency>
 		<dependency>
-		<groupId>org.dkpro.tc</groupId>
+			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>dkpro-tc-api-features</artifactId>
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
@@ -79,13 +79,21 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-		</dependency>				
+		</dependency>
 		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>org.dkpro.tc.ml.vowpalwabbit-bin</artifactId>
-			<version>20180723.1</version>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.dkpro.tc</groupId>
+				<artifactId>org.dkpro.tc.ml.vowpalwabbit-bin</artifactId>
+				<version>20180723.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -100,5 +108,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-	</build>	
+	</build>
 </project>
