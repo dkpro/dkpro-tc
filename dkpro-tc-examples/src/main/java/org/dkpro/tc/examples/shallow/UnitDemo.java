@@ -38,6 +38,7 @@ import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -99,10 +100,11 @@ public class UnitDemo
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.UNIT)
                 .machineLearningBackend(
-                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()),
-                        new MLBackend(new LibsvmAdapter()),
-                        new MLBackend(new LiblinearAdapter()),
-                        new MLBackend(new XgboostAdapter())
+                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName())
+                        , new MLBackend(new LibsvmAdapter())
+                        , new MLBackend(new LiblinearAdapter())
+                        , new MLBackend(new XgboostAdapter())
+                        , new MLBackend(new VowpalWabbitAdapter(), "--ect")
                         )
                 .run();
     }
@@ -120,10 +122,11 @@ public class UnitDemo
                 .learningMode(LearningMode.SINGLE_LABEL)
                 .featureMode(FeatureMode.UNIT)
                 .machineLearningBackend(
-                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName()),
-                        new MLBackend(new LibsvmAdapter()),
-                        new MLBackend(new LiblinearAdapter()),
-                        new MLBackend(new XgboostAdapter())
+                        new MLBackend(new WekaAdapter(), NaiveBayes.class.getName())
+                        , new MLBackend(new LibsvmAdapter())
+                        , new MLBackend(new LiblinearAdapter())
+                        , new MLBackend(new XgboostAdapter())
+                    	, new MLBackend(new VowpalWabbitAdapter(), "--oaa")                        		
                         )
                 .run();
     }

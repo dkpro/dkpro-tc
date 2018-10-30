@@ -103,6 +103,6 @@ public class VowpalWabbitBaselineMajorityClassIdReport extends VowpalWabbitOutco
     protected File getTargetOutputFile()
     {
         File evaluationFolder = getContext().getFolder("", AccessMode.READWRITE);
-        return new File(evaluationFolder, BASELINE_RANDOM_ID_OUTCOME_KEY);
+        return new File(evaluationFolder, BASELINE_MAJORITIY_ID_OUTCOME_KEY);
     }
 }

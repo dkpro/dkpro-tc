@@ -40,6 +40,7 @@ import org.dkpro.tc.ml.crfsuite.CrfSuiteAdapter;
 import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
+import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -76,8 +77,10 @@ public class SequenceDemo
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
                .featureSets(getFeatureSet())
-               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5")
+               .machineLearningBackend(  
+            		   					 new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_LBFGS, "max_iterations=5")
                                        , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
                                        )
                .preprocessing(getPreprocessing())
                .run();
@@ -93,8 +96,9 @@ public class SequenceDemo
                .featureSets(getFeatureSet())
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
-               .machineLearningBackend(new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "max_iterations=5")
-                                       ,new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+               .machineLearningBackend(  new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "max_iterations=5")
+                                       , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
                                        )
                .preprocessing(getPreprocessing())
                .run();

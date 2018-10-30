@@ -41,6 +41,7 @@ import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.RuntimeReport;
+import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -102,10 +103,12 @@ public class RegressionDemo
                 .reports(new ContextMemoryReport(), new RuntimeReport())
                 .preprocessing(getPreprocessing())
                 .machineLearningBackend(
-                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),
-                        new MLBackend(new LiblinearAdapter(), "-s", "6"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10"),
-                        new MLBackend(new WekaAdapter(), LinearRegression.class.getName()))
+                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear")
+                        , new MLBackend(new LiblinearAdapter(), "-s", "6")
+                        , new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10")
+                        , new MLBackend(new WekaAdapter(), LinearRegression.class.getName())
+                        , new MLBackend(new VowpalWabbitAdapter(), "--nn", "100", "--passes", "10")
+                        )
                 .run();
     }
 
@@ -121,10 +124,12 @@ public class RegressionDemo
                 .reports(new ContextMemoryReport(), new RuntimeReport())
                 .preprocessing(getPreprocessing())
                 .machineLearningBackend(
-                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear"),
-                        new MLBackend(new LiblinearAdapter(), "-s", "6"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10"),
-                        new MLBackend(new WekaAdapter(), LinearRegression.class.getName()))
+                        new MLBackend(new XgboostAdapter(), "booster=gbtree", "reg:linear")
+                        , new MLBackend(new LiblinearAdapter(), "-s", "6")
+                        , new MLBackend(new LibsvmAdapter(), "-s", "3", "-c", "10")
+                        , new MLBackend(new WekaAdapter(), LinearRegression.class.getName())
+                        , new MLBackend(new VowpalWabbitAdapter(), "--nn", "100")
+                        )
                 .run();
     }
 

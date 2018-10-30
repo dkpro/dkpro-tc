@@ -65,6 +65,13 @@ public class MetricComputationUtil {
 			throw new IllegalArgumentException("The learning mode is null");
 		}
 
+		int numLines = FileUtils.readLines(id2o, "utf-8").size();
+		if (numLines < 3) {
+			throw new IllegalStateException("The provided file [" + id2o.getAbsolutePath()
+					+ "] appears empty, three lines of header are expected and found in total [" + numLines
+					+ "] in file");
+		}
+
 		Map<String, String> map = new HashMap<>();
 
 		if (mode.equals(Constants.LM_SINGLE_LABEL)) {

@@ -64,10 +64,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
-/**
- * This demo demonstrates the usage of the sequence classifier CRFsuite which uses Conditional
- * Random Fields (CRF).
- */
 public class VowpalWabbitSaveAndLoadModelSequenceTest
     extends TestCaseSuperClass
     implements Constants
