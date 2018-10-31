@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.dkpro</groupId>
     <artifactId>dkpro-parent-pom</artifactId>
-    <version>14</version>
+    <version>19</version>
   </parent>
   <groupId>org.dkpro.tc</groupId>
   <artifactId>dkpro-tc</artifactId>
@@ -40,6 +40,7 @@
     <nd4j.version>0.9.1</nd4j.version>
     <ltlab.evaluation>0.1.1</ltlab.evaluation>
     <dkpro.statistics>2.1.0</dkpro.statistics>
+    <rat.consoleOutput>true</rat.consoleOutput>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/dkpro/dkpro-tc</connection>
