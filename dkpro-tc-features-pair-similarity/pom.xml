@@ -70,6 +70,12 @@
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>
+				de.tudarmstadt.ukp.dkpro.core.api.lexmorph-asl
+			</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>
 				de.tudarmstadt.ukp.dkpro.core.morpha-asl
 			</artifactId>
 			<scope>test</scope>
