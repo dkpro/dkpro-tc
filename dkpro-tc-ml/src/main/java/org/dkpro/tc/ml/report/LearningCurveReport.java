@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -111,9 +112,9 @@ public class LearningCurveReport
         }
 
         if (learningMode.equals(LM_SINGLE_LABEL)) {
-            for (RunIdentifier configId : dataMap.keySet()) {
-                List<Double> stageAveraged = averagePerStage(dataMap.get(configId), Accuracy.class, true);
-                writePlot(configId.md5, stageAveraged, maxNumberFolds,
+            for (Entry<RunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
+                List<Double> stageAveraged = averagePerStage(e.getValue(), Accuracy.class, true);
+                writePlot(e.getKey().md5, stageAveraged, maxNumberFolds,
                         Accuracy.class.getSimpleName());
             }
 
@@ -124,9 +125,9 @@ public class LearningCurveReport
             regMetrics.add(SpearmanCorrelation.class);
             for (Class<? extends EvaluationMeasure> m : regMetrics) {
 
-                for (RunIdentifier configId : dataMap.keySet()) {
-                    List<Double> stageAveraged = averagePerStage(dataMap.get(configId), m, false);
-                    writePlot(configId.md5, stageAveraged, maxNumberFolds, m.getSimpleName());
+                for (Entry<RunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
+                    List<Double> stageAveraged = averagePerStage(e.getValue(), m, false);
+                    writePlot(e.getKey().md5, stageAveraged, maxNumberFolds, m.getSimpleName());
                 }
             }
         }
@@ -421,15 +422,15 @@ public class LearningCurveReport
     }
 
 	private String getHeader(int size) {
-		String pattern = "%10s";
+		StringBuilder pattern = new StringBuilder("%10s");
 		List<Object> vals = new ArrayList<>();
 		vals.add("Cat/Stage");
 		for (int i = 0; i <= size; i++) {
 			vals.add(i);
-			pattern = pattern + "\t%6d";
+			pattern.append("\t%6d");
 		}
-		pattern = pattern + "\n";
-		return String.format(Locale.getDefault(), pattern, vals.toArray());
+		pattern.append("\n");
+		return String.format(Locale.getDefault(), pattern.toString(), vals.toArray());
 	}
 
 	/**
@@ -565,7 +566,7 @@ public class LearningCurveReport
         	configAsString = sb.toString();
 
 			byte[] digest = MessageDigest.getInstance("MD5")
-                    .digest((configAsString).getBytes());
+                    .digest((configAsString).getBytes(StandardCharsets.UTF_8));
             BigInteger bigInt = new BigInteger(1, digest);
             String md5 = bigInt.toString(16);
             this.md5 = md5;
