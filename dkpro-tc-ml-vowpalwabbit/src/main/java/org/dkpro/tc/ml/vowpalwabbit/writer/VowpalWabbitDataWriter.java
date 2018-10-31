@@ -151,8 +151,7 @@ public class VowpalWabbitDataWriter
             @Override
             public int compare(Instance o1, Instance o2)
             {
-
-                return ((Integer) o1.getSequenceId()).compareTo(o2.getSequenceId());
+            	return Integer.compare(o1.getSequenceId(), o2.getSequenceId());
             }
         });
         List<List<Instance>> groupedBySequenceId = group(instances);
@@ -180,7 +179,7 @@ public class VowpalWabbitDataWriter
                 @Override
                 public int compare(Instance o1, Instance o2)
                 {
-                    return ((Integer) o1.getSequencePosition()).compareTo(o2.getSequencePosition());
+                	return Integer.compare(o1.getSequencePosition(), o2.getSequencePosition());
                 }
             });
             groups.add(y);
