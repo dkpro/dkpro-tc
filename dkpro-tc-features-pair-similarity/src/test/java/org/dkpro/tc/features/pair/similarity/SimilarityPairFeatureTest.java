@@ -44,7 +44,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.util.FeatureUtil;
 import org.dkpro.tc.features.pair.similarity.SimilarityPairFeatureExtractor;
 
-import dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasureResource;
+import org.dkpro.similarity.algorithms.lexical.uima.string.GreedyStringTilingMeasureResource;
 
 public class SimilarityPairFeatureTest
 {

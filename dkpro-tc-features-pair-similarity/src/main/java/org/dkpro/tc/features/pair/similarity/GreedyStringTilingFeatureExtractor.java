@@ -26,8 +26,8 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
-import dkpro.similarity.algorithms.api.SimilarityException;
-import dkpro.similarity.algorithms.lexical.string.GreedyStringTiling;
+import org.dkpro.similarity.algorithms.api.SimilarityException;
+import org.dkpro.similarity.algorithms.lexical.string.GreedyStringTiling;
 
 /**
  * Extracts the document pair similarity using the GreedyStringTiling measure

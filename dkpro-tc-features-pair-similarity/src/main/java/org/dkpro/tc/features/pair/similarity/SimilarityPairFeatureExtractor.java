@@ -34,9 +34,9 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.PairFeatureExtractor;
-import dkpro.similarity.algorithms.api.JCasTextSimilarityMeasure;
-import dkpro.similarity.algorithms.api.SimilarityException;
-import dkpro.similarity.uima.resource.TextSimilarityResourceBase;
+import org.dkpro.similarity.algorithms.api.JCasTextSimilarityMeasure;
+import org.dkpro.similarity.algorithms.api.SimilarityException;
+import org.dkpro.similarity.uima.resource.TextSimilarityResourceBase;
 
 public class SimilarityPairFeatureExtractor
     extends FeatureExtractorResource_ImplBase

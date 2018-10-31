@@ -39,8 +39,8 @@ import org.dkpro.tc.features.ngram.meta.base.LuceneFeatureExtractorBase;
 import org.dkpro.tc.features.ngram.util.NGramUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import dkpro.similarity.algorithms.api.SimilarityException;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
+import org.dkpro.similarity.algorithms.api.SimilarityException;
+import org.dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
 
 /**
  * Extracts the document pair similarity using
