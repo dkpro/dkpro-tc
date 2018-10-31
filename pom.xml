@@ -458,7 +458,7 @@
       <dependency>
         <groupId>com.datumbox</groupId>
         <artifactId>libsvm</artifactId>
-        <version>3.23</version>
+        <version>3.22</version>
       </dependency>
       <dependency>
         <groupId>de.bwaldvogel</groupId>
