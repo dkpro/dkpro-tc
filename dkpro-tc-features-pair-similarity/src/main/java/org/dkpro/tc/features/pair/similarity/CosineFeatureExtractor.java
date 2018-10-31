@@ -44,7 +44,7 @@ import org.dkpro.similarity.algorithms.lexical.string.CosineSimilarity;
 
 /**
  * Extracts the document pair similarity using
- * {@link dkpro.similarity.algorithms.lexical.string.CosineSimilarity CosineSimilarity} (tokens)
+ * {@link org.dkpro.similarity.algorithms.lexical.string.CosineSimilarity CosineSimilarity} (tokens)
  * measure. Please be aware this Cosine Similarity API has a history of bugginess.
  */
 public class CosineFeatureExtractor<T extends Annotation>
