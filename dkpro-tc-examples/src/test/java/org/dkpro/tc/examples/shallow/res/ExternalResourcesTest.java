@@ -51,8 +51,8 @@ import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
-import dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
+import org.dkpro.similarity.algorithms.lexical.string.CosineSimilarity.NormalizationMode;
+import org.dkpro.similarity.algorithms.lexical.uima.string.CosineSimilarityResource;
 import weka.classifiers.functions.SMO;
 
 /**
