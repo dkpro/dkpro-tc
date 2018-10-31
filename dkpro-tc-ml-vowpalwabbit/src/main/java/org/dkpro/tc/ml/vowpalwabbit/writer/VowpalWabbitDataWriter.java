@@ -202,12 +202,12 @@ public class VowpalWabbitDataWriter implements DataWriter {
 					// the first namespace can be written directly, we already have a pipe-symbol
 					// written from opening the stream
 					String featurePrefix = getFeaturePrefix(name);
-					bw.write(featurePrefix + " ");
+					bw.write(featurePrefix+ " ");
 					oldNameSpace = featurePrefix;
 				} else {
 					String featurePrefix = getFeaturePrefix(name);
 					if (nameSpaceChanged(featurePrefix, oldNameSpace)) {
-						bw.write(" |" + featurePrefix + " ");
+						bw.write("|" + featurePrefix + " ");
 						oldNameSpace = featurePrefix;
 					}
 				}
