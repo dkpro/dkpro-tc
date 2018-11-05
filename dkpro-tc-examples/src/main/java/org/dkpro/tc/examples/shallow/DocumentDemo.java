@@ -39,6 +39,7 @@ import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
 import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.liblinear.LiblinearAdapter;
 import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
+import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 
@@ -64,7 +65,7 @@ public class DocumentDemo
 
         DocumentDemo experiment = new DocumentDemo();
         experiment.runTrainTest();
-        experiment.runCrossValidation();
+//        experiment.runCrossValidation();
     }
 
     public CollectionReaderDescription getReaderTrain() throws Exception
@@ -107,7 +108,9 @@ public class DocumentDemo
                         new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                                 PolyKernel.class.getName() + " " + "-C -1 -E 2"),
                         new MLBackend(new LiblinearAdapter(), "-s", "4", "-c", "100"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"))
+                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"),
+                        new MLBackend(new VowpalWabbitAdapter())
+                        )
                 .run();
 
     }
@@ -126,7 +129,8 @@ public class DocumentDemo
                 .machineLearningBackend(
                         new MLBackend(new WekaAdapter(), SMO.class.getName(), "-C", "1.0", "-K",
                                 PolyKernel.class.getName() + " " + "-C -1 -E 2"),
-                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3")
+                        new MLBackend(new LibsvmAdapter(), "-s", "1", "-c", "1000", "-t", "3"),
+                        new MLBackend(new VowpalWabbitAdapter())
                 )
                 .run();
     }
