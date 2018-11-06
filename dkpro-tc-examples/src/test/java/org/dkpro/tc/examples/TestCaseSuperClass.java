@@ -39,6 +39,10 @@ public class TestCaseSuperClass
         if(actual.matches(expected)) {
             return true;
         }
+        else if (actual.replaceAll("/", "\\").matches(expected.replaceAll("/", "\\"))) {
+            //Windows uses backslashes
+            return true;
+        }
         
         String diff = String.format(Locale.getDefault(), "%10s%s%n%10s%s","Expected: ", expected, "Actual: ", actual);
         System.err.println(diff);
