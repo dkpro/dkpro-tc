@@ -20,6 +20,7 @@ package org.dkpro.tc.examples.shallow.serialization.crfsuite;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -191,7 +192,7 @@ public class CRFSuiteSaveAndLoadModelTest
         CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
                 TeiReader.PARAM_SOURCE_LOCATION, trainFolder,
-                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS, "*.xml");
+                TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_PATTERNS, "a*.xml");
 
         dimReaders.put(DIM_READER_TRAIN, readerTrain);
 
@@ -256,7 +257,10 @@ public class CRFSuiteSaveAndLoadModelTest
         assertEquals(11, outcomes.size());// 9 token + 2 punctuation marks
         for (TextClassificationOutcome o : outcomes) {
             String label = o.getOutcome();
-            assertTrue(postags.contains(label));
+            boolean b = postags.contains(label);
+            if (!b) {
+                fail("The tag [" + label + "] is not in the set of expected tags");
+            }
         }
     }
 

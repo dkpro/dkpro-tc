@@ -83,12 +83,9 @@ public class ExternalResourcesTest
         assertEquals(
                 "#labels 0=n 1=y",
                 lines.get(1));
-        // 2nd line time stamp
-
-        assertTrue(lines.get(3).matches("src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/49960.txt=1;1;-1"));
-        assertTrue(lines.get(4).matches("src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51060.txt=1;1;-1"));
-        
-        
+        // 2nd line is a time stamp
+        assertTrue(filePathMatch(".*src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt .*src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/49960.txt=1;1;-1", lines.get(3)));
+        assertTrue(filePathMatch(".*src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51120.txt .*src/main/resources/data/twentynewsgroups/bydate-train/alt.atheism/51060.txt=1;1;-1", lines.get(4)));
     }
 
     private void runTrainTest() throws Exception

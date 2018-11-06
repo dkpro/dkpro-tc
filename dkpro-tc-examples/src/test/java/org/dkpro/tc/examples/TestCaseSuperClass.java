@@ -18,6 +18,9 @@
  */
 package org.dkpro.tc.examples;
 
+import java.util.Locale;
+
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 
 public class TestCaseSuperClass
@@ -30,5 +33,16 @@ public class TestCaseSuperClass
     {
         System.setProperty("java.util.logging.config.file", "logging.properties");
         System.setProperty("DKPRO_HOME", HOME);
+    }
+    
+    public static boolean filePathMatch(String expected, String actual) {
+        if(actual.matches(expected)) {
+            return true;
+        }
+        
+        String diff = String.format(Locale.getDefault(), "%10s%s%n%10s%s","Expected: ", expected, "Actual: ", actual);
+        System.err.println(diff);
+        LogFactory.getLog(TestCaseSuperClass.class).warn(diff);
+        return false;
     }
 }
