@@ -56,6 +56,7 @@ import org.dkpro.tc.ml.libsvm.LibsvmAdapter;
 import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.TrainTestReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
+import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitAdapter;
 import org.dkpro.tc.ml.weka.WekaAdapter;
 import org.dkpro.tc.ml.xgboost.XgboostAdapter;
 import org.junit.Test;
@@ -66,7 +67,15 @@ import de.unidue.ltl.evaluation.measures.regression.MeanSquaredError;
 import weka.classifiers.functions.LinearRegression;
 
 /**
- * This test just ensures that the experiment runs without throwing any exception.
+ * This test cases verifies the number of created folders. Some machine learning adapter share the
+ * same data format. TC (or Lab) is suppose to notice that and avoid a re-execution of the feature
+ * extraction for these cases. This test case ensures that this mechanism, which is responsible for
+ * a substantial speed up works correctly by counting the created folders by each machine learning
+ * adapter and makes sure that they add up to the expected count.
+ * 
+ * Liblinear, LibSvm and Xgboost are based on the same data format. This classifiers thus should re-use the file located in the feature extraction folder.
+ * SvmHmm, Crfsuite, Weka and VowpalWabbit have an own data format where this speed advantage of re-using an existing feature file is not available.
+ * 
  */
 public class RegressionModeTest
     extends TestCaseSuperClass
@@ -79,21 +88,22 @@ public class RegressionModeTest
     {
         runTrainTestExperiment();
 
-        assertEquals(getSumOfExpectedTasksForTrainTest().intValue(),
-                contextReport.allIds.size());
+        assertEquals(getSumOfExpectedTasksForTrainTest().intValue(), contextReport.allIds.size());
         assertEquals(getSumOfMachineLearningAdapterTasks().intValue(),
                 contextReport.id2outcomeFiles.size());
 
+        /* Test cases accept high tolerance. Results tend to vary between OS platforms by some degree */
         assertEquals(1.3, getMeanSquaredError(contextReport.id2outcomeFiles, "Xgboost"), 0.1);
         assertEquals(0.5, getMeanSquaredError(contextReport.id2outcomeFiles, "Weka"), 0.1);
         assertEquals(0.6, getMeanSquaredError(contextReport.id2outcomeFiles, "Libsvm"), 0.1);
-        assertEquals(2.8, getMeanSquaredError(contextReport.id2outcomeFiles, "Liblinear"),
-                0.2);
+        assertEquals(2.8, getMeanSquaredError(contextReport.id2outcomeFiles, "Liblinear"), 0.2);
+        assertEquals(2.4, getMeanSquaredError(contextReport.id2outcomeFiles, "VowpalWabbit"), 0.2);
 
         verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Xgboost"));
         verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Weka"));
         verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Libsvm"));
         verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "Liblinear"));
+        verifyId2Outcome(getId2outcomeFile(contextReport.id2outcomeFiles, "VowpalWabbit"));
     }
 
     private ParameterSpace getParameterSpace() throws Exception
@@ -142,8 +152,13 @@ public class RegressionModeTest
         wekaConfig.put(DIM_DATA_WRITER, new WekaAdapter().getDataWriterClass());
         wekaConfig.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
 
+        Map<String, Object> vowpalWabbitConfig = new HashMap<>();
+        vowpalWabbitConfig.put(DIM_CLASSIFICATION_ARGS, new Object[] { new VowpalWabbitAdapter() });
+        vowpalWabbitConfig.put(DIM_DATA_WRITER, new VowpalWabbitAdapter().getDataWriterClass());
+        vowpalWabbitConfig.put(DIM_FEATURE_USE_SPARSE, new VowpalWabbitAdapter().useSparseFeatures());
+
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", xgboostConfig,
-                liblinearConfig, libsvmConfig, wekaConfig);
+                liblinearConfig, libsvmConfig, wekaConfig, vowpalWabbitConfig);
 
         Dimension<TcFeatureSet> dimFeatureSets = Dimension.create(DIM_FEATURE_SET,
                 new TcFeatureSet(TcFeatureFactory.create(SentenceRatioPerDocument.class),
@@ -184,6 +199,7 @@ public class RegressionModeTest
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
         assertEquals("#labels", lines.get(1).trim());
+        // line at idx=2 is a timestamp which is always different
         assertTrue(lines.get(3).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
         assertTrue(lines.get(4).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
         assertTrue(lines.get(5).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
@@ -224,12 +240,14 @@ public class RegressionModeTest
                 contextReport.crossValidationCombinedIdFiles, "Libsvm"), 0.3);
         assertEquals(4.1, getMeanSquaredErrorCrossValidation(
                 contextReport.crossValidationCombinedIdFiles, "Liblinear"), 0.3);
+        assertEquals(4.9, getMeanSquaredErrorCrossValidation(
+                contextReport.crossValidationCombinedIdFiles, "VowpalWabbit"), 0.3);
     }
 
     private void runCrossValidationExperiment() throws Exception
     {
         contextReport = new ContextMemoryReport();
-        
+
         ExperimentCrossValidation experiment = new ExperimentCrossValidation("crossValidation", 2);
         experiment.setPreprocessing(getPreprocessing());
         experiment.setParameterSpace(getParameterSpace());
@@ -262,10 +280,10 @@ public class RegressionModeTest
 
         Integer sum = 0;
 
-        sum += 8 * 2; // Feature Extraction * num_folds
-        sum += 4 * 2; // meta collection
-        sum += 8 * 2; // MLA tasks + facade tasks
-        sum += 4; // CV tasks
+        sum += 10 * 2; // Feature Extraction * num_folds
+        sum += 5 * 2; // meta collection
+        sum += 10 * 2; // MLA tasks + facade tasks
+        sum += 5; // CV tasks
         sum += 1; // Init
         sum += 1; // Outcome
 
@@ -363,6 +381,7 @@ public class RegressionModeTest
         sum += 1; // Libsvm
         sum += 1; // Liblinear
         sum += 1; // Xgboost
+        sum += 1; // VowpalWabbit
 
         return sum;
     }
@@ -373,10 +392,11 @@ public class RegressionModeTest
         Integer sum = 0;
 
         sum += 2; // 1 x Facade + 1x ML Adapter
-        sum *= 4; // 3 adapter in setup
+        sum *= 5; // 3 adapter in setup
 
         sum += 2; // 2 x FeatExtract shared by Xgboost/Liblinear/Libsvm
         sum += 2; // 2 x FeatExtract for Weka
+        sum += 2; // 2 x FeatExtract for VowpalWabbit
         sum += 2; // 2 x Init
         sum += 1; // 1 x Meta
         sum += 1; // 1 x Outcome
