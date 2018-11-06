@@ -39,7 +39,7 @@ public class TestCaseSuperClass
         if(actual.matches(expected)) {
             return true;
         }
-        else if (actual.replaceAll("/", "\\").matches(expected.replaceAll("/", "\\"))) {
+        else if (actual.replaceAll("/", "\\\\").matches(expected.replaceAll("/", "\\\\"))) {
             //Windows uses backslashes
             return true;
         }
