@@ -20,10 +20,8 @@ package org.dkpro.tc.ml;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.dkpro.lab.engine.TaskContext;
@@ -64,14 +62,6 @@ public abstract class TcShallowClassifierTaskBase extends TcClassifierTaskBase {
 
 		try (FileOutputStream fos = new FileOutputStream(file)) {
 			p.store(fos, "Backend details");
-		}
-	}
-
-	@Override
-	public void setConfiguration(Map<String, Object> aConfig) {
-		configuration = new HashMap<String, String>();
-		for (Entry<String, Object> e : aConfig.entrySet()) {
-			configuration.put(e.getKey(), e.getValue().toString());
 		}
 	}
 
