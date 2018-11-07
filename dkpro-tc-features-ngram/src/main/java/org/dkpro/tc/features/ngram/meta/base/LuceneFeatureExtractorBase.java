@@ -19,7 +19,6 @@ package org.dkpro.tc.features.ngram.meta.base;
 
 import java.io.File;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -31,13 +30,12 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
+import org.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 import com.google.common.collect.MinMaxPriorityQueue;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.tudarmstadt.ukp.dkpro.core.api.parameter.ComponentParameters;
-
-import org.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 public abstract class LuceneFeatureExtractorBase
     extends NGramFeatureExtractorBase
@@ -81,17 +79,14 @@ public abstract class LuceneFeatureExtractorBase
         MinMaxPriorityQueue<TermFreqTuple> topN = MinMaxPriorityQueue.maximumSize(getTopN())
                 .create();
 
-        IndexReader reader;
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(luceneDir));
+        try (IndexReader reader = DirectoryReader.open(FSDirectory.open(luceneDir))){
+            
             Fields fields = MultiFields.getFields(reader);
             if (fields == null) {
-                IOUtils.closeQuietly(reader);
                 return topN;
             }
             Terms terms = fields.terms(getFieldName());
             if (terms == null) {
-                IOUtils.closeQuietly(reader);
                 return topN;
             }
             TermsEnum termsEnum = terms.iterator(null);
