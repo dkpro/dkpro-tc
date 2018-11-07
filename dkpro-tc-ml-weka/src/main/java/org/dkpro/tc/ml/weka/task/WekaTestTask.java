@@ -33,7 +33,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.TcClassifierTaskBase;
+import org.dkpro.tc.ml.TcShallowClassifierTaskBase;
 import org.dkpro.tc.ml.weka.core.MekaTrainer;
 import org.dkpro.tc.ml.weka.core.WekaTrainer;
 import org.dkpro.tc.ml.weka.core._eka;
@@ -56,7 +56,7 @@ import weka.filters.unsupervised.attribute.Add;
  * Base class for test task and save model tasks
  */
 public class WekaTestTask
-    extends TcClassifierTaskBase
+    extends TcShallowClassifierTaskBase
 {
 
     public final static String featureSelectionFile = "featureSelection.txt";

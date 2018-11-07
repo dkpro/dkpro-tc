@@ -33,7 +33,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.TcClassifierTaskBase;
+import org.dkpro.tc.ml.TcShallowClassifierTaskBase;
 import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbit;
 import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitPredictor;
 import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitTrainer;
@@ -42,7 +42,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 public class VowpalWabbitTestTask
-    extends TcClassifierTaskBase
+    extends TcShallowClassifierTaskBase
 {
 
     @Discriminator(name = DIM_LEARNING_MODE)

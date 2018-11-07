@@ -31,7 +31,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.TcClassifierTaskBase;
+import org.dkpro.tc.ml.TcShallowClassifierTaskBase;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
@@ -41,7 +41,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 public class CrfSuiteTestTask
-    extends TcClassifierTaskBase
+    extends TcShallowClassifierTaskBase
 {
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;

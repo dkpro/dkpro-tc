@@ -24,10 +24,10 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.ml.TcClassifierTaskBase;
+import org.dkpro.tc.ml.TcShallowClassifierTaskBase;
 
 public abstract class LibsvmDataFormatTestTask
-    extends TcClassifierTaskBase
+    extends TcShallowClassifierTaskBase
 {
 
     @Discriminator(name = DIM_LEARNING_MODE)
