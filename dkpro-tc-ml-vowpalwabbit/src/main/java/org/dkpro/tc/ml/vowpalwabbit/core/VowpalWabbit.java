@@ -50,6 +50,8 @@ public abstract class VowpalWabbit {
 	}
 
 	public static File getExecutable() throws Exception {
+		
+		catchWindows32BitUsers();
 
 		if (runtimeProvider == null) {
 			String platform = detector.getPlatformId();
@@ -65,5 +67,15 @@ public abstract class VowpalWabbit {
 	public static PlatformDetector getPlatformDetector() {
 		return detector;
 	}
+	
+    private static void catchWindows32BitUsers()
+    {
+        PlatformDetector pd = new PlatformDetector();
+        if (pd.getOs().equals(PlatformDetector.OS_WINDOWS)
+                && pd.getArch().equals(PlatformDetector.ARCH_X86_32)) {
+            throw new UnsupportedOperationException(
+                    "VowpalWabbit is not available for 32bit Windows operating systems. Please use a 64bit version.");
+        }
+    }
 
 }
