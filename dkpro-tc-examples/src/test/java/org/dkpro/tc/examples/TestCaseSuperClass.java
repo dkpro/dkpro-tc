@@ -39,11 +39,15 @@ public class TestCaseSuperClass
         if(actual.matches(expected)) {
             return true;
         }
-        else if (actual.replaceAll("/", "\\\\").matches(expected.replaceAll("/", "\\\\"))) {
-            //Windows uses backslashes
+        
+        //flip slashes - this is necessary for Windows builds which often use backslash in their file names
+        expected = expected.replaceAll("\\", "/");
+        actual = actual.replaceAll("\\", "/");
+        if(actual.matches(expected)) {
             return true;
         }
         
+        // bail out
         String diff = String.format(Locale.getDefault(), "%10s%s%n%10s%s","Expected: ", expected, "Actual: ", actual);
         System.err.println(diff);
         LogFactory.getLog(TestCaseSuperClass.class).warn(diff);
