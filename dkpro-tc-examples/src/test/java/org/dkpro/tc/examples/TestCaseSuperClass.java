@@ -41,8 +41,8 @@ public class TestCaseSuperClass
         }
         
         //flip slashes - this is necessary for Windows builds which often use backslash in their file names
-        expected = expected.replaceAll("\\", "/");
-        actual = actual.replaceAll("\\", "/");
+        expected = expected.replaceAll("\\\\", "/");
+        actual = actual.replaceAll("\\\\", "/");
         if(actual.matches(expected)) {
             return true;
         }
