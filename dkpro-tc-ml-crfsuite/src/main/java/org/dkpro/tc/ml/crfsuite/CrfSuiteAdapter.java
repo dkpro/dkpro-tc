@@ -265,4 +265,10 @@ public class CrfSuiteAdapter
     {
         return getClass().getSimpleName();
     }
+    
+    @Override
+    public String getName()
+    {
+    	return "CrfSuite";
+    }
 }

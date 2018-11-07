@@ -125,4 +125,9 @@ public class SvmHmmAdapter
     {
         return getClass().getSimpleName();
     }
+    
+    @Override
+	public String getName() {
+		return "SvmHmm";
+	}
 }

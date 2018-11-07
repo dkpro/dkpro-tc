@@ -89,7 +89,13 @@ public interface TcShallowLearningAdapter
 
     /**
      * 
-     * @return boolean value wheter sparse features shall be used or not
+     * @return boolean value whether sparse features shall be used or not
      */
     boolean useSparseFeatures();
+    
+    
+    /**
+     * Returns the name of the machine learning backend
+     */
+    String getName();
 }

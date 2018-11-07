@@ -103,5 +103,10 @@ public class MekaAdapter
     {
         return getClass().getSimpleName();
     }
+    
+    @Override
+	public String getName() {
+		return "Weka";
+	}
 
 }

@@ -130,4 +130,9 @@ public class VowpalWabbitAdapter
     {
         return getClass().getSimpleName();
     }
+    
+    @Override
+	public String getName() {
+		return "VowpalWabbit";
+	}
 }

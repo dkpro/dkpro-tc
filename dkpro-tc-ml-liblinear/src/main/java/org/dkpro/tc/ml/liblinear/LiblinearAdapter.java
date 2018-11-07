@@ -134,4 +134,9 @@ public class LiblinearAdapter
     {
         return getClass().getSimpleName();
     }
+    
+    @Override
+	public String getName() {
+		return "LibLinear";
+	}
 }

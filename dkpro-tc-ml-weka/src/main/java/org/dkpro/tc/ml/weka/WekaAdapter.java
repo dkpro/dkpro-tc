@@ -105,4 +105,9 @@ public class WekaAdapter
     {
         return getClass().getSimpleName();
     }
+    
+	@Override
+	public String getName() {
+		return "Weka";
+	}
 }

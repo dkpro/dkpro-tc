@@ -61,9 +61,6 @@ public class WekaTestTask
 
     public final static String featureSelectionFile = "featureSelection.txt";
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    protected List<Object> classificationArguments;
-
     @Discriminator(name = DIM_FEATURE_SEARCHER_ARGS)
     protected List<String> featureSearcher;
 

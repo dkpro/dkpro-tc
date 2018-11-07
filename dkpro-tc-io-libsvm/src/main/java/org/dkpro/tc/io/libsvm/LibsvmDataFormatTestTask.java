@@ -18,7 +18,6 @@
 package org.dkpro.tc.io.libsvm;
 
 import java.io.File;
-import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -30,9 +29,6 @@ import org.dkpro.tc.ml.TcClassifierTaskBase;
 public abstract class LibsvmDataFormatTestTask
     extends TcClassifierTaskBase
 {
-
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    protected List<Object> classificationArguments;
 
     @Discriminator(name = DIM_LEARNING_MODE)
     protected String learningMode;

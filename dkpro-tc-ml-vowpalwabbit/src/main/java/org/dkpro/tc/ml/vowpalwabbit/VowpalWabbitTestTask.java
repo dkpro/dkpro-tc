@@ -51,9 +51,6 @@ public class VowpalWabbitTestTask
     @Discriminator(name = DIM_FEATURE_MODE)
     private String featureMode;
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArguments;
-
     @Override
     public void execute(TaskContext aContext) throws Exception
     {

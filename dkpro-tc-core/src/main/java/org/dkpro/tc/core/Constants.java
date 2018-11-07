@@ -467,5 +467,7 @@ public interface Constants
     
     
     String CONFIGURATION_DKPRO_LAB = "CONFIGURATION.txt";
+    
+	String MACHINE_LEARNING_BACKEND_NAME = "machineLearningBackendName.txt";
 
 }

@@ -46,9 +46,6 @@ public class CrfSuiteTestTask
     @Discriminator(name = DIM_LEARNING_MODE)
     private String learningMode;
 
-    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArguments;
-
     @Override
     public void execute(TaskContext aContext) throws Exception
     {

@@ -285,4 +285,9 @@ public class XgboostAdapter
     {
         return getClass().getSimpleName();
     }
+
+	@Override
+	public String getName() {
+		return "Xgboost";
+	}
 }
