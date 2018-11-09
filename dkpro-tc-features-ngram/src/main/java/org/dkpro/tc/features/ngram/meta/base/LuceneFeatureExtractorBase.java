@@ -18,7 +18,9 @@
 package org.dkpro.tc.features.ngram.meta.base;
 
 import java.io.File;
+import java.util.Locale;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -29,7 +31,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.features.ngram.util.TermFreqTuple;
 
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -108,9 +109,28 @@ public abstract class LuceneFeatureExtractorBase
 
     protected void logSelectionProcess(long N)
     {
-        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT NGRAMS");
+        LogFactory.getLog(getClass()).info(
+                String.format("+++ SELECTING THE %5d MOST FREQUENT ["
+                + range() + "]-GRAMS (" + caseSensitivity() + ")", N));
     }
 
+    protected String range()
+    {
+        String s = null;
+        if (ngramMinN == ngramMaxN) {
+            s = String.format(Locale.getDefault(), "%3d", ngramMinN);
+        }
+        else {
+            s = String.format(Locale.getDefault(), "%1d-%1d", ngramMinN, ngramMaxN);
+        }
+        return s;
+    }
+
+    protected String caseSensitivity()
+    {
+        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
+    }
+    
     /**
      * @return The field name that this lucene-based ngram FE uses for storing the ngrams
      */

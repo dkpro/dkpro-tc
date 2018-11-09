@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
@@ -92,5 +93,12 @@ public class SkipWordNGram
     protected int getTopN()
     {
         return ngramUseTopK;
+    }
+    
+    protected void logSelectionProcess(long N)
+    {
+        LogFactory.getLog(getClass()).info(
+                String.format("+++ SELECTING THE %5d MOST FREQUENT WORD ["
+                + range() + "]-SKIP-GRAMS (" + caseSensitivity() + ")", N));
     }
 }

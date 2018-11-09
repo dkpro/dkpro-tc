@@ -73,18 +73,9 @@ public class WordNGram
     @Override
     protected void logSelectionProcess(long N)
     {
-        LogFactory.getLog(getClass()).info("+++ SELECTING THE " + N + " MOST FREQUENT WORD ["
-                + range() + "]-GRAMS (" + caseSensitivity() + ")");
-    }
-
-    private String range()
-    {
-        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
-    }
-
-    private String caseSensitivity()
-    {
-        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
+        LogFactory.getLog(getClass()).info(
+                String.format("+++ SELECTING THE %5d MOST FREQUENT WORD ["
+                + range() + "]-GRAMS (" + caseSensitivity() + ")", N));
     }
 
     @Override

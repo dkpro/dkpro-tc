@@ -99,13 +99,4 @@ public class CharacterNGram
                 + range() + "]-GRAMS (" + caseSensitivity() + ")");
     }
 
-    private String range()
-    {
-        return ngramMinN == ngramMaxN ? ngramMinN + "" : ngramMinN + "-" + ngramMaxN;
-    }
-
-    private String caseSensitivity()
-    {
-        return ngramLowerCase ? "case-insensitive" : "case-sensitive";
-    }
 }
