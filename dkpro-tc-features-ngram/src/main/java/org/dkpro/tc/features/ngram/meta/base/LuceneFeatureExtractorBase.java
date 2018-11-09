@@ -110,8 +110,13 @@ public abstract class LuceneFeatureExtractorBase
     protected void logSelectionProcess(long N)
     {
         LogFactory.getLog(getClass()).info(
-                String.format("+++ SELECTING THE %5d MOST FREQUENT ["
-                + range() + "]-GRAMS (" + caseSensitivity() + ")", N));
+                String.format("+++ SELECTING THE [%5d] MOST FREQUENT ["
+                + range() + "]-"+ ngramType() +"GRAMS (" + caseSensitivity() + ")", N));
+    }
+
+    protected String ngramType()
+    {
+        return "";
     }
 
     protected String range()

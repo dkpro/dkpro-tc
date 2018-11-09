@@ -25,7 +25,6 @@ import java.util.Set;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
@@ -93,10 +92,9 @@ public class CharacterNGram
     }
 
     @Override
-    protected void logSelectionProcess(long N)
+    protected String ngramType()
     {
-        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT CHARACTER ["
-                + range() + "]-GRAMS (" + caseSensitivity() + ")");
+        return "CHARACTER-";
     }
 
 }

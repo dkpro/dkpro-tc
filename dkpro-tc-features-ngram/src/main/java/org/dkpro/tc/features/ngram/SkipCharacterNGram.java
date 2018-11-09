@@ -26,7 +26,6 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Level;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
@@ -82,13 +81,6 @@ public class SkipCharacterNGram
     }
     
     @Override
-    protected void logSelectionProcess(long N)
-    {
-        getLogger().log(Level.INFO, "+++ SELECTING THE " + N + " MOST FREQUENT CHARACTER ["
-                + range() + "]-SKIP-GRAMS (" + caseSensitivity() + ")");
-    }
-
-    @Override
     protected String getFeaturePrefix()
     {
         return FEATURE_PREFIX;
@@ -98,5 +90,11 @@ public class SkipCharacterNGram
     protected int getTopN()
     {
         return ngramUseTopK;
+    }
+    
+    @Override
+    protected String ngramType()
+    {
+        return "CHARACTER-SKIP-";
     }
 }

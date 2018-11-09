@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -71,11 +70,9 @@ public class WordNGram
     }
 
     @Override
-    protected void logSelectionProcess(long N)
+    protected String ngramType()
     {
-        LogFactory.getLog(getClass()).info(
-                String.format("+++ SELECTING THE %5d MOST FREQUENT WORD ["
-                + range() + "]-GRAMS (" + caseSensitivity() + ")", N));
+        return "WORD-";
     }
 
     @Override
