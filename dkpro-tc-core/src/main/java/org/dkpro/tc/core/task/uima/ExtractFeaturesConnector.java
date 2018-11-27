@@ -153,7 +153,6 @@ public class ExtractFeaturesConnector
     @Override
     public void process(JCas aJCas) throws AnalysisEngineProcessException
     {
-
         checkRequiredTypes(aJCas);
 
         documentMetaLogger.writeMeta(aJCas);
@@ -252,7 +251,6 @@ public class ExtractFeaturesConnector
     private JCas buildMockCAS(DocumentMetaData aDocMeta) throws UIMAException
     {
         JCas mockCas = JCasFactory.createJCas();
-        mockCas.setDocumentLanguage(aDocMeta.getLanguage());
 
         DocumentMetaData dmd = new DocumentMetaData(mockCas);
         dmd.setLanguage(aDocMeta.getLanguage());
@@ -264,10 +262,9 @@ public class ExtractFeaturesConnector
         JCas view2 = mockCas.createView(Constants.PART_TWO);
 
         String dummyText = "dummyText";
-        mockCas.setDocumentText(dummyText);
 
         for (JCas j : new JCas[] { mockCas, view1, view2 }) {
-
+            j.setDocumentText(dummyText);
             TextClassificationSequence s = new TextClassificationSequence(j, 0, dummyText.length());
             s.addToIndexes();
             TextClassificationTarget t = new TextClassificationTarget(j, 0, dummyText.length());
