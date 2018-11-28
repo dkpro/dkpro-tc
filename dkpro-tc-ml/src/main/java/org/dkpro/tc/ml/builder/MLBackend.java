@@ -31,7 +31,7 @@ public class MLBackend
 
     private TcShallowLearningAdapter shallowAdapter;
     private TcDeepLearningAdapter deepAdapter;
-    private List<String> parametrization;
+    private List<Object> parametrization;
 
     public MLBackend(TcShallowLearningAdapter adapter, String... parametrization)
     {
@@ -39,12 +39,12 @@ public class MLBackend
         this.parametrization = new ArrayList<>(Arrays.asList(parametrization));
     }
     
-    public MLBackend(TcDeepLearningAdapter adapter, String... parametrization)
+    public MLBackend(TcDeepLearningAdapter adapter, Object... parametrization)
     {
         this.deepAdapter = adapter;
         this.parametrization = new ArrayList<>(Arrays.asList(parametrization));
     }
-
+    
     public TcShallowLearningAdapter getAdapterShallow()
     {
         return shallowAdapter;
@@ -55,7 +55,7 @@ public class MLBackend
         return deepAdapter;
     }
 
-    public List<String> getParametrization()
+    public List<Object> getParametrization()
     {
         return parametrization;
     }

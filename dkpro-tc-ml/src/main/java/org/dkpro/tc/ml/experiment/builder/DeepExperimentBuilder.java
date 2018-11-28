@@ -44,6 +44,7 @@ import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentLearningCurve;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.report.CrossValidationReport;
+import org.dkpro.tc.ml.report.LearningCurveReport;
 import org.dkpro.tc.ml.report.TrainTestReport;
 
 /**
@@ -53,7 +54,7 @@ public class DeepExperimentBuilder
     implements Constants, DeepLearningConstants
 {
     protected List<TcDeepLearningAdapter> backends;
-    protected List<String> userCodePath;
+    protected List<Object> userCodePath;
     protected List<ReportBase> reports;
     protected String learningMode;
     protected String featureMode;
@@ -227,7 +228,7 @@ public class DeepExperimentBuilder
 
         for (int i = 0; i < backends.size(); i++) {
             TcDeepLearningAdapter a = backends.get(i);
-            String userCode = userCodePath.get(i);
+            Object userCode = userCodePath.get(i);
 
             List<Object> o = new ArrayList<>();
             o.add(a);
@@ -469,13 +470,13 @@ public class DeepExperimentBuilder
             experiment.addReport(new CrossValidationReport());
             readersCheckExperimentCrossValidation();
             break;
-//        case LEARNING_CURVE:
-//            folds = getCvFolds();
-//            experiment = new DeepLearningExperimentLearningCurve(experimentName, folds,
-//                    learningCurveLimit);
-//            experiment.addReport(new LearningCurveReport());
-//            readersCheckExperimentCrossValidation();
-//            break;
+        case LEARNING_CURVE:
+            folds = getCvFolds();
+            experiment = new DeepLearningExperimentLearningCurve(experimentName, folds,
+                    learningCurveLimit);
+            experiment.addReport(new LearningCurveReport());
+            readersCheckExperimentCrossValidation();
+            break;
 //        case LEARNING_CURVE_FIXED_TEST_SET:
 //            folds = getCvFolds();
 //            experiment = new ExperimentLearningCurveTrainTest(experimentName, folds,

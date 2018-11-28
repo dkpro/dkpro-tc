@@ -19,6 +19,7 @@ package org.dkpro.tc.ml.deeplearning4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
@@ -34,8 +35,8 @@ public class Deeplearning4jTestTask
 {
     public static final String PREDICTION_FILE = "prediction.txt";
 
-    @Discriminator(name = DeepLearningConstants.DIM_USER_CODE)
-    private TcDeepLearning4jUser userCode;
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> args;
 
     @Discriminator(name = DeepLearningConstants.DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
@@ -67,6 +68,7 @@ public class Deeplearning4jTestTask
         int maxLen = maximumLength != null ? maximumLength : -1;
         double thres = threshold != null ? threshold : -1.0;
 
+        TcDeepLearning4jUser userCode = (TcDeepLearning4jUser) args.get(1);
         userCode.run(trainDataVector, trainOutcomeVector, testDataVector, testOutcomeVector,
                 embeddingPath, seed, maxLen, thres, outputTarget);
     }

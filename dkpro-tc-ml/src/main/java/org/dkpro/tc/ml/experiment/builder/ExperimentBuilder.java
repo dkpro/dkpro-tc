@@ -55,7 +55,7 @@ import org.dkpro.tc.ml.report.TrainTestReport;
  */
 public class ExperimentBuilder implements Constants {
 	protected List<TcShallowLearningAdapter> backends;
-	protected List<List<String>> arguments;
+	protected List<List<Object>> arguments;
 	protected List<ReportBase> reports;
 	protected String learningMode;
 	protected String featureMode;
@@ -211,7 +211,7 @@ public class ExperimentBuilder implements Constants {
 
 		for (int i = 0; i < backends.size(); i++) {
 			TcShallowLearningAdapter a = backends.get(i);
-			List<String> list = arguments.get(i);
+			List<Object> list = arguments.get(i);
 
 			List<Object> o = new ArrayList<>();
 			o.add(a);
