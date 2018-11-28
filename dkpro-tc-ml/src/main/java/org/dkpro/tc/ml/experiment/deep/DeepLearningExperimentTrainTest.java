@@ -17,11 +17,16 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.experiment.deep;
 
+import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dkpro.lab.reporting.Report;
+import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
+import org.dkpro.tc.core.task.DKProTcDeepTestTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.core.task.deep.EmbeddingTask;
@@ -30,8 +35,6 @@ import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
-
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
 
 /**
  * Train-Test setup base class. This class is missing the machine learning classifier configuration
@@ -63,16 +66,9 @@ public class DeepLearningExperimentTrainTest
      * @throws TextClassificationException
      *             in case of errors
      */
-    public DeepLearningExperimentTrainTest(String aExperimentName,
-            Class<? extends TcDeepLearningAdapter> mlAdapter)
+    public DeepLearningExperimentTrainTest(String aExperimentName)
         throws TextClassificationException
     {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (Exception e) {
-            throw new TextClassificationException(e);
-        }
         setExperimentName(aExperimentName);
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
@@ -110,7 +106,6 @@ public class DeepLearningExperimentTrainTest
         // get some meta data depending on the whole document collection
         preparationTask = new PreparationTask();
         preparationTask.setType(preparationTask.getType() + "-" + experimentName);
-        preparationTask.setMachineLearningAdapter(mlAdapter);
         preparationTask.addImport(initTaskTrain, InitTask.OUTPUT_KEY_TRAIN,
                 PreparationTask.INPUT_KEY_TRAIN);
         preparationTask.addImport(initTaskTest, InitTask.OUTPUT_KEY_TEST,
@@ -145,42 +140,20 @@ public class DeepLearningExperimentTrainTest
                 VectorizationTask.MAPPING_INPUT_KEY);
         vectorizationTrainTask.setAttribute(TC_TASK_TYPE, TcTaskType.VECTORIZATION_TEST.toString());
 
-        learningTask = mlAdapter.getTestTask();
+        List<ReportBase> reports = new ArrayList<>();
+        reports.add(new BasicResultReport());
+        
+        learningTask = new DKProTcDeepTestTask(preparationTask, embeddingTask, vectorizationTrainTask, vectorizationTestTask,
+                reports, experimentName);
         learningTask.setType(learningTask.getType() + "-" + experimentName);
-        learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
+        learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
             for (Class<? extends Report> report : innerReports) {
                 learningTask.addReport(report);
             }
         }
-
-        // // always add OutcomeIdReport
-        learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
-        learningTask.addReport(mlAdapter.getMajorityBaselineIdReportClass());
-        learningTask.addReport(mlAdapter.getRandomBaselineIdReportClass());
-        learningTask.addReport(mlAdapter.getMetaCollectionReport());
-        learningTask.addReport(BasicResultReport.class);
-        learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.PREPARATION_FOLDER);
-        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-
-        learningTask.addImport(embeddingTask, EmbeddingTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.EMBEDDING_FOLDER);
-
-        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.VECTORIZIATION_TRAIN_OUTPUT);
-        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.TARGET_ID_MAPPING_TRAIN);
-
-        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT);
-        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-                TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST);
-
+        
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTaskTrain);
         addTask(initTaskTest);

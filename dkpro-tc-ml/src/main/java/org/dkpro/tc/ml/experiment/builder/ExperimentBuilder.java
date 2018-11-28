@@ -96,7 +96,7 @@ public class ExperimentBuilder implements Constants {
 		this.arguments = new ArrayList<>();
 
 		for (MLBackend b : backends) {
-			this.backends.add(b.getAdapter());
+			this.backends.add(b.getAdapterShallow());
 			this.arguments.add(b.getParametrization());
 		}
 

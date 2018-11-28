@@ -22,24 +22,37 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 
 public class MLBackend
     implements Constants
 {
 
-    private TcShallowLearningAdapter adapter;
+    private TcShallowLearningAdapter shallowAdapter;
+    private TcDeepLearningAdapter deepAdapter;
     private List<String> parametrization;
 
     public MLBackend(TcShallowLearningAdapter adapter, String... parametrization)
     {
-        this.adapter = adapter;
+        this.shallowAdapter = adapter;
+        this.parametrization = new ArrayList<>(Arrays.asList(parametrization));
+    }
+    
+    public MLBackend(TcDeepLearningAdapter adapter, String... parametrization)
+    {
+        this.deepAdapter = adapter;
         this.parametrization = new ArrayList<>(Arrays.asList(parametrization));
     }
 
-    public TcShallowLearningAdapter getAdapter()
+    public TcShallowLearningAdapter getAdapterShallow()
     {
-        return adapter;
+        return shallowAdapter;
+    }
+    
+    public TcDeepLearningAdapter getAdapterDeep()
+    {
+        return deepAdapter;
     }
 
     public List<String> getParametrization()

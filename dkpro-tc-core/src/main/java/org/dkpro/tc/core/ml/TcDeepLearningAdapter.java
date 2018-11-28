@@ -18,7 +18,7 @@
 package org.dkpro.tc.core.ml;
 
 import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 
 /**
  * Interface for machine learning frameworks in TC
@@ -44,7 +44,7 @@ public interface TcDeepLearningAdapter
      * @return The task that reads the ML feature store format, trains the classifier and stores the
      *         test results.
      */
-    TaskBase getTestTask();
+    ExecutableTaskBase getTestTask();
 
     /**
      * This report is always added to {@code testTask} reports by default in

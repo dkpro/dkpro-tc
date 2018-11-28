@@ -80,8 +80,9 @@ public class PreparationTask
 
     @Discriminator(name = DIM_DICTIONARY_PATHS)
     private List<String> dictionaryLists;
-
-    private TcDeepLearningAdapter mlDeepLearningAdapter;
+    
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> classificationArgs;
 
     @Override
     public CollectionReaderDescription getCollectionReaderDescription(TaskContext aContext)
@@ -108,6 +109,8 @@ public class PreparationTask
         throws ResourceInitializationException, IOException
     {
         File folder = aContext.getFolder(OUTPUT_KEY, AccessMode.READONLY);
+        
+        TcDeepLearningAdapter mlDeepLearningAdapter = (TcDeepLearningAdapter) classificationArgs.get(0);
 
         AggregateBuilder builder = new AggregateBuilder();
 
@@ -205,8 +208,4 @@ public class PreparationTask
         }
     }
 
-    public void setMachineLearningAdapter(TcDeepLearningAdapter mlDeepLearningAdapter)
-    {
-        this.mlDeepLearningAdapter = mlDeepLearningAdapter;
-    }
 }
