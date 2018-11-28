@@ -40,8 +40,8 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.ml.dynet.DynetAdapter;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
-import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.TrainTestReport;
 import org.junit.Test;
 
@@ -91,7 +91,7 @@ public class DyNetSequenceTest
             dimReaders.put(DIM_READER_TEST, test);
 
             Map<String, Object> config = new HashMap<>();
-            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new KerasAdapter(),
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new DynetAdapter(),
                     "src/main/resources/dynetCode/dynetPoStagger.py" });
 
             Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);

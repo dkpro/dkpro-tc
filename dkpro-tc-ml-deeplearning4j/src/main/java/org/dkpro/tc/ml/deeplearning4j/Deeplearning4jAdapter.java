@@ -18,7 +18,7 @@
 package org.dkpro.tc.ml.deeplearning4j;
 
 import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.deeplearning4j.reports.Deeplearning4jMetaReport;
 import org.dkpro.tc.ml.report.deeplearning.DeepLearningId2OutcomeReport;
@@ -30,7 +30,7 @@ public class Deeplearning4jAdapter
 {
 
     @Override
-    public TaskBase getTestTask()
+    public ExecutableTaskBase getTestTask()
     {
         return new Deeplearning4jTestTask();
     }

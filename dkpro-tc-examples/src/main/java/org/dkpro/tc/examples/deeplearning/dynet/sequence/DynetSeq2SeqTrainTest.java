@@ -20,24 +20,18 @@ package org.dkpro.tc.examples.deeplearning.dynet.sequence;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
-import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
-import org.dkpro.tc.ml.report.TrainTestReport;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -62,42 +56,37 @@ public class DynetSeq2SeqTrainTest
         // instructions first :)
         // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
         System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+        
+        DeepExperimentBuilder builder = new DeepExperimentBuilder();
+        builder.experiment(ExperimentType.TRAIN_TEST, "dynetTrainTest")
+               .dataReaderTrain(getTrainReader())
+               .dataReaderTest(getTestReader())
+               .learningMode(LearningMode.SINGLE_LABEL)
+               .featureMode(FeatureMode.SEQUENCE)
+               .preprocessing(getPreprocessing())
+               .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
+               .pythonPath("/usr/local/bin/python3")
+               .maximumLength(100)
+               .vectorizeToInteger(true)
+               .machineLearningBackend(
+                           new MLBackend(new DynetAdapter(), "src/main/resources/dynetCode/dynetPoStagger.py")
+                       )
+               .run();
 
-        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
-
-        DynetSeq2SeqTrainTest.runTrainTest(pSpace, new ContextMemoryReport());
     }
 
-    public static ParameterSpace getParameterSpace(String python3)
-        throws ResourceInitializationException
+    private static CollectionReaderDescription getTrainReader() throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "*.xml");
-        dimReaders.put(DIM_READER_TRAIN, train);
+    }
 
-        // Careful - we need at least 2 sequences in the testing file otherwise
-        // things will crash
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+    private static CollectionReaderDescription getTestReader() throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTest, TeiReader.PARAM_PATTERNS, "*.xml");
-        dimReaders.put(DIM_READER_TEST, test);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
-                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt"),
-                Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
-                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/dynetCode/dynetPoStagger.py"));
-
-        return pSpace;
     }
 
     protected static AnalysisEngineDescription getPreprocessing()
@@ -106,15 +95,4 @@ public class DynetSeq2SeqTrainTest
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public static void runTrainTest(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
-    {
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
-                "DynetSeq2Seq", DynetAdapter.class);
-        experiment.setParameterSpace(pSpace);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(contextReport);
-        experiment.addReport(new TrainTestReport());
-        Lab.getInstance().run(experiment);
-    }
 }

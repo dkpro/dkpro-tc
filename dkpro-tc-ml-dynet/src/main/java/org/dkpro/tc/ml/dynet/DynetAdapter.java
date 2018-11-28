@@ -18,7 +18,7 @@
 package org.dkpro.tc.ml.dynet;
 
 import org.dkpro.lab.reporting.ReportBase;
-import org.dkpro.lab.task.impl.TaskBase;
+import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.dynet.reports.DynetMetaReport;
 import org.dkpro.tc.ml.report.deeplearning.DeepLearningId2OutcomeReport;
@@ -30,7 +30,7 @@ public class DynetAdapter
 {
 
     @Override
-    public TaskBase getTestTask()
+    public ExecutableTaskBase getTestTask()
     {
         return new DynetTestTask();
     }

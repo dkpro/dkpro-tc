@@ -22,7 +22,6 @@ import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_USER_CODE;
 import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
 
 import java.io.File;
@@ -55,9 +54,9 @@ public class DynetTestTask
 
     @Discriminator(name = DIM_RAM_WORKING_MEMORY)
     private String workingMemory;
-
-    @Discriminator(name = DIM_USER_CODE)
-    private String userCode;
+    
+    @Discriminator(name = DIM_CLASSIFICATION_ARGS)
+    private List<Object> classificationArgs;
 
     @Discriminator(name = DIM_MAXIMUM_LENGTH)
     private Integer maximumLength;
@@ -132,7 +131,7 @@ public class DynetTestTask
 
         List<String> command = new ArrayList<>();
         command.add(python);
-        command.add(new File(userCode).getAbsolutePath());
+        command.add(new File(classificationArgs.get(1).toString()).getAbsolutePath());
 
         command.add(DyNetConstants.DYNET_SEED);
         command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));

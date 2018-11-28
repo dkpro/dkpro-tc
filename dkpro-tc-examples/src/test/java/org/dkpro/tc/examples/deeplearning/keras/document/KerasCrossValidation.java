@@ -86,8 +86,6 @@ public class KerasCrossValidation
                     Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
                     Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
                     Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
-                    Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                            "src/main/resources/kerasCode/singleLabel/imdb_cnn_lstm.py"),
                     Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
                     Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
                     Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,

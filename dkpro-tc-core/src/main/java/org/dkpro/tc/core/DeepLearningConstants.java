@@ -46,12 +46,6 @@ public interface DeepLearningConstants
     String DIM_PYTHON_INSTALLATION = "dimPythonPath";
 
     /**
-     * Path to the user-code snippet. Must be provided if called framework is not a Java-based
-     * technology.
-     */
-    String DIM_USER_CODE = "dimUserCode";
-
-    /**
      * File that holds the mapping of the input unit, i.e. which document, word or sequence to the
      * position within the processing sequence. This file assumes that the later result output is
      * FIFO and thus, the first result is the first unit of the processing pipeline, which allows
