@@ -22,29 +22,34 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDesc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
-import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.builder.FeatureMode;
-import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.builder.MLBackend;
-import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
-import org.dkpro.tc.ml.experiment.builder.ExperimentType;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class KerasRegressionWassaTest
     extends PythonLocator
+    implements Constants
 {
     ContextMemoryReport contextReport;
 
@@ -62,44 +67,57 @@ public class KerasRegressionWassaTest
         }
 
         if (testConditon) {
-            DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-            DeepExperimentBuilder builder = new DeepExperimentBuilder();
-            builder.experiment(ExperimentType.TRAIN_TEST, "kerasTrainTest")
-                    .dataReaderTrain(getTrainReader())
-                    .dataReaderTest(getTestReader())
-                    .learningMode(LearningMode.REGRESSION)
-                    .featureMode(FeatureMode.DOCUMENT)
-                    .preprocessing(getPreprocessing())
-                    .pythonPath("/usr/local/bin/python3")
-                    .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
-                    .maximumLength(50)
-                    .reports(contextReport)
-                    .vectorizeToInteger(true)
-                    .machineLearningBackend(new MLBackend(new KerasAdapter(),
-                            "src/main/resources/kerasCode/regression/wassa.py"))
-                    .run();
+            Map<String, Object> dimReaders = new HashMap<String, Object>();
+            dimReaders.put(DIM_READER_TRAIN, getTrainReader());
+            dimReaders.put(DIM_READER_TEST, getTestReader());
 
-        
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new KerasAdapter(),
+                    "src/main/resources/kerasCode/regression/wassa.py" });
 
-        assertEquals(1, contextReport.id2outcomeFiles.size());
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
-        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
-        assertEquals(87, lines.size());
+            ParameterSpace pSpace = new ParameterSpace(
+                    Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                    Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
+                    Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
+                    Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
+                    Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+                    Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                            "src/test/resources/wordvector/glove.6B.50d_250.txt"),
+                    mlas);
 
-        // line-wise compare
-        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-        assertEquals("#labels ", lines.get(1));
-        assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
-        assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
-        assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
-        assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
-        assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
-        assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
-        assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
-        assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
+            DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                    "KerasTrainTest");
+            experiment.setPreprocessing(getPreprocessing());
+            experiment.setParameterSpace(pSpace);
+            experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+            experiment.addReport(TrainTestReport.class);
+            experiment.addReport(contextReport);
 
-    }}
+            Lab.getInstance().run(experiment);
+
+            assertEquals(1, contextReport.id2outcomeFiles.size());
+
+            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
+            assertEquals(87, lines.size());
+
+            // line-wise compare
+            assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+            assertEquals("#labels ", lines.get(1));
+            assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
+            assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
+            assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
+            assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
+            assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
+            assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
+            assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
+            assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
+
+        }
+    }
 
     private static CollectionReaderDescription getTestReader()
         throws ResourceInitializationException

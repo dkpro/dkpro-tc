@@ -18,22 +18,44 @@
  */
 package org.dkpro.tc.examples.deeplearning.dynet.sequence;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
+import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.junit.Test;
+
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
 public class DyNetSequenceTest
     extends PythonLocator
+    implements Constants
 {
     ContextMemoryReport contextReport;
-    
+
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
+    public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
+
     @Test
     public void runTest() throws Exception
     {
@@ -50,12 +72,54 @@ public class DyNetSequenceTest
         }
 
         if (testConditon) {
-            ParameterSpace ps = DynetSeq2SeqTrainTest.getParameterSpace(python3);
-            DynetSeq2SeqTrainTest.runTrainTest(ps, contextReport);
+
+            // configure training and test data reader dimension
+            Map<String, Object> dimReaders = new HashMap<String, Object>();
+
+            CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+                    TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                    TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain, TeiReader.PARAM_PATTERNS,
+                    "*.xml");
+            dimReaders.put(DIM_READER_TRAIN, train);
+
+            // Careful - we need at least 2 sequences in the testing file otherwise
+            // things will crash
+            CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+                    TeiReader.class, TeiReader.PARAM_LANGUAGE, "en",
+                    TeiReader.PARAM_SOURCE_LOCATION, corpusFilePathTest, TeiReader.PARAM_PATTERNS,
+                    "*.xml");
+            dimReaders.put(DIM_READER_TEST, test);
+
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new KerasAdapter(),
+                    "src/main/resources/dynetCode/dynetPoStagger.py" });
+
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+
+            ParameterSpace pSpace = new ParameterSpace(
+                    Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+                    Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                    Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
+                    Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                            "src/test/resources/wordvector/glove.6B.50d_250.txt"),
+                    Dimension.create(DeepLearningConstants.DIM_SEED_VALUE, "1234"),
+                    Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
+                    Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false), 
+                    mlas);
+
+            DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                    "DynetSeq2Seq");
+            experiment.setParameterSpace(pSpace);
+            experiment.setPreprocessing(getPreprocessing());
+            experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+            experiment.addReport(contextReport);
+            experiment.addReport(new TrainTestReport());
+            Lab.getInstance().run(experiment);
+
             assertEquals(1, contextReport.id2outcomeFiles.size());
 
-            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
-                    "utf-8");
+            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
             assertEquals(51, lines.size());
 
             // line-wise compare
@@ -112,5 +176,11 @@ public class DyNetSequenceTest
             assertTrue(lines.get(49).matches("000000_000001_000022_''=[0-9]+;22;-1"));
             assertTrue(lines.get(50).matches("000000_000001_000023_.=[0-9]+;22;-1"));
         }
+    }
+
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 }

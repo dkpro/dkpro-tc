@@ -21,19 +21,25 @@ package org.dkpro.tc.examples.deeplearning.keras.regression;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.builder.FeatureMode;
-import org.dkpro.tc.ml.builder.LearningMode;
-import org.dkpro.tc.ml.builder.MLBackend;
-import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
-import org.dkpro.tc.ml.experiment.builder.ExperimentType;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.keras.KerasAdapter;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
@@ -42,7 +48,7 @@ import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
 public class KerasRegressionCrossValidation
-    extends PythonLocator
+    extends PythonLocator implements Constants
 {
     ContextMemoryReport contextReport;
     
@@ -61,22 +67,37 @@ public class KerasRegressionCrossValidation
         }
         
         if (testConditon) {
+            
+            Map<String, Object> dimReaders = new HashMap<String, Object>();
+            dimReaders.put(DIM_READER_TRAIN, getTrainReader());
+            dimReaders.put(DIM_READER_TEST, getTestReader());
 
-            DeepExperimentBuilder builder = new DeepExperimentBuilder();
-            builder.experiment(ExperimentType.CROSS_VALIDATION, "kerasTrainTest")
-                    .numFolds(2)
-                    .dataReaderTrain(getTrainReader())
-                    .dataReaderTest(getTestReader())
-                    .learningMode(LearningMode.REGRESSION)
-                    .featureMode(FeatureMode.DOCUMENT)
-                    .preprocessing(getPreprocessing())
-                    .pythonPath("/usr/local/bin/python3")
-                    .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
-                    .maximumLength(50).vectorizeToInteger(true)
-                    .reports(contextReport)
-                    .machineLearningBackend(new MLBackend(new KerasAdapter(),
-                            "src/main/resources/kerasCode/regression/essay.py"))
-                    .run();
+            Map<String, Object> config = new HashMap<>();
+            config.put(DIM_CLASSIFICATION_ARGS, new Object[] { new KerasAdapter(),
+                    "src/main/resources/kerasCode/regression/essay.py" });
+
+            Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+
+            ParameterSpace pSpace = new ParameterSpace(
+                    Dimension.createBundle("readers", dimReaders),
+                    Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
+                    Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
+                    Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
+                    Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
+                    Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
+                    Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                            "src/test/resources/wordvector/glove.6B.50d_250.txt"),
+                    mlas);
+            
+            DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
+                    "KerasTrainTest", 2);
+            experiment.setPreprocessing(getPreprocessing());
+            experiment.setParameterSpace(pSpace);
+            experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+            experiment.addReport(CrossValidationReport.class);
+            experiment.addReport(contextReport);
+            Lab.getInstance().run(experiment);
+
 
             EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(
                     contextReport.crossValidationCombinedIdFiles.get(0));
