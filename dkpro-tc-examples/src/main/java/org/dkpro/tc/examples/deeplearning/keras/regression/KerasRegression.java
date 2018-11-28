@@ -20,25 +20,19 @@ package org.dkpro.tc.examples.deeplearning.keras.regression;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
-import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.dkpro.tc.ml.report.CrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -50,63 +44,44 @@ public class KerasRegression
     public static void main(String[] args) throws Exception
     {
 
-         DemoUtils.setDkproHome(KerasRegression.class.getSimpleName());
+        DemoUtils.setDkproHome(KerasRegression.class.getSimpleName());
 
-        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
-
-        KerasRegression.runCrossValidation(pSpace, new ContextMemoryReport());
+        DeepExperimentBuilder builder = new DeepExperimentBuilder();
+        builder.experiment(ExperimentType.TRAIN_TEST, "kerasTrainTest")
+                .dataReaderTrain(getTrainReader())
+                .dataReaderTest(getTestReader())
+                .learningMode(LearningMode.REGRESSION)
+                .featureMode(FeatureMode.DOCUMENT)
+                .preprocessing(getPreprocessing())
+                .pythonPath("/usr/local/bin/python3")
+                .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
+                .maximumLength(50)
+                .vectorizeToInteger(true)
+                .machineLearningBackend(new MLBackend(new KerasAdapter(),
+                        "src/main/resources/kerasCode/regression/essay.py"))
+                .run();
     }
 
-    public static ParameterSpace getParameterSpace(String pythonPath)
+    private static CollectionReaderDescription getTestReader()
         throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        // train/test will use both, while cross-validation will only use the train part
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription readerTrain = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
                 DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
                 DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
                 "src/main/resources/data/essays/train/essay_train.txt",
                 DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
-        dimReaders.put(DIM_READER_TRAIN, readerTrain);
-
-        CollectionReaderDescription readerTest = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
-                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
-                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
-                "src/main/resources/data/essays/train/essay_test.txt",
-                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
-        dimReaders.put(DIM_READER_TEST, readerTest);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_REGRESSION),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, pythonPath),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/regression/essay.py"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 100),
-                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-                        "src/test/resources/wordvector/glove.6B.50d_250.txt"));
-
-        return pSpace;
     }
 
-    public static void runCrossValidation(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
+    private static CollectionReaderDescription getTrainReader()
+        throws ResourceInitializationException
     {
-
-        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
-                "KerasRegression", KerasAdapter.class, 2);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setParameterSpace(pSpace);
-        experiment.addReport(contextReport);
-        experiment.addReport(CrossValidationReport.class);
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
-        // Run
-        Lab.getInstance().run(experiment);
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/test/essay_test.txt",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
     }
 
     protected static AnalysisEngineDescription getPreprocessing()

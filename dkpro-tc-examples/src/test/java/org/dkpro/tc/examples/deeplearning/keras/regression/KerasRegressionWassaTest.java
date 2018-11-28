@@ -18,22 +18,36 @@
  */
 package org.dkpro.tc.examples.deeplearning.keras.regression;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.dkpro.lab.task.ParameterSpace;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.DemoUtils;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
+import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.junit.Test;
+
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class KerasRegressionWassaTest
     extends PythonLocator
 {
     ContextMemoryReport contextReport;
-    
+
     @Test
     public void runTest() throws Exception
     {
@@ -48,27 +62,72 @@ public class KerasRegressionWassaTest
         }
 
         if (testConditon) {
-            ParameterSpace ps = KerasRegressionWassa.getParameterSpace(python3);
-            KerasRegressionWassa.runTrainTest(ps, contextReport);
+            DemoUtils.setDkproHome(KerasRegressionWassa.class.getSimpleName());
 
-            assertEquals(1, contextReport.id2outcomeFiles.size());
+            DeepExperimentBuilder builder = new DeepExperimentBuilder();
+            builder.experiment(ExperimentType.TRAIN_TEST, "kerasTrainTest")
+                    .dataReaderTrain(getTrainReader())
+                    .dataReaderTest(getTestReader())
+                    .learningMode(LearningMode.REGRESSION)
+                    .featureMode(FeatureMode.DOCUMENT)
+                    .preprocessing(getPreprocessing())
+                    .pythonPath("/usr/local/bin/python3")
+                    .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
+                    .maximumLength(50)
+                    .reports(contextReport)
+                    .vectorizeToInteger(true)
+                    .machineLearningBackend(new MLBackend(new KerasAdapter(),
+                            "src/main/resources/kerasCode/regression/wassa.py"))
+                    .run();
 
-            List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
-                    "utf-8");
-            assertEquals(87, lines.size());
+        
 
-            // line-wise compare
-            assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
-            assertEquals("#labels ", lines.get(1));
-            assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
-            assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
-            assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
-            assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
-            assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
-            assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
-            assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
-            assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
+        assertEquals(1, contextReport.id2outcomeFiles.size());
 
-        }
+        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
+        assertEquals(87, lines.size());
+
+        // line-wise compare
+        assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
+        assertEquals("#labels ", lines.get(1));
+        assertTrue(lines.get(3).matches("0=[0-9\\.]+;0.479;-1"));
+        assertTrue(lines.get(4).matches("1=[0-9\\.]+;0.458;-1"));
+        assertTrue(lines.get(5).matches("10=[0-9\\.]+;0.646;-1"));
+        assertTrue(lines.get(6).matches("11=[0-9\\.]+;0.726;-1"));
+        assertTrue(lines.get(7).matches("12=[0-9\\.]+;0.348;-1"));
+        assertTrue(lines.get(8).matches("13=[0-9\\.]+;0.417;-1"));
+        assertTrue(lines.get(9).matches("14=[0-9\\.]+;0.202;-1"));
+        assertTrue(lines.get(10).matches("15=[0-9\\.]+;0.557;-1"));
+
+    }}
+
+    private static CollectionReaderDescription getTestReader()
+        throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/wassa2017/dev/",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt",
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 3,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1);
+    }
+
+    private static CollectionReaderDescription getTrainReader()
+        throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/wassa2017/train/",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt",
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 3,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1);
+    }
+
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }

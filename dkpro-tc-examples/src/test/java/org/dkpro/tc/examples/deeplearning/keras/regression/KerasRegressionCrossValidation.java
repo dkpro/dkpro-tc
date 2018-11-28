@@ -18,14 +18,26 @@
  */
 package org.dkpro.tc.examples.deeplearning.keras.regression;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertTrue;
 
-import org.dkpro.lab.task.ParameterSpace;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.examples.deeplearning.PythonLocator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
+import org.dkpro.tc.ml.keras.KerasAdapter;
 import org.dkpro.tc.ml.report.util.Tc2LtlabEvalConverter;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
@@ -49,8 +61,22 @@ public class KerasRegressionCrossValidation
         }
         
         if (testConditon) {
-            ParameterSpace ps = KerasRegression.getParameterSpace(python3);
-            KerasRegression.runCrossValidation(ps, contextReport);
+
+            DeepExperimentBuilder builder = new DeepExperimentBuilder();
+            builder.experiment(ExperimentType.CROSS_VALIDATION, "kerasTrainTest")
+                    .numFolds(2)
+                    .dataReaderTrain(getTrainReader())
+                    .dataReaderTest(getTestReader())
+                    .learningMode(LearningMode.REGRESSION)
+                    .featureMode(FeatureMode.DOCUMENT)
+                    .preprocessing(getPreprocessing())
+                    .pythonPath("/usr/local/bin/python3")
+                    .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
+                    .maximumLength(50).vectorizeToInteger(true)
+                    .reports(contextReport)
+                    .machineLearningBackend(new MLBackend(new KerasAdapter(),
+                            "src/main/resources/kerasCode/regression/essay.py"))
+                    .run();
 
             EvaluationData<Double> data = Tc2LtlabEvalConverter.convertRegressionModeId2Outcome(
                     contextReport.crossValidationCombinedIdFiles.get(0));
@@ -58,5 +84,33 @@ public class KerasRegressionCrossValidation
 
             assertTrue(spear.getResult() < 0.0);
         }
+    }
+    
+    private static CollectionReaderDescription getTestReader()
+        throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/train/essay_train.txt",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
+    }
+
+    private static CollectionReaderDescription getTrainReader()
+        throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(DelimiterSeparatedValuesReader.class,
+                DelimiterSeparatedValuesReader.PARAM_OUTCOME_INDEX, 0,
+                DelimiterSeparatedValuesReader.PARAM_TEXT_INDEX, 1,
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION,
+                "src/main/resources/data/essays/test/essay_test.txt",
+                DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en");
+    }
+
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(BreakIteratorSegmenter.class);
     }
 }
