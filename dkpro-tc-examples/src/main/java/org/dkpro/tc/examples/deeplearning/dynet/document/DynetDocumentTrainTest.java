@@ -18,23 +18,20 @@
  */
 package org.dkpro.tc.examples.deeplearning.dynet.document;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
-import org.dkpro.tc.examples.util.ContextMemoryReport;
+import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.io.DelimiterSeparatedValuesReader;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.dynet.DynetAdapter;
-import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
@@ -52,60 +49,45 @@ public class DynetDocumentTrainTest
     public static void main(String[] args) throws Exception
     {
 
-        // This is used to ensure that the required DKPRO_HOME environment
-        // variable is set.
-        // Ensures that people can run the experiments even if they haven't read
-        // the setup
-        // instructions first :)
-        // DemoUtils.setDkproHome(DeepLearningKerasSeq2SeqPoSTestDummy.class.getSimpleName());
-        System.setProperty("DKPRO_HOME", System.getProperty("user.home") + "/Desktop");
+         DemoUtils.setDkproHome(DynetDocumentTrainTest.class.getSimpleName());
+        
+        DeepExperimentBuilder builder = new DeepExperimentBuilder();
+        builder.experiment(ExperimentType.TRAIN_TEST, "dynetTrainTest")
+               .dataReaderTrain(getTrainReader())
+               .dataReaderTest(getTestReader())
+               .learningMode(LearningMode.SINGLE_LABEL)
+               .featureMode(FeatureMode.DOCUMENT)
+               .preprocessing(getPreprocessing())
+               .embeddingPath("src/test/resources/wordvector/glove.6B.50d_250.txt")
+               .pythonPath("/usr/local/bin/python3")
+               .maximumLength(100)
+               .vectorizeToInteger(true)
+               .machineLearningBackend(
+                           new MLBackend(new DynetAdapter(), "src/main/resources/dynetCode/dynetLangId.py")
+                       )
+               .run();
 
-        ParameterSpace pSpace = getParameterSpace("/usr/local/bin/python3");
-
-        DynetDocumentTrainTest.runTrainTest(pSpace, null);
     }
 
-    public static ParameterSpace getParameterSpace(String python3)
-        throws ResourceInitializationException
+    private static CollectionReaderDescription getTestReader() throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
-                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
-                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
-                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt");
-        dimReaders.put(DIM_READER_TRAIN, train);
-
-        // Careful - we need at least 2 sequences in the testing file otherwise
-        // things will crash
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+        return CollectionReaderFactory.createReaderDescription(
                 DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
                 DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTest,
                 DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt");
-        dimReaders.put(DIM_READER_TEST, test);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_DOCUMENT),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION, python3),
-                Dimension.create(DeepLearningConstants.DIM_RAM_WORKING_MEMORY, "4096"),
-                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/dynetCode/dynetLangId.py"));
-
-        return pSpace;
     }
 
-    public static void runTrainTest(ParameterSpace pSpace, ContextMemoryReport contextReport) throws Exception
+    private static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
-                "DynetDocument", DynetAdapter.class);
-        experiment.setParameterSpace(pSpace);
-        experiment.setPreprocessing(
-                AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class));
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(contextReport);
-        Lab.getInstance().run(experiment);
+        return AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class);
     }
+
+    private static CollectionReaderDescription getTrainReader() throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(
+                DelimiterSeparatedValuesReader.class, DelimiterSeparatedValuesReader.PARAM_LANGUAGE, "en",
+                DelimiterSeparatedValuesReader.PARAM_SOURCE_LOCATION, corpusFilePathTrain,
+                DelimiterSeparatedValuesReader.PARAM_PATTERNS, "*.txt");
+    }
+
 }
