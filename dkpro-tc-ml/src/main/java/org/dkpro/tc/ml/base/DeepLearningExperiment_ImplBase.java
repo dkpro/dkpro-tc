@@ -19,7 +19,6 @@ package org.dkpro.tc.ml.base;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 
 /**
  * Base class for TC experiment setups
@@ -28,19 +27,5 @@ import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 public abstract class DeepLearningExperiment_ImplBase
     extends Experiment_ImplBase
 {
-    protected TcDeepLearningAdapter mlAdapter;
-
     Log log = LogFactory.getLog(DeepLearningExperiment_ImplBase.class);
-
-    public void setMachineLearningAdapter(Class<? extends TcDeepLearningAdapter> mlAdapter)
-        throws IllegalArgumentException
-    {
-        try {
-            this.mlAdapter = mlAdapter.newInstance();
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
 }

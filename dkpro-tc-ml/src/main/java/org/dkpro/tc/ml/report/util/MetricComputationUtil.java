@@ -66,7 +66,7 @@ public class MetricComputationUtil {
 		}
 
 		int numLines = FileUtils.readLines(id2o, "utf-8").size();
-		if (numLines < 3) {
+		if (numLines <= 3) {
 			throw new IllegalStateException("The provided file [" + id2o.getAbsolutePath()
 					+ "] appears empty, three lines of header are expected and found in total [" + numLines
 					+ "] in file");

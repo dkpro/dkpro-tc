@@ -22,24 +22,19 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.keras.KerasAdapter;
-import org.dkpro.tc.ml.report.CrossValidationReport;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
 
@@ -57,50 +52,35 @@ public class KerasSeq2SeqCrossValidation
     {
 
     	DemoUtils.setDkproHome(KerasSeq2SeqCrossValidation.class.getSimpleName());
+        
+        DeepExperimentBuilder builder = new DeepExperimentBuilder();
+        builder.experiment(ExperimentType.CROSS_VALIDATION, "kerasCrossValidation")
+               .dataReaderTrain(getTrainReader())
+               .numFolds(2)
+               .learningMode(LearningMode.SINGLE_LABEL)
+               .featureMode(FeatureMode.SEQUENCE)
+               .preprocessing(getPreprocessing())
+               .pythonPath("/usr/local/bin/python3")
+               .maximumLength(100)
+               .vectorizeToInteger(true)
+               .machineLearningBackend(
+                           new MLBackend(new KerasAdapter(), "src/main/resources/kerasCode/seq/posTaggingLstm.py")
+                       )
+               .run();
 
-        ParameterSpace pSpace = getParameterSpace();
-
-        KerasSeq2SeqCrossValidation experiment = new KerasSeq2SeqCrossValidation();
-        experiment.runCrossValidation(pSpace);
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    private static CollectionReaderDescription getTrainReader() throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
-        dimReaders.put(DIM_READER_TRAIN, train);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
-                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
-
-        return pSpace;
     }
 
-    protected AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
+
+    protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-    public void runCrossValidation(ParameterSpace pSpace) throws Exception
-    {
-        DeepLearningExperimentCrossValidation experiment = new DeepLearningExperimentCrossValidation(
-                "KerasSeq2SeqCv", KerasAdapter.class, 2);
-        experiment.setParameterSpace(pSpace);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-        experiment.addReport(CrossValidationReport.class);
-
-        Lab.getInstance().run(experiment);
-    }
 }

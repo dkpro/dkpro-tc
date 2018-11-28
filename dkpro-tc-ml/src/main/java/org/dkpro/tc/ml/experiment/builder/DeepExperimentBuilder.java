@@ -43,6 +43,7 @@ import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentLearningCurve;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.TrainTestReport;
 
 /**
@@ -462,12 +463,12 @@ public class DeepExperimentBuilder
             experiment.addReport(new TrainTestReport());
             readersCheckExperimentTrainTestCheck();
             break;
-//        case CROSS_VALIDATION:
-//            int folds = getCvFolds();
-//            experiment = new DeepLearningExperimentCrossValidation(experimentName, folds);
-//            experiment.addReport(new CrossValidationReport());
-//            readersCheckExperimentCrossValidation();
-//            break;
+        case CROSS_VALIDATION:
+            int folds = getCvFolds();
+            experiment = new DeepLearningExperimentCrossValidation(experimentName, folds);
+            experiment.addReport(new CrossValidationReport());
+            readersCheckExperimentCrossValidation();
+            break;
 //        case LEARNING_CURVE:
 //            folds = getCvFolds();
 //            experiment = new DeepLearningExperimentLearningCurve(experimentName, folds,

@@ -22,23 +22,18 @@ import static de.tudarmstadt.ukp.dkpro.core.api.io.ResourceCollectionReaderBase.
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.lab.Lab;
-import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
-import org.dkpro.lab.task.Dimension;
-import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
-import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.DemoUtils;
-import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.builder.FeatureMode;
+import org.dkpro.tc.ml.builder.LearningMode;
+import org.dkpro.tc.ml.builder.MLBackend;
+import org.dkpro.tc.ml.experiment.builder.DeepExperimentBuilder;
+import org.dkpro.tc.ml.experiment.builder.ExperimentType;
 import org.dkpro.tc.ml.keras.KerasAdapter;
 
 import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
@@ -57,53 +52,41 @@ public class KerasSeq2SeqTrainTest
     {
     	DemoUtils.setDkproHome(KerasSeq2SeqTrainTest.class.getSimpleName());
     	
-        ParameterSpace pSpace = getParameterSpace();
-        KerasSeq2SeqTrainTest.runTrainTest(pSpace, null);
+    	   DeepExperimentBuilder builder = new DeepExperimentBuilder();
+           builder.experiment(ExperimentType.TRAIN_TEST, "kerasTrainTest")
+                  .dataReaderTrain(getTrainReader())
+                  .dataReaderTest(getTestReader())
+                  .learningMode(LearningMode.SINGLE_LABEL)
+                  .featureMode(FeatureMode.SEQUENCE)
+                  .preprocessing(getPreprocessing())
+                  .pythonPath("/usr/local/bin/python3")
+                  .maximumLength(75)
+                  .vectorizeToInteger(true)
+                  .machineLearningBackend(
+                              new MLBackend(new KerasAdapter(), "src/main/resources/kerasCode/seq/posTaggingLstm.py")
+                          )
+                  .run();
+    	
     }
 
-    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
+    private static CollectionReaderDescription getTestReader() throws ResourceInitializationException
     {
-        // configure training and test data reader dimension
-        Map<String, Object> dimReaders = new HashMap<String, Object>();
-
-        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+        return CollectionReaderFactory.createReaderDescription(
                 TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
-        dimReaders.put(DIM_READER_TRAIN, train);
-
-        // Careful - we need at least 2 sequences in the testing file otherwise things will crash
-        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
-                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
-        dimReaders.put(DIM_READER_TEST, test);
-
-        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-                Dimension.create(DeepLearningConstants.DIM_PYTHON_INSTALLATION,
-                        "/usr/local/bin/python3"),
-                Dimension.create(DeepLearningConstants.DIM_MAXIMUM_LENGTH, 75),
-                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, true),
-                Dimension.create(DeepLearningConstants.DIM_USER_CODE,
-                        "src/main/resources/kerasCode/seq/posTaggingLstm.py"));
-
-        return pSpace;
     }
+
+    private static CollectionReaderDescription getTrainReader() throws ResourceInitializationException
+    {
+        return CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, asList(INCLUDE_PREFIX + "a01.xml"));
+    }
+
 
     protected static AnalysisEngineDescription getPreprocessing()
         throws ResourceInitializationException
     {
         return createEngineDescription(SequenceOutcomeAnnotator.class);
-    }
-
-    public static void runTrainTest(ParameterSpace pSpace, File dkproHome) throws Exception
-    {
-        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
-                "KerasSeq2Seq", KerasAdapter.class);
-        experiment.setParameterSpace(pSpace);
-        experiment.setPreprocessing(getPreprocessing());
-        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-
-        Lab.getInstance().run(experiment);
     }
 }
