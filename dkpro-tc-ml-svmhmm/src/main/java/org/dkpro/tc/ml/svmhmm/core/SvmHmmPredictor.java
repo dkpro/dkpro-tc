@@ -26,7 +26,7 @@ import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.base.TcPredictor;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class SvmHmmPredictor
     extends SvmHmm
     implements TcPredictor
@@ -41,7 +41,7 @@ public class SvmHmmPredictor
         List<String> command = buildPredictionCommand(data, model, predOut);
         runCommand(command);
 
-        List<String> predictions = FileUtils.readLines(predOut, "utf-8");
+        List<String> predictions = FileUtils.readLines(predOut, UTF_8);
         return predictions;
     }
 

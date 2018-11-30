@@ -35,6 +35,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcAbstractReport;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LibsvmDataFormatOutcomeIdReport
     extends TcAbstractReport
@@ -98,7 +99,7 @@ public class LibsvmDataFormatOutcomeIdReport
         String timeStamp = dateFormat.format(cal.getTime());
         
         String content = header + "\n#" + timeStamp + "\n" + sb.toString();
-        FileUtils.writeStringToFile(targetFile, content, "utf-8");
+        FileUtils.writeStringToFile(targetFile, content, UTF_8);
 
     }
 
@@ -146,7 +147,7 @@ public class LibsvmDataFormatOutcomeIdReport
         Map<String, String> m = new HashMap<>();
 
         int idx = 0;
-        for (String l : FileUtils.readLines(f, "utf-8")) {
+        for (String l : FileUtils.readLines(f, UTF_8)) {
             if (l.startsWith("#")) {
                 continue;
             }
@@ -176,7 +177,7 @@ public class LibsvmDataFormatOutcomeIdReport
     protected List<String> readPredictions() throws IOException
     {
         File predFolder = getContext().getFolder("", AccessMode.READWRITE);
-        return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), "utf-8");
+        return FileUtils.readLines(new File(predFolder, Constants.FILENAME_PREDICTIONS), UTF_8);
     }
 
     private String buildHeader(Map<Integer, String> id2label, boolean isRegression)
@@ -194,7 +195,7 @@ public class LibsvmDataFormatOutcomeIdReport
         List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
         for (int i = 0; i < numKeys; i++) {
             Integer key = keys.get(i);
-            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
+            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "utf-8"));
             if (i + 1 < numKeys) {
                 header.append(" ");
             }
@@ -212,7 +213,7 @@ public class LibsvmDataFormatOutcomeIdReport
         File outcomeFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
         File outcomeFiles = new File(outcomeFolder, AdapterFormat.getOutcomeMappingFilename());
-        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, UTF_8);
 
         Map<Integer, String> map = new HashMap<Integer, String>();
         for (String line : outcomes) {

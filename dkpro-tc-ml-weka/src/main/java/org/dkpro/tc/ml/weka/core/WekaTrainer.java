@@ -27,7 +27,8 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class WekaTrainer extends _eka
+public class WekaTrainer
+    extends _eka
     implements TcTrainer
 {
 
@@ -50,7 +51,7 @@ public class WekaTrainer extends _eka
         cl.buildClassifier(data);
 
         weka.core.SerializationHelper.write(model.getAbsolutePath(), cl);
-        
+
         return cl;
     }
 

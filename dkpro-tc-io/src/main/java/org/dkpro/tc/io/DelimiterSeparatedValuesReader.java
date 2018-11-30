@@ -28,6 +28,7 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.api.type.TextClassificationTarget;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import de.tudarmstadt.ukp.dkpro.core.api.io.JCasResourceCollectionReader_ImplBase;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
@@ -239,7 +240,7 @@ public class DelimiterSeparatedValuesReader
     protected void initReader(Resource nextFile)
     {
         try {
-            reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), UTF_8));
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

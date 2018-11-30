@@ -20,6 +20,7 @@ package org.dkpro.tc.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -325,7 +326,7 @@ public class DelimiterSeparatedSequenceValuesReader
     protected void initReader(Resource nextFile)
     {
         try {
-            reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(nextFile.getInputStream(), UTF_8));
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

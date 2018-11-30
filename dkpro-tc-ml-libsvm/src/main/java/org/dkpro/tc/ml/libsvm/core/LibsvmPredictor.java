@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.libsvm.core;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -25,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.base.TcPredictor;
@@ -34,7 +35,8 @@ import org.dkpro.tc.ml.libsvm.api._Prediction;
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmPredictor implements TcPredictor
+public class LibsvmPredictor
+    implements TcPredictor
 {
     @Override
     public List<String> predict(File data, File model) throws Exception
@@ -42,25 +44,18 @@ public class LibsvmPredictor implements TcPredictor
         File predTmp = FileUtil.createTempFile("libsvmPrediction", ".txt");
         predTmp.deleteOnExit();
 
-        DataOutputStream output = null;
-        BufferedReader input = null;
-        try {
-            input = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(data), "utf-8"));
-            output = new DataOutputStream(new FileOutputStream(predTmp));
-            
+        try (DataOutputStream output = new DataOutputStream(new FileOutputStream(predTmp));
+                BufferedReader input = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(data), UTF_8))) {
+
             svm_model svmModel = svm.svm_load_model(model.getAbsolutePath());
 
             _Prediction predictor = new _Prediction();
             predictor.predict(input, output, svmModel, 0);
         }
-        finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(output);
-        }
-        
-        List<String> predictions = FileUtils.readLines(predTmp, "utf-8");
-        
+
+        List<String> predictions = FileUtils.readLines(predTmp, UTF_8);
+
         return predictions;
     }
 

@@ -46,6 +46,7 @@ import org.dkpro.tc.core.ml.ModelSerialization_ImplBase;
 import org.dkpro.tc.core.task.uima.InstanceExtractor;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.ml.model.PreTrainedModelProviderAbstract;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class LibsvmDataFormatLoadModelConnector
     extends ModelSerialization_ImplBase
@@ -88,7 +89,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
     {
         Map<String, Integer> map = new HashMap<>();
         List<String> readLines = FileUtils.readLines(
-                new File(tcModelLocation, AdapterFormat.getFeatureNameMappingFilename()), "utf-8");
+                new File(tcModelLocation, AdapterFormat.getFeatureNameMappingFilename()), UTF_8);
         for (String l : readLines) {
             String[] split = l.split("\t");
             map.put(split[0], Integer.valueOf(split[1]));
@@ -104,7 +105,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
 
         Map<String, String> map = new HashMap<>();
         List<String> readLines = FileUtils.readLines(
-                new File(tcModelLocation, AdapterFormat.getOutcomeMappingFilename()), "utf-8");
+                new File(tcModelLocation, AdapterFormat.getOutcomeMappingFilename()), UTF_8);
         for (String l : readLines) {
             String[] split = l.split("\t");
             map.put(split[1], split[0]);
@@ -126,7 +127,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
             File prediction = runPrediction(tempFile);
 
             List<TextClassificationOutcome> outcomes = getOutcomeAnnotations(aJCas);
-            List<String> writtenPredictions = FileUtils.readLines(prediction, "utf-8");
+            List<String> writtenPredictions = FileUtils.readLines(prediction, UTF_8);
 
             checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(outcomes,
                     writtenPredictions);
@@ -174,7 +175,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
         tempFile.deleteOnExit();
 
         BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(tempFile), "utf-8"));
+                new OutputStreamWriter(new FileOutputStream(tempFile), UTF_8));
 
         InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, true);
         List<Instance> instances = extractor.getInstances(jcas, true);

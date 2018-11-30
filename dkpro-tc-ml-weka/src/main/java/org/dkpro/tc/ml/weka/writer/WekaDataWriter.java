@@ -49,7 +49,7 @@ import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /*
  * Datawriter for the Weka machine learning tool.
  */
@@ -140,22 +140,22 @@ public class WekaDataWriter
             return;
         }
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), UTF_8));
     }
 
     @Override
     public void transformFromGeneric() throws Exception
     {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), UTF_8))) {
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            Instance[] restoredInstances = gson.fromJson(line, Instance[].class);
-            writeClassifierFormat(Arrays.asList(restoredInstances));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                Instance[] restoredInstances = gson.fromJson(line, Instance[].class);
+                writeClassifierFormat(Arrays.asList(restoredInstances));
+            }
+
         }
-
-        reader.close();
         FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
     }
 
@@ -300,7 +300,7 @@ public class WekaDataWriter
         attributeStore = new AttributeStore();
 
         List<String> lines = FileUtils.readLines(
-                new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), "utf-8");
+                new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), UTF_8);
 
         for (String l : lines) {
             String[] split = l.split("\t");

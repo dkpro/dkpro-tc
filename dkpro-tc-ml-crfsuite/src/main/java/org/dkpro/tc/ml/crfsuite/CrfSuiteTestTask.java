@@ -36,6 +36,7 @@ import org.dkpro.tc.ml.crfsuite.core.CrfSuite;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuitePredictor;
 import org.dkpro.tc.ml.crfsuite.core.CrfSuiteTrainer;
 import org.dkpro.tc.ml.crfsuite.writer.LabelSubstitutor;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
@@ -80,7 +81,7 @@ public class CrfSuiteTestTask
             // correctly, see class
             // LabelSubstitutor for more details
         }
-        FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
+        FileUtils.writeStringToFile(predictionsFile, sb.toString(), UTF_8);
 
     }
 

@@ -18,13 +18,14 @@
 
 package org.dkpro.tc.ml.crfsuite.reports;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
@@ -81,9 +82,8 @@ public class CrfSuiteBaselineMajorityClassIdReport
 
         FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), UTF_8))) {
 
             String line = null;
             while ((line = reader.readLine()) != null) {
@@ -95,9 +95,6 @@ public class CrfSuiteBaselineMajorityClassIdReport
                 fd.addSample(split[0], 1);
             }
 
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
         }
 
         majorityClass = fd.getSampleWithMaxFreq();

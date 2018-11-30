@@ -18,6 +18,8 @@
  */
 package org.dkpro.tc.ml.weka.report;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
 import weka.core.Attribute;
@@ -83,9 +84,7 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 	private void buildPool(File file) throws Exception {
 
 		String zeroOutcome="x-init";
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF_8))){
 
 			String line = null;
 			boolean isSparseMode = false;
@@ -139,9 +138,7 @@ public class WekaBaselineRandomIdReport extends WekaOutcomeIDReport {
 				}
 			}
 
-		} finally {
-			IOUtils.closeQuietly(reader);
-		}
+		} 
 		
 		pool.remove(X_PLACE_HOLDER_ZERO_VALUED_SPARSE_INSTANCE_OUTCOME);
 		if (!pool.contains(zeroOutcome)) {

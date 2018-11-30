@@ -18,6 +18,8 @@
  */
 package org.dkpro.tc.ml.weka.task.serialization;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.uima.UimaContext;
@@ -58,7 +59,6 @@ import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.SparseInstance;
-
 public class WekaLoadModelConnector
     extends ModelSerialization_ImplBase
     implements Constants
@@ -116,13 +116,8 @@ public class WekaLoadModelConnector
         File file = new File(tcModelLocation, MODEL_BIPARTITION_THRESHOLD);
         Properties prop = new Properties();
 
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
+        try(FileInputStream fis = new FileInputStream(file)){
             prop.load(fis);
-        }
-        finally {
-            IOUtils.closeQuietly(fis);
         }
 
         return prop.getProperty(DIM_BIPARTITION_THRESHOLD);
@@ -132,7 +127,7 @@ public class WekaLoadModelConnector
     {
         classLabels = new ArrayList<>();
         for (String classLabel : FileUtils.readLines(new File(tcModelLocation, MODEL_CLASS_LABELS),
-                "utf-8")) {
+                UTF_8)) {
             classLabels.add(classLabel);
         }
     }

@@ -17,11 +17,7 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.keras;
 
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +36,7 @@ import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.TcClassifierTaskBase;
 
 public class KerasTestTask
-	extends TcClassifierTaskBase
+	extends TcClassifierTaskBase implements DeepLearningConstants
 {
     @Discriminator(name = DIM_PYTHON_INSTALLATION)
     private String python;
@@ -83,7 +79,7 @@ public class KerasTestTask
         }
         try {
             FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE),
-                    sb.toString(), "utf-8");
+                    sb.toString(), UTF_8);
         }
         catch (IOException e) {
             throw new Exception(e);
@@ -199,7 +195,7 @@ public class KerasTestTask
         File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
                 AccessMode.READONLY);
         String maxLenFromFile = FileUtils.readFileToString(
-                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), UTF_8);
 
         return maxLenFromFile;
     }

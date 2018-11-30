@@ -18,6 +18,8 @@
 
 package org.dkpro.tc.ml.svmhmm.task;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -34,7 +35,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmTrainer;
-
 public class SvmHmmTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
@@ -50,15 +50,9 @@ public class SvmHmmTestTask
                     + dataWithGoldLabel.size() + "] but got [" + predictions.size() + "]");
         }
 
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(predictionOutFile), "utf-8"));
-
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(predictionOutFile), UTF_8))) {
             merge(dataWithGoldLabel, predictions, writer);
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
         }
 
     }
@@ -141,7 +135,7 @@ public class SvmHmmTestTask
 
         File predictionOutFile = new File(aContext.getFolder("", AccessMode.READWRITE),
                 FILENAME_PREDICTIONS);
-        combinePredictionAndExpectedGoldLabels(FileUtils.readLines(fileTest, "utf-8"), predictions,
+        combinePredictionAndExpectedGoldLabels(FileUtils.readLines(fileTest, UTF_8), predictions,
                 predictionOutFile);
     }
 

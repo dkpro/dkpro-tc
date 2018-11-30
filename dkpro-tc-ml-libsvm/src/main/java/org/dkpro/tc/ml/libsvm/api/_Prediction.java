@@ -117,26 +117,7 @@ public class _Prediction
                 output.writeBytes(v + "\n");
             }
 
-//            if (v == target)
-//                ++correct;
-//            error += (v - target) * (v - target);
-//            sumv += v;
-//            sumy += target;
-//            sumvv += v * v;
-//            sumyy += target * target;
-//            sumvy += v * target;
-//            ++total;
         }
-//        if (svm_type == svm_parameter.EPSILON_SVR || svm_type == svm_parameter.NU_SVR) {
-//            info("Mean squared error = " + error / total + " (regression)\n");
-//            info("Squared correlation coefficient = "
-//                    + ((total * sumvy - sumv * sumy) * (total * sumvy - sumv * sumy))
-//                            / ((total * sumvv - sumv * sumv) * (total * sumyy - sumy * sumy))
-//                    + " (regression)\n");
-//        }
-//        else
-//            info("Accuracy = " + (double) correct / total * 100 + "% (" + correct + "/" + total
-//                    + ") (classification)\n");
     }
 
     private void exit_with_help()

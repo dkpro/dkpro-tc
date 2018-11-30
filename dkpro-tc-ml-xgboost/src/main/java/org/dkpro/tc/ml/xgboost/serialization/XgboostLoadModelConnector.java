@@ -25,7 +25,7 @@ import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class XgboostLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
 {
@@ -40,7 +40,7 @@ public class XgboostLoadModelConnector
         List<String> predict = predictor.predict(testFile, model);
         
         File predictions = FileUtil.createTempFile("xgboostPrediction", ".txt");
-        FileUtils.writeLines(predictions, "utf-8", predict);
+        FileUtils.writeLines(predictions, UTF_8.toString(), predict);
 
         predictions.deleteOnExit();
         return predictions;

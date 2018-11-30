@@ -94,9 +94,8 @@ public class WekaSerializedModel
     {
         ConfigurationParameterInitializer.initialize(this, aData);
 
-        try {
-            InputStream fileIn = aData.getInputStream();
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+        try (InputStream fileIn = aData.getInputStream();
+                ObjectInputStream in = new ObjectInputStream(fileIn);) {
             WekaSerializedModel model = (WekaSerializedModel) in.readObject();
             in.close();
             fileIn.close();

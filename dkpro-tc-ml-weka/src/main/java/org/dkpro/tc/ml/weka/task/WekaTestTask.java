@@ -90,7 +90,7 @@ public class WekaTestTask
     @Override
     public void execute(TaskContext aContext) throws Exception
     {
-    	super.execute(aContext);
+        super.execute(aContext);
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         File arffFileTrain = getFile(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA,
@@ -302,7 +302,7 @@ public class WekaTestTask
         }
         return t;
     }
-    
+
     public static File getFile(TaskContext aContext, String key, String entry, AccessMode mode)
     {
         String path = aContext.getFolder(key, mode).getPath();

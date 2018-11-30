@@ -65,7 +65,6 @@ public class AttributeStore
             nameOffsetMap.put(name, attributes.size() - 1);
         }
         else {
-            // TODO do we need better error message?
             throw new TextClassificationException("Attribute with name " + name
                     + " already present in feature store. Duplicate feature ignored.");
         }

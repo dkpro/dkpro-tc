@@ -43,6 +43,7 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FeatureResourceLoader
     implements Constants, PrivilegedAction<Void>
@@ -70,7 +71,7 @@ public class FeatureResourceLoader
 
         assertModelFolderExists(file);
 
-        for (String l : FileUtils.readLines(file, "utf-8")) {
+        for (String l : FileUtils.readLines(file, UTF_8)) {
             String[] split = l.split("\t");
             String name = split[0];
             Object[] parameters = getParameters(split);
@@ -195,7 +196,7 @@ public class FeatureResourceLoader
     private Map<String, String> loadOverrides(File tcModelLocation, String overrideFile)
         throws IOException
     {
-        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile), "utf-8");
+        List<String> lines = FileUtils.readLines(new File(tcModelLocation, overrideFile), UTF_8);
         Map<String, String> overrides = new HashMap<>();
 
         for (String s : lines) {

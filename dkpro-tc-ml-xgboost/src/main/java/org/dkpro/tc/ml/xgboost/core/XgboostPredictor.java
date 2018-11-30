@@ -24,12 +24,15 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.base.TcPredictor;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class XgboostPredictor extends Xgboost implements TcPredictor
+public class XgboostPredictor
+    extends Xgboost
+    implements TcPredictor
 {
     public XgboostPredictor()
     {
-        //Groovy
+        // Groovy
     }
 
     @Override
@@ -37,30 +40,29 @@ public class XgboostPredictor extends Xgboost implements TcPredictor
     {
         File tmpPredictionOut = FileUtil.createTempFile("xgboostPredictionOut", ".txt");
         tmpPredictionOut.deleteOnExit();
-        
+
         File config = buildTestConfigFile(data, model, tmpPredictionOut);
-        
+
         List<String> command = new ArrayList<>();
         command.add(flipBackslash(getExecutable().getAbsolutePath()));
         command.add(flipBackslash(config.getAbsolutePath()));
-        
+
         runCommand(command);
-        
-        List<String> predictions = FileUtils.readLines(tmpPredictionOut, "utf-8");
-        
+
+        List<String> predictions = FileUtils.readLines(tmpPredictionOut, UTF_8);
+
         return predictions;
     }
 
- 
     public File buildTestConfigFile(File data, File model, File predictionOut) throws Exception
     {
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append("task=pred" + "\n");
         sb.append("test:data=\"" + flipBackslash(data.getAbsolutePath()) + "\"" + "\n");
         sb.append("model_in=\"" + flipBackslash(model.getAbsolutePath()) + "\"" + "\n");
         sb.append("name_pred=\"" + flipBackslash(predictionOut.getAbsolutePath()) + "\"" + "\n");
-        
+
         File config = new File(getExecutable().getParentFile(), "test.conf");
         config.deleteOnExit();
         FileUtils.writeStringToFile(config, sb.toString(), "utf-8");

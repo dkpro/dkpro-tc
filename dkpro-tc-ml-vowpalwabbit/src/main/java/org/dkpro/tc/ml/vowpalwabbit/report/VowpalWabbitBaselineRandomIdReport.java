@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.vowpalwabbit.report;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
 public class VowpalWabbitBaselineRandomIdReport
@@ -65,9 +66,9 @@ public class VowpalWabbitBaselineRandomIdReport
     private void buildPool(File file) throws Exception
     {
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), UTF_8))) {
+            ;
             String line = null;
             while ((line = reader.readLine()) != null) {
                 if (line.isEmpty()) {
@@ -80,9 +81,6 @@ public class VowpalWabbitBaselineRandomIdReport
                 }
             }
         }
-        finally {
-            IOUtils.closeQuietly(reader);
-        }
 
         Collections.shuffle(pool);
     }
@@ -90,10 +88,10 @@ public class VowpalWabbitBaselineRandomIdReport
     @Override
     protected String getPrediction(String p)
     {
-        if(pool.size() == 1) {
+        if (pool.size() == 1) {
             return pool.get(0);
         }
-        
+
         Integer idx = random.nextInt(pool.size() - 1);
         return pool.get(idx);
     }

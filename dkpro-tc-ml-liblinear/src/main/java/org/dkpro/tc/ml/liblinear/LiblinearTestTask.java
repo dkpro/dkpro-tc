@@ -18,6 +18,7 @@
 package org.dkpro.tc.ml.liblinear;
 
 import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -44,7 +46,7 @@ public class LiblinearTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
 {
-    
+
     public static final double EPISILON_DEFAULT = 0.01;
     public static final double PARAM_C_DEFAULT = 1.0;
 
@@ -89,19 +91,13 @@ public class LiblinearTestTask
     {
         List<String> gold = new ArrayList<>();
 
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(fileTest), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(fileTest), UTF_8))) {
 
             String l = null;
             while ((l = reader.readLine()) != null) {
                 gold.add(l.split("\t")[0]);
             }
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
         }
 
         List<String> merge = new ArrayList<>();
@@ -120,7 +116,7 @@ public class LiblinearTestTask
 
         try {
             writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(predictionsFile), "utf-8"));
+                    new OutputStreamWriter(new FileOutputStream(predictionsFile), UTF_8));
             if (writeHeader) {
                 writer.append("#PREDICTION;GOLD" + "\n");
             }
@@ -135,7 +131,7 @@ public class LiblinearTestTask
             IOUtils.closeQuietly(writer);
         }
     }
-    
+
     public static SolverType getSolver(List<Object> classificationArguments)
     {
         if (classificationArguments == null) {
@@ -199,7 +195,8 @@ public class LiblinearTestTask
             type = SolverType.L2R_LR;
         }
 
-        LogFactory.getLog(LiblinearTestTask.class).debug("Will use solver " + type.toString() + ")");
+        LogFactory.getLog(LiblinearTestTask.class)
+                .debug("Will use solver " + type.toString() + ")");
         return type;
     }
 
@@ -267,6 +264,5 @@ public class LiblinearTestTask
         LogFactory.getLog(LiblinearTestTask.class).debug("Parameter epsilon is set to [0.01]");
         return EPISILON_DEFAULT;
     }
-
 
 }

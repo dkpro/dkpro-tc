@@ -55,11 +55,11 @@ public class LiblinearLoadModelConnector
 
         File tmp = File.createTempFile("libLinearePrediction", ".txt");
         tmp.deleteOnExit();
-        
+
         LiblinearPredictor predicter = new LiblinearPredictor();
         List<String> predict = predicter.predict(infile, liblinearModel);
         LiblinearTestTask.writePredictions(tmp, predict, false);
-        
+
         return tmp;
     }
 

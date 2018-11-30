@@ -30,7 +30,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.dkpro.tc.core.Constants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 import de.unidue.ltl.evaluation.core.EvaluationData;
 import de.unidue.ltl.evaluation.measures.Accuracy;
@@ -65,7 +65,7 @@ public class MetricComputationUtil {
 			throw new IllegalArgumentException("The learning mode is null");
 		}
 
-		int numLines = FileUtils.readLines(id2o, "utf-8").size();
+		int numLines = FileUtils.readLines(id2o, UTF_8).size();
 		if (numLines <= 3) {
 			throw new IllegalStateException("The provided file [" + id2o.getAbsolutePath()
 					+ "] appears empty, three lines of header are expected and found in total [" + numLines
@@ -174,7 +174,7 @@ public class MetricComputationUtil {
 		EvaluationData<String> data = Tc2LtlabEvalConverter.convertSingleLabelModeId2Outcome(id2outcome);
 
 		ConfusionMatrix<String> matrix = new ConfusionMatrix<>(data);
-		FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), "utf-8");
+		FileUtils.writeStringToFile(matrixFile, getMatrix(matrix), UTF_8);
 	}
 
 	/**

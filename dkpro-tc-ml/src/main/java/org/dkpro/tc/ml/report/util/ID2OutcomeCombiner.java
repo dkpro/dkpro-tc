@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 import org.dkpro.tc.core.Constants;
 
 public class ID2OutcomeCombiner<T>
@@ -97,7 +97,7 @@ public class ID2OutcomeCombiner<T>
     {
 
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"))) {
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
             reader.readLine(); // pop first line
             reader.readLine(); // mapping - does not exist in regression
             reader.readLine(); // time stamp
@@ -151,7 +151,7 @@ public class ID2OutcomeCombiner<T>
         // second one because there is one label less
 
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"))) {
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
             reader.readLine(); // pop first line with header
             String header = reader.readLine();
             Map<String, String> map = buildMappingFromHeader(header);
@@ -224,7 +224,7 @@ public class ID2OutcomeCombiner<T>
     private void processMultilabel(File id2OutcomeFile) throws Exception
     {
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"))) {
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
             reader.readLine(); // pop first line
 
             Map<String, String> map = buildMappingFromHeader(reader.readLine());

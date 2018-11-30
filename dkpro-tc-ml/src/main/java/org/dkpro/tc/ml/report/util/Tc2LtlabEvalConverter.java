@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 import org.apache.commons.io.FileUtils;
 
 import de.unidue.ltl.evaluation.core.EvaluationData;
@@ -50,7 +50,7 @@ public class Tc2LtlabEvalConverter
     public static Map<String, String> extractLabelIdMapping(File id2OutcomeFile, int indexOfHeaderInformation)
         throws Exception
     {
-    	List<String> lines = FileUtils.readLines(id2OutcomeFile, "utf-8");
+    	List<String> lines = FileUtils.readLines(id2OutcomeFile, UTF_8);
         Map<String, String> map = buildMappingFromHeader(lines.get(indexOfHeaderInformation));
 
         return map;
@@ -85,38 +85,37 @@ public class Tc2LtlabEvalConverter
         throws Exception
     {
 
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
 
-        reader.readLine(); // pop first line
-        Map<String, String> map = buildMappingFromHeader(reader.readLine());
-        reader.readLine(); // time stamp
+            reader.readLine(); // pop first line
+            Map<String, String> map = buildMappingFromHeader(reader.readLine());
+            reader.readLine(); // time stamp
 
-        EvaluationData<String> data = new EvaluationData<>();
+            EvaluationData<String> data = new EvaluationData<>();
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            if (skipLine(line)) {
-                continue;
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (skipLine(line)) {
+                    continue;
+                }
+
+                int lastIdx = line.lastIndexOf("=");
+                checkIndexRange(line, lastIdx);
+
+                String docName = line.substring(0, lastIdx);
+                String values = line.substring(lastIdx + 1);
+
+                String[] valSplit = values.split(";");
+                String prediction = map.get(valSplit[0]);
+                String gold = map.get(valSplit[1]);
+                // String threshold = valSplit[2];
+
+                data.register(gold, prediction, docName);
             }
 
-            int lastIdx = line.lastIndexOf("=");
-            checkIndexRange(line, lastIdx);
-
-            String docName = line.substring(0, lastIdx);
-            String values = line.substring(lastIdx + 1);
-
-            String[] valSplit = values.split(";");
-            String prediction = map.get(valSplit[0]);
-            String gold = map.get(valSplit[1]);
-            // String threshold = valSplit[2];
-
-            data.register(gold, prediction, docName);
+            return data;
         }
-
-        reader.close();
-
-        return data;
     }
 
     private static boolean skipLine(String line)
@@ -137,44 +136,43 @@ public class Tc2LtlabEvalConverter
         throws Exception
     {
 
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
 
-        reader.readLine(); // pop first line
+            reader.readLine(); // pop first line
 
-        Map<String, String> map = buildMappingFromHeader(reader.readLine());
-        
-        reader.readLine(); // pop timestamp
+            Map<String, String> map = buildMappingFromHeader(reader.readLine());
 
-        EvaluationData<String> data = new EvaluationData<>();
+            reader.readLine(); // pop timestamp
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            if (skipLine(line)) {
-                continue;
+            EvaluationData<String> data = new EvaluationData<>();
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (skipLine(line)) {
+                    continue;
+                }
+
+                int lastIdx = line.lastIndexOf("=");
+                checkIndexRange(line, lastIdx);
+                String docName = line.substring(0, lastIdx);
+                String values = line.substring(lastIdx + 1);
+
+                String[] valSplit = values.split(";");
+
+                Double threshold = Double.valueOf(valSplit[2]);
+
+                String prediction = valSplit[0];
+                List<String> mappedPred = convertMultiLabel(prediction.split(","), threshold, map);
+
+                String gold = valSplit[1];
+                List<String> mappedGold = convertMultiLabel(gold.split(","), threshold, map);
+
+                data.registerMultiLabel(mappedGold, mappedPred, docName);
             }
 
-            int lastIdx = line.lastIndexOf("=");
-            checkIndexRange(line, lastIdx);
-            String docName = line.substring(0, lastIdx);
-            String values = line.substring(lastIdx + 1);
-
-            String[] valSplit = values.split(";");
-
-            Double threshold = Double.valueOf(valSplit[2]);
-
-            String prediction = valSplit[0];
-            List<String> mappedPred = convertMultiLabel(prediction.split(","), threshold, map);
-
-            String gold = valSplit[1];
-            List<String> mappedGold = convertMultiLabel(gold.split(","), threshold, map);
-
-            data.registerMultiLabel(mappedGold, mappedPred, docName);
+            return data;
         }
-
-        reader.close();
-
-        return data;
     }
 
     /**
@@ -193,45 +191,45 @@ public class Tc2LtlabEvalConverter
         throws Exception
     {
 
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
 
-        reader.readLine(); // pop first line
-        reader.readLine(); // pop header
-        reader.readLine(); // pop time stamp
+            reader.readLine(); // pop first line
+            reader.readLine(); // pop header
+            reader.readLine(); // pop time stamp
 
-        EvaluationData<Integer> data = new EvaluationData<>();
+            EvaluationData<Integer> data = new EvaluationData<>();
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            if (skipLine(line)) {
-                continue;
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (skipLine(line)) {
+                    continue;
+                }
+
+                int lastIdx = line.lastIndexOf("=");
+
+                checkIndexRange(line, lastIdx);
+
+                String docName = line.substring(0, lastIdx);
+                String values = line.substring(lastIdx + 1);
+
+                String[] valSplit = values.split(";");
+
+                Double threshold = Double.valueOf(valSplit[2]);
+
+                String prediction = valSplit[0];
+                List<Integer> mappedPred = convertMultiLabelToIntegerArray(prediction.split(","),
+                        threshold);
+
+                String gold = valSplit[1];
+                List<Integer> mappedGold = convertMultiLabelToIntegerArray(gold.split(","),
+                        threshold);
+
+                data.registerMultiLabel(mappedGold, mappedPred, docName);
             }
-
-            int lastIdx = line.lastIndexOf("=");
-
-            checkIndexRange(line, lastIdx);
-
-            String docName = line.substring(0, lastIdx);
-            String values = line.substring(lastIdx + 1);
-
-            String[] valSplit = values.split(";");
-
-            Double threshold = Double.valueOf(valSplit[2]);
-
-            String prediction = valSplit[0];
-            List<Integer> mappedPred = convertMultiLabelToIntegerArray(prediction.split(","),
-                    threshold);
-
-            String gold = valSplit[1];
-            List<Integer> mappedGold = convertMultiLabelToIntegerArray(gold.split(","), threshold);
-
-            data.registerMultiLabel(mappedGold, mappedPred, docName);
+            return data;
         }
 
-        reader.close();
-
-        return data;
     }
 
     private static void checkIndexRange(String line, int lastIdx)
@@ -308,34 +306,33 @@ public class Tc2LtlabEvalConverter
     public static EvaluationData<Double> convertRegressionModeId2Outcome(File id2OutcomeFile)
         throws Exception
     {
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(id2OutcomeFile), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(id2OutcomeFile), UTF_8))) {
 
-        reader.readLine(); // pop head line
-        reader.readLine(); // pop header (not needed for regression)
+            reader.readLine(); // pop head line
+            reader.readLine(); // pop header (not needed for regression)
 
-        EvaluationData<Double> data = new EvaluationData<>();
+            EvaluationData<Double> data = new EvaluationData<>();
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
+
+                String[] split = line.split("=");
+                String docName = split[0];
+                String values = split[1];
+
+                String[] valSplit = values.split(";");
+                Double prediction = Double.valueOf(valSplit[0]);
+                Double gold = Double.valueOf(valSplit[1]);
+
+                data.register(gold, prediction, docName);
             }
 
-            String[] split = line.split("=");
-            String docName = split[0];
-            String values = split[1];
-
-            String[] valSplit = values.split(";");
-            Double prediction = Double.valueOf(valSplit[0]);
-            Double gold = Double.valueOf(valSplit[1]);
-
-            data.register(gold, prediction, docName);
+            return data;
         }
-
-        reader.close();
-
-        return data;
     }
 
 }

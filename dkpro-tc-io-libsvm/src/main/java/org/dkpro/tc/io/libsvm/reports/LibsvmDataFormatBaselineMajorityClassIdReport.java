@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 
@@ -72,7 +73,7 @@ public class LibsvmDataFormatBaselineMajorityClassIdReport
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF_8));
 
             String line = null;
             while ((line = reader.readLine()) != null) {

@@ -35,10 +35,11 @@ public class MekaPredictor
     extends _eka
     implements TcPredictor
 {
-    
+
     private double threshold;
 
-    public MekaPredictor(double threshold) {
+    public MekaPredictor(double threshold)
+    {
         this.threshold = threshold;
     }
 

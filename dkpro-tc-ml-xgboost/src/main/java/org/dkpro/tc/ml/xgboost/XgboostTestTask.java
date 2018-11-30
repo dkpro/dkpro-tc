@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.xgboost;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +30,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -38,7 +39,6 @@ import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
 import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
-
 public class XgboostTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
@@ -59,7 +59,7 @@ public class XgboostTestTask
         if (!learningMode.equals(LM_REGRESSION)) {
             File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
             File file = new File(folder, FILENAME_OUTCOMES);
-            List<String> outcomes = FileUtils.readLines(file, "utf-8");
+            List<String> outcomes = FileUtils.readLines(file, UTF_8);
             parameters.add("num_class=" + outcomes.size() + "\n");
         }
 
@@ -106,14 +106,14 @@ public class XgboostTestTask
         mergePredictionWithGold(aContext, prediction);
     }
 
-    private void mergePredictionWithGold(TaskContext aContext, List<String> prediction) throws Exception
+    private void mergePredictionWithGold(TaskContext aContext, List<String> prediction)
+        throws Exception
     {
 
         File fileTest = getTestFile(aContext);
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(aContext.getFile(FILENAME_PREDICTIONS, AccessMode.READWRITE)), "utf-8"));
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(aContext.getFile(FILENAME_PREDICTIONS, AccessMode.READWRITE)),
+                UTF_8))) {
 
             List<String> gold = readGoldValues(fileTest);
 
@@ -126,9 +126,6 @@ public class XgboostTestTask
                 bw.write(p + ";" + g);
                 bw.write("\n");
             }
-        }
-        finally {
-            IOUtils.closeQuietly(bw);
         }
     }
 
@@ -143,9 +140,8 @@ public class XgboostTestTask
     private List<String> readGoldValues(File f) throws Exception
     {
         List<String> goldValues = new ArrayList<>();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(f), UTF_8))) {
 
             String line = null;
             while ((line = reader.readLine()) != null) {
@@ -156,9 +152,6 @@ public class XgboostTestTask
                 goldValues.add(split[0]);
             }
 
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
         }
 
         return goldValues;

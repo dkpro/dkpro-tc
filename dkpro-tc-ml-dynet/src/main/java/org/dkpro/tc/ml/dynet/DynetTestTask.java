@@ -39,6 +39,7 @@ import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.PythonConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
 import org.dkpro.tc.ml.TcClassifierTaskBase;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DynetTestTask
 	extends TcClassifierTaskBase
@@ -99,7 +100,7 @@ public class DynetTestTask
         }
         try {
             FileUtils.writeStringToFile(aContext.getFile("cmdDebug.txt", AccessMode.READWRITE),
-                    sb.toString(), "utf-8");
+                    sb.toString(), UTF_8);
         }
         catch (IOException e) {
             throw new Exception(e);

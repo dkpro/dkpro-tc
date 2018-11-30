@@ -19,6 +19,7 @@
 package org.dkpro.tc.ml.libsvm.serialization;
 
 import java.io.BufferedReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,18 +51,19 @@ public class LibsvmLoadModelConnector extends LibsvmDataFormatLoadModelConnector
 
 	}
 
-	@Override
-	protected File runPrediction(File tempFile) throws Exception {
-		File prediction = FileUtil.createTempFile("libsvmPrediction", ".libsvm");
-		prediction.deleteOnExit();
-		
-		_Prediction predictor = new _Prediction();
-		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(tempFile), "utf-8"));
+    @Override
+    protected File runPrediction(File tempFile) throws Exception
+    {
+        File prediction = FileUtil.createTempFile("libsvmPrediction", ".libsvm");
+        prediction.deleteOnExit();
 
-		DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction));
-		predictor.predict(r, output, model, 0);
-		output.close();
+        _Prediction predictor = new _Prediction();
+        try (BufferedReader r = new BufferedReader(
+                new InputStreamReader(new FileInputStream(tempFile), UTF_8));
+                DataOutputStream output = new DataOutputStream(new FileOutputStream(prediction))) {
+            predictor.predict(r, output, model, 0);
+        }
 
-		return prediction;
-	}
+        return prediction;
+    }
 }

@@ -179,12 +179,15 @@ public class WekaSerliazeModelConnector
 
     }
 
-    private Classifier getClassifier(Instances trainData, File model, String learningMode, List<Object> args) throws Exception
+    private Classifier getClassifier(Instances trainData, File model, String learningMode,
+            List<Object> args)
+        throws Exception
     {
-        if(learningMode.equals(LM_MULTI_LABEL)) {
+        if (learningMode.equals(LM_MULTI_LABEL)) {
             MekaTrainer trainer = new MekaTrainer(true);
             return trainer.train(trainData, model, toString(args.subList(1, args.size())));
-        }else {
+        }
+        else {
             WekaTrainer trainer = new WekaTrainer();
             return trainer.train(trainData, model, toString(args.subList(1, args.size())));
         }
@@ -193,10 +196,10 @@ public class WekaSerliazeModelConnector
     private List<String> toString(List<Object> subList)
     {
         List<String> o = new ArrayList<>();
-        for(Object x : subList) {
+        for (Object x : subList) {
             o.add(x.toString());
         }
-        
+
         return o;
     }
 

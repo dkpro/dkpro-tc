@@ -28,7 +28,7 @@ import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class SvmhmmLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
 {
@@ -61,7 +61,7 @@ public class SvmhmmLoadModelConnector
         
         File prediction = FileUtil.createTempFile("svmHmmTmpFile", ".txt");
         prediction.deleteOnExit();
-        FileUtils.writeLines(prediction, "utf-8", predictions);
+        FileUtils.writeLines(prediction, UTF_8.toString(), predictions);
 
         FileUtils.deleteQuietly(localModel);
         FileUtils.deleteQuietly(localTestFile);

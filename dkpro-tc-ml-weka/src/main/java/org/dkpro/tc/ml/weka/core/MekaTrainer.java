@@ -37,6 +37,7 @@ public class MekaTrainer
 
     /**
      * Trains a Meka classifier
+     * 
      * @param serializeModel
      *            if the model shall be serialized. Some weka models are not serializable.
      */

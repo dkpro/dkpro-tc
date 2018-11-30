@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import libsvm.svm;
 import libsvm.svm_model;
@@ -215,56 +216,56 @@ public class _Training
 
     private void read_problem() throws IOException
     {
-        BufferedReader fp = new BufferedReader(
-                new InputStreamReader(new FileInputStream(input_file_name), "utf-8"));
-        Vector<Double> vy = new Vector<Double>();
-        Vector<svm_node[]> vx = new Vector<svm_node[]>();
-        int max_index = 0;
+        try (BufferedReader fp = new BufferedReader(
+                new InputStreamReader(new FileInputStream(input_file_name), UTF_8))) {
+            Vector<Double> vy = new Vector<Double>();
+            Vector<svm_node[]> vx = new Vector<svm_node[]>();
+            int max_index = 0;
 
-        while (true) {
-            String line = fp.readLine();
-            if (line == null)
-                break;
+            while (true) {
+                String line = fp.readLine();
+                if (line == null)
+                    break;
 
-            StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
+                StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
 
-            vy.addElement(atof(st.nextToken()));
-            int m = st.countTokens() / 2;
-            svm_node[] x = new svm_node[m];
-            for (int j = 0; j < m; j++) {
-                x[j] = new svm_node();
-                x[j].index = atoi(st.nextToken());
-                x[j].value = atof(st.nextToken());
+                vy.addElement(atof(st.nextToken()));
+                int m = st.countTokens() / 2;
+                svm_node[] x = new svm_node[m];
+                for (int j = 0; j < m; j++) {
+                    x[j] = new svm_node();
+                    x[j].index = atoi(st.nextToken());
+                    x[j].value = atof(st.nextToken());
+                }
+                if (m > 0)
+                    max_index = Math.max(max_index, x[m - 1].index);
+                vx.addElement(x);
             }
-            if (m > 0)
-                max_index = Math.max(max_index, x[m - 1].index);
-            vx.addElement(x);
+
+            prob = new svm_problem();
+            prob.l = vy.size();
+            prob.x = new svm_node[prob.l][];
+            for (int i = 0; i < prob.l; i++)
+                prob.x[i] = vx.elementAt(i);
+            prob.y = new double[prob.l];
+            for (int i = 0; i < prob.l; i++)
+                prob.y[i] = vy.elementAt(i);
+
+            if (param.gamma == 0 && max_index > 0)
+                param.gamma = 1.0 / max_index;
+
+            if (param.kernel_type == svm_parameter.PRECOMPUTED)
+                for (int i = 0; i < prob.l; i++) {
+                    if (prob.x[i][0].index != 0) {
+                        throw new IllegalArgumentException(
+                                "Wrong kernel matrix: first column must be 0:sample_serial_number\n");
+                    }
+                    if ((int) prob.x[i][0].value <= 0 || (int) prob.x[i][0].value > max_index) {
+                        throw new IllegalArgumentException(
+                                "Wrong input format: sample_serial_number out of range\n");
+                    }
+                }
+
         }
-        fp.close();
-
-        prob = new svm_problem();
-        prob.l = vy.size();
-        prob.x = new svm_node[prob.l][];
-        for (int i = 0; i < prob.l; i++)
-            prob.x[i] = vx.elementAt(i);
-        prob.y = new double[prob.l];
-        for (int i = 0; i < prob.l; i++)
-            prob.y[i] = vy.elementAt(i);
-
-        if (param.gamma == 0 && max_index > 0)
-            param.gamma = 1.0 / max_index;
-
-        if (param.kernel_type == svm_parameter.PRECOMPUTED)
-            for (int i = 0; i < prob.l; i++) {
-                if (prob.x[i][0].index != 0) {
-                    throw new IllegalArgumentException(
-                            "Wrong kernel matrix: first column must be 0:sample_serial_number\n");
-                }
-                if ((int) prob.x[i][0].value <= 0 || (int) prob.x[i][0].value > max_index) {
-                    throw new IllegalArgumentException(
-                            "Wrong input format: sample_serial_number out of range\n");
-                }
-            }
-
     }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.ml.base.TcTrainer;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class XgboostTrainer
     extends Xgboost
@@ -71,7 +72,7 @@ public class XgboostTrainer
 
         File config = new File(getExecutable().getParentFile(), "train.conf");
         config.deleteOnExit();
-        FileUtils.writeStringToFile(config, sb.toString(), "utf-8");
+        FileUtils.writeStringToFile(config, sb.toString(), UTF_8);
         return config;
     }
 }

@@ -50,6 +50,7 @@ import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Datawriter for the Weka machine learning tool.
@@ -58,7 +59,7 @@ public class MekaDataWriter
     implements DataWriter, Constants
 {
     public static final String RELATION_NAME = "dkpro-tc-generated";
-    
+
     BufferedWriter bw = null;
     Gson gson = new Gson();
     private boolean useSparse;
@@ -73,8 +74,8 @@ public class MekaDataWriter
     private String[] outcomes;
 
     @Override
-    public void init(File outputFolder, boolean useSparse, String learningMode,
-            String featureMode, boolean applyWeighting, String[] outcomes)
+    public void init(File outputFolder, boolean useSparse, String learningMode, String featureMode,
+            boolean applyWeighting, String[] outcomes)
         throws Exception
     {
         this.outputFolder = outputFolder;
@@ -94,7 +95,7 @@ public class MekaDataWriter
         if (arffTarget.exists()) {
             FileUtils.forceDelete(arffTarget);
         }
-        
+
         File genericOutputFile = new File(outputFolder, getGenericFileName());
         if (genericOutputFile.exists()) {
             FileUtils.forceDelete(genericOutputFile);
@@ -102,8 +103,7 @@ public class MekaDataWriter
     }
 
     @Override
-    public void writeGenericFormat(List<Instance> instances)
-        throws AnalysisEngineProcessException
+    public void writeGenericFormat(List<Instance> instances) throws AnalysisEngineProcessException
     {
         try {
             initGeneric();
@@ -124,7 +124,7 @@ public class MekaDataWriter
             return;
         }
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), "utf-8"));
+                new FileOutputStream(new File(outputFolder, GENERIC_FEATURE_FILE), true), UTF_8));
 
     }
 
@@ -132,7 +132,7 @@ public class MekaDataWriter
     public void transformFromGeneric() throws Exception
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), "utf-8"));
+                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), UTF_8));
 
         String line = null;
         while ((line = reader.readLine()) != null) {
@@ -274,8 +274,8 @@ public class MekaDataWriter
 
         attributeStore = new AttributeStore();
 
-        List<String> lines = FileUtils.readLines(
-                new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), "utf-8");
+        List<String> lines = FileUtils
+                .readLines(new File(outputFolder, Constants.FILENAME_FEATURES_DESCRIPTION), UTF_8);
 
         for (String l : lines) {
             String[] split = l.split("\t");
@@ -303,8 +303,7 @@ public class MekaDataWriter
         }
 
         // for Meka-internal use
-        masterInstance = new Instances(
-                RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
+        masterInstance = new Instances(RELATION_NAME + ": -C " + outcomeAttributes.size() + " ",
                 attributeStore.getAttributes(), instances.size());
         masterInstance.setClassIndex(outcomeAttributes.size());
         saver.setInstances(masterInstance);

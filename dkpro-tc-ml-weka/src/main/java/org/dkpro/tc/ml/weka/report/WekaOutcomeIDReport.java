@@ -45,7 +45,7 @@ import org.dkpro.tc.ml.weka.util.MultilabelResult;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Writes a instanceId / outcome data for each classification instance.
  */
@@ -106,7 +106,7 @@ public class WekaOutcomeIDReport
         
         String data = header + "\n#" + timeStamp + "\n" + content;
         
-        FileUtils.writeStringToFile(getTargetOutputFile(), data, "utf-8");
+        FileUtils.writeStringToFile(getTargetOutputFile(), data, UTF_8);
     }
 
     protected File getTargetOutputFile()
@@ -123,7 +123,7 @@ public class WekaOutcomeIDReport
 
         File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
         File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
-        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, UTF_8);
         Collections.sort(outcomes);
         return outcomes;
         // return WekaUtils.getClassLabels(predictions, multiLabel);
@@ -282,7 +282,7 @@ public class WekaOutcomeIDReport
         File f = new File(
                 getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
                 FILENAME_DOCUMENT_META_DATA_LOG);
-        List<String> readLines = FileUtils.readLines(f, "utf-8");
+        List<String> readLines = FileUtils.readLines(f, UTF_8);
 
         int idx = 0;
         for (String l : readLines) {

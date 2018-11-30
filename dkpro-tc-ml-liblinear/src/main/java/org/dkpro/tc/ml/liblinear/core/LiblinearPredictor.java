@@ -28,7 +28,8 @@ import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 
-public class LiblinearPredictor implements TcPredictor
+public class LiblinearPredictor
+    implements TcPredictor
 {
     public List<String> predict(File data, Model model) throws Exception
     {

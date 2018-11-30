@@ -32,6 +32,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.libsvm.core.LibsvmPredictor;
 import org.dkpro.tc.ml.libsvm.core.LibsvmTrainer;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LibsvmTestTask
     extends LibsvmDataFormatTestTask
@@ -98,9 +99,9 @@ public class LibsvmTestTask
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(prediction), "utf-8"));
+                    new OutputStreamWriter(new FileOutputStream(prediction), UTF_8));
 
-            List<String> gold = pickGold(FileUtils.readLines(fileTest, "utf-8"));
+            List<String> gold = pickGold(FileUtils.readLines(fileTest, UTF_8));
             bw.write("#PREDICTION;GOLD" + "\n");
             for (int i = 0; i < gold.size(); i++) {
                 String p = pred.get(i);

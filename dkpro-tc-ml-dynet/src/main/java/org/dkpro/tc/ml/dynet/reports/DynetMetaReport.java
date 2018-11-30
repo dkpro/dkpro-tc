@@ -32,6 +32,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DynetMetaReport
     extends TcAbstractReport
@@ -86,7 +87,7 @@ public class DynetMetaReport
             List<String> output = new ArrayList<>();
             BufferedReader reader = null;
             try {
-                reader = new BufferedReader(new InputStreamReader(start.getInputStream(), "utf-8"));
+                reader = new BufferedReader(new InputStreamReader(start.getInputStream(), UTF_8));
 
                 String l = null;
                 while ((l = reader.readLine()) != null) {

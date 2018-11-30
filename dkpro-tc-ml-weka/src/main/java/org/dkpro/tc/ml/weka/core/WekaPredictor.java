@@ -28,7 +28,8 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
-public class WekaPredictor extends _eka
+public class WekaPredictor
+    extends _eka
     implements TcPredictor
 {
 

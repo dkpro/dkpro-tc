@@ -18,6 +18,7 @@
 
 package org.dkpro.tc.ml.crfsuite.writer;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -81,38 +82,36 @@ public class CrfSuiteDataWriter
                 new OutputStreamWriter(
                         new FileOutputStream(
                                 new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
-                        "utf-8"));
+                        UTF_8));
 
     }
 
     @Override
     public void transformFromGeneric() throws Exception
     {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
-                "utf-8"));
+                UTF_8));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(classifierFormatOutputFile), UTF_8))) {
 
-        BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile), "utf-8"));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                Instance[] instance = gson.fromJson(line, Instance[].class);
+                List<Instance> ins = Arrays.asList(instance);
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            Instance[] instance = gson.fromJson(line, Instance[].class);
-            List<Instance> ins = Arrays.asList(instance);
+                Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
+                        ins);
 
-            Iterator<StringBuilder> sequenceIterator = new CrfSuiteFeatureFormatExtractionIterator(
-                    ins);
+                while (sequenceIterator.hasNext()) {
+                    String features = sequenceIterator.next().toString();
+                    writer.write(features);
+                    writer.write("\n");
+                }
 
-            while (sequenceIterator.hasNext()) {
-                String features = sequenceIterator.next().toString();
-                writer.write(features);
-                writer.write("\n");
             }
 
         }
-
-        reader.close();
-        writer.close();
     }
 
     @Override
@@ -145,7 +144,7 @@ public class CrfSuiteDataWriter
         }
 
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+                new FileOutputStream(classifierFormatOutputFile, true), UTF_8));
 
     }
 

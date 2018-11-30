@@ -38,6 +38,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Writes a instanceId / outcome data for each classification instance.
@@ -89,8 +90,8 @@ public class VowpalWabbitOutcomeIDReport
         for (int i = 0; i < goldValues.size(); i++) {
             String p = getPrediction(predictionValues.get(i));
             String g = goldValues.get(i);
-            
-            if(g.isEmpty()) {
+
+            if (g.isEmpty()) {
                 continue;
             }
 
@@ -131,7 +132,7 @@ public class VowpalWabbitOutcomeIDReport
 
         List<String> gold = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(f), "utf-8"))) {
+                new InputStreamReader(new FileInputStream(f), UTF_8))) {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
@@ -163,7 +164,7 @@ public class VowpalWabbitOutcomeIDReport
         Map<String, String> m = new HashMap<>();
 
         int idx = 0;
-        for (String l : FileUtils.readLines(f, "utf-8")) {
+        for (String l : FileUtils.readLines(f, UTF_8)) {
             if (l.startsWith("#")) {
                 continue;
             }
@@ -198,7 +199,7 @@ public class VowpalWabbitOutcomeIDReport
 
         if (isSequence) {
             readLines = new ArrayList<>();
-            List<String> tmp = FileUtils.readLines(predictionFile, "utf-8");
+            List<String> tmp = FileUtils.readLines(predictionFile, UTF_8);
             for (String t : tmp) {
                 readLines.addAll(Arrays.asList(t.split(" ")));
                 readLines.add("");// empty line = end of sequence
@@ -225,7 +226,7 @@ public class VowpalWabbitOutcomeIDReport
         List<Integer> keys = new ArrayList<Integer>(id2label.keySet());
         for (int i = 0; i < numKeys; i++) {
             Integer key = keys.get(i);
-            header.append(key + "=" + URLEncoder.encode(id2label.get(key), "UTF-8"));
+            header.append(key + "=" + URLEncoder.encode(id2label.get(key), UTF_8.toString()));
             if (i + 1 < numKeys) {
                 header.append(" ");
             }
@@ -243,7 +244,7 @@ public class VowpalWabbitOutcomeIDReport
         File outcomeFolder = getContext().getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
         File outcomeFiles = new File(outcomeFolder, VowpalWabbitDataWriter.OUTCOME_MAPPING);
-        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, UTF_8);
 
         Map<Integer, String> map = new HashMap<Integer, String>();
         for (String line : outcomes) {

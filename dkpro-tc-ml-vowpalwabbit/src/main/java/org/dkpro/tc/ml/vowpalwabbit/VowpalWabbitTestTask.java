@@ -40,7 +40,7 @@ import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitTrainer;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class VowpalWabbitTestTask
     extends TcShallowClassifierTaskBase
 {
@@ -59,7 +59,7 @@ public class VowpalWabbitTestTask
 
         if (multiLabel) {
             throw new TextClassificationException(
-                    "Multi-label requested, but CRFSuite only supports single label setups.");
+                    "Multi-label requested, but not supported.");
         }
 
         File model = trainModel(aContext);
@@ -79,7 +79,7 @@ public class VowpalWabbitTestTask
         for (String p : predictionValues) {
             sb.append(p + "\n");
         }
-        FileUtils.writeStringToFile(predictionsFile, sb.toString(), "utf-8");
+        FileUtils.writeStringToFile(predictionsFile, sb.toString(), UTF_8);
 
     }
 
@@ -223,7 +223,7 @@ public class VowpalWabbitTestTask
     {
         File folder = aContext.getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
         File file = new File(folder, FILENAME_OUTCOMES);
-        List<String> outcomes = FileUtils.readLines(file, "utf-8");
+        List<String> outcomes = FileUtils.readLines(file, UTF_8);
         return outcomes.size();
     }
 

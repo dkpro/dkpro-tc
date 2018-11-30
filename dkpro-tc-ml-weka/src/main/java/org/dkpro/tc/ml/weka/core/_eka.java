@@ -49,8 +49,10 @@ import weka.core.SparseInstance;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class _eka implements Constants
+public class _eka
+    implements Constants
 {
 
     protected Instances toWekaInstances(File data, boolean isMultilabel) throws Exception
@@ -135,23 +137,24 @@ public class _eka implements Constants
             underlyingStream = bufStr;
         }
 
-        Reader reader = new InputStreamReader(underlyingStream, "UTF-8");
-        Instances trainData = new Instances(reader);
+        try (Reader reader = new InputStreamReader(underlyingStream, UTF_8)) {
+            Instances trainData = new Instances(reader);
 
-        if (multiLabel) {
-            String relationTag = trainData.relationName();
-            // for multi-label classification, class labels are expected at beginning of attribute
-            // set and their number must be specified with the -C parameter in the relation tag
-            Matcher m = Pattern.compile("-C\\s\\d+").matcher(relationTag);
-            m.find();
-            trainData.setClassIndex(Integer.parseInt(m.group().split("-C ")[1]));
+            if (multiLabel) {
+                String relationTag = trainData.relationName();
+                // for multi-label classification, class labels are expected at beginning of
+                // attribute
+                // set and their number must be specified with the -C parameter in the relation tag
+                Matcher m = Pattern.compile("-C\\s\\d+").matcher(relationTag);
+                m.find();
+                trainData.setClassIndex(Integer.parseInt(m.group().split("-C ")[1]));
+            }
+            else {
+                // for single-label classification, class label expected as last attribute
+                trainData.setClassIndex(trainData.numAttributes() - 1);
+            }
+            return trainData;
         }
-        else {
-            // for single-label classification, class label expected as last attribute
-            trainData.setClassIndex(trainData.numAttributes() - 1);
-        }
-        reader.close();
-        return trainData;
     }
 
     public static Instances addInstanceId(Instances newData, Instances oldData,
@@ -206,8 +209,8 @@ public class _eka implements Constants
         return classLabelList;
     }
 
-    public   weka.core.Instance tcInstanceToWekaInstance(Instance instance,
-            Instances trainingData, List<String> allClasses, boolean isRegressionExperiment)
+    public weka.core.Instance tcInstanceToWekaInstance(Instance instance, Instances trainingData,
+            List<String> allClasses, boolean isRegressionExperiment)
         throws Exception
     {
         AttributeStore attributeStore = new AttributeStore();
@@ -229,7 +232,7 @@ public class _eka implements Constants
         return sparseInstance;
     }
 
-    private   Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
+    private Attribute createOutcomeAttribute(List<String> outcomeValues, boolean isRegresion)
     {
         if (isRegresion) {
             return new Attribute(CLASS_ATTRIBUTE_NAME);
@@ -242,7 +245,7 @@ public class _eka implements Constants
             return new Attribute(CLASS_ATTRIBUTE_NAME, outcomeValues);
         }
     }
-    
+
     private double[] getFeatureValues(AttributeStore attributeStore, Instance instance)
     {
         double[] featureValues = new double[attributeStore.getAttributes().size()];

@@ -42,7 +42,7 @@ import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class WekaFeatureSelector
     implements Constants
 {
@@ -79,7 +79,7 @@ public class WekaFeatureSelector
                 AttributeSelection attSel = featureSelectionSinglelabel(trainData, featureSearcher,
                         attributeEvaluator);
                 FileUtils.writeStringToFile(new File(workingFolder, featureSelectionFile),
-                        attSel.toResultsString(), "utf-8");
+                        attSel.toResultsString(), UTF_8);
                 trainData = attSel.reduceDimensionality(trainData);
                 testData = attSel.reduceDimensionality(testData);
             }
@@ -181,7 +181,7 @@ public class WekaFeatureSelector
                 evalFile.append(att.name() + ": " + attributeSelectionFilter
                         .evaluateAttribute(att.index() - mulanInstances.getNumLabels()) + "\n");
             }
-            FileUtils.writeStringToFile(fsResultsFile, evalFile.toString(), "utf-8");
+            FileUtils.writeStringToFile(fsResultsFile, evalFile.toString(), UTF_8);
 
             // create a filter to reduce the dimension of the attributes
             int[] toKeep = new int[numLabelsToKeep + mulanInstances.getNumLabels()];
@@ -248,7 +248,7 @@ public class WekaFeatureSelector
         AttributeSelection selector = singleLabelAttributeSelection(trainData, featureSearcher,
                 attributeEvaluator);
         FileUtils.writeStringToFile(new File(workingFolder, featureSelectionFile),
-                selector.toResultsString(), "utf-8");
+                selector.toResultsString(), UTF_8);
         return selector;
     }
 

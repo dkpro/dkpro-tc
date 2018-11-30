@@ -18,6 +18,7 @@
 package org.dkpro.tc.io.libsvm.reports;
 
 import java.io.BufferedReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -67,7 +68,7 @@ public class LibsvmDataFormatBaselineRandomIdReport
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF_8));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 if (line.isEmpty()) {

@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -99,7 +100,7 @@ public class LibsvmDataFormatWriter
                 new OutputStreamWriter(
                         new FileOutputStream(
                                 new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true),
-                        "utf-8"));
+                        UTF_8));
     }
 
     @Override
@@ -107,7 +108,7 @@ public class LibsvmDataFormatWriter
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
-                "utf-8"));
+                UTF_8));
 
         String line = null;
         while ((line = reader.readLine()) != null) {
@@ -207,7 +208,7 @@ public class LibsvmDataFormatWriter
             sb.append(e.getKey() + "\t" + e.getValue() + "\n");
         }
 
-        FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), "utf-8");
+        FileUtils.writeStringToFile(new File(outputDirectory, file), sb.toString(), UTF_8);
     }
 
     private Double toValue(Object value)
@@ -227,7 +228,7 @@ public class LibsvmDataFormatWriter
     {
         featureNames2id = new HashMap<>();
         List<String> readLines = FileUtils
-                .readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8");
+                .readLines(new File(outputDirectory, Constants.FILENAME_FEATURES), UTF_8);
 
         // add a "bias" feature node; otherwise LIBLINEAR is unable to predict
         // the majority class for
@@ -254,7 +255,7 @@ public class LibsvmDataFormatWriter
         }
 
         FileUtils.writeStringToFile(new File(outputDirectory, featurename2instanceid),
-                sb.toString(), "utf-8");
+                sb.toString(), UTF_8);
     }
 
     private void initClassifierFormat() throws Exception
@@ -264,7 +265,7 @@ public class LibsvmDataFormatWriter
         }
 
         bw = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+                new FileOutputStream(classifierFormatOutputFile, true), UTF_8));
     }
 
     @Override
@@ -343,7 +344,7 @@ public class LibsvmDataFormatWriter
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(new File(outputDirectory, fileName)), "utf-8"));
+                    new FileOutputStream(new File(outputDirectory, fileName)), UTF_8));
 
             writer.write("#Index\tDkProInstanceId\n");
             

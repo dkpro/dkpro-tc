@@ -61,8 +61,6 @@ public class DeepLearningExperimentTrainTest
      *
      * @param aExperimentName
      *            experiment name
-     * @param mlAdapter
-     *            used adapter
      * @throws TextClassificationException
      *             in case of errors
      */

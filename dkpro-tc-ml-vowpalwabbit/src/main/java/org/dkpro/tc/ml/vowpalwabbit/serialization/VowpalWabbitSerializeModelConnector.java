@@ -61,7 +61,7 @@ public class VowpalWabbitSerializeModelConnector
 
         writeModelConfiguration(aContext);
     }
-    
+
     @Override
     protected void writeModelConfiguration(TaskContext aContext) throws Exception
     {
@@ -81,10 +81,11 @@ public class VowpalWabbitSerializeModelConnector
     {
         File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
 
-		try (FileInputStream fis = new FileInputStream(file);
-				FileOutputStream fos = new FileOutputStream(new File(outputFolder, MODEL_CLASSIFIER));) {
-			IOUtils.copy(fis, fos);
-		}
+        try (FileInputStream fis = new FileInputStream(file);
+                FileOutputStream fos = new FileOutputStream(
+                        new File(outputFolder, MODEL_CLASSIFIER));) {
+            IOUtils.copy(fis, fos);
+        }
     }
 
     private void trainAndStoreModel(TaskContext aContext) throws Exception
@@ -99,7 +100,8 @@ public class VowpalWabbitSerializeModelConnector
 
         List<String> parameters = getParameters(classificationArguments);
         parameters.remove(VowpalWabbitAdapter.class.getSimpleName());
-        parameters = VowpalWabbitTestTask.automaticallyAddParametersForClassificationMode(aContext, parameters, learningMode, featureMode);
+        parameters = VowpalWabbitTestTask.automaticallyAddParametersForClassificationMode(aContext,
+                parameters, learningMode, featureMode);
         trainer.train(train, model, parameters);
     }
 

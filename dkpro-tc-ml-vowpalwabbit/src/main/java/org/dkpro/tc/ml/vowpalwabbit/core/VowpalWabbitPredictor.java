@@ -30,14 +30,15 @@ import java.util.Scanner;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.ml.base.TcPredictor;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class VowpalWabbitPredictor
-    extends VowpalWabbit implements TcPredictor
+    extends VowpalWabbit
+    implements TcPredictor
 {
 
     public VowpalWabbitPredictor()
     {
-        
+
     }
 
     /**
@@ -54,13 +55,15 @@ public class VowpalWabbitPredictor
     @Override
     public List<String> predict(File data, File model) throws Exception
     {
-    	File tempFile = Files.createTempFile("vowpalWabbitPrediction" + System.currentTimeMillis(), ".txt").toFile();
-    	tempFile.deleteOnExit();
+        File tempFile = Files
+                .createTempFile("vowpalWabbitPrediction" + System.currentTimeMillis(), ".txt")
+                .toFile();
+        tempFile.deleteOnExit();
         List<String> testingCommand = getTestCommand(data, model, tempFile);
-        
+
         executePrediction(testingCommand);
-        
-        List<String> readLines = FileUtils.readLines(tempFile, "utf-8");
+
+        List<String> readLines = FileUtils.readLines(tempFile, UTF_8);
         return readLines;
     }
 
@@ -127,7 +130,7 @@ public class VowpalWabbitPredictor
 
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "utf-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), UTF_8));
             writer.write(aDataString);
         }
         finally {
@@ -139,17 +142,17 @@ public class VowpalWabbitPredictor
 
     /**
      * @param aTestFile
-     *          A file with the feature information for prediction
+     *            A file with the feature information for prediction
      * @param aModel
-     *          The model to be used
+     *            The model to be used
      * @param anOutputTargetFile
-     * 			Output target 
-     * @return
-     *      The assembled test command
-     * @throws Exception 
-     *          In case of an exception
+     *            Output target
+     * @return The assembled test command
+     * @throws Exception
+     *             In case of an exception
      */
-    public static List<String> getTestCommand(File aTestFile, File aModel, File anOutputTargetFile) throws Exception
+    public static List<String> getTestCommand(File aTestFile, File aModel, File anOutputTargetFile)
+        throws Exception
     {
         List<String> parameters = new ArrayList<String>();
         parameters.add("--testonly");
@@ -180,7 +183,7 @@ public class VowpalWabbitPredictor
     public static String readProcessOutput(Process aProcess)
     {
         InputStream src = aProcess.getInputStream();
-        Scanner sc = new Scanner(src, "utf-8");
+        Scanner sc = new Scanner(src, UTF_8.toString());
         StringBuilder dest = new StringBuilder(1024);
         while (sc.hasNextLine()) {
             String l = sc.nextLine();

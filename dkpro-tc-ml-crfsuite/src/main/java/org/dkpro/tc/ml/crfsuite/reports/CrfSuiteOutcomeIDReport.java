@@ -18,6 +18,8 @@
 
 package org.dkpro.tc.ml.crfsuite.reports;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -28,7 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
@@ -82,13 +83,8 @@ public class CrfSuiteOutcomeIDReport
         String header = "ID=PREDICTION" + SEPARATOR_CHAR + "GOLDSTANDARD" + SEPARATOR_CHAR
                 + "THRESHOLD" + "\n" + "#" + sb.toString();
 
-        OutputStreamWriter osw = null;
-        try {
-            osw = new OutputStreamWriter(new FileOutputStream(id2o), "utf-8");
+        try(OutputStreamWriter osw =  new OutputStreamWriter(new FileOutputStream(id2o), UTF_8)){
             prop.store(osw, header);
-        }
-        finally {
-            IOUtils.closeQuietly(osw);
         }
     }
 
@@ -106,7 +102,7 @@ public class CrfSuiteOutcomeIDReport
     {
         File outcomeFolder = getContext().getFolder(OUTCOMES_INPUT_KEY, AccessMode.READONLY);
         File outcomeFiles = new File(outcomeFolder, FILENAME_OUTCOMES);
-        List<String> outcomes = FileUtils.readLines(outcomeFiles, "utf-8");
+        List<String> outcomes = FileUtils.readLines(outcomeFiles, UTF_8);
 
         // Crfsuite might output a null label in rare cases
         outcomes.add("(null)"); 
@@ -132,7 +128,7 @@ public class CrfSuiteOutcomeIDReport
         File testFile = new File(
                 storage.getAbsolutePath() + "/" + FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        List<String> readLines = FileUtils.readLines(testFile, "UTF-8");
+        List<String> readLines = FileUtils.readLines(testFile, UTF_8);
 
         return readLines;
     }
@@ -140,7 +136,7 @@ public class CrfSuiteOutcomeIDReport
     private List<String> getGoldAndPredictions() throws Exception
     {
         File predictionFile = getContext().getFile(FILENAME_PREDICTIONS, AccessMode.READONLY);
-        List<String> readLines = FileUtils.readLines(predictionFile, "UTF-8");
+        List<String> readLines = FileUtils.readLines(predictionFile, UTF_8);
 
         return readLines;
     }

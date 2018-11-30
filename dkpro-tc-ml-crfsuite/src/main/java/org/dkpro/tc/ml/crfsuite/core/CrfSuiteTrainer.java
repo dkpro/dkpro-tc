@@ -24,14 +24,15 @@ import java.util.List;
 import org.dkpro.tc.ml.base.TcTrainer;
 
 public class CrfSuiteTrainer
-    extends CrfSuite implements TcTrainer
+    extends CrfSuite
+    implements TcTrainer
 {
 
     public CrfSuiteTrainer()
     {
         //
     }
-    
+
     @Override
     public void train(File aData, File aModel, List<String> parameters) throws Exception
     {

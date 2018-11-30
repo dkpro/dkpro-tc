@@ -46,7 +46,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.io.DataWriter;
 
 import com.google.gson.Gson;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class VowpalWabbitDataWriter implements DataWriter {
 	public static final String OUTCOME_MAPPING = "outcomeMapping.txt";
 	public static final String STRING_MAPPING = "stringValueMapping.txt";
@@ -90,25 +90,27 @@ public class VowpalWabbitDataWriter implements DataWriter {
 			return;
 		}
 		bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), "utf-8"));
+				new FileOutputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE), true), UTF_8));
 
 	}
 
-	@Override
-	public void transformFromGeneric() throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)), "utf-8"));
+    @Override
+    public void transformFromGeneric() throws Exception
+    {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE)),
+                UTF_8))) {
 
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			Instance[] instance = gson.fromJson(line, Instance[].class);
-			List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
-			writeClassifierFormat(ins);
-		}
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                Instance[] instance = gson.fromJson(line, Instance[].class);
+                List<Instance> ins = new ArrayList<>(Arrays.asList(instance));
+                writeClassifierFormat(ins);
+            }
 
-		reader.close();
-		FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
-	}
+        }
+        FileUtils.deleteQuietly(new File(outputDirectory, Constants.GENERIC_FEATURE_FILE));
+    }
 
 	@Override
 	public void writeClassifierFormat(List<Instance> instances) throws AnalysisEngineProcessException {
@@ -260,7 +262,7 @@ public class VowpalWabbitDataWriter implements DataWriter {
 			}
 		}
 
-		FileUtils.writeStringToFile(new File(outputDirectory, outcomeMapping), sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(new File(outputDirectory, outcomeMapping), sb.toString(), UTF_8);
 	}
 
 	private String getValue(Feature feature) {
@@ -319,7 +321,7 @@ public class VowpalWabbitDataWriter implements DataWriter {
 		}
 
 		bw = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), "utf-8"));
+				new OutputStreamWriter(new FileOutputStream(classifierFormatOutputFile, true), UTF_8));
 
 	}
 
