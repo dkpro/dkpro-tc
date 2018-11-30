@@ -53,10 +53,6 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.dkpro.tc</groupId>
 			<artifactId>org.dkpro.tc.ml.xgboost-bin</artifactId>
 		</dependency>
