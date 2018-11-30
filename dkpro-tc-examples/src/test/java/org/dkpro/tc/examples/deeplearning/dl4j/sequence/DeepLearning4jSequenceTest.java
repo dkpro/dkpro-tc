@@ -18,6 +18,7 @@
  */
 package org.dkpro.tc.examples.deeplearning.dl4j.sequence;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,22 +26,42 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.lab.Lab;
+import org.dkpro.lab.task.BatchTask.ExecutionPolicy;
+import org.dkpro.lab.task.Dimension;
+import org.dkpro.lab.task.ParameterSpace;
+import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.examples.TestCaseSuperClass;
-import org.dkpro.tc.examples.deeplearning.dl4j.sequence.DeepLearningDl4jSeq2SeqTrainTest;
+import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
 import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.LabFolderTrackerReport;
+import org.dkpro.tc.ml.deeplearning4j.Deeplearning4jAdapter;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.tudarmstadt.ukp.dkpro.core.io.tei.TeiReader;
+
 public class DeepLearning4jSequenceTest
     extends TestCaseSuperClass
+    implements Constants
 {
     LabFolderTrackerReport folderTracker;
     ContextMemoryReport contextReport;
+
+    public static final String corpusFilePathTrain = "src/main/resources/data/brown_tei/keras";
+    public static final String corpusFilePathTest = "src/main/resources/data/brown_tei/keras";
 
     @Before
     public void setup() throws Exception
@@ -53,8 +74,44 @@ public class DeepLearning4jSequenceTest
     @Test
     public void runSequenceTest() throws Exception
     {
-        DeepLearningDl4jSeq2SeqTrainTest dl4j = new DeepLearningDl4jSeq2SeqTrainTest();
-        dl4j.runTrainTest(DeepLearningDl4jSeq2SeqTrainTest.getParameterSpace(), folderTracker, contextReport);
+        Map<String, Object> config = new HashMap<>();
+        config.put(DIM_CLASSIFICATION_ARGS,
+                new Object[] { new Deeplearning4jAdapter(), new Dl4jSeq2SeqUserCode() });
+
+        Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
+
+        Map<String, Object> dimReaders = new HashMap<String, Object>();
+        //
+        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "*.xml");
+        dimReaders.put(DIM_READER_TRAIN, train);
+
+        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
+                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
+                corpusFilePathTest, TeiReader.PARAM_PATTERNS, "*.xml");
+        dimReaders.put(DIM_READER_TEST, test);
+
+        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
+                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
+                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
+                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
+                        "src/test/resources/wordvector/glove.6B.50d_250.txt"),
+                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
+                Dimension.create(DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING,
+                        true),
+                mlas);
+
+        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
+                "dl4jSeq2Seq");
+        experiment.setParameterSpace(pSpace);
+        experiment.setPreprocessing(getPreprocessing());
+        experiment.addReport(folderTracker);
+        experiment.addReport(contextReport);
+        experiment.addReport(new TrainTestReport());
+        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
+
+        Lab.getInstance().run(experiment);
 
         List<String> vocabulary = getPreparationVocabulary();
         assertEquals(18, vocabulary.size());
@@ -71,8 +128,7 @@ public class DeepLearning4jSequenceTest
 
         assertTrue(compareContent(Arrays.asList(vecTrain.replaceAll("\n", " ").split(" "))));
 
-        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0),
-                "utf-8");
+        List<String> lines = FileUtils.readLines(contextReport.id2outcomeFiles.get(0), "utf-8");
         assertEquals(30, lines.size());
         // line-wise compare
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
@@ -107,6 +163,12 @@ public class DeepLearning4jSequenceTest
         assertTrue(lines.get(28).matches("000000_000001_000012_''=[0-9]+;14;-1"));
         assertTrue(lines.get(29).matches("000000_000001_000013_.=[0-9]+;14;-1"));
 
+    }
+
+    protected static AnalysisEngineDescription getPreprocessing()
+        throws ResourceInitializationException
+    {
+        return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
     private boolean assertOutcomes(List<String> outcomes)

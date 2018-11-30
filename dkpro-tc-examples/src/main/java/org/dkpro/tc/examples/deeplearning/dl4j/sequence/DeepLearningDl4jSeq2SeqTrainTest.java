@@ -67,11 +67,6 @@ public class DeepLearningDl4jSeq2SeqTrainTest
                            new MLBackend(new Deeplearning4jAdapter(), new Dl4jSeq2SeqUserCode())
                        )
                .run();
-
-//        ParameterSpace pSpace = getParameterSpace();
-//
-//        DeepLearningDl4jSeq2SeqTrainTest experiment = new DeepLearningDl4jSeq2SeqTrainTest();
-//        experiment.runTrainTest(pSpace, null, null);
     }
 
     private static CollectionReaderDescription getTestReader() throws ResourceInitializationException
@@ -88,58 +83,9 @@ public class DeepLearningDl4jSeq2SeqTrainTest
                 corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "*.xml");
     }
 
-//    public static ParameterSpace getParameterSpace() throws ResourceInitializationException
-//    {
-//        // configure training and test data reader dimension
-//        Map<String, Object> dimReaders = new HashMap<String, Object>();
-//
-//        CollectionReaderDescription train = CollectionReaderFactory.createReaderDescription(
-//                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-//                corpusFilePathTrain, TeiReader.PARAM_PATTERNS, "*.xml");
-//        dimReaders.put(DIM_READER_TRAIN, train);
-//
-//        CollectionReaderDescription test = CollectionReaderFactory.createReaderDescription(
-//                TeiReader.class, TeiReader.PARAM_LANGUAGE, "en", TeiReader.PARAM_SOURCE_LOCATION,
-//                corpusFilePathTest, TeiReader.PARAM_PATTERNS, "*.xml");
-//        dimReaders.put(DIM_READER_TEST, test);
-//
-//        ParameterSpace pSpace = new ParameterSpace(Dimension.createBundle("readers", dimReaders),
-//                Dimension.create(DIM_FEATURE_MODE, Constants.FM_SEQUENCE),
-//                Dimension.create(DIM_LEARNING_MODE, Constants.LM_SINGLE_LABEL),
-//                Dimension.create(DeepLearningConstants.DIM_PRETRAINED_EMBEDDINGS,
-//                        "src/test/resources/wordvector/glove.6B.50d_250.txt"),
-//                Dimension.create(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER, false),
-//                Dimension.create(DeepLearningConstants.DIM_USE_ONLY_VOCABULARY_COVERED_BY_EMBEDDING,
-//                        true),
-//                Dimension.create(DeepLearningConstants.DIM_USER_CODE, new Dl4jSeq2SeqUserCode()));
-//
-//        return pSpace;
-//    }
-
     protected static AnalysisEngineDescription getPreprocessing() throws ResourceInitializationException
     {
         return createEngineDescription(SequenceOutcomeAnnotator.class);
     }
 
-//    public void runTrainTest(ParameterSpace pSpace, ReportBase r, ContextMemoryReport r2)
-//        throws Exception
-//    {
-//
-//        DemoUtils.setDkproHome(DeepLearningDl4jSeq2SeqTrainTest.class.getSimpleName());
-//
-//        DeepLearningExperimentTrainTest experiment = new DeepLearningExperimentTrainTest(
-//                "dl4jSeq2Seq", Deeplearning4jAdapter.class);
-//        experiment.setParameterSpace(pSpace);
-//        experiment.setPreprocessing(getPreprocessing());
-//        if (r != null) {
-//            experiment.addReport(r);
-//        }
-//        if (r2 != null) {
-//            experiment.addReport(r2);
-//        }
-//        experiment.addReport(new TrainTestReport());
-//        experiment.setExecutionPolicy(ExecutionPolicy.RUN_AGAIN);
-//
-//        Lab.getInstance().run(experiment);
-//    }
 }
