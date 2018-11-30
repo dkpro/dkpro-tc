@@ -40,5 +40,9 @@
   		<groupId>org.dkpro.lab</groupId>
   		<artifactId>dkpro-lab-core</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  	</dependency>
   </dependencies>
 </project>
