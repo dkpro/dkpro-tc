@@ -18,6 +18,8 @@
 
 package org.dkpro.tc.ml.dynet.reports;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,12 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.SortedKeyProperties;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DynetMetaReport
     extends TcAbstractReport
@@ -52,13 +52,8 @@ public class DynetMetaReport
         p.setProperty("DyNetVersion", dynetVersion);
 
         File file = getContext().getFile("softwareVersions.txt", AccessMode.READWRITE);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try(FileOutputStream fos =  new FileOutputStream(file)){
             p.store(fos, "Version information");
-        }
-        finally {
-            IOUtils.closeQuietly(fos);
         }
     }
 
@@ -85,17 +80,12 @@ public class DynetMetaReport
             start.waitFor();
 
             List<String> output = new ArrayList<>();
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new InputStreamReader(start.getInputStream(), UTF_8));
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream(), UTF_8))){
 
                 String l = null;
                 while ((l = reader.readLine()) != null) {
                     output.add(l);
                 }
-            }
-            finally {
-                IOUtils.closeQuietly(reader);
             }
 
             return output.get(output.size() - 1);

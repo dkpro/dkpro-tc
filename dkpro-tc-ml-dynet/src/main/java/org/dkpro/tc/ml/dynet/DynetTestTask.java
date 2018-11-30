@@ -243,7 +243,7 @@ public class DynetTestTask
         File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
                 AccessMode.READONLY);
         String maxLenFromFile = FileUtils.readFileToString(
-                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), "utf-8");
+                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), UTF_8);
 
         return maxLenFromFile;
     }
