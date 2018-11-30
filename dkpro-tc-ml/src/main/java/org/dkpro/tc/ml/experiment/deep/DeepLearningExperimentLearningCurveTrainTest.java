@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -47,14 +46,17 @@ import org.dkpro.tc.ml.FoldUtil;
 import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
 import org.dkpro.tc.ml.experiment.dim.LearningCurveDimBundleCrossValidation;
 import org.dkpro.tc.ml.report.BasicResultReport;
-import org.dkpro.tc.ml.report.deeplearning.DeepLearningInnerBatchReport;
+import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
-public class DeepLearningExperimentLearningCurve
+/**
+ * Crossvalidation setup
+ * 
+ */
+public class DeepLearningExperimentLearningCurveTrainTest
     extends DeepLearningExperiment_ImplBase
     implements Constants
 {
 
-    protected Comparator<String> comparator;
     protected int numFolds = 10;
 
     protected InitTaskDeep initTask;
@@ -63,14 +65,14 @@ public class DeepLearningExperimentLearningCurve
     protected VectorizationTask vectorizationTrainTask;
     protected VectorizationTask vectorizationTestTask;
     protected TaskBase learningTask;
-	private int stageLimit=-1;
+    protected int stageLimit = -1;
 
-    public DeepLearningExperimentLearningCurve()
+    public DeepLearningExperimentLearningCurveTrainTest()
     {/* needed for Groovy */
     }
-    
+
     /**
-     * Cross-validation experiment
+     * Learning curve with fixed test set
      * 
      * @param aExperimentName
      *            Name of the experiment
@@ -79,7 +81,8 @@ public class DeepLearningExperimentLearningCurve
      * @throws TextClassificationException
      *             in case of errors
      */
-    public DeepLearningExperimentLearningCurve(String aExperimentName, int aNumFolds)
+    public DeepLearningExperimentLearningCurveTrainTest(String aExperimentName,
+            int aNumFolds)
         throws TextClassificationException
     {
         setExperimentName(aExperimentName);
@@ -89,19 +92,24 @@ public class DeepLearningExperimentLearningCurve
     }
 
     /**
-	 * Cross-validation experiment
-	 * 
-	 * @param aExperimentName Name of the experiment
-	 * @param aNumFolds       number of folds
-	 * @param aLimitPerStage  limits the number of runs on each stage of the
-	 *                        learning curve to the provided number, which must be a
-	 *                        positive non-zero integer value
-	 * @throws TextClassificationException in case of errors
-	 */
-    public DeepLearningExperimentLearningCurve(String aExperimentName, int aNumFolds, int aLimitPerStage)
+     * Learning curve with fixed test set
+     * 
+     * @param aExperimentName
+     *            Name of the experiment
+     * @param aNumFolds
+     *            number of folds
+     * @param aStageLimit
+     *            limit per stage
+     * @throws TextClassificationException
+     *             in case of errors
+     * @throws TextClassificationException
+     *             in case of errors
+     */
+    public DeepLearningExperimentLearningCurveTrainTest(String aExperimentName,
+            int aNumFolds,
+            int aStageLimit)
         throws TextClassificationException
     {
-        stageLimit = aLimitPerStage;
         setExperimentName(aExperimentName);
         setNumFolds(aNumFolds);
         // set name of overall batch task
@@ -292,7 +300,7 @@ public class DeepLearningExperimentLearningCurve
                 learningTask.addReport(report);
             }
         }
-
+        
         // ================== CONFIG OF THE INNER BATCH TASK
         // =======================
 
@@ -308,7 +316,7 @@ public class DeepLearningExperimentLearningCurve
         // we want to re-use the old CV report, we need to collect the
         // evaluation.bin files from
         // the test task here (with another report)
-        crossValidationTask.addReport(DeepLearningInnerBatchReport.class);
+        crossValidationTask.addReport(InnerReport.class);
         crossValidationTask.setAttribute(TC_TASK_TYPE, TcTaskType.CROSS_VALIDATION.toString());
 
         // DKPro Lab issue 38: must be added as *first* task
@@ -322,6 +330,7 @@ public class DeepLearningExperimentLearningCurve
      *            the file names
      * @return fold dimension bundle
      */
+    
     protected LearningCurveDimBundleCrossValidation getFoldDim(String[] fileNames)
     {
         return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), numFolds, stageLimit);
@@ -336,17 +345,6 @@ public class DeepLearningExperimentLearningCurve
     public void setNumFolds(int numFolds)
     {
         this.numFolds = numFolds;
-    }
-
-    /**
-     * Sets a comparator
-     * 
-     * @param aComparator
-     *            the comparator
-     */
-    public void setComparator(Comparator<String> aComparator)
-    {
-        comparator = aComparator;
     }
 
 }

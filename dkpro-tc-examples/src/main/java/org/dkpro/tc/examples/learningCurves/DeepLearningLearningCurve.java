@@ -48,7 +48,7 @@ public class DeepLearningLearningCurve
     	DemoUtils.setDkproHome(DeepLearningLearningCurve.class.getSimpleName());
 
         DeepExperimentBuilder builder = new DeepExperimentBuilder();
-        builder.experiment(ExperimentType.LEARNING_CURVE, "learningCurve")
+        builder.experiment(ExperimentType.LEARNING_CURVE_FIXED_TEST_SET, "learningCurve")
                .numFolds(3)
                .learningCurveLimit(2)
                .dataReaderTrain(getTrainReader())

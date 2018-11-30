@@ -42,6 +42,7 @@ import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentCrossValidation;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentLearningCurve;
+import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentLearningCurveTrainTest;
 import org.dkpro.tc.ml.experiment.deep.DeepLearningExperimentTrainTest;
 import org.dkpro.tc.ml.report.CrossValidationReport;
 import org.dkpro.tc.ml.report.LearningCurveReport;
@@ -477,17 +478,18 @@ public class DeepExperimentBuilder
             experiment.addReport(new LearningCurveReport());
             readersCheckExperimentCrossValidation();
             break;
-//        case LEARNING_CURVE_FIXED_TEST_SET:
-//            folds = getCvFolds();
-//            experiment = new ExperimentLearningCurveTrainTest(experimentName, folds,
-//                    learningCurveLimit);
-//            experiment.addReport(new LearningCurveReport());
-//            readersCheckExperimentTrainTestCheck();
-//            break;
-        // case SAVE_MODEL:
-        // sanityCheckSaveModelExperiment();
-        // experiment = new ExperimentSaveModel(experimentName, outputFolder);
-        // break;
+        case LEARNING_CURVE_FIXED_TEST_SET:
+            folds = getCvFolds();
+            experiment = new DeepLearningExperimentLearningCurveTrainTest(experimentName, folds,
+                    learningCurveLimit);
+            experiment.addReport(new LearningCurveReport());
+            readersCheckExperimentTrainTestCheck();
+            break;
+         case SAVE_MODEL:
+             throw new UnsupportedOperationException("This is currently not implemted");
+//         sanityCheckSaveModelExperiment();
+//         experiment = new ExperimentSaveModel(experimentName, outputFolder);
+//         break;
 
         }
         return this;
