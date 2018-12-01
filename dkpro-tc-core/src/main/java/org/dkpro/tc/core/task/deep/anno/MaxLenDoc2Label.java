@@ -32,7 +32,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.core.DeepLearningConstants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class MaxLenDoc2Label
     extends JCasAnnotator_ImplBase
 {
@@ -81,7 +81,7 @@ public class MaxLenDoc2Label
     public void collectionProcessComplete()
     {
         try {
-            FileUtils.writeStringToFile(outputFile, maximumLength + "", "utf-8");
+            FileUtils.writeStringToFile(outputFile, maximumLength + "", UTF_8);
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

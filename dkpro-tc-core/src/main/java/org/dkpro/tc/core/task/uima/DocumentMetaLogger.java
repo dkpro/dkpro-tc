@@ -32,7 +32,7 @@ import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.core.Constants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class DocumentMetaLogger
     implements Constants
 {
@@ -42,7 +42,7 @@ public class DocumentMetaLogger
     public DocumentMetaLogger(File outputDirectory) throws Exception
     {
         File file = new File(outputDirectory, Constants.FILENAME_DOCUMENT_META_DATA_LOG);
-        logger = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+        logger = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), UTF_8));
         write("# Order in which JCas documents have been processed. Shown information are the document id and title from DocumentMetaData");
         write("# ID\tTitle\tLanguage\tisLast");
     }

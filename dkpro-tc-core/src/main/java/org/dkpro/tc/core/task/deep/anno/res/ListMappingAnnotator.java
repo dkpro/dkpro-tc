@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.core.DeepLearningConstants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class ListMappingAnnotator
     extends LookupResourceAnnotator
 {
@@ -63,7 +63,7 @@ public class ListMappingAnnotator
         try {
             List<String> instanceMappings = FileUtils.readLines(
                     new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING),
-                    "utf-8");
+                    UTF_8);
             for (String e : instanceMappings) {
                 String[] split = e.split("\t");
 
@@ -99,7 +99,7 @@ public class ListMappingAnnotator
         try {
             FileUtils.writeLines(
                     new File(targetFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING),
-                    "utf-8", mapping);
+                    UTF_8.toString(), mapping);
         }
         catch (IOException e) {
             throw new UnsupportedOperationException(e);
@@ -111,7 +111,7 @@ public class ListMappingAnnotator
     {
         File file = new File(sourceDict);
         try {
-            FileUtils.writeLines(new File(targetFolder, file.getName()), "utf-8", dict);
+            FileUtils.writeLines(new File(targetFolder, file.getName()), UTF_8.toString(), dict);
         }
         catch (IOException e) {
             throw new UnsupportedOperationException(e);
@@ -122,7 +122,7 @@ public class ListMappingAnnotator
     {
         List<String> mappedDict = new ArrayList<>();
         try {
-            List<String> readLines = FileUtils.readLines(new File(dict), "utf-8");
+            List<String> readLines = FileUtils.readLines(new File(dict), UTF_8);
             for (String e : readLines) {
 
                 String word = e.trim();

@@ -37,7 +37,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class FilterVocabularyByEmbeddingAnnotator
     extends JCasAnnotator_ImplBase
 {
@@ -60,14 +60,12 @@ public class FilterVocabularyByEmbeddingAnnotator
         }
 
         String line = null;
-        try {
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(new File(embedding)), UTF_8))) {
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
                 vocab.add(split[0]);
             }
-            reader.close();
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);

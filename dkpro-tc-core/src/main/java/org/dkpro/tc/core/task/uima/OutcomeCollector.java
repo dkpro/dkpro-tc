@@ -31,7 +31,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.Constants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class OutcomeCollector
     extends JCasAnnotator_ImplBase
     implements Constants
@@ -58,7 +58,7 @@ public class OutcomeCollector
     {
         File file = new File(targetFolder, Constants.FILENAME_OUTCOMES);
         try {
-            FileUtils.writeLines(new File(targetFolder, Constants.FILENAME_OUTCOMES), "utf-8",
+            FileUtils.writeLines(new File(targetFolder, Constants.FILENAME_OUTCOMES), UTF_8.toString(),
                     outcomes);
         }
         catch (IOException e) {

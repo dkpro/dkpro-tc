@@ -42,7 +42,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class MappingAnnotator
     extends JCasAnnotator_ImplBase
 {
@@ -133,8 +133,8 @@ public class MappingAnnotator
     public void collectionProcessComplete()
     {
         try {
-            FileUtils.writeStringToFile(instanceMappingFile, toString(instanceMap), "utf-8");
-            FileUtils.writeStringToFile(outcomeMappingFile, toString(outcomeSet, startIndexOutcomes), "utf-8");
+            FileUtils.writeStringToFile(instanceMappingFile, toString(instanceMap), UTF_8);
+            FileUtils.writeStringToFile(outcomeMappingFile, toString(outcomeSet, startIndexOutcomes), UTF_8);
         }
         catch (Exception e) {
             throw new UnsupportedOperationException(e);

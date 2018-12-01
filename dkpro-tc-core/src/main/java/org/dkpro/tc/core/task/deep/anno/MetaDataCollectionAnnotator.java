@@ -57,9 +57,7 @@ public class MetaDataCollectionAnnotator
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		
 		dml.writeMeta(aJCas);
-
 	}
 
 	@Override

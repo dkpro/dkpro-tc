@@ -42,7 +42,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.type.TextClassificationOutcome;
 import org.dkpro.tc.core.DeepLearningConstants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class VectorizationSeq2SeqOfLabel
     extends JCasAnnotator_ImplBase
 {
@@ -105,9 +105,9 @@ public class VectorizationSeq2SeqOfLabel
             instanceType = tokenAnno.getType();
 
             writerSeqInst = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(instanceVectorFile), "utf-8"));
+                    new OutputStreamWriter(new FileOutputStream(instanceVectorFile), UTF_8));
             writerSeqOutcome = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), "utf-8"));
+                    new OutputStreamWriter(new FileOutputStream(outcomeVectorFile), UTF_8));
 
             maximumLength = getMaximumLength();
         }
@@ -120,13 +120,13 @@ public class VectorizationSeq2SeqOfLabel
     {
         String text = FileUtils.readFileToString(
                 new File(preparationFolder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH),
-                "utf-8");
+                UTF_8);
         return Integer.parseInt(text);
     }
 
     private void loadMapping(Map<String, Integer> m, String f) throws IOException
     {
-        List<String> lines = FileUtils.readLines(new File(preparationFolder, f), "utf-8");
+        List<String> lines = FileUtils.readLines(new File(preparationFolder, f), UTF_8);
         for (String s : lines) {
             if (s.isEmpty()) {
                 continue;
@@ -217,6 +217,7 @@ public class VectorizationSeq2SeqOfLabel
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void collectionProcessComplete()
     {

@@ -48,7 +48,7 @@ import org.dkpro.tc.core.io.DataWriter;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * UIMA analysis engine that is used in the {@link ExtractFeaturesTask} to apply the feature
  * extractors on each CAS.
@@ -132,7 +132,7 @@ public class ExtractFeaturesConnector
             if (isTesting) {
                 File featureNamesFile = new File(outputDirectory, Constants.FILENAME_FEATURES);
                 TreeSet<String> featureNames = new TreeSet<>(
-                        FileUtils.readLines(featureNamesFile, "utf-8"));
+                        FileUtils.readLines(featureNamesFile, UTF_8));
                 featureMeta.setFeatureNames(featureNames);
             }
 

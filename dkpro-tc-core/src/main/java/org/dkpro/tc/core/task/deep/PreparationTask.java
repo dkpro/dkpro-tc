@@ -47,7 +47,7 @@ import org.dkpro.tc.core.task.deep.anno.VocabularyOutcomeCollector;
 import org.dkpro.tc.core.task.deep.anno.res.LookupResourceAnnotator;
 
 import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasReader;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Collects information about the entire document
  */
@@ -201,7 +201,7 @@ public class PreparationTask
     {
         try {
             FileUtils.writeStringToFile(new File(folder, FILENAME_MAXIMUM_LENGTH),
-                    maximumLength.toString(), "utf-8");
+                    maximumLength.toString(), UTF_8);
         }
         catch (IOException e) {
             throw new ResourceInitializationException(e);

@@ -43,7 +43,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * This annotator creates a mapping of the <b>order</b> of the TextClassificationOutcomes to an
  * index. Its purpose is to be able later on - after prediction - to restore which instance has
@@ -78,7 +78,7 @@ public class IdentificationCollector
 
         try {
             File f = new File(targetFolder, DeepLearningConstants.FILENAME_TARGET_ID_TO_INDEX);
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), UTF_8));
 
             writer.write(
                     "# processing sequence of the respective document / target - prediction output should conform to this order enabling determination which document/item was classified as X"

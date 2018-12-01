@@ -31,7 +31,7 @@ import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public class FeatureMetaData
     implements Constants
 {
@@ -90,11 +90,11 @@ public class FeatureMetaData
     public void writeMetaData(File outputDirectory) throws IOException
     {
 
-        FileUtils.writeLines(new File(outputDirectory, Constants.FILENAME_FEATURES), "utf-8",
+        FileUtils.writeLines(new File(outputDirectory, FILENAME_FEATURES), UTF_8.toString(),
                 featureNames);
         FileUtils.writeStringToFile(
-                new File(outputDirectory, Constants.FILENAME_FEATURES_DESCRIPTION),
-                typeDescriptionToString(), "utf-8");
+                new File(outputDirectory, FILENAME_FEATURES_DESCRIPTION),
+                typeDescriptionToString(), UTF_8);
     }
 
     public void setFeatureNames(TreeSet<String> featureNames)

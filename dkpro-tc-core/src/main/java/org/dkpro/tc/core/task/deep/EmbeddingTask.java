@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.core.task.deep;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,7 +36,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -87,11 +88,8 @@ public class EmbeddingTask
     {
         Set<String> vocabulary = loadVocabulary(aContext);
 
-        BufferedReader reader = null;
-        BufferedWriter writer = null;
-        try {
-            reader = getEmbeddingReader();
-            writer = getPrunedEmbeddingWriter(aContext);
+        try (BufferedReader reader = getEmbeddingReader();
+                BufferedWriter writer = getPrunedEmbeddingWriter(aContext)) {
 
             String line = null;
             while ((line = reader.readLine()) != null) {
@@ -116,11 +114,6 @@ public class EmbeddingTask
                 writer.write(k + " " + randomVector(lenVec) + "\n");
             }
         }
-        finally {
-            IOUtils.closeQuietly(writer);
-            IOUtils.closeQuietly(reader);
-        }
-
     }
 
     private Set<String> loadVocabulary(TaskContext aContext) throws IOException
@@ -129,7 +122,7 @@ public class EmbeddingTask
         File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
         File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_VOCABULARY);
 
-        List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
+        List<String> lines = FileUtils.readLines(mappingFile, UTF_8);
         Set<String> m = new HashSet<>();
 
         for (String l : lines) {
@@ -146,51 +139,47 @@ public class EmbeddingTask
     {
         Map<String, String> tokenIdMap = loadWord2IntegerMap(aContext);
 
-        BufferedReader reader = getEmbeddingReader();
-        BufferedWriter writer = getPrunedEmbeddingWriter(aContext);
+        try (BufferedReader reader = getEmbeddingReader();
+                BufferedWriter writer = getPrunedEmbeddingWriter(aContext)) {
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            if (line.trim().isEmpty()) {
-                continue;
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                int indexOf = line.indexOf(" ");
+                String token = line.substring(0, indexOf);
+                String vector = line.substring(indexOf + 1);
+
+                if (tokenIdMap.containsKey(token)) {
+                    writer.write(tokenIdMap.get(token) + " " + vector + "\n");
+                    tokenIdMap.remove(token);
+                }
+                if (lenVec < 0) {
+                    lenVec = vector.split(" ").length;
+                }
             }
 
-            int indexOf = line.indexOf(" ");
-            String token = line.substring(0, indexOf);
-            String vector = line.substring(indexOf + 1);
-
-            if (tokenIdMap.containsKey(token)) {
-                writer.write(tokenIdMap.get(token) + " " + vector + "\n");
-                tokenIdMap.remove(token);
-            }
-            if (lenVec < 0) {
-                lenVec = vector.split(" ").length;
+            for (Entry<String, String> e : tokenIdMap.entrySet()) {
+                writer.write(e.getValue() + " " + randomVector(lenVec) + "\n");
             }
         }
-
-        for (Entry<String, String> e : tokenIdMap.entrySet()) {
-            writer.write(e.getValue() + " " + randomVector(lenVec) + "\n");
-        }
-
-        writer.close();
-        reader.close();
     }
 
     private BufferedReader getEmbeddingReader() throws Exception
     {
         return new BufferedReader(
-                new InputStreamReader(new FileInputStream(new File(embedding)), "utf-8"));
+                new InputStreamReader(new FileInputStream(new File(embedding)), UTF_8));
 
     }
 
     private BufferedWriter getPrunedEmbeddingWriter(TaskContext aContext) throws Exception
     {
-        return new BufferedWriter(
-                new OutputStreamWriter(
-                        new FileOutputStream(
-                                new File(aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE),
-                                        DeepLearningConstants.FILENAME_PRUNED_EMBEDDING)),
-                        "utf-8"));
+        return new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(new File(aContext.getFolder(OUTPUT_KEY, AccessMode.READWRITE),
+                        DeepLearningConstants.FILENAME_PRUNED_EMBEDDING)),
+                UTF_8));
     }
 
     private Map<String, String> loadWord2IntegerMap(TaskContext aContext) throws IOException
@@ -198,7 +187,7 @@ public class EmbeddingTask
         File mappingFolder = aContext.getFolder(INPUT_MAPPING, AccessMode.READONLY);
         File mappingFile = new File(mappingFolder, DeepLearningConstants.FILENAME_INSTANCE_MAPPING);
 
-        List<String> lines = FileUtils.readLines(mappingFile, "utf-8");
+        List<String> lines = FileUtils.readLines(mappingFile, UTF_8);
         Map<String, String> m = new HashMap<>();
 
         for (String l : lines) {
