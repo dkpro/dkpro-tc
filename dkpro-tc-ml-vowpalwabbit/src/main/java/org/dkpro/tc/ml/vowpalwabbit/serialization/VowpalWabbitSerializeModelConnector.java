@@ -92,7 +92,7 @@ public class VowpalWabbitSerializeModelConnector
     {
         File model = new File(outputFolder, MODEL_CLASSIFIER);
 
-        File executable = VowpalWabbit.getExecutable();
+        File executable = new VowpalWabbit().getExecutable();
         File train = VowpalWabbitTestTask.loadAndPrepareFeatureDataFile(aContext,
                 executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 

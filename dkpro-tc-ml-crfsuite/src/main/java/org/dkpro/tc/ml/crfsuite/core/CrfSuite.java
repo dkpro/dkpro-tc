@@ -27,9 +27,9 @@ import org.dkpro.tc.ml.crfsuite.CrfSuiteTestTask;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
-public abstract class CrfSuite
+public class CrfSuite
 {
-    static RuntimeProvider runtimeProvider = null;
+    RuntimeProvider runtimeProvider = null;
     final static PlatformDetector detector = new PlatformDetector();
 
     private static final String classpath = "classpath:/org/dkpro/tc/ml/crfsuite/";
@@ -52,7 +52,7 @@ public abstract class CrfSuite
         return command;
     }
 
-    public static File getExecutable() throws Exception
+    public File getExecutable() throws Exception
     {
 
         if (runtimeProvider == null) {

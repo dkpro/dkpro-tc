@@ -27,6 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.tc.api.features.Instance;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatLoadModelConnector;
+import org.dkpro.tc.ml.svmhmm.core.SvmHmm;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
 import static java.nio.charset.StandardCharsets.UTF_8;
 public class SvmhmmLoadModelConnector
@@ -49,11 +50,10 @@ public class SvmhmmLoadModelConnector
         // SvmHmm struggles with paths longer than 255 characters to circumvent this
         // issue, we copy all files together into a local directory to ensure short path
         // names that are below this threshold
-        File localModel = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
-                "model.tmp");
+        File parent = new SvmHmm().getPredictionExecutable().getParentFile();
+        File localModel = new File(parent, "model.tmp");
         FileUtils.copyFile(model, localModel);
-        File localTestFile = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
-                "testfile.txt");
+        File localTestFile = new File(parent, "testfile.txt");
         FileUtils.copyFile(testFile, localTestFile);
 
         SvmHmmPredictor predictor = new SvmHmmPredictor();

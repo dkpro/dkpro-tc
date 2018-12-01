@@ -17,6 +17,8 @@
  */
 package org.dkpro.tc.ml.svmhmm.core;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +26,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.pear.util.FileUtil;
 import org.dkpro.tc.ml.base.TcPredictor;
-
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
-import static java.nio.charset.StandardCharsets.UTF_8;
 public class SvmHmmPredictor
     extends SvmHmm
     implements TcPredictor
 {
-    private static RuntimeProvider runtimeProvider;
-
     @Override
     public List<String> predict(File data, File model) throws Exception
     {
@@ -45,23 +42,13 @@ public class SvmHmmPredictor
         return predictions;
     }
 
-    public static File getPredictionExecutable() throws Exception
-    {
-
-        if (runtimeProvider == null) {
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
-        }
-
-        return runtimeProvider.getFile("svm_hmm_classify");
-    }
-
     public static List<String> buildPredictionCommand(File testFile, File modelLocation,
             File outputPredictions)
         throws Exception
     {
         List<String> result = new ArrayList<>();
 
-        result.add(getPredictionExecutable().getAbsolutePath());
+        result.add(new SvmHmm().getPredictionExecutable().getAbsolutePath());
         result.add(testFile.getAbsolutePath());
         result.add(modelLocation.getAbsolutePath());
         result.add(outputPredictions.getAbsolutePath());

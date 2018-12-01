@@ -33,6 +33,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
+import org.dkpro.tc.ml.svmhmm.core.SvmHmm;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmPredictor;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmTrainer;
 public class SvmHmmTestTask
@@ -79,10 +80,9 @@ public class SvmHmmTestTask
         // SvmHmm struggles with paths longer than 255 characters to circumvent this
         // issue, we copy all files together into a local directory to ensure short path
         // names that are below this threshold
-        File newTrainFileLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
-                fileTrain.getName());
-        File tmpModelLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
-                "model.tmp");
+        File parent = new SvmHmm().getTrainExecutable().getParentFile();
+        File newTrainFileLocation = new File(parent, fileTrain.getName());
+        File tmpModelLocation = new File(parent, "model.tmp");
         tmpModelLocation.deleteOnExit();
         
         FileUtils.copyFile(fileTrain, newTrainFileLocation);
@@ -120,11 +120,10 @@ public class SvmHmmTestTask
         // SvmHmm struggles with paths longer than 255 characters to circumvent this
         // issue, we copy all files together into a local directory to ensure short path
         // names that are below this threshold
-        File localModel = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
-                "model.tmp");
+        File parent = new SvmHmm().getPredictionExecutable().getParentFile();
+        File localModel = new File(parent, "model.tmp");
         FileUtils.copyFile(modelFile, localModel);
-        File localTestFile = new File(SvmHmmPredictor.getPredictionExecutable().getParentFile(),
-                "testfile.txt");
+        File localTestFile = new File(parent, "testfile.txt");
         FileUtils.copyFile(fileTest, localTestFile);
 
         SvmHmmPredictor predictor = new SvmHmmPredictor();

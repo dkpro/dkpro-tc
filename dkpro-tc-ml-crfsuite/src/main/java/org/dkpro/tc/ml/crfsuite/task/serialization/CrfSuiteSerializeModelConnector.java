@@ -74,7 +74,7 @@ public class CrfSuiteSerializeModelConnector
     {
         File model = new File(outputFolder, MODEL_CLASSIFIER);
 
-        File executable = CrfSuite.getExecutable();
+        File executable = new CrfSuite().getExecutable();
         File train = CrfSuiteTestTask.loadAndPrepareFeatureDataFile(aContext,
                 executable.getParentFile(), TEST_TASK_INPUT_KEY_TRAINING_DATA);
 

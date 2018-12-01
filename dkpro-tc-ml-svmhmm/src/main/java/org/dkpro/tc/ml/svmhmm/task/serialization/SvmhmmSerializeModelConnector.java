@@ -26,6 +26,7 @@ import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.serialization.LibsvmDataFormatSerializeModelConnector;
 import org.dkpro.tc.ml.svmhmm.SvmHmmAdapter;
+import org.dkpro.tc.ml.svmhmm.core.SvmHmm;
 import org.dkpro.tc.ml.svmhmm.core.SvmHmmTrainer;
 
 public class SvmhmmSerializeModelConnector
@@ -50,12 +51,11 @@ public class SvmhmmSerializeModelConnector
 
         File model = new File(outputFolder, Constants.MODEL_CLASSIFIER);
 
-        File newTrainFileLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
-                fileTrain.getName());
+        File parent = new SvmHmm().getTrainExecutable().getParentFile();
+        File newTrainFileLocation = new File(parent, fileTrain.getName());
         FileUtils.copyFile(fileTrain, newTrainFileLocation);
 
-        File tmpModelLocation = new File(SvmHmmTrainer.getTrainExecutable().getParentFile(),
-                "model.tmp");
+        File tmpModelLocation = new File(parent, "model.tmp");
 
         SvmHmmTrainer trainer = new SvmHmmTrainer();
         trainer.train(newTrainFileLocation, tmpModelLocation, stringArgs);

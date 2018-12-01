@@ -63,7 +63,7 @@ public class SequenceDemo
         DemoUtils.setDkproHome(SequenceDemo.class.getSimpleName());
 
         SequenceDemo demo = new SequenceDemo();
-        demo.runCrossValidation();
+//        demo.runCrossValidation();
         demo.runTrainTest();
     }
 
@@ -97,8 +97,8 @@ public class SequenceDemo
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
                .machineLearningBackend(  new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "max_iterations=5")
-                                       , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
-                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
+//                                       , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
+//                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
                                        )
                .preprocessing(getPreprocessing())
                .run();

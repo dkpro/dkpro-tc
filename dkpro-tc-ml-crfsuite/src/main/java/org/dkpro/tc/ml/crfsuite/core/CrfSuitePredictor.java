@@ -90,7 +90,7 @@ public class CrfSuitePredictor
      * @throws Exception
      *             In case of errors
      */
-    public static List<String> getTestCommandForPredictionFromStdin(File aModel) throws Exception
+    public List<String> getTestCommandForPredictionFromStdin(File aModel) throws Exception
     {
 
         List<String> command = new ArrayList<String>();
@@ -143,7 +143,7 @@ public class CrfSuitePredictor
      * @throws Exception 
      *          In case of an exception
      */
-    public static List<String> getTestCommand(File aTestFile, File aModel) throws Exception
+    public List<String> getTestCommand(File aTestFile, File aModel) throws Exception
     {
         List<String> parameters = new ArrayList<String>();
         parameters.add("tag");

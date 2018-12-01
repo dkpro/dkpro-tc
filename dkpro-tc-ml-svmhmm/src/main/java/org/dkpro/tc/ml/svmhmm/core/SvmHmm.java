@@ -17,16 +17,31 @@
  */
 package org.dkpro.tc.ml.svmhmm.core;
 
+import java.io.File;
 import java.util.List;
 
-public abstract class SvmHmm
+import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
+
+public class SvmHmm
 {
+    
     public static void runCommand(List<String> command) throws Exception
     {
         ProcessBuilder processBuilder = new ProcessBuilder(command).inheritIO();
-
-        // run the process
         Process process = processBuilder.start();
         process.waitFor();
     }
+    
+    public File getTrainExecutable() throws Exception
+    {
+        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        return runtimeProvider.getFile("svm_hmm_learn");
+    }
+    
+    public File getPredictionExecutable() throws Exception
+    {
+        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        return runtimeProvider.getFile("svm_hmm_classify");
+    }
+
 }

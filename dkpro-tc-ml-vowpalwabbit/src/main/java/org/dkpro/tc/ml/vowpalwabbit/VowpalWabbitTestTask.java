@@ -123,7 +123,7 @@ public class VowpalWabbitTestTask
     {
         VowpalWabbitTrainer trainer = new VowpalWabbitTrainer();
 
-        File executable = VowpalWabbitTrainer.getExecutable();
+        File executable = new VowpalWabbit().getExecutable();
         File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
@@ -246,7 +246,7 @@ public class VowpalWabbitTestTask
 
     private List<String> testModel(TaskContext aContext, File model) throws Exception
     {
-        File executable = VowpalWabbit.getExecutable();
+        File executable = new VowpalWabbit().getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 

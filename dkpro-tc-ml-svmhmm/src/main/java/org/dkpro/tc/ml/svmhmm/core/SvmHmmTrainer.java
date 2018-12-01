@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.dkpro.tc.ml.base.TcTrainer;
 
-import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
-
 /**
  * Wrapper for training and testing using SVM_HMM C implementation with default parameters. Consult
  * {@code http://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html} for parameter settings.
@@ -55,8 +53,6 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 public class SvmHmmTrainer
     extends SvmHmm implements TcTrainer
 {
-    private static RuntimeProvider runtimeProvider;
-
     private static final String[] switches = new String[] { "-c", "--e", "--t", "-e", "-b", "-m" };
 
     @Override
@@ -64,16 +60,6 @@ public class SvmHmmTrainer
     {
         List<String> command = buildTrainCommand(data, model, parameters);
         runCommand(command);
-    }
-
-    public static File getTrainExecutable() throws Exception
-    {
-
-        if (runtimeProvider == null) {
-            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
-        }
-
-        return runtimeProvider.getFile("svm_hmm_learn");
     }
 
     public static List<String> buildTrainCommand(File trainingFile, File targetModelLocation,
@@ -89,7 +75,7 @@ public class SvmHmmTrainer
         areSwitchsKnwon(parameters);
 
         List<String> result = new ArrayList<>();
-        result.add(getTrainExecutable().getAbsolutePath());
+        result.add(new SvmHmm().getTrainExecutable().getAbsolutePath());
 
         for (String s : switches) {
             result.addAll(processForSwitch(s, parameters));

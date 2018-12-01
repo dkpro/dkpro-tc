@@ -27,8 +27,8 @@ import org.dkpro.tc.ml.vowpalwabbit.VowpalWabbitTestTask;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
-public abstract class VowpalWabbit {
-	static RuntimeProvider runtimeProvider = null;
+public class VowpalWabbit {
+	RuntimeProvider runtimeProvider = null;
 	final static PlatformDetector detector = new PlatformDetector();
 
 	private static final String classpath = "classpath:/org/dkpro/tc/ml/vowpalwabbit/";
@@ -49,7 +49,7 @@ public abstract class VowpalWabbit {
 		return command;
 	}
 
-	public static File getExecutable() throws Exception {
+	public File getExecutable() throws Exception {
 		
 		catchWindows32BitUsers();
 

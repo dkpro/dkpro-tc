@@ -125,7 +125,7 @@ public class CrfSuiteTestTask
     {
         CrfSuiteTrainer trainer = new CrfSuiteTrainer();
 
-        File executable = CrfSuiteTrainer.getExecutable();
+        File executable = new CrfSuite().getExecutable();
         File train = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File modelLocation = new File(executable.getParentFile(), MODEL_CLASSIFIER);
@@ -152,7 +152,7 @@ public class CrfSuiteTestTask
 
     private List<String> testModel(TaskContext aContext, File model) throws Exception
     {
-        File executable = CrfSuite.getExecutable();
+        File executable = new CrfSuite().getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
                 TEST_TASK_INPUT_KEY_TEST_DATA);
 

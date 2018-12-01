@@ -106,7 +106,7 @@ public class VowpalWabbitPredictor
         command.add("--predictions");
         command.add("/dev/stdout");
 
-        return assembleCommand(getExecutable(), command.toArray(new String[0]));
+        return assembleCommand(new VowpalWabbit().getExecutable(), command.toArray(new String[0]));
     }
 
     /**
@@ -163,7 +163,7 @@ public class VowpalWabbitPredictor
         parameters.add("--predictions");
         parameters.add(anOutputTargetFile.getAbsolutePath());
 
-        return assembleCommand(getExecutable(), parameters.toArray(new String[0]));
+        return assembleCommand(new VowpalWabbit().getExecutable(), parameters.toArray(new String[0]));
     }
 
     /**
