@@ -38,7 +38,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Collects the final evaluation results in a train/test setting.
  */
@@ -107,7 +107,7 @@ public class TrainTestReport extends TcAbstractReport implements Constants {
 		}
 
 		File mapping = getContext().getFile("configurationMapping.tsv", AccessMode.READWRITE);
-		FileUtils.writeStringToFile(mapping, sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(mapping, sb.toString(), UTF_8);
 	}
 	
 	private String registerGetMapping(String id) {
@@ -282,7 +282,7 @@ public class TrainTestReport extends TcAbstractReport implements Constants {
 			targetFile = getContext().getFile(prefix + EVAL_FILE_NAME + FILE_ENDING, AccessMode.READWRITE);
 		}
 
-		FileUtils.writeStringToFile(targetFile, sb.toString(), "utf-8");
+		FileUtils.writeStringToFile(targetFile, sb.toString(), UTF_8);
 
 	}
 

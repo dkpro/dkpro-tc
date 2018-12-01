@@ -19,18 +19,17 @@
 package org.dkpro.tc.ml.report.deeplearning;
 
 import java.io.BufferedReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.DeepLearningConstants;
 
 import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-
 public class DeepLearningMajorityClass2OutcomeReport
     extends DeepLearningId2OutcomeReport
     implements DeepLearningConstants
@@ -70,9 +69,7 @@ public class DeepLearningMajorityClass2OutcomeReport
     {
         FrequencyDistribution<String> fd = new FrequencyDistribution<>();
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), UTF_8))){
             String line = null;
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(" ");
@@ -80,9 +77,6 @@ public class DeepLearningMajorityClass2OutcomeReport
                     fd.addSample(v, 1);
                 }
             }
-        }
-        finally {
-            IOUtils.closeQuietly(reader);
         }
 
         majorityClass = fd.getSampleWithMaxFreq();

@@ -28,7 +28,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.ExecutableTaskBase;
 import org.dkpro.tc.core.Constants;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * The InitTask writes the outcomes they encountered. Normally the training task should have seen
  * all outcomes, however one cannot blindly trust that this is the case. We, hence, record in
@@ -54,17 +54,17 @@ public class OutcomeCollectionTask
 
         File trainFolder = aContext.getFolder(InitTask.OUTPUT_KEY_TRAIN, AccessMode.READONLY);
         File trainOutcomes = new File(trainFolder, Constants.FILENAME_OUTCOMES);
-        outcomes.addAll(FileUtils.readLines(trainOutcomes, "utf-8"));
+        outcomes.addAll(FileUtils.readLines(trainOutcomes, UTF_8));
 
         if (isTrainTest(aContext)) {
             File testFolder = aContext.getFolder(InitTask.OUTPUT_KEY_TEST, AccessMode.READONLY);
             File testOutcomes = new File(testFolder, Constants.FILENAME_OUTCOMES);
-            outcomes.addAll(FileUtils.readLines(testOutcomes, "utf-8"));
+            outcomes.addAll(FileUtils.readLines(testOutcomes, UTF_8));
         }
 
         File target = aContext.getFile(OUTPUT_KEY + "/" + Constants.FILENAME_OUTCOMES,
                 AccessMode.READWRITE);
-        FileUtils.writeLines(target, "utf-8", outcomes);
+        FileUtils.writeLines(target, UTF_8.toString(), outcomes);
 
     }
 

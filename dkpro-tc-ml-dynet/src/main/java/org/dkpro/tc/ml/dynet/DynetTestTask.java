@@ -17,13 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.dynet;
 
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_DICTIONARY_PATHS;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_MAXIMUM_LENGTH;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_PYTHON_INSTALLATION;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_RAM_WORKING_MEMORY;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_SEED_VALUE;
-import static org.dkpro.tc.core.DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,7 +35,7 @@ import org.dkpro.tc.ml.TcClassifierTaskBase;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DynetTestTask
-	extends TcClassifierTaskBase
+	extends TcClassifierTaskBase implements DeepLearningConstants
 {
 
     private static final String DEFAULT_SEED = "123456789";

@@ -38,7 +38,7 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
  * level task context.
@@ -129,14 +129,9 @@ public class DeepLearningInnerBatchReport
     private void writeCombinedOutcomeReport(String key, String payload) throws Exception
     {
         File file = getContext().getFile(key, AccessMode.READWRITE);
-        Writer writer = null;
-        try {
-            writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
+        try (Writer writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file), UTF_8))) {
             writer.write(payload);
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
         }
     }
 }

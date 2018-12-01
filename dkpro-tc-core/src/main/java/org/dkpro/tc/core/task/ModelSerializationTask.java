@@ -46,7 +46,7 @@ import org.dkpro.tc.api.features.meta.MetaCollectorConfiguration;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.ModelVersionIO;
-
+import static java.nio.charset.StandardCharsets.UTF_8;
 public abstract class ModelSerializationTask
     extends ExecutableTaskBase
     implements Constants, ModelVersionIO
@@ -109,7 +109,7 @@ public abstract class ModelSerializationTask
     private void writeFeatureParameters(StringBuilder sb, File aOutputFolder) throws IOException
     {
         File file = new File(aOutputFolder, MODEL_FEATURE_EXTRACTOR_CONFIGURATION);
-        FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
+        FileUtils.writeStringToFile(file, sb.toString(), UTF_8);
     }
 
     private StringBuilder copyParameters(TcFeature f, StringBuilder sb, File aOutputFolder)
@@ -314,7 +314,7 @@ public abstract class ModelSerializationTask
             sb.append(e.getKey() + "=" + e.getValue());
         }
 
-        FileUtils.write(new File(aOutputFolder, target), sb.toString(), "utf-8");
+        FileUtils.write(new File(aOutputFolder, target), sb.toString(), UTF_8);
     }
 
     private void copyToTargetLocation(File source, File destination) throws IOException
@@ -344,17 +344,9 @@ public abstract class ModelSerializationTask
 
     private void copySingleFile(File source, File destination) throws IOException
     {
-
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new FileInputStream(source);
-            os = new FileOutputStream(destination);
+        try (InputStream is = new FileInputStream(source);
+                OutputStream os = new FileOutputStream(destination);) {
             IOUtils.copy(is, os);
-        }
-        finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
         }
     }
 
@@ -363,7 +355,7 @@ public abstract class ModelSerializationTask
     {
         // as a marker for the type, write the name of the ml adapter class
         // write feature extractors
-        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta, "utf-8");
+        FileUtils.writeStringToFile(new File(aOutputFolder, MODEL_META), aModelMeta, UTF_8);
     }
 
     protected abstract void writeAdapter() throws Exception;
