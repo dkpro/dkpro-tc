@@ -39,6 +39,7 @@ public class SvmHmmPredictor
         runCommand(command);
 
         List<String> predictions = FileUtils.readLines(predOut, UTF_8);
+        uninstallExecutable();
         return predictions;
     }
 

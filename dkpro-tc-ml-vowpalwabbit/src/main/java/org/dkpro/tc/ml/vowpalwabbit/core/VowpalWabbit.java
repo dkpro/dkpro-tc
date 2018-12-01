@@ -68,6 +68,13 @@ public class VowpalWabbit {
 		return detector;
 	}
 	
+    public void uninstallExecutable()
+    {
+        if (runtimeProvider != null) {
+            runtimeProvider.uninstall();
+        }
+    }
+	
     private static void catchWindows32BitUsers()
     {
         PlatformDetector pd = new PlatformDetector();

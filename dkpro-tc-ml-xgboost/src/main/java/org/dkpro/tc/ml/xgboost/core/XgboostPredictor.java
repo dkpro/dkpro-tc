@@ -50,7 +50,7 @@ public class XgboostPredictor
         runCommand(command);
 
         List<String> predictions = FileUtils.readLines(tmpPredictionOut, UTF_8);
-
+        uninstallExecutable();
         return predictions;
     }
 

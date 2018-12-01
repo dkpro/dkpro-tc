@@ -47,6 +47,13 @@ public abstract class Xgboost
         return runtimeProvider.getFile("xgboost");
     }
     
+    public void uninstallExecutable()
+    {
+        if (runtimeProvider != null) {
+            runtimeProvider.uninstall();
+        }
+    }
+    
     public void runCommand(List<String> aCommand) throws Exception
     {
         Process process = new ProcessBuilder().inheritIO().command(aCommand).start();

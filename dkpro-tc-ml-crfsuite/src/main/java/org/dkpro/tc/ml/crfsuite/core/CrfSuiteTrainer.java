@@ -43,6 +43,8 @@ public class CrfSuiteTrainer
         List<String> trainCommand = getTrainCommand(algo.toString(),
                 parameters.subList(1, parameters.size()), getExecutable(), aData, aModel);
         executeTrainingCommand(trainCommand);
+        
+        uninstallExecutable();
     }
 
     public static List<String> getTrainCommand(String algorithm, List<String> algoParameter,

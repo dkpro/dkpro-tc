@@ -24,6 +24,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.resources.RuntimeProvider;
 
 public class SvmHmm
 {
+    RuntimeProvider runtimeProvider = null;
     
     public static void runCommand(List<String> command) throws Exception
     {
@@ -34,14 +35,25 @@ public class SvmHmm
     
     public File getTrainExecutable() throws Exception
     {
-        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        if (runtimeProvider == null) {
+            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        }
         return runtimeProvider.getFile("svm_hmm_learn");
     }
     
     public File getPredictionExecutable() throws Exception
     {
-        RuntimeProvider runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        if (runtimeProvider == null) {
+            runtimeProvider = new RuntimeProvider("classpath:/org/dkpro/tc/ml/svmhmm/");
+        }
         return runtimeProvider.getFile("svm_hmm_classify");
+    }
+    
+    public void uninstallExecutable()
+    {
+        if (runtimeProvider != null) {
+            runtimeProvider.uninstall();
+        }
     }
 
 }

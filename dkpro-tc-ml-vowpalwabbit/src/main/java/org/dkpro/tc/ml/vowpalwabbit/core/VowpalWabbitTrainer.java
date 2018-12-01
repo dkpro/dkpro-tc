@@ -37,6 +37,7 @@ public class VowpalWabbitTrainer extends VowpalWabbit implements TcTrainer {
 		File binary = getExecutable();
 		List<String> cmd = getTrainCommand(parameters, binary, aData, aModel);
 		executeTrainingCommand(cmd);
+		uninstallExecutable();
 	}
 
 	public static List<String> getTrainCommand(List<String> parameters, File aBinary, File aData, File aModel)

@@ -64,6 +64,7 @@ public class VowpalWabbitPredictor
         executePrediction(testingCommand);
 
         List<String> readLines = FileUtils.readLines(tempFile, UTF_8);
+        uninstallExecutable();
         return readLines;
     }
 
@@ -83,6 +84,7 @@ public class VowpalWabbitPredictor
     {
         List<String> command = getTestCommandForPredictionFromStdin(model);
         String prediction = executePredictionFromStdin(command, dataAsString);
+        uninstallExecutable();
         return prediction;
     }
 

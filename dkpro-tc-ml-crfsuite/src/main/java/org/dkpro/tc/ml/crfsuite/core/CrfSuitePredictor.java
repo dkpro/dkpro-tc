@@ -55,9 +55,8 @@ public class CrfSuitePredictor
     {
         List<String> testingCommand = getTestCommand(data, model);
         String predictions = executePrediction(testingCommand);
-        
         List<String> asList = Arrays.asList(predictions.split("\n"));
-        
+        uninstallExecutable();
         return asList;
     }
 
@@ -77,6 +76,7 @@ public class CrfSuitePredictor
     {
         List<String> command = getTestCommandForPredictionFromStdin(model);
         String prediction = executePredictionFromStdin(command, dataAsString);
+        uninstallExecutable();
         return prediction;
     }
 

@@ -56,6 +56,7 @@ public class XgboostTrainer
         command.add(flipBackslash(trainConfiguration.getAbsolutePath()));
 
         runCommand(command);
+        uninstallExecutable();
     }
 
     public File writeTrainConfigurationFile(List<String> parameters, File data, File model)

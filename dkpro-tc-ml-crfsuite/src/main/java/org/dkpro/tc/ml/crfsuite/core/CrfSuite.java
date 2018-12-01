@@ -65,6 +65,12 @@ public class CrfSuite
 
         return runtimeProvider.getFile("crfsuite");
     }
+    
+    public void uninstallExecutable() {
+        if(runtimeProvider != null) {
+            runtimeProvider.uninstall();
+        }
+    }
 
     public static PlatformDetector getPlatformDetector()
     {

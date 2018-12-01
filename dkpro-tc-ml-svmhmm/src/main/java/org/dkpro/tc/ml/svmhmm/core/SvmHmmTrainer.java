@@ -60,6 +60,7 @@ public class SvmHmmTrainer
     {
         List<String> command = buildTrainCommand(data, model, parameters);
         runCommand(command);
+        uninstallExecutable();
     }
 
     public static List<String> buildTrainCommand(File trainingFile, File targetModelLocation,
