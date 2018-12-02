@@ -24,7 +24,7 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.dkpro.lab.Lab;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
@@ -64,7 +64,7 @@ public class TcCrossValidationExperiment
     public void run() throws Exception
     {
         ExperimentBuilder builder = new ExperimentBuilder();
-        ShallowLearningExperiment_ImplBase experiment = builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
+        Experiment_ImplBase experiment = builder.experiment(ExperimentType.CROSS_VALIDATION, "crossValidationExperiment")
                 .numFolds(numberFolds)
                 .dataReaderTrain(trainReader)
                 .featureSets(featureSet)
