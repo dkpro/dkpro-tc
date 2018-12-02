@@ -20,6 +20,7 @@ package org.dkpro.tc.ml.experiment;
 import java.io.File;
 import java.util.List;
 
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.task.DKProTcShallowSerializationTask;
@@ -98,9 +99,15 @@ public class ExperimentSaveModel
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
 
         saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
-                collectionTask, outputFolder, experimentName, innerReports);
+                collectionTask, outputFolder, experimentName);
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
+        
+        if (innerReports != null) {
+            for (Report report : innerReports) {
+                saveModelTask.addReport(report);
+            }
+        }
         
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTask);

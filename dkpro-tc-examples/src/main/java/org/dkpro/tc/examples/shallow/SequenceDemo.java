@@ -30,6 +30,7 @@ import org.dkpro.tc.api.features.TcFeatureFactory;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.examples.shallow.annotators.SequenceOutcomeAnnotator;
+import org.dkpro.tc.examples.util.ContextMemoryReport;
 import org.dkpro.tc.examples.util.DemoUtils;
 import org.dkpro.tc.features.maxnormalization.TokenRatioPerDocument;
 import org.dkpro.tc.features.style.InitialCharacterUpperCase;
@@ -96,6 +97,7 @@ public class SequenceDemo
                .featureSets(getFeatureSet())
                .featureMode(FeatureMode.SEQUENCE)
                .learningMode(LearningMode.SINGLE_LABEL)
+               .reports(new ContextMemoryReport())
                .machineLearningBackend(  new MLBackend( new CrfSuiteAdapter(), CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR, "max_iterations=5")
 //                                       , new MLBackend(new SvmHmmAdapter(), "-c", "1000", "-e", "100")
 //                                       , new MLBackend(new VowpalWabbitAdapter(), "--search_history_length", "3", "-b", "20")
