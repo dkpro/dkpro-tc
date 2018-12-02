@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dkpro.lab.reporting.Report;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.core.task.DKProTcShallowTestTask;
