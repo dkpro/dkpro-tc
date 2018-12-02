@@ -193,6 +193,7 @@ public class VectorizationDocDoc2MultiLabel
         writerInstance.write("\n");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void collectionProcessComplete()
     {

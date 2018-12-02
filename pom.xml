@@ -104,7 +104,6 @@
     <module>dkpro-tc-ml-vowpalwabbit</module>
     <module>dkpro-tc-ml-weka</module>
     <module>dkpro-tc-ml-xgboost</module>
-    <module>dkpro-tc-simple</module>
     <module>dkpro-tc-testing</module>
   </modules>
   <dependencyManagement>
@@ -218,11 +217,6 @@
       <dependency>
         <groupId>org.dkpro.tc</groupId>
         <artifactId>dkpro-tc-ml-xgboost</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
-      </dependency>   
-      <dependency>
-        <groupId>org.dkpro.tc</groupId>
-        <artifactId>dkpro-tc-simple</artifactId>
         <version>1.1.0-SNAPSHOT</version>
       </dependency>   
       <dependency>
