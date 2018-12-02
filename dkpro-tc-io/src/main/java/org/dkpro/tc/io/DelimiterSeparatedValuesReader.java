@@ -247,6 +247,7 @@ public class DelimiterSeparatedValuesReader
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void close()
     {

@@ -333,6 +333,7 @@ public class DelimiterSeparatedSequenceValuesReader
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void close()
     {
