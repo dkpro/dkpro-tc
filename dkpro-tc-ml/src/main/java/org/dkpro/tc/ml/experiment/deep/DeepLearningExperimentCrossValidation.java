@@ -36,7 +36,6 @@ import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DKProTcDeepTestTask;
 import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.TcTaskType;
@@ -45,7 +44,7 @@ import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
 import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
@@ -54,8 +53,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * 
  */
 public class DeepLearningExperimentCrossValidation
-    extends DeepLearningExperiment_ImplBase
-    implements Constants
+    extends Experiment_ImplBase
 {
 
     protected Comparator<String> comparator;
@@ -298,7 +296,7 @@ public class DeepLearningExperimentCrossValidation
         learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
-            for (Class<? extends Report> report : innerReports) {
+            for (Report report : innerReports) {
                 learningTask.addReport(report);
             }
         }

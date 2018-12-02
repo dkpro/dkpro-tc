@@ -42,7 +42,7 @@ import org.dkpro.tc.ml.DiscriminableNameConverter;
  * 
  */
 public abstract class Experiment_ImplBase
-    extends DefaultBatchTask
+    extends DefaultBatchTask implements Constants
 {
 
     protected String experimentName;
@@ -50,7 +50,7 @@ public abstract class Experiment_ImplBase
                                                      // batch task to allow preprocessing as
                                                      // discriminator
     protected List<String> operativeViews;
-    protected List<Class<? extends Report>> innerReports;
+    protected List<Report> innerReports;
 
     Log log = LogFactory.getLog(Experiment_ImplBase.class);
 
@@ -146,10 +146,10 @@ public abstract class Experiment_ImplBase
      * @param innerReport
      *            classification report or regression report
      */
-    public void addInnerReport(Class<? extends Report> innerReport)
+    public void addInnerReport(Report innerReport)
     {
         if (innerReports == null) {
-            innerReports = new ArrayList<Class<? extends Report>>();
+            innerReports = new ArrayList<>();
         }
         innerReports.add(innerReport);
     }

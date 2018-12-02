@@ -36,7 +36,7 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcDeepLearningAdapter;
-import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
@@ -61,7 +61,7 @@ public class DeepExperimentBuilder
     protected String featureMode;
     protected Map<String, Object> readerMap;
     protected List<Dimension<?>> additionalDimensions;
-    protected DeepLearningExperiment_ImplBase experiment;
+    protected Experiment_ImplBase experiment;
     protected ParameterSpace parameterSpace;
     protected String experimentName;
     protected ExperimentType type;
@@ -374,7 +374,7 @@ public class DeepExperimentBuilder
      *            An experimental setup
      * @return The builder object
      */
-    public DeepExperimentBuilder experiment(DeepLearningExperiment_ImplBase experiment)
+    public DeepExperimentBuilder experiment(Experiment_ImplBase experiment)
     {
 
         if (experiment == null) {
@@ -651,7 +651,7 @@ public class DeepExperimentBuilder
      * @throws Exception
      *             In case of invalid configurations
      */
-    public DeepLearningExperiment_ImplBase build() throws Exception
+    public Experiment_ImplBase build() throws Exception
     {
 
         setExperiment();
@@ -708,7 +708,7 @@ public class DeepExperimentBuilder
      */
     public void run() throws Exception
     {
-        DeepLearningExperiment_ImplBase build = build();
+        Experiment_ImplBase build = build();
         Lab.getInstance().run(build);
     }
 

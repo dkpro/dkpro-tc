@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.experiment;
 
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
-
 import java.io.File;
 import java.util.List;
 
@@ -30,14 +28,14 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 
 /**
  * Save model batch
  * 
  */
 public class ExperimentSaveModel
-    extends ShallowLearningExperiment_ImplBase
+    extends Experiment_ImplBase
 {
     private File outputFolder;
 
@@ -100,10 +98,10 @@ public class ExperimentSaveModel
                 ExtractFeaturesTask.COLLECTION_INPUT_KEY);
 
         saveModelTask = new DKProTcShallowSerializationTask(metaTask, featuresTrainTask,
-                collectionTask, outputFolder, experimentName);
+                collectionTask, outputFolder, experimentName, innerReports);
         saveModelTask.setType(saveModelTask.getType() + "-" + experimentName);
         saveModelTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
-
+        
         // DKPro Lab issue 38: must be added as *first* task
         addTask(initTask);
         addTask(collectionTask);

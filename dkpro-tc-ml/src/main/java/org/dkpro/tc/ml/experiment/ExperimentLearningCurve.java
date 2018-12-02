@@ -43,7 +43,7 @@ import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.experiment.dim.LearningCurveDimBundleCrossValidation;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
@@ -55,7 +55,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * test set against which a learning curve shall be run, then use
  * {@link ExperimentLearningCurveTrainTest}
  */
-public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase implements Constants {
+public class ExperimentLearningCurve extends Experiment_ImplBase {
 
 	protected Comparator<String> comparator;
 	protected int aNumFolds = 10;
@@ -253,7 +253,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 
 		// test task operating on the models of the feature extraction train and test
 		// tasks
-		List<ReportBase> reports = new ArrayList<>();
+		List<Report> reports = new ArrayList<>();
 		reports.add(new BasicResultReport());
 
 		testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask, collectionTask,
@@ -262,7 +262,7 @@ public class ExperimentLearningCurve extends ShallowLearningExperiment_ImplBase 
 		testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
 		if (innerReports != null) {
-			for (Class<? extends Report> report : innerReports) {
+			for (Report report : innerReports) {
 				testTask.addReport(report);
 			}
 		}

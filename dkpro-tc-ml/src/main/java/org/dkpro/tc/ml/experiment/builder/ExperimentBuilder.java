@@ -37,7 +37,7 @@ import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
@@ -62,7 +62,7 @@ public class ExperimentBuilder implements Constants {
 	protected Map<String, Object> readerMap;
 	protected List<TcFeatureSet> featureSets;
 	protected List<Dimension<?>> additionalDimensions;
-	protected ShallowLearningExperiment_ImplBase experiment;
+	protected Experiment_ImplBase experiment;
 	protected ParameterSpace parameterSpace;
 	protected String experimentName;
 	protected ExperimentType type;
@@ -418,7 +418,7 @@ public class ExperimentBuilder implements Constants {
 	 * @param experiment An experimental setup
 	 * @return The builder object
 	 */
-	public ExperimentBuilder experiment(ShallowLearningExperiment_ImplBase experiment) {
+	public ExperimentBuilder experiment(Experiment_ImplBase experiment) {
 
 		if (experiment == null) {
 			throw new NullPointerException("The experiment is null");
@@ -664,7 +664,7 @@ public class ExperimentBuilder implements Constants {
 	 * @return The experiment
 	 * @throws Exception In case of invalid configurations
 	 */
-	public ShallowLearningExperiment_ImplBase build() throws Exception {
+	public Experiment_ImplBase build() throws Exception {
 
 		setExperiment();
 		setParameterSpace();
@@ -715,7 +715,7 @@ public class ExperimentBuilder implements Constants {
 	 *                   values
 	 */
 	public void run() throws Exception {
-		ShallowLearningExperiment_ImplBase build = build();
+		Experiment_ImplBase build = build();
 		Lab.getInstance().run(build);
 	}
 

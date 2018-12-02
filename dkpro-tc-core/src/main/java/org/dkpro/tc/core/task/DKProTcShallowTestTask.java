@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
@@ -60,7 +61,7 @@ public class DKProTcShallowTestTask
 
     private OutcomeCollectionTask collectionTask;
 
-    private List<ReportBase> reports;
+    private List<Report> reports;
 
     private String experimentName;
 
@@ -71,7 +72,7 @@ public class DKProTcShallowTestTask
 
     public DKProTcShallowTestTask(ExtractFeaturesTask featuresTrainTask,
             ExtractFeaturesTask featuresTestTask, OutcomeCollectionTask collectionTask,
-            List<ReportBase> reports, String experimentName)
+            List<Report> reports, String experimentName)
     {
         this.featuresTrainTask = featuresTrainTask;
         this.featuresTestTask = featuresTestTask;
@@ -106,7 +107,7 @@ public class DKProTcShallowTestTask
         }
 
         if (reports != null) {
-            for (ReportBase b : reports) {
+            for (Report b : reports) {
                 testTask.addReport(b);
             }
         }

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.tc.core.Constants;
@@ -45,15 +46,18 @@ public class DKProTcShallowSerializationTask
 
     private String experimentName;
 
+    private List<Report> reports;
+
     public DKProTcShallowSerializationTask(MetaInfoTask metaInfoTask,
             ExtractFeaturesTask featuresTrainTask, OutcomeCollectionTask collectionTask,
-            File outputFolder, String experimentName)
+            File outputFolder, String experimentName, List<Report> reports)
     {
         this.metaInfoTask = metaInfoTask;
         this.featuresTrainTask = featuresTrainTask;
         this.collectionTask = collectionTask;
         this.outputFolder = outputFolder;
         this.experimentName = experimentName;
+        this.reports = reports;
     }
 
     @Override
@@ -73,6 +77,11 @@ public class DKProTcShallowSerializationTask
         serializationTask.setOutputFolder(outputFolder);
         serializationTask.setAttribute(TC_TASK_TYPE, TcTaskType.SERIALIZATION_TASK.toString());
         serializationTask.setType(serializationTask.getType() + "-" + experimentName);
+        
+        if(reports!=null) {
+            reports.forEach(x->serializationTask.addReport(x));
+        }
+        
         this.tasks = new HashSet<>();
         addTask(serializationTask);
 

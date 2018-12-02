@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.experiment.deep;
 
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +31,7 @@ import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.ml.base.DeepLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 
 /**
@@ -41,7 +39,7 @@ import org.dkpro.tc.ml.report.BasicResultReport;
  * and is intentionally not "abstract" for testing purposes
  */
 public class DeepLearningExperimentTrainTest
-    extends DeepLearningExperiment_ImplBase
+    extends Experiment_ImplBase
 {
 
     protected InitTaskDeep initTaskTrain;
@@ -147,7 +145,7 @@ public class DeepLearningExperimentTrainTest
         learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
-            for (Class<? extends Report> report : innerReports) {
+            for (Report report : innerReports) {
                 learningTask.addReport(report);
             }
         }

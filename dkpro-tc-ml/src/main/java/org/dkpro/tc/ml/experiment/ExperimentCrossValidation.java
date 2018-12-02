@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
-import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
@@ -44,7 +43,7 @@ import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
@@ -53,7 +52,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * 
  */
 public class ExperimentCrossValidation
-    extends ShallowLearningExperiment_ImplBase
+    extends Experiment_ImplBase
     implements Constants
 {
 
@@ -284,7 +283,7 @@ public class ExperimentCrossValidation
                 TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
         // test task operating on the models of the feature extraction train and test tasks
-        List<ReportBase> reports = new ArrayList<>();
+        List<Report> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
 
         testTask = new DKProTcShallowTestTask(extractFeaturesTrainTask, extractFeaturesTestTask,
@@ -293,7 +292,7 @@ public class ExperimentCrossValidation
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
-            for (Class<? extends Report> report : innerReports) {
+            for (Report report : innerReports) {
                 testTask.addReport(report);
             }
         }

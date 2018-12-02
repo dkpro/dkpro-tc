@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
-import org.dkpro.lab.reporting.ReportBase;
+import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
@@ -34,7 +34,6 @@ import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.DKProTcShallowTestTask;
 import org.dkpro.tc.core.task.ExtractFeaturesTask;
 import org.dkpro.tc.core.task.InitTask;
@@ -42,7 +41,7 @@ import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
 import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.experiment.dim.LearningCurveDimBundleFixedTestSet;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
@@ -54,7 +53,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * against a fixed development or test set. If no fixed test set is required use
  * {@link ExperimentLearningCurve} instead.
  */
-public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_ImplBase implements Constants {
+public class ExperimentLearningCurveTrainTest extends Experiment_ImplBase{
 
 	protected InitTask initTaskTrain;
 	protected InitTask initTaskTest;
@@ -274,7 +273,7 @@ public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_
 
 		// test task operating on the models of the feature extraction train and test
 		// tasks
-		List<ReportBase> reports = new ArrayList<>();
+		List<Report> reports = new ArrayList<>();
 		reports.add(new BasicResultReport());
 
 		testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask, reports,
@@ -283,7 +282,7 @@ public class ExperimentLearningCurveTrainTest extends ShallowLearningExperiment_
 		testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
 		if (innerReports != null) {
-			for (Class<? extends Report> report : innerReports) {
+			for (Report report : innerReports) {
 				testTask.addReport(report);
 			}
 		}

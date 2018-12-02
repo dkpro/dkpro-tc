@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.experiment;
 
-import static org.dkpro.tc.core.Constants.TC_TASK_TYPE;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +30,7 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.ml.base.ShallowLearningExperiment_ImplBase;
+import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 
 /**
@@ -40,7 +38,7 @@ import org.dkpro.tc.ml.report.BasicResultReport;
  * 
  */
 public class ExperimentTrainTest
-    extends ShallowLearningExperiment_ImplBase
+    extends Experiment_ImplBase
 {
 
     protected InitTask initTaskTrain;
@@ -134,7 +132,7 @@ public class ExperimentTrainTest
         featuresTestTask.setAttribute(TC_TASK_TYPE, TcTaskType.FEATURE_EXTRACTION_TEST.toString());
 
         // test task operating on the models of the feature extraction train and test tasks
-        List<ReportBase> reports = new ArrayList<>();
+        List<Report> reports = new ArrayList<>();
         reports.add(new BasicResultReport());
 
         testTask = new DKProTcShallowTestTask(featuresTrainTask, featuresTestTask, collectionTask,
@@ -143,7 +141,7 @@ public class ExperimentTrainTest
         testTask.setAttribute(TC_TASK_TYPE, TcTaskType.FACADE_TASK.toString());
 
         if (innerReports != null) {
-            for (Class<? extends Report> report : innerReports) {
+            for (Report report : innerReports) {
                 testTask.addReport(report);
             }
         }
