@@ -119,10 +119,6 @@
     	<groupId>org.dkpro.tc</groupId>
     	<artifactId>dkpro-tc-ml-xgboost</artifactId>
     </dependency>
-    	<dependency>
-    	<groupId>org.dkpro.tc</groupId>
-    	<artifactId>dkpro-tc-simple</artifactId>
-    </dependency>      
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
