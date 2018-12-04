@@ -75,7 +75,7 @@ public class DeepExperimentBuilder
     protected String pythonPath;
     protected String embeddingPath;
     protected int maxLen;
-    protected boolean vectorize;
+    protected boolean vectorize = true;
 
     /**
      * Creates an experiment builder object.
@@ -755,6 +755,14 @@ public class DeepExperimentBuilder
         return this;
     }
 
+    /**
+     * If integer vectorization shall be performed. Default is to perform integer vectorization
+     * 
+     * @param vectorize
+     *          boolean if vectorization is requested
+     * @return
+     *      the builder object
+     */
     public DeepExperimentBuilder vectorizeToInteger(boolean vectorize)
     {
         this.vectorize = vectorize;
