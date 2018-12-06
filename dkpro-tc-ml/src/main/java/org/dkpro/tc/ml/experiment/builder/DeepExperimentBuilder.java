@@ -268,8 +268,7 @@ public class DeepExperimentBuilder
      */
     public DeepExperimentBuilder experiment(ExperimentType type, String experimentName)
     {
-        this.type = type;
-        this.experimentName = experimentName;
+        super.experiment(type, experimentName);
         return this;
     }
 
@@ -363,6 +362,12 @@ public class DeepExperimentBuilder
         return this;
     }
 
+    @Override
+    public DeepExperimentBuilder learningCurveLimit(int learningCurveLimit)
+    {
+        super.learningCurveLimit(learningCurveLimit);
+        return this;
+    }
     
     public Experiment_ImplBase build() throws Exception
     {
