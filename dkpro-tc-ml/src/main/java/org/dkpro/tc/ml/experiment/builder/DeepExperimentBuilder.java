@@ -450,21 +450,41 @@ public class DeepExperimentBuilder
         return this;
     }
 
-    public DeepExperimentBuilder pythonPath(String pythonPath)
+    /**
+     * Sets the path to the Python installation for which the deep learning software is installed
+     * 
+     * @param path
+     *        absolute path in the file system
+     * @return
+     */
+    public DeepExperimentBuilder pythonPath(String path)
     {
-        this.pythonPath = pythonPath;
+        this.pythonPath = path;
         return this;
     }
 
-    public DeepExperimentBuilder embeddingPath(String embeddingPath)
+    /**
+     * Path to a pre-trained word embedding that shall be used for initialization.
+     * @param path
+     *         absolute path in the file system
+     * @return
+     */
+    public DeepExperimentBuilder embeddingPath(String path)
     {
-        this.embeddingPath = embeddingPath;
+        this.embeddingPath = path;
         return this;
     }
 
-    public DeepExperimentBuilder maximumLength(int maxLen)
+    /**
+     * Set the maximum length of a document that is used for vectorization. Longer text will be cut-off to this length and shorter ones will be padded to fit this size.
+     * Default is to use no padding, which will lead to different size data. 
+     * @param len
+     *          maximum length
+     * @return
+     */
+    public DeepExperimentBuilder maximumLength(int len)
     {
-        this.maxLen = maxLen;
+        this.maxLen = len;
         return this;
     }
 
