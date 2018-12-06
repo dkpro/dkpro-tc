@@ -455,7 +455,7 @@ public class DeepExperimentBuilder
      * 
      * @param path
      *        absolute path in the file system
-     * @return
+     * @return the builder itself
      */
     public DeepExperimentBuilder pythonPath(String path)
     {
@@ -467,7 +467,7 @@ public class DeepExperimentBuilder
      * Path to a pre-trained word embedding that shall be used for initialization.
      * @param path
      *         absolute path in the file system
-     * @return
+     * @return the builder itself
      */
     public DeepExperimentBuilder embeddingPath(String path)
     {
@@ -480,7 +480,7 @@ public class DeepExperimentBuilder
      * Default is to use no padding, which will lead to different size data. 
      * @param len
      *          maximum length
-     * @return
+     * @return the builder itself
      */
     public DeepExperimentBuilder maximumLength(int len)
     {

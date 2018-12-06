@@ -441,7 +441,8 @@ public abstract class AbstractBuilder implements Constants, DeepLearningConstant
      * Sets the output folder to which the model is saved when the experiment type
      * is set to save model
      * 
-     * @param filePath path to the file
+     * @param folder
+     *         path to the file
      * @return the builder itself
      */
     public AbstractBuilder outputFolder(File folder) {
