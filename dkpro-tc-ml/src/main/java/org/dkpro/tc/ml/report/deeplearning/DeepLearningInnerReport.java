@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report.deeplearning;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +31,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -38,16 +39,15 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.report.util.ID2OutcomeCombiner;
-import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Collects the results from fold-runs in a crossvalidation setting and copies them into the upper
  * level task context.
  */
-public class DeepLearningInnerBatchReport
+public class DeepLearningInnerReport
     extends TcAbstractReport
     implements Constants
 {
-    public DeepLearningInnerBatchReport()
+    public DeepLearningInnerReport()
     {
         // required by groovy
     }

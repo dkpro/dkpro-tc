@@ -26,37 +26,30 @@ import java.util.Set;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.NoOpAnnotator;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
 import org.dkpro.tc.core.Constants;
+import org.dkpro.tc.core.DeepLearningConstants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.builder.FeatureMode;
 import org.dkpro.tc.ml.builder.LearningMode;
 import org.dkpro.tc.ml.builder.MLBackend;
-import org.dkpro.tc.ml.experiment.ExperimentLearningCurve;
-import org.dkpro.tc.ml.experiment.builder.ExperimentBuilder;
-import org.dkpro.tc.ml.experiment.builder.ExperimentType;
+import org.dkpro.tc.ml.report.TrainTestReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ExperimentBuilderTest
+public class ExperimentBuilderTest implements Constants, DeepLearningConstants
 {
     ExperimentBuilder builder;
     
     @Before
     public void setup() {
         builder = new ExperimentBuilder();
-    }
-    
-    @Test
-    public void preConfiguredExperimentType() {
-    	ExperimentLearningCurve preConfigured = new ExperimentLearningCurve();
-    	builder.experiment(preConfigured);
-    	assertEquals(preConfigured, builder.experiment);
     }
     
     @Test
@@ -105,6 +98,30 @@ public class ExperimentBuilderTest
     public void numFolds() {
         builder.numFolds(23);
         assertEquals(23, builder.numFolds);
+    }
+
+    @Test
+    public void bipartitionThreshold() {
+        builder.bipartitionThreshold(0.3243);
+        assertEquals(0.3243, builder.bipartitionThreshold, 0.001);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void bipartitionThresholdInvalidRange() {
+        //condition >= 1 and <=0 are not valid - some splitting range must remain
+        builder.bipartitionThreshold(1.0);
+        builder.bipartitionThreshold(0.0);
+    }
+    
+    @Test
+    public void learningCurveLimit() {
+        builder.learningCurveLimit(3);
+        assertEquals(builder.learningCurveLimit, 3);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void learningCurveLimitException() {
+        builder.learningCurveLimit(-3);
     }
     
     @Test
@@ -179,11 +196,14 @@ public class ExperimentBuilderTest
         TcFeature featureMock = Mockito.mock(TcFeature.class);
         TcFeatureSet set = new TcFeatureSet(featureMock);
         
+        Dimension<Object> addedDim = Dimension.create("dummyDim", new Object());
+        
         ParameterSpace parameterSpace = builder.dataReaderTrain(readerMock)
                .dataReaderTest(readerMock)
                .featureMode(FeatureMode.DOCUMENT)
                .learningMode(LearningMode.REGRESSION)
                .featureSets(set)
+               .additionalDimensions(addedDim)
                .numFolds(3)
                .machineLearningBackend(mlBackend)
                .getParameterSpace();
@@ -194,15 +214,97 @@ public class ExperimentBuilderTest
         }
         
         
-        assertEquals(5, parameterSpace.getDimensions().length);
+        assertEquals(6, parameterSpace.getDimensions().length);
         
-        assertTrue(names.contains(Constants.DIM_LEARNING_MODE));
-        assertTrue(names.contains(Constants.DIM_FEATURE_MODE));
-        assertTrue(names.contains(Constants.DIM_FEATURE_SET));
-        assertTrue(names.contains(Constants.DIM_READERS));
-        assertTrue(names.contains(Constants.DIM_MLA_CONFIGURATIONS));
+        assertTrue(names.contains(DIM_LEARNING_MODE));
+        assertTrue(names.contains(DIM_FEATURE_MODE));
+        assertTrue(names.contains(DIM_FEATURE_SET));
+        assertTrue(names.contains(DIM_READERS));
+        assertTrue(names.contains(DIM_MLA_CONFIGURATIONS));
+        assertTrue(names.contains("dummyDim"));
         
     }
+    
+    @Test
+    public void wiringOfExperimentTypes() throws Exception {
+        CollectionReaderDescription readerMock = Mockito.mock(CollectionReaderDescription.class);
+        
+        TcShallowLearningAdapter adapterMock = Mockito.mock(TcShallowLearningAdapter.class);
+        MLBackend mlBackend = new MLBackend(adapterMock);
+        
+        TcFeature featureMock = Mockito.mock(TcFeature.class);
+        TcFeatureSet set = new TcFeatureSet(featureMock);
+        
+         builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
+                .dataReaderTrain(readerMock)
+                .dataReaderTest(readerMock)
+                .featureMode(FeatureMode.DOCUMENT)
+                .learningMode(LearningMode.REGRESSION)
+                .featureSets(set)
+                .machineLearningBackend(mlBackend)
+                .build();
+        
+         builder.experiment(ExperimentType.CROSS_VALIDATION, "cv")
+                .dataReaderTrain(readerMock)
+                .featureMode(FeatureMode.DOCUMENT)
+                .learningMode(LearningMode.REGRESSION)
+                .featureSets(set)
+                .numFolds(3)
+                .machineLearningBackend(mlBackend)
+                .build();
+        
+         builder.experiment(ExperimentType.LEARNING_CURVE_FIXED_TEST_SET, "learningCurveFixedTest")
+                .dataReaderTrain(readerMock)
+                .dataReaderTest(readerMock)
+                .featureMode(FeatureMode.DOCUMENT)
+                .learningMode(LearningMode.REGRESSION)
+                .featureSets(set)
+                .numFolds(3)
+                .machineLearningBackend(mlBackend)
+                .build();
+        
+         builder.experiment(ExperimentType.LEARNING_CURVE, "learningCurve")
+                .dataReaderTrain(readerMock)
+                .featureMode(FeatureMode.DOCUMENT)
+                .learningMode(LearningMode.REGRESSION)
+                .featureSets(set)
+                .machineLearningBackend(mlBackend)
+                .build();
+        
+         builder.experiment(ExperimentType.SAVE_MODEL, "saveModel")
+                .dataReaderTrain(readerMock)
+                .featureMode(FeatureMode.DOCUMENT)
+                .learningMode(LearningMode.REGRESSION)
+                .outputFolder(FileUtil.createTempFile("abc", ".txt"))
+                .featureSets(set)
+                .machineLearningBackend(mlBackend)
+                .build();
+    }
+    
+    
+    @Test
+    public void reports() throws IllegalStateException, Exception {
+
+        CollectionReaderDescription readerMock = Mockito.mock(CollectionReaderDescription.class);
+
+        TcShallowLearningAdapter adapterMock = Mockito.mock(TcShallowLearningAdapter.class);
+        MLBackend mlBackend = new MLBackend(adapterMock);
+
+        TcFeature featureMock = Mockito.mock(TcFeature.class);
+        TcFeatureSet set = new TcFeatureSet(featureMock);
+        
+        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest")
+               .dataReaderTrain(readerMock)
+               .dataReaderTest(readerMock)
+               .reports(new TrainTestReport(),  new TrainTestReport())
+               .featureMode(FeatureMode.DOCUMENT)
+               .learningMode(LearningMode.REGRESSION)
+               .featureSets(set)
+               .machineLearningBackend(mlBackend)
+               .build();
+        assertEquals(2, builder.reports.size());
+    }
+    
     
     @Test(expected=IllegalStateException.class)
     public void missingExperiment() throws Exception {
@@ -302,4 +404,5 @@ public class ExperimentBuilderTest
                .machineLearningBackend(mlBackend)
                .build();
     }
+    
 }

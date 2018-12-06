@@ -20,22 +20,17 @@ package org.dkpro.tc.ml.experiment.builder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.apache.commons.logging.LogFactory;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.apache.uima.fit.factory.CollectionReaderFactory;
-import org.dkpro.lab.Lab;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.tc.api.features.TcFeature;
 import org.dkpro.tc.api.features.TcFeatureSet;
-import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.core.ml.TcShallowLearningAdapter;
 import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.builder.FeatureMode;
@@ -53,28 +48,13 @@ import org.dkpro.tc.ml.report.TrainTestReport;
 /**
  * Builder class that offers a simplified wiring of DKPro TC experiments.
  */
-public class ExperimentBuilder implements Constants {
+public class ExperimentBuilder extends AbstractBuilder {
+    
 	protected List<TcShallowLearningAdapter> backends;
 	protected List<List<Object>> arguments;
-	protected List<ReportBase> reports;
-	protected String learningMode;
-	protected String featureMode;
-	protected Map<String, Object> readerMap;
 	protected List<TcFeatureSet> featureSets;
-	protected List<Dimension<?>> additionalDimensions;
-	protected Experiment_ImplBase experiment;
-	protected ParameterSpace parameterSpace;
-	protected String experimentName;
-	protected ExperimentType type;
-	protected AnalysisEngineDescription preprocessing;
 	protected List<String> featureFilter;
-	protected List<Map<String, Object>> additionalMapDimensions;
-
-	int numFolds = -1;
-	double bipartitionThreshold = -1;
-	File outputFolder;
-	private int learningCurveLimit = -1;
-
+	
 	/**
 	 * Creates an experiment builder object.
 	 */
@@ -103,13 +83,8 @@ public class ExperimentBuilder implements Constants {
 		return this;
 	}
 
-	/**
-	 * Wires the parameter space. The created parameter space can be passed to
-	 * experimental setup.
-	 * 
-	 * @return a parameter space
-	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
 	public ParameterSpace getParameterSpace() {
 		List<Dimension<?>> dimensions = new ArrayList<>();
 
@@ -143,10 +118,6 @@ public class ExperimentBuilder implements Constants {
 		return parameterSpace;
 	}
 
-	protected Dimension<?> getAsDimensionsBipartionThreshold() {
-		return Dimension.create(DIM_BIPARTITION_THRESHOLD, bipartitionThreshold);
-	}
-
 	@SuppressWarnings("unchecked")
 	protected Dimension<?> getFeatureFilters() {
 		return Dimension.create(DIM_FEATURE_FILTERS, featureFilter);
@@ -161,14 +132,6 @@ public class ExperimentBuilder implements Constants {
 		return mlaDim;
 	}
 
-	protected Dimension<?> getAsDimensionReaders() {
-		if (!readerMap.keySet().contains(DIM_READER_TRAIN)) {
-			throw new IllegalStateException("You must provide at least a training data reader");
-		}
-
-		return Dimension.createBundle(DIM_READERS, readerMap);
-	}
-
 	protected Dimension<?> getAsDimensionFeatureSets() {
 		if (featureSets == null) {
 			throw new NullPointerException("Set either a feature set [" + TcFeatureSet.class.getName()
@@ -181,24 +144,6 @@ public class ExperimentBuilder implements Constants {
 		}
 
 		return Dimension.create(DIM_FEATURE_SET, featureSets.toArray(new TcFeatureSet[0]));
-	}
-
-	protected Dimension<?> getAsDimensionLearningMode() {
-		if (learningMode == null) {
-			throw new NullPointerException(
-					"No learning mode set, please provide this information via the respective setter method");
-		}
-
-		return Dimension.create(DIM_LEARNING_MODE, learningMode);
-	}
-
-	protected Dimension<?> getAsDimensionFeatureMode() {
-		if (featureMode == null) {
-			throw new NullPointerException(
-					"No feature mode set, please provide this information via the respective setter method");
-		}
-
-		return Dimension.create(DIM_FEATURE_MODE, featureMode);
 	}
 
 	protected List<Map<String, Object>> getAdapterInfo() {
@@ -299,202 +244,43 @@ public class ExperimentBuilder implements Constants {
 		}
 	}
 
-	/**
-	 * Sets the data reader which reads the training data
-	 * 
-	 * @param reader the {@link CollectionReaderDescription} that can be created via
-	 *               {@link CollectionReaderFactory} from a reader class.
-	 * @return the builder object
-	 * 
-	 */
+	@Override
 	public ExperimentBuilder dataReaderTrain(CollectionReaderDescription reader) {
-		if (reader == null) {
-			throw new NullPointerException(
-					"Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
-		}
-
-		if (readerMap == null) {
-			readerMap = new HashMap<>();
-		}
-		readerMap.put(DIM_READER_TRAIN, reader);
-
+		super.dataReaderTrain(reader);
 		return this;
 	}
 
-	/**
-	 * Sets the data reader which reads the test data
-	 * 
-	 * @param reader the {@link CollectionReaderDescription} that can be created via
-	 *               {@link CollectionReaderFactory} from a reader class.
-	 * @return the builder object
-	 */
+	@Override
 	public ExperimentBuilder dataReaderTest(CollectionReaderDescription reader) throws IllegalStateException {
-		if (reader == null) {
-			throw new NullPointerException(
-					"Provided CollectionReaderDescription is null, please provide an initialized CollectionReaderDescription");
-		}
-
-		if (readerMap == null) {
-			readerMap = new HashMap<>();
-		}
-		readerMap.put(DIM_READER_TEST, reader);
-
+		super.dataReaderTest(reader);
 		return this;
 	}
 
-	/**
-	 * Allows the user to set additional dimensions. This is for advanced users that
-	 * use dimensions that are not part of the minimal configuration for an
-	 * experiment. This method will remove all previously set additional dimensions
-	 * and replaces them with the newly provided one.
-	 * 
-	 * @param dim a list of dimensions
-	 * @return the builder object
-	 */
-	public ExperimentBuilder additionalDimensions(Dimension<?>... dim) {
-
-		if (dim == null) {
-			throw new NullPointerException("The added dimension is null");
-		}
-		for (Dimension<?> d : dim) {
-			if (d == null) {
-				throw new NullPointerException("The added dimension is null");
-			}
-		}
-
-		additionalDimensions = new ArrayList<>(Arrays.asList(dim));
-		return this;
-	}
-
-	@SafeVarargs
-	public final ExperimentBuilder additionalDimensions(Map<String, Object>... dimensions) {
-
-		if (dimensions == null) {
-			throw new NullPointerException("The added dimension is null");
-		}
-		for (Map<String, Object> d : dimensions) {
-			if (d == null) {
-				throw new NullPointerException("The added map is null");
-			}
-		}
-
-		additionalMapDimensions = new ArrayList<>(Arrays.asList(dimensions));
-		return this;
-	}
-
-	/**
-	 * Sets the learning mode of the experiment
-	 * 
-	 * @param learningMode The learning mode
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder learningMode(LearningMode learningMode) {
-		if (learningMode == null) {
-			throw new NullPointerException("Learning mode is null");
-		}
-
-		this.learningMode = learningMode.toString();
+	    super.learningMode(learningMode);
 		return this;
 	}
 
-	/**
-	 * Sets the feature mode of the experiment
-	 * 
-	 * @param featureMode The feature mode
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder featureMode(FeatureMode featureMode) {
-		if (featureMode == null) {
-			throw new NullPointerException("Feature mode is null");
-		}
-
-		this.featureMode = featureMode.toString();
+		super.featureMode(featureMode);
 		return this;
 	}
 
-	/**
-	 * Sets an externally pre-defined experimental setup
-	 * 
-	 * @param experiment An experimental setup
-	 * @return The builder object
-	 */
-	public ExperimentBuilder experiment(Experiment_ImplBase experiment) {
-
-		if (experiment == null) {
-			throw new NullPointerException("The experiment is null");
-		}
-
-		this.experiment = experiment;
-		return this;
-	}
-
-	/**
-	 * This switch is relevant for {@link ExperimentType#LEARNING_CURVE} and
-	 * {@link ExperimentType#LEARNING_CURVE_FIXED_TEST_SET}. Sets a maximum number
-	 * of train set permutations on each learning curve stage. For instance, on the
-	 * first stage of a ten fold run you will get the following folds on the first
-	 * two stages:
-	 * 
-	 * <pre>
-	 * Stage 1
-	 * [0]
-	 * [1]
-	 * [2]
-	 * [3]
-	 * [4]
-	 * ...
-	 * [9]
-	 * 
-	 * Stage 2
-	 * [0, 1]
-	 * [1, 2]
-	 * [2, 3]
-	 * ...
-	 * [9, 0]
-	 * 
-	 * Stage 3
-	 * [0, 1, 2]
-	 * [1, 2, 3]
-	 * [2, 3, 4]
-	 * ...
-	 * Stage 4
-	 * ...
-	 * Stage 10
-	 * ...
-	 * </pre>
-	 * 
-	 * Even for a small number of folds, the number of created train set
-	 * permutations is rather high leading to a long runtime. It is usually not
-	 * necessary to use all permutations of the train set to receive a smooth
-	 * learning curve. This parameter limits the number of runs in each stage to the
-	 * number specified as parameter. This will considerably speed up the learning
-	 * curve.
-	 * 
-	 * @param learningCurveLimit The limit which must be a non-zero positive integer
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder learningCurveLimit(int learningCurveLimit) {
-		if(learningCurveLimit <= 0) {
-			throw new IllegalArgumentException("Learning curve limit must be a positive integer greater zero but was ["
-					+ learningCurveLimit + "]");
-		}
-		this.learningCurveLimit = learningCurveLimit;
+		super.learningCurveLimit(learningCurveLimit);
 		return this;
 	}
 
-	/**
-	 * Creates an experimental setup with a pre-defined type
-	 * 
-	 * @param type           The type of experiment
-	 * @param experimentName The name of the experiment
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder experiment(ExperimentType type, String experimentName) {
-		this.type = type;
-		this.experimentName = experimentName;
+	    super.experiment(type, experimentName);
 		return this;
 	}
 
+	@Override
 	protected ExperimentBuilder configureExperiment(ExperimentType type, String experimentName) throws Exception {
 		switch (type) {
 		case TRAIN_TEST:
@@ -529,44 +315,6 @@ public class ExperimentBuilder implements Constants {
 		return this;
 	}
 
-	private void readersCheckExperimentCrossValidation() {
-		if (!(experiment instanceof ExperimentCrossValidation) && !(experiment instanceof ExperimentLearningCurve)) {
-			return;
-		}
-
-		if (readerMap.size() < 1) {
-			throw new IllegalStateException("No reader set for reading training data");
-		} else if (readerMap.size() > 1) {
-			LogFactory.getLog(getClass())
-					.warn("Experiment type [" + experiment.getClass().getSimpleName() + "] requires only one reader ["
-							+ readerMap.size() + "] were found - additional readers will be ignored");
-		}
-	}
-
-	private void readersCheckExperimentTrainTestCheck() {
-		if (!(experiment instanceof ExperimentTrainTest) && !(experiment instanceof ExperimentLearningCurveTrainTest)) {
-			return;
-		}
-
-		if (readerMap.size() < 2) {
-			throw new IllegalStateException("Experiment type [" + experiment.getClass().getSimpleName()
-					+ "] requires two readers (train/test) but [" + readerMap.size() + "] readers were provided");
-		}
-	}
-
-	protected int getCvFolds() {
-		// -1 defines leave one out and is, thus, valid as parameter. Any lower number
-		// is not
-		if (numFolds < -1) {
-			throw new IllegalArgumentException("Specified number of folds [" + numFolds
-					+ "] is invlaid, set either [-1] for LEAVE-ONE-OUT or a positive value");
-		}
-
-		LogFactory.getLog(getClass()).debug("Number of folds set to [" + numFolds + "]");
-
-		return numFolds;
-	}
-
 	protected void sanityCheckSaveModelExperiment() {
 		if (outputFolder == null) {
 			throw new IllegalStateException("The output folder to which the model will be stored is not set.");
@@ -582,71 +330,32 @@ public class ExperimentBuilder implements Constants {
 		}
 	}
 
-	/**
-	 * Sets user-specific reports for the experiments. Calling this method multiple
-	 * times overwrites all changes from the previous calls.
-	 * 
-	 * @param reports One or more reports
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder reports(ReportBase... reports) {
-		this.reports = new ArrayList<>();
-		for (ReportBase r : reports) {
-			LogFactory.getLog(getClass())
-					.debug("Add report [" + r.getClass().getSimpleName() + "] to experimental setup");
-			this.reports.add(r);
-		}
-
+		super.reports(reports);
 		return this;
 	}
 
-	/**
-	 * Sets a {@link AnalysisEngineDescription} which contains all necessary
-	 * pre-processing steps. Multiple {@link AnalysisEngineDescription} can be
-	 * combined into a single one by nesting multiple descriptions, e.g.
-	 * 
-	 * <pre>
-	 *     AnalysisEngineFactory.createEngineDescription(
-	 *              AnalysisEngineFactory.createEngineDescription(abc1.class),
-	 *              AnalysisEngineFactory.createEngineDescription(abc2.class),
-	 *              AnalysisEngineFactory.createEngineDescription(...),
-	 *     );
-	 * </pre>
-	 * 
-	 * @param preprocessing the preprocessing component
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder preprocessing(AnalysisEngineDescription preprocessing) {
-		this.preprocessing = preprocessing;
+		super.preprocessing(preprocessing);
 		return this;
 	}
 
-	/**
-	 * Sets the number of folds for {@link ExperimentType#CROSS_VALIDATION}.
-	 * Defaults to ten if not set by the user. Is ignored for other experiment
-	 * types.
-	 * 
-	 * @param numFolds The number of folds
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder numFolds(int numFolds) {
-		this.numFolds = numFolds;
+		super.numFolds(numFolds);
 		return this;
 	}
 
-	/**
-	 * Sets the experiment Name
-	 * 
-	 * @param experimentName The name
-	 * @return The builder object
-	 */
+	@Override
 	public ExperimentBuilder name(String experimentName) {
-		this.experimentName = experimentName;
+		super.name(experimentName);
 		return this;
 	}
 
 	public ExperimentBuilder bipartitionThreshold(double threshold) {
-		this.bipartitionThreshold = threshold;
+		super.bipartitionThreshold(threshold);
 		return this;
 	}
 
@@ -695,50 +404,20 @@ public class ExperimentBuilder implements Constants {
 		experiment.setParameterSpace(parameterSpace);
 	}
 
-	protected void setExperiment() throws Exception {
-		if (experiment == null && type != null) {
-			configureExperiment(type, experimentName);
-			return;
-		}
-
-		if (experimentName != null) {
-			experiment.setExperimentName(experimentName);
-		}
-
-		throw new IllegalStateException("Please set an experiment");
-	}
-
-	/**
-	 * Executes the experiment
-	 * 
-	 * @throws Exception In case of an invalid configuration or missing mandatory
-	 *                   values
-	 */
+	@Override
 	public void run() throws Exception {
-		Experiment_ImplBase build = build();
-		Lab.getInstance().run(build);
+		super.run();
 	}
 
-	/**
-	 * Sets the output folder to which the model is saved when the experiment type
-	 * is set to save model
-	 * 
-	 * @param filePath path to the file
-	 * @return the builder itself
-	 */
+	@Override
 	public ExperimentBuilder outputFolder(String filePath) {
-		if (filePath == null) {
-			throw new NullPointerException("The provided output folder path is null");
-		}
-
-		this.outputFolder = new File(filePath);
-		if (!this.outputFolder.exists()) {
-			boolean mkdirs = outputFolder.mkdirs();
-			if (!mkdirs) {
-				throw new IllegalStateException("Could not create output folder [" + filePath + "]");
-			}
-		}
+		super.outputFolder(filePath);
 		return this;
 	}
 
+	@Override
+    public ExperimentBuilder outputFolder(File file) {
+        super.outputFolder(file);
+        return this;
+    }
 }
