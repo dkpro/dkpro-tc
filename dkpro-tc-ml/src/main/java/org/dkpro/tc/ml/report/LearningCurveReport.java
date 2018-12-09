@@ -339,11 +339,10 @@ public class LearningCurveReport
             Map<RunIdentifier, Map<Integer, List<File>>> dataMap)
         throws Exception
     {
-
-        for (RunIdentifier configId : dataMap.keySet()) {
-            Map<Integer, List<File>> map = dataMap.get(configId);
-            List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(map);
-            writeCategoricalPlots(configId.md5, stageAvg, maxNumberFolds);
+        
+        for(Entry<RunIdentifier, Map<Integer, List<File>>> e : dataMap.entrySet()) {
+            List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(e.getValue());
+            writeCategoricalPlots(e.getKey().md5, stageAvg, maxNumberFolds);
         }
 
     }
