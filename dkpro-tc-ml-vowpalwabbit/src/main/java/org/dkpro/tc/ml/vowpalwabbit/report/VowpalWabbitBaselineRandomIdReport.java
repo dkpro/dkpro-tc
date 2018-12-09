@@ -68,7 +68,6 @@ public class VowpalWabbitBaselineRandomIdReport
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), UTF_8))) {
-            ;
             String line = null;
             while ((line = reader.readLine()) != null) {
                 if (line.isEmpty()) {

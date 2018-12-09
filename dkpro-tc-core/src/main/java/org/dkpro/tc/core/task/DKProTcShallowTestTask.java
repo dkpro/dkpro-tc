@@ -81,8 +81,6 @@ public class DKProTcShallowTestTask
         this.experimentName = experimentName;
     }
 
-    ExecutableTaskBase tt;
-
     @Override
     public void initialize(TaskContext aContext)
     {

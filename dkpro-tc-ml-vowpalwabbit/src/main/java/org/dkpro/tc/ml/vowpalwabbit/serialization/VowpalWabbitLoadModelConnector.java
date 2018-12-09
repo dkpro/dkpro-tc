@@ -267,7 +267,8 @@ public class VowpalWabbitLoadModelConnector
         if (featureType == FeatureType.STRING || featureType == FeatureType.NOMINAL) {
             String string = stringValue2IntegerMapping.get(value);
             if (string == null) {
-                return (++maxStringId).toString();
+                ++maxStringId;
+                return maxStringId.toString();
             }
         }
 

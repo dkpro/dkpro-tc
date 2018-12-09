@@ -64,6 +64,8 @@ import de.unidue.ltl.evaluation.measures.categorial.Recall;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Collects the final evaluation results in a cross validation setting.
  * 
@@ -86,7 +88,7 @@ public class LearningCurveReport
                 store, idPool);
 
         if (isSingleLabelMode(learningMode)) {
-            writeCategoricalResults(learningMode, store, dataMap);
+            writeCategoricalResults(store, dataMap);
         }
 
     }
@@ -138,7 +140,7 @@ public class LearningCurveReport
         }
 
         FileUtils.writeStringToFile(getContext().getFile(MD5_MAPPING_FILE, AccessMode.READWRITE),
-                sb.toString(), "utf-8");
+                sb.toString(), UTF_8);
 
         return dataMap;
     }
@@ -333,7 +335,7 @@ public class LearningCurveReport
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }
 
-    private void writeCategoricalResults(String learningMode, StorageService store,
+    private void writeCategoricalResults(StorageService store,
             Map<RunIdentifier, Map<Integer, List<File>>> dataMap)
         throws Exception
     {
@@ -565,8 +567,8 @@ public class LearningCurveReport
         	configMap.forEach((x,y)-> sb.append(x+"=" + y+", "));
         	configAsString = sb.toString();
 
-			byte[] digest = MessageDigest.getInstance("MD5")
-                    .digest((configAsString).getBytes(StandardCharsets.UTF_8));
+        	MessageDigest md = MessageDigest.getInstance("MD5");
+        	byte[] digest = md.digest((configAsString).getBytes(UTF_8));
             BigInteger bigInt = new BigInteger(1, digest);
             String md5 = bigInt.toString(16);
             this.md5 = md5;
