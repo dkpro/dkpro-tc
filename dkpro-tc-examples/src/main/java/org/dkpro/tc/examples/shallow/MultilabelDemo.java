@@ -92,6 +92,7 @@ public class MultilabelDemo
     }
 
     // ##### Train Test #####
+    @SuppressWarnings("unchecked")
     public void runTrainTest() throws Exception
     {
         
