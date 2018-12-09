@@ -89,8 +89,13 @@ public class ExperimentBuilderTest implements Constants, DeepLearningConstants
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void invalidCvArgument() {
+    public void invalidCvArgumentUndefinedNegative() {
         builder.numFolds(-2); //-1 == leave one out
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidCvArgumentZero() {
+        builder.numFolds(0); //-1 == leave one out
     }
     
     @Test

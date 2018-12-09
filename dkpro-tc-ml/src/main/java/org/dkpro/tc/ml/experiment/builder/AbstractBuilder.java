@@ -175,8 +175,9 @@ public abstract class AbstractBuilder implements Constants, DeepLearningConstant
     }
     
     /**
-     * Sets the number of folds for {@link ExperimentType#CROSS_VALIDATION}. Defaults to ten if not
+     * Sets the number of folds for {@link ExperimentType#CROSS_VALIDATION}. Defaults to 10 if not
      * set by the user. Is ignored for other experiment types.
+     * The value -1 performs leave-one-out cross-validation. 
      * 
      * @param numFolds
      *            The number of folds
@@ -184,21 +185,17 @@ public abstract class AbstractBuilder implements Constants, DeepLearningConstant
      */
     public AbstractBuilder numFolds(int numFolds)
     {
+        if (numFolds < -1 || numFolds == 0) {
+            throw new IllegalArgumentException("The number of folds be either [-1]=Leave-one-out CV or an integer value > 0");
+        }
+        
         this.numFolds = numFolds;
         return this;
     }
     
     protected int getCvFolds()
     {
-        // -1 defines leave one out and is, thus, valid as parameter. Any lower number
-        // is not
-        if (numFolds < -1) {
-            throw new IllegalArgumentException("Specified number of folds [" + numFolds
-                    + "] is invlaid, set either [-1] for LEAVE-ONE-OUT or a positive value");
-        }
-
         LogFactory.getLog(getClass()).debug("Number of folds set to [" + numFolds + "]");
-
         return numFolds;
     }
     
