@@ -19,6 +19,7 @@ package org.dkpro.tc.ml.experiment.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.dkpro.tc.ml.experiment.builder.ExperimentType.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class DeepExperimentBuilderTest
+public class DeepExperimentBuilderTest implements Constants, DeepLearningConstants
 {
     DeepExperimentBuilder builder;
     
@@ -58,32 +59,32 @@ public class DeepExperimentBuilderTest
     
     @Test
     public void experimentTypeCV() {
-        builder.experiment(ExperimentType.CROSS_VALIDATION, "cv");
-        assertEquals(builder.type.toString(), ExperimentType.CROSS_VALIDATION.toString());
+        builder.experiment(CROSS_VALIDATION, "cv");
+        assertEquals(builder.type.toString(), CROSS_VALIDATION.toString());
     }
     
     @Test
     public void experimentTypeLearningCurve() {
-        builder.experiment(ExperimentType.LEARNING_CURVE, "cv_learningCurve");
-        assertEquals(builder.type.toString(), ExperimentType.LEARNING_CURVE.toString());
+        builder.experiment(LEARNING_CURVE, "cv_learningCurve");
+        assertEquals(builder.type.toString(), LEARNING_CURVE.toString());
     }
     
     @Test
     public void experimentTypeTrainTest() {
-        builder.experiment(ExperimentType.TRAIN_TEST, "trainTest");
-        assertEquals(builder.type.toString(), ExperimentType.TRAIN_TEST.toString());
+        builder.experiment(TRAIN_TEST, "trainTest");
+        assertEquals(builder.type.toString(), TRAIN_TEST.toString());
     }
     
     @Test
     public void experimentTypeLearningCurvedFixedTest() {
-        builder.experiment(ExperimentType.LEARNING_CURVE_FIXED_TEST_SET, "fixedTest");
-        assertEquals(builder.type.toString(), ExperimentType.LEARNING_CURVE_FIXED_TEST_SET.toString());
+        builder.experiment(LEARNING_CURVE_FIXED_TEST_SET, "fixedTest");
+        assertEquals(builder.type.toString(), LEARNING_CURVE_FIXED_TEST_SET.toString());
     }
     
     @Test
     public void experimentSaveModelTest() {
-        builder.experiment(ExperimentType.SAVE_MODEL, "saveModel");
-        assertEquals(builder.type.toString(), ExperimentType.SAVE_MODEL.toString());
+        builder.experiment(SAVE_MODEL, "saveModel");
+        assertEquals(builder.type.toString(), SAVE_MODEL.toString());
     }
     
     @Test
@@ -119,6 +120,12 @@ public class DeepExperimentBuilderTest
     public void preprocessing() throws ResourceInitializationException {
         builder.preprocessing(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class));
         assertTrue(builder.preprocessing != null);
+    }
+    
+    @Test
+    public void maximumLength() {
+        builder.maximumLength(15);
+        assertEquals(builder.maximumLength, 15);
     }
     
 //    @Test
@@ -158,13 +165,13 @@ public class DeepExperimentBuilderTest
         
         assertEquals(7, parameterSpace.getDimensions().length);
         
-        assertTrue(names.contains(DeepLearningConstants.DIM_MAXIMUM_LENGTH));
-        assertTrue(names.contains(DeepLearningConstants.DIM_PYTHON_INSTALLATION));
-        assertTrue(names.contains(DeepLearningConstants.DIM_VECTORIZE_TO_INTEGER));
-        assertTrue(names.contains(Constants.DIM_LEARNING_MODE));
-        assertTrue(names.contains(Constants.DIM_FEATURE_MODE));
-        assertTrue(names.contains(Constants.DIM_READERS));
-        assertTrue(names.contains(Constants.DIM_MLA_CONFIGURATIONS));
+        assertTrue(names.contains(DIM_MAXIMUM_LENGTH));
+        assertTrue(names.contains(DIM_PYTHON_INSTALLATION));
+        assertTrue(names.contains(DIM_VECTORIZE_TO_INTEGER));
+        assertTrue(names.contains(DIM_LEARNING_MODE));
+        assertTrue(names.contains(DIM_FEATURE_MODE));
+        assertTrue(names.contains(DIM_READERS));
+        assertTrue(names.contains(DIM_MLA_CONFIGURATIONS));
         
     }
     
@@ -198,6 +205,7 @@ public class DeepExperimentBuilderTest
                .featureMode(FeatureMode.DOCUMENT)
                .learningMode(LearningMode.REGRESSION)
                .machineLearningBackend(mlBackend)
+               .preprocessing(AnalysisEngineFactory.createEngineDescription(NoOpAnnotator.class))
                .build();
     }
     

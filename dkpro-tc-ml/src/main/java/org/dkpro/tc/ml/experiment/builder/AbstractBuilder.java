@@ -82,6 +82,14 @@ public abstract class AbstractBuilder implements Constants, DeepLearningConstant
     
     public abstract ParameterSpace getParameterSpace();
     
+    protected void setParameterSpace()
+    {
+        if (parameterSpace == null) {
+            parameterSpace = getParameterSpace();
+        }
+        experiment.setParameterSpace(parameterSpace);
+    }
+
     /**
      * Creates an experimental setup with a pre-defined type
      * 
@@ -491,5 +499,22 @@ public abstract class AbstractBuilder implements Constants, DeepLearningConstant
             experiment.setExperimentName(experimentName);
         }
     }
+    
+    protected void setReports()
+    {
+        if (reports != null) {
+            for (ReportBase r : reports) {
+                experiment.addReport(r);
+            }
+        }
+    }
+
+    protected void setPreprocessing()
+    {
+        if (preprocessing != null) {
+            experiment.setPreprocessing(preprocessing);
+        }
+    }
+
     
 }

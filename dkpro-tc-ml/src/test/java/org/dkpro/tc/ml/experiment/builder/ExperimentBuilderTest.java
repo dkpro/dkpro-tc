@@ -88,6 +88,11 @@ public class ExperimentBuilderTest implements Constants, DeepLearningConstants
         assertTrue(builder.outputFolder !=null);
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidCvArgument() {
+        builder.numFolds(-2); //-1 == leave one out
+    }
+    
     @Test
     public void experimentName() {
         builder.name("ABC");

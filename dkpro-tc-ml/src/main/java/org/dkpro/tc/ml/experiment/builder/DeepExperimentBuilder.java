@@ -52,7 +52,7 @@ public class DeepExperimentBuilder
     protected List<Object> userCodePath;
     protected String pythonPath;
     protected String embeddingPath;
-    protected int maxLen;
+    protected int maximumLength;
     protected boolean vectorize = true;
 
     /**
@@ -102,7 +102,7 @@ public class DeepExperimentBuilder
         dimensions.add(getAsDimensionPythonPath());
         dimensions.add(getAsDimensionVectorizeToInteger());
         
-        if(maxLen != -1) {
+        if(maximumLength != -1) {
             dimensions.add(getAsDimensionMaximumLength());
         }
         
@@ -138,7 +138,7 @@ public class DeepExperimentBuilder
 
     private Dimension<?> getAsDimensionMaximumLength()
     {
-        return Dimension.create(DIM_MAXIMUM_LENGTH, maxLen);
+        return Dimension.create(DIM_MAXIMUM_LENGTH, maximumLength);
     }
 
     private Dimension<?> getAsDimensionEmbedding()
@@ -377,44 +377,6 @@ public class DeepExperimentBuilder
         return experiment;
     }
 
-    protected void setReports()
-    {
-        if (reports != null) {
-            for (ReportBase r : reports) {
-                experiment.addReport(r);
-            }
-        }
-    }
-
-    protected void setPreprocessing()
-    {
-        if (preprocessing != null) {
-            experiment.setPreprocessing(preprocessing);
-        }
-    }
-
-    protected void setParameterSpace()
-    {
-        if (parameterSpace == null) {
-            parameterSpace = getParameterSpace();
-        }
-        experiment.setParameterSpace(parameterSpace);
-    }
-
-    protected void setExperiment() throws Exception
-    {
-        if (experiment == null && type != null) {
-            configureExperiment(type, experimentName);
-            return;
-        }
-
-        if (experimentName != null) {
-            experiment.setExperimentName(experimentName);
-        }
-
-        throw new IllegalStateException("Please set an experiment");
-    }
-
     /**
      * Executes the experiment
      * 
@@ -486,7 +448,7 @@ public class DeepExperimentBuilder
      */
     public DeepExperimentBuilder maximumLength(int len)
     {
-        this.maxLen = len;
+        this.maximumLength = len;
         return this;
     }
 

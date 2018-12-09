@@ -383,27 +383,6 @@ public class ExperimentBuilder extends AbstractBuilder {
 		return experiment;
 	}
 
-	protected void setReports() {
-		if (reports != null) {
-			for (ReportBase r : reports) {
-				experiment.addReport(r);
-			}
-		}
-	}
-
-	protected void setPreprocessing() {
-		if (preprocessing != null) {
-			experiment.setPreprocessing(preprocessing);
-		}
-	}
-
-	protected void setParameterSpace() {
-		if (parameterSpace == null) {
-			parameterSpace = getParameterSpace();
-		}
-		experiment.setParameterSpace(parameterSpace);
-	}
-	
 	@Override
 	public void run() throws Exception {
 		super.run();
