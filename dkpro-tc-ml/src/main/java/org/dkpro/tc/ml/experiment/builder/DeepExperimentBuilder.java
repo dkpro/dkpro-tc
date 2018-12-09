@@ -50,9 +50,6 @@ public class DeepExperimentBuilder
 {
     protected List<TcDeepLearningAdapter> backends;
     protected List<Object> userCodePath;
-
-    File outputFolder;
-    
     protected String pythonPath;
     protected String embeddingPath;
     protected int maxLen;

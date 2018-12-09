@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -56,7 +55,6 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  */
 public class ExperimentLearningCurve extends Experiment_ImplBase {
 
-	protected Comparator<String> comparator;
 	protected int aNumFolds = 10;
 
 	protected InitTask initTask;

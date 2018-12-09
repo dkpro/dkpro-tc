@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -231,11 +232,16 @@ public class Dl4jSeq2SeqUserCode
 
     private int getEmbeddingsSize(File embedding) throws Exception
     {
+        String readLine = null;
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(embedding), StandardCharsets.UTF_8))) {
+            readLine = br.readLine();
+            br.close();
+        }
 
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(embedding), "utf-8"));
-        String readLine = br.readLine();
-        br.close();
-        return readLine.split(" ").length - 1;
+        if (readLine != null) {
+            return readLine.split(" ").length - 1;
+        }
+        throw new NullPointerException("Value is null");
     }
 }

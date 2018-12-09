@@ -232,7 +232,7 @@ public class VowpalWabbitLoadModelConnector
                         @Override
                         public int compare(Instance o1, Instance o2)
                         {
-                            return ((Integer) o1.getSequenceId()).compareTo(o2.getSequenceId());
+                            return Integer.compare(o1.getSequenceId(), o2.getSequenceId());
                         }
                     });
                 }
