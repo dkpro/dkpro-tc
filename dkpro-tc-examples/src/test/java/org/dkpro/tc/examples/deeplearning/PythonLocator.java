@@ -42,27 +42,11 @@ public class PythonLocator
                     continue;
                 }
                 
-                List<String> command = new ArrayList<>();
-                command.add(pathCandidate);
-                command.add("-c");
-                command.add("\"import keras\"");
 
-                ProcessBuilder pb = new ProcessBuilder(command).command(command);
-                Process start = pb.start();
-                start.waitFor();
+                boolean keras = kerasAvailable(pathCandidate);
+                boolean numpy = numpyAvailable(pathCandidate);
 
-                InputStream inputStream = start.getInputStream();
-                List<String> output = new ArrayList<>();
-                BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-                String l = null;
-                while ((l = r.readLine()) != null) {
-                    output.add(l);
-                }
-                r.close();
-
-                boolean keras = output.isEmpty();
-
-                if (keras) {
+                if (keras && numpy) {
                    System.err.println("Use Python at [" + pathCandidate + "]");
                     return pathCandidate;
                 }
@@ -74,6 +58,46 @@ public class PythonLocator
 
         return null;
 
+    }
+
+    private static boolean kerasAvailable(String pathCandidate) throws Exception
+    {
+        List<String> command = new ArrayList<>();
+        command.add(pathCandidate);
+        command.add("-c");
+        command.add("\"import keras\"");
+
+        List<String> o = startOnCmdGetOutput(command);
+        return o.isEmpty();
+    }
+    
+    private static boolean numpyAvailable(String pathCandidate) throws Exception
+    {
+        List<String> command = new ArrayList<>();
+        command.add(pathCandidate);
+        command.add("-c");
+        command.add("\"import numpy\"");
+
+        List<String> o = startOnCmdGetOutput(command);
+        return o.isEmpty();
+    }
+
+    private static List<String> startOnCmdGetOutput(List<String> command) throws Exception
+    {
+        ProcessBuilder pb = new ProcessBuilder(command).command(command);
+        Process start = pb.start();
+        start.waitFor();
+        
+        List<String> output = new ArrayList<>();
+        try (InputStream inputStream = start.getInputStream()) {
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+            String l = null;
+            while ((l = r.readLine()) != null) {
+                output.add(l);
+            }
+        }
+        
+        return output;
     }
 
 }
