@@ -26,6 +26,8 @@ import org.apache.commons.io.FileUtils;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class ResultPerCategoryCalculator
     implements Constants
 {
@@ -69,7 +71,7 @@ public class ResultPerCategoryCalculator
     public void writeResults(File fscoreFile) throws Exception
     {
         String results = getResults();
-        FileUtils.writeStringToFile(fscoreFile, results, "utf-8");
+        FileUtils.writeStringToFile(fscoreFile, results, UTF_8);
     }
     
     private String catchNan(String s)

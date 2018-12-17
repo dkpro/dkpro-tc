@@ -86,7 +86,7 @@ public class WekaOutcomeIDReport
 
         Instances predictions = _eka.getInstances(arff, isMultiLabel);
 
-        List<String> labels = getLabels(isMultiLabel, isRegression);
+        List<String> labels = getLabels(isRegression);
 
         String content;
         if (isMultiLabel) {
@@ -115,7 +115,7 @@ public class WekaOutcomeIDReport
         return new File(evaluationFolder, ID_OUTCOME_KEY);
     }
 
-    private List<String> getLabels(boolean multiLabel, boolean regression) throws IOException
+    private List<String> getLabels(boolean regression) throws IOException
     {
         if (regression) {
             return Collections.emptyList();
@@ -163,8 +163,8 @@ public class WekaOutcomeIDReport
                 goldList[classNo] = goldmatrix[i][j];
                 predList[classNo] = predictionsmatrix[i][j];
             }
-            String s = (StringUtils.join(predList, ",") + SEPARATOR_CHAR
-                    + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition);
+            String s = StringUtils.join(predList, ",") + SEPARATOR_CHAR
+                    + StringUtils.join(goldList, ",") + SEPARATOR_CHAR + bipartition;
             String stringValue = predictions.get(i).stringValue(attOffset);
             sb.append(stringValue + "=" + s+"\n");
         }

@@ -36,6 +36,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.dkpro.tc.api.features.Feature;
 import org.dkpro.tc.api.features.Instance;
@@ -54,6 +56,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class _eka
     implements Constants
 {
+    private static Log logger = LogFactory.getLog(_eka.class);
 
     protected Instances toWekaInstances(File data, boolean isMultilabel) throws Exception
     {
@@ -299,7 +302,7 @@ public class _eka
                 }
             }
             catch (NullPointerException e) {
-                // ignore unseen attributes
+                logger.debug("Unseen attribute [" + feature.getName() + "] -- silently ignored");
             }
         }
         return featureValues;

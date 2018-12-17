@@ -17,11 +17,12 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.report;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -63,8 +64,6 @@ import de.unidue.ltl.evaluation.measures.categorial.Precision;
 import de.unidue.ltl.evaluation.measures.categorial.Recall;
 import de.unidue.ltl.evaluation.measures.correlation.PearsonCorrelation;
 import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
@@ -417,7 +416,7 @@ public class LearningCurveReport
                 fos.close();
                 
                 File textFile = new File(plotFile.getParentFile(), fileName + ".txt");
-                FileUtils.writeStringToFile(textFile, sb.toString(), "utf-8");
+                FileUtils.writeStringToFile(textFile, sb.toString(), UTF_8);
             }
         }
     }

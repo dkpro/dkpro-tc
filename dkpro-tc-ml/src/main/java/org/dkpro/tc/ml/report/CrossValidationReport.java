@@ -70,7 +70,7 @@ public class CrossValidationReport
         Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
         String learningMode = determineLearningMode(store, idPool);
 
-        writeId2DiscriminatorMapping(store, learningMode, idPool);
+        writeId2DiscriminatorMapping(store, idPool);
 
         writeOverallResults(learningMode, store, idPool, FILE_COMBINED_ID_OUTCOME_KEY, false, "");
         writeResultsPerFold(learningMode, store, idPool, ID_OUTCOME_KEY, false, "");
@@ -193,8 +193,7 @@ public class CrossValidationReport
         return args + "_";
     }
 
-    private void writeId2DiscriminatorMapping(StorageService store, String learningMode,
-            Set<String> idPool)
+    private void writeId2DiscriminatorMapping(StorageService store, Set<String> idPool)
         throws Exception
     {
         StringBuilder sb = new StringBuilder();
@@ -257,7 +256,7 @@ public class CrossValidationReport
 
         String value = taskMapping.get(id);
         if (value == null) {
-            value = maxId < 100 ? (maxId < 10 ? "00" + maxId : "0" + maxId) : "" + maxId;
+            value = maxId < 100 ? (maxId < 10) ? "00" + maxId : "0" + maxId : "" + maxId;
             taskMapping.put(id, value);
             maxId++;
         }

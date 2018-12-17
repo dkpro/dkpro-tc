@@ -39,254 +39,280 @@ import org.dkpro.tc.core.task.TcTaskTypeUtil;
 import org.dkpro.tc.core.util.ReportUtils;
 import org.dkpro.tc.ml.report.util.MetricComputationUtil;
 import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Collects the final evaluation results in a train/test setting.
  */
-public class TrainTestReport extends TcAbstractReport implements Constants {
-	private final List<String> discriminatorsToExclude = Arrays
-			.asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
+public class TrainTestReport
+    extends TcAbstractReport
+    implements Constants
+{
+    private final List<String> discriminatorsToExclude = Arrays
+            .asList(new String[] { DIM_FILES_VALIDATION, DIM_FILES_TRAINING });
 
-	private Map<String, String> taskMapping = new HashMap<>();
-	private int maxId = 1;
-	
-	private static final String baselineFolder = "baselineResults";
-	private static final String SEP = "\t";
-	private static final String FILE_ENDING = ".tsv";
+    private Map<String, String> taskMapping = new HashMap<>();
+    private int maxId = 1;
 
-	public TrainTestReport() {
-		// required by groovy
-	}
+    private static final String baselineFolder = "baselineResults";
+    private static final String SEP = "\t";
+    private static final String FILE_ENDING = ".tsv";
 
-	@Override
-	public void execute() throws Exception {
-		writeDiscriminators();
+    public TrainTestReport()
+    {
+        // required by groovy
+    }
 
-		writeOverallResults(ID_OUTCOME_KEY, false, "");
-		writeOverallResults(BASELINE_MAJORITIY_ID_OUTCOME_KEY, true, "majorityBaseline");
-		writeOverallResults(BASELINE_RANDOM_ID_OUTCOME_KEY, true, "randomBaseline");
+    @Override
+    public void execute() throws Exception
+    {
+        writeDiscriminators();
 
-		writeCategoricalResults();
-	}
+        writeOverallResults(ID_OUTCOME_KEY, false, "");
+        writeOverallResults(BASELINE_MAJORITIY_ID_OUTCOME_KEY, true, "majorityBaseline");
+        writeOverallResults(BASELINE_RANDOM_ID_OUTCOME_KEY, true, "randomBaseline");
 
-	private void writeDiscriminators() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		StorageService store = getContext().getStorageService();
+        writeCategoricalResults();
+    }
 
-		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+    private void writeDiscriminators() throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        StorageService store = getContext().getStorageService();
 
-		for (String id : idPool) {
+        Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-			// Shallow TC uses always the facade task at
-			// this point Deep TC comes directly with the MLA
-			if (!TcTaskTypeUtil.isFacadeTask(store, id) && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
-				continue;
-			}
+        for (String id : idPool) {
 
-			Set<String> wrapped = new HashSet<>();
-			wrapped.add(id);
-			Set<String> subTaskId = collectTasks(wrapped);
+            // Shallow TC uses always the facade task at
+            // this point Deep TC comes directly with the MLA
+            if (!TcTaskTypeUtil.isFacadeTask(store, id)
+                    && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
+                continue;
+            }
 
-			for (String sid : subTaskId) {
+            Set<String> wrapped = new HashSet<>();
+            wrapped.add(id);
+            Set<String> subTaskId = collectTasks(wrapped);
 
-				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, sid)) {
-					continue;
-				}
+            for (String sid : subTaskId) {
 
-				Map<String, String> discriminatorsMap = getDiscriminators(store, sid);
-				discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(discriminatorsMap,
-						discriminatorsToExclude);
-				discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
+                if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, sid)) {
+                    continue;
+                }
 
-				sb.append(registerGetMapping(sid) + SEP + getContextLabel(sid));
+                Map<String, String> discriminatorsMap = getDiscriminators(store, sid);
+                discriminatorsMap = ReportUtils.clearDiscriminatorsByExcludePattern(
+                        discriminatorsMap, discriminatorsToExclude);
+                discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
-				for (Entry<String, String> es : discriminatorsMap.entrySet()) {
-					sb.append(SEP + es.getKey() + "=" + es.getValue());
-				}
-				sb.append("\n");
-			}
-		}
+                sb.append(registerGetMapping(sid) + SEP + getContextLabel(sid));
 
-		File mapping = getContext().getFile("configurationMapping.tsv", AccessMode.READWRITE);
-		FileUtils.writeStringToFile(mapping, sb.toString(), UTF_8);
-	}
-	
-	private String registerGetMapping(String id) {
+                for (Entry<String, String> es : discriminatorsMap.entrySet()) {
+                    sb.append(SEP + es.getKey() + "=" + es.getValue());
+                }
+                sb.append("\n");
+            }
+        }
 
-		String value = taskMapping.get(id);
-		if (value == null) {
-			value = maxId < 100 ? (maxId < 10 ? "00" + maxId : "0" + maxId) : "" + maxId;
-			taskMapping.put(id, value);
-			maxId++;
-		}
+        File mapping = getContext().getFile("configurationMapping.tsv", AccessMode.READWRITE);
+        FileUtils.writeStringToFile(mapping, sb.toString(), UTF_8);
+    }
 
-		return value;
-	}
+    private String registerGetMapping(String id)
+    {
 
-	private void writeCategoricalResults() throws Exception {
-		StorageService store = getContext().getStorageService();
+        String value = taskMapping.get(id);
+        if (value == null) {
+            value = maxId < 100 ? (maxId < 10 ? "00" + maxId : "0" + maxId) : "" + maxId;
+            taskMapping.put(id, value);
+            maxId++;
+        }
 
-		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
-		String learningMode = getDiscriminator(store, idPool, DIM_LEARNING_MODE);
+        return value;
+    }
 
-		if (!isSingleLabelMode(learningMode)) {
-			return;
-		}
+    private void writeCategoricalResults() throws Exception
+    {
+        StorageService store = getContext().getStorageService();
 
-		for (String id : idPool) {
+        Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+        String learningMode = getDiscriminator(store, idPool, DIM_LEARNING_MODE);
 
-			if (!TcTaskTypeUtil.isFacadeTask(store, id) // Shallow TC uses always the facade task at this point
-					&& !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) // Deep TC comes direclty with MLA //
-																				// directly with the
-			{
-				continue;
-			}
+        if (!isSingleLabelMode(learningMode)) {
+            return;
+        }
 
-			Set<String> wrapped = new HashSet<>();
-			wrapped.add(id);
-			Set<String> subTaskId = collectTasks(wrapped);
+        for (String id : idPool) {
 
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%20s\t%5s\t%10s%10s%10s%n", "Category", "Freq", "Precision",
-					"Recall", "F1"));
+            if (!TcTaskTypeUtil.isFacadeTask(store, id) // Shallow TC uses always the facade task at
+                                                        // this point
+                    && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) // Deep TC comes
+                                                                                // direclty with MLA
+                                                                                // //
+                                                                                // directly with the
+            {
+                continue;
+            }
 
-			for (String sid : subTaskId) {
+            Set<String> wrapped = new HashSet<>();
+            wrapped.add(id);
+            Set<String> subTaskId = collectTasks(wrapped);
 
-				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, sid)) {
-					continue;
-				}
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%20s\t%5s\t%10s%10s%10s%n", "Category", "Freq", "Precision",
+                    "Recall", "F1"));
 
-				// The classification result is always there
-				File id2outcome = store.locateKey(sid, ID_OUTCOME_KEY);
+            for (String sid : subTaskId) {
 
-				List<String[]> computeFScores = MetricComputationUtil.computePerCategoryResults(id2outcome,
-						learningMode);
+                if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, sid)) {
+                    continue;
+                }
 
-				for (String[] v : computeFScores) {
+                // The classification result is always there
+                File id2outcome = store.locateKey(sid, ID_OUTCOME_KEY);
 
-					String category = v[0];
-					Long freq = Long.valueOf(v[1]);
-					String precision = catchNan(v[2]);
-					String recall = catchNan(v[3]);
-					String fscore = catchNan(v[4]);
+                List<String[]> computeFScores = MetricComputationUtil
+                        .computePerCategoryResults(id2outcome, learningMode);
 
-					sb.append(String.format("%20s\t%5d\t%10s%10s%10s%n", category, freq, precision, recall, fscore));
-				}
-				
-				File file = getContext().getFile(getMLSetup(sid) + FILE_SCORE_PER_CATEGORY + "_" + registerGetMapping(sid)+ FILE_ENDING, AccessMode.READWRITE);
-				FileUtils.writeStringToFile(file, sb.toString(), "utf-8");
-				
-				file = getContext().getFile(getMLSetup(sid) + FILE_CONFUSION_MATRIX + "_" + registerGetMapping(sid)+ FILE_ENDING, AccessMode.READWRITE);
-				MetricComputationUtil.writeConfusionMatrix(id2outcome, file);
-			}
-		}
+                for (String[] v : computeFScores) {
 
-	}
-	
-	private String getMLSetup(String id) throws Exception {
+                    String category = v[0];
+                    Long freq = Long.valueOf(v[1]);
+                    String precision = catchNan(v[2]);
+                    String recall = catchNan(v[3]);
+                    String fscore = catchNan(v[4]);
 
-		Map<String, String> discriminatorsMap = getDiscriminatorsForContext(getContext().getStorageService(), id, Task.DISCRIMINATORS_KEY);
-		discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
+                    sb.append(String.format("%20s\t%5d\t%10s%10s%10s%n", category, freq, precision,
+                            recall, fscore));
+                }
 
-		String args = discriminatorsMap.get(Constants.DIM_CLASSIFICATION_ARGS);
+                File file = getContext().getFile(getMLSetup(sid) + FILE_SCORE_PER_CATEGORY + "_"
+                        + registerGetMapping(sid) + FILE_ENDING, AccessMode.READWRITE);
+                FileUtils.writeStringToFile(file, sb.toString(), UTF_8);
 
-		if (args == null || args.isEmpty()) {
-			return "";
-		}
+                file = getContext().getFile(getMLSetup(sid) + FILE_CONFUSION_MATRIX + "_"
+                        + registerGetMapping(sid) + FILE_ENDING, AccessMode.READWRITE);
+                MetricComputationUtil.writeConfusionMatrix(id2outcome, file);
+            }
+        }
 
-		args = args.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "_");
+    }
 
-		return args + "_";
-	}
-	
-	private static Map<String, String> getDiscriminatorsForContext(StorageService store, String contextId,
-			String discriminatorsKey) {
-		return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
-	}
+    private String getMLSetup(String id) throws Exception
+    {
 
+        Map<String, String> discriminatorsMap = getDiscriminatorsForContext(
+                getContext().getStorageService(), id, Task.DISCRIMINATORS_KEY);
+        discriminatorsMap = ReportUtils.removeKeyRedundancy(discriminatorsMap);
 
-	private String catchNan(String v) {
+        String args = discriminatorsMap.get(Constants.DIM_CLASSIFICATION_ARGS);
 
-		if (v.equals("NaN")) {
-			return String.format(Locale.getDefault(), "%f", 0.0);
-		}
+        if (args == null || args.isEmpty()) {
+            return "";
+        }
 
-		return v;
-	}
+        args = args.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "_");
 
-	private boolean isSingleLabelMode(String learningMode) {
-		return learningMode.equals(Constants.LM_SINGLE_LABEL);
-	}
+        return args + "_";
+    }
 
-	private void writeOverallResults(String idOutcomeKey, boolean isBaseline, String prefix) throws Exception {
+    private static Map<String, String> getDiscriminatorsForContext(StorageService store,
+            String contextId, String discriminatorsKey)
+    {
+        return store.retrieveBinary(contextId, discriminatorsKey, new PropertiesAdapter()).getMap();
+    }
 
-		StringBuilder sb = new StringBuilder();
-		StorageService store = getContext().getStorageService();
+    private String catchNan(String v)
+    {
 
-		Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
+        if (v.equals("NaN")) {
+            return String.format(Locale.getDefault(), "%f", 0.0);
+        }
 
-		boolean writeHeader = true;
+        return v;
+    }
 
-		for (String id : idPool) {
+    private boolean isSingleLabelMode(String learningMode)
+    {
+        return learningMode.equals(Constants.LM_SINGLE_LABEL);
+    }
 
-			// Shallow TC uses always the facade task at
-			// this point Deep TC comes directly with the MLA
-			if (!TcTaskTypeUtil.isFacadeTask(store, id) && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
-				continue;
-			}
+    private void writeOverallResults(String idOutcomeKey, boolean isBaseline, String prefix)
+        throws Exception
+    {
 
-			Set<String> wrapped = new HashSet<>();
-			wrapped.add(id);
-			Set<String> subTaskId = collectTasks(wrapped);
+        StringBuilder sb = new StringBuilder();
+        StorageService store = getContext().getStorageService();
 
-			for (String subId : subTaskId) {
+        Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
 
-				if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
-					continue;
-				}
+        boolean writeHeader = true;
 
-				// add the results into the discriminator map
-				File id2o = store.locateKey(subId, idOutcomeKey);
-				
-				if(!id2o.exists()) {
-					return;
-				}
-				
-				String mode = getDiscriminator(store, subId, DIM_LEARNING_MODE);
+        for (String id : idPool) {
 
-				Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
-				List<String> mapKeys = new ArrayList<>(resultMap.keySet());
-				Collections.sort(mapKeys);
+            // Shallow TC uses always the facade task at
+            // this point Deep TC comes directly with the MLA
+            if (!TcTaskTypeUtil.isFacadeTask(store, id)
+                    && !TcTaskTypeUtil.isMachineLearningAdapterTask(store, id)) {
+                continue;
+            }
 
-				if (writeHeader) {
-					sb.append("ID" + SEP + "TaskLabel");
-					mapKeys.forEach(x -> sb.append(SEP + x));
-					sb.append("\n");
-					writeHeader = false;
-				}
+            Set<String> wrapped = new HashSet<>();
+            wrapped.add(id);
+            Set<String> subTaskId = collectTasks(wrapped);
 
-				sb.append(registerGetMapping(subId) + SEP + getContextLabel(subId));
+            for (String subId : subTaskId) {
 
-				for (String k : mapKeys) {
-					sb.append(SEP + resultMap.get(k));
-				}
-				sb.append("\n");
+                if (!TcTaskTypeUtil.isMachineLearningAdapterTask(store, subId)) {
+                    continue;
+                }
 
-			}
-		}
+                // add the results into the discriminator map
+                File id2o = store.locateKey(subId, idOutcomeKey);
 
-		File targetFile = null;
-		if (isBaseline) {
-			File folder = getContext().getFolder(baselineFolder, AccessMode.READWRITE);
-			targetFile = new File(folder, prefix + EVAL_FILE_NAME + FILE_ENDING);
-		} else {
-			targetFile = getContext().getFile(prefix + EVAL_FILE_NAME + FILE_ENDING, AccessMode.READWRITE);
-		}
+                if (!id2o.exists()) {
+                    return;
+                }
 
-		FileUtils.writeStringToFile(targetFile, sb.toString(), UTF_8);
+                String mode = getDiscriminator(store, subId, DIM_LEARNING_MODE);
 
-	}
+                Map<String, String> resultMap = MetricComputationUtil.getResults(id2o, mode);
+                List<String> mapKeys = new ArrayList<>(resultMap.keySet());
+                Collections.sort(mapKeys);
 
-	private Map<String, String> getDiscriminators(StorageService store, String id) {
-		return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
-	}
+                if (writeHeader) {
+                    sb.append("ID" + SEP + "TaskLabel");
+                    mapKeys.forEach(x -> sb.append(SEP + x));
+                    sb.append("\n");
+                    writeHeader = false;
+                }
+
+                sb.append(registerGetMapping(subId) + SEP + getContextLabel(subId));
+
+                for (String k : mapKeys) {
+                    sb.append(SEP + resultMap.get(k));
+                }
+                sb.append("\n");
+
+            }
+        }
+
+        File targetFile = null;
+        if (isBaseline) {
+            File folder = getContext().getFolder(baselineFolder, AccessMode.READWRITE);
+            targetFile = new File(folder, prefix + EVAL_FILE_NAME + FILE_ENDING);
+        }
+        else {
+            targetFile = getContext().getFile(prefix + EVAL_FILE_NAME + FILE_ENDING,
+                    AccessMode.READWRITE);
+        }
+
+        FileUtils.writeStringToFile(targetFile, sb.toString(), UTF_8);
+
+    }
+
+    private Map<String, String> getDiscriminators(StorageService store, String id)
+    {
+        return store.retrieveBinary(id, Task.DISCRIMINATORS_KEY, new PropertiesAdapter()).getMap();
+    }
 }

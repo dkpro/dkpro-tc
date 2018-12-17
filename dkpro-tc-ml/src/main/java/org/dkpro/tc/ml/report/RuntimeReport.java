@@ -32,6 +32,7 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.task.TcTaskTypeUtil;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Collects the final runtime results in a train/test setting.
@@ -81,7 +82,7 @@ public class RuntimeReport
 
         String output = buildOutput(keyOrdered);
         File runtime = getContext().getFile(RUNTIME_KEY, AccessMode.READWRITE);
-        FileUtils.writeStringToFile(runtime, output, "utf-8");
+        FileUtils.writeStringToFile(runtime, output, UTF_8);
     }
 
     private Set<String> readInnerTasksIfCrossValidation(Set<String> taskIds) throws Exception

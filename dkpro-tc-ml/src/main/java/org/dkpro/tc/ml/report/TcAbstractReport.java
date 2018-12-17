@@ -34,6 +34,8 @@ import org.dkpro.lab.task.Task;
 import org.dkpro.lab.task.TaskContextMetadata;
 import org.dkpro.tc.core.Constants;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public abstract class TcAbstractReport
     extends BatchReportBase
     implements Constants
@@ -88,7 +90,7 @@ public abstract class TcAbstractReport
 
     private Set<String> readSubTasks(File attributesTXT) throws Exception
     {
-        List<String> readLines = FileUtils.readLines(attributesTXT, "utf-8");
+        List<String> readLines = FileUtils.readLines(attributesTXT, UTF_8);
 
         int idx = 0;
         boolean found = false;
