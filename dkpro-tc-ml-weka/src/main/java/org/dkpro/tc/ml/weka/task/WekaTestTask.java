@@ -40,7 +40,6 @@ import org.dkpro.tc.ml.weka.core._eka;
 import org.dkpro.tc.ml.weka.util.MultilabelResult;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.core.MLUtils;
 import meka.core.Result;
 import meka.core.ThresholdUtils;
 import weka.classifiers.Classifier;
@@ -293,8 +292,8 @@ public class WekaTestTask
         }
         else if (threshold.equals("PCutL")) {
             // one threshold for each label (PCutL in Meka)
-            t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
-            throw new Exception("Not yet implemented.");
+//            t = ThresholdUtils.calibrateThresholds(r.predictions, MLUtils.labelCardinalities(data));
+            throw new UnsupportedOperationException("Not yet implemented.");
         }
         else {
             // manual threshold

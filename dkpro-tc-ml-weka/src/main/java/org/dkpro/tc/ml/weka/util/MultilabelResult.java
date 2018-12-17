@@ -99,15 +99,6 @@ public class MultilabelResult
      * bipartition threshold
      */
     double bipartitionThreshold;
-    /**
-     * instanceIds
-     */
-    String[] instanceIds;
-
-    public String[] getInstanceIds()
-    {
-        return instanceIds.clone();
-    }
 
     /**
      * Calculates a bipartition from the predictions (which are usually rankings)

@@ -205,10 +205,6 @@ public class ExperimentCrossValidation
                     File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
                             numFolds, numAvailableJCas, FM_SEQUENCE.equals(featureMode));
 
-                    if (outputFolder == null) {
-                        throw new NullPointerException("Output folder is null");
-                    }
-
                     verfiyThatNeededNumberOfCasWasCreated(outputFolder);
 
                     return outputFolder;
@@ -221,6 +217,10 @@ public class ExperimentCrossValidation
             private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
             {
                 int numCas = 0;
+                
+                if (outputFolder == null) {
+                    throw new NullPointerException("Output folder is null");
+                }
 
                 File[] listFiles = outputFolder.listFiles();
                 if (listFiles == null) {

@@ -22,9 +22,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -83,7 +80,7 @@ public class LearningCurveReport
         Set<String> idPool = getTaskIdsFromMetaData(getSubtasks());
         String learningMode = determineLearningMode(store, idPool);
 
-        Map<RunIdentifier, Map<Integer, List<File>>> dataMap = writeOverallResults(learningMode,
+        Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap = writeOverallResults(learningMode,
                 store, idPool);
 
         if (isSingleLabelMode(learningMode)) {
@@ -93,12 +90,12 @@ public class LearningCurveReport
     }
 
     @SuppressWarnings("rawtypes")
-    private Map<RunIdentifier, Map<Integer, List<File>>> writeOverallResults(String learningMode,
+    private Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> writeOverallResults(String learningMode,
             StorageService store, Set<String> idPool)
         throws Exception
     {
 
-        Map<RunIdentifier, Map<Integer, List<File>>> dataMap = new HashMap<>();
+        Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap = new HashMap<>();
 
         Set<String> collectSubtasks = null;
         for (String id : idPool) {
@@ -108,12 +105,12 @@ public class LearningCurveReport
             }
             collectSubtasks = collectSubtasks(id);
 
-            Map<RunIdentifier, Map<Integer, List<File>>> run = collectRuns(store, collectSubtasks);
+            Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> run = collectRuns(store, collectSubtasks);
             dataMap.putAll(run);
         }
 
         if (learningMode.equals(LM_SINGLE_LABEL)) {
-            for (Entry<RunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
+            for (Entry<LearningCurveRunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
                 List<Double> stageAveraged = averagePerStage(e.getValue(), Accuracy.class, true);
                 writePlot(e.getKey().md5, stageAveraged, maxNumberFolds,
                         Accuracy.class.getSimpleName());
@@ -126,7 +123,7 @@ public class LearningCurveReport
             regMetrics.add(SpearmanCorrelation.class);
             for (Class<? extends EvaluationMeasure> m : regMetrics) {
 
-                for (Entry<RunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
+                for (Entry<LearningCurveRunIdentifier,Map<Integer, List<File>>> e : dataMap.entrySet()) {
                     List<Double> stageAveraged = averagePerStage(e.getValue(), m, false);
                     writePlot(e.getKey().md5, stageAveraged, maxNumberFolds, m.getSimpleName());
                 }
@@ -134,7 +131,7 @@ public class LearningCurveReport
         }
 
         StringBuilder sb = new StringBuilder();
-        for (RunIdentifier configId : dataMap.keySet()) {
+        for (LearningCurveRunIdentifier configId : dataMap.keySet()) {
             sb.append(configId.md5 + "\t" + configId.configAsString + "\n");
         }
 
@@ -174,11 +171,11 @@ public class LearningCurveReport
         return stageAveraged;
     }
 
-    private Map<RunIdentifier, Map<Integer, List<File>>> collectRuns(StorageService store,
+    private Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> collectRuns(StorageService store,
             Set<String> collectSubtasks)
         throws Exception
     {
-        Map<RunIdentifier, Map<Integer, List<File>>> dataMap = new HashMap<>();
+        Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap = new HashMap<>();
         List<String> sortedTasks = new ArrayList<>(collectSubtasks);
         Collections.sort(sortedTasks);
         for (String sId : sortedTasks) {
@@ -191,7 +188,7 @@ public class LearningCurveReport
                 maxNumberFolds = numberOfTrainFolds;
             }
 
-            RunIdentifier configurationId = generateId(store, sId);
+            LearningCurveRunIdentifier configurationId = generateId(store, sId);
             Map<Integer, List<File>> idRun = dataMap.get(configurationId);
 
             if (idRun == null) {
@@ -210,7 +207,7 @@ public class LearningCurveReport
         return dataMap;
     }
 
-    private RunIdentifier generateId(StorageService store, String sId) throws Exception
+    private LearningCurveRunIdentifier generateId(StorageService store, String sId) throws Exception
     {
         Properties p = new Properties();
         File locateKey = store.locateKey(sId, TaskBase.DISCRIMINATORS_KEY);
@@ -240,7 +237,7 @@ public class LearningCurveReport
         m = ReportUtils.replaceKeyWithConstant(m, DIM_FILES_TRAINING, "<REMOVED>");
         m = ReportUtils.replaceKeyWithConstant(m, DIM_FILES_VALIDATION, "<REMOVED>");
         
-        return new RunIdentifier(m);
+        return new LearningCurveRunIdentifier(m);
     }
 
     private int getNumberOfTrainingFolds(StorageService store, String sId) throws Exception
@@ -335,11 +332,11 @@ public class LearningCurveReport
     }
 
     private void writeCategoricalResults(StorageService store,
-            Map<RunIdentifier, Map<Integer, List<File>>> dataMap)
+            Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap)
         throws Exception
     {
         
-        for(Entry<RunIdentifier, Map<Integer, List<File>>> e : dataMap.entrySet()) {
+        for(Entry<LearningCurveRunIdentifier, Map<Integer, List<File>>> e : dataMap.entrySet()) {
             List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(e.getValue());
             writeCategoricalPlots(e.getKey().md5, stageAvg, maxNumberFolds);
         }
@@ -549,52 +546,6 @@ public class LearningCurveReport
             }
         }
         return learningMode;
-    }
-
-    class RunIdentifier
-    {
-        String md5;
-		Map<String, String> configMap;
-		String configAsString;
-
-        public RunIdentifier(Map<String,String> configMap)
-            throws NoSuchAlgorithmException
-        {
-        	this.configMap = configMap;
-        	StringBuilder sb = new StringBuilder();
-        	configMap.forEach((x,y)-> sb.append(x+"=" + y+", "));
-        	configAsString = sb.toString();
-
-        	MessageDigest md = MessageDigest.getInstance("MD5");
-        	byte[] digest = md.digest((configAsString).getBytes(UTF_8));
-            BigInteger bigInt = new BigInteger(1, digest);
-            String md5 = bigInt.toString(16);
-            this.md5 = md5;
-        }
-        
-
-        @Override
-        public int hashCode()
-        {
-            int result = 17;
-            result = 31 * result + md5.hashCode();
-            return result;
-        }
-
-        public boolean equals(Object other)
-        {
-            if (other == null)
-                return false;
-            if (other == this)
-                return true;
-            if (!(other instanceof RunIdentifier))
-                return false;
-            RunIdentifier otherMyClass = (RunIdentifier) other;
-            if (otherMyClass.md5.equals(md5)) {
-                return true;
-            }
-            return false;
-        }
     }
 
     class CategoricalPerformance
