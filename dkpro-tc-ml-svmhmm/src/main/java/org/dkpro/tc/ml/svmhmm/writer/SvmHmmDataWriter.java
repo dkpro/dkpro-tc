@@ -25,8 +25,8 @@ public class SvmHmmDataWriter
     extends LibsvmDataFormatWriter
 {
 
-    int currSeqId = 0;
-    int lastId = -1;
+    protected int currSeqId = 0;
+    protected int lastId = -1;
 
     @Override
     protected String injectSequenceId(Instance instance)

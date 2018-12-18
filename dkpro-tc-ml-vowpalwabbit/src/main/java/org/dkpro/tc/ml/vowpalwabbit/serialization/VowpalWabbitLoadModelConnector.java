@@ -61,19 +61,19 @@ public class VowpalWabbitLoadModelConnector
 {
 
     @ConfigurationParameter(name = PreTrainedModelProviderAbstract.PARAM_TC_MODEL_LOCATION, mandatory = true)
-    private File tcModelLocation;
+    protected File tcModelLocation;
 
     @ExternalResource(key = PARAM_FEATURE_EXTRACTORS, mandatory = true)
     protected FeatureExtractorResource_ImplBase[] featureExtractors;
 
-    private File model = null;
-    private String featureMode;
+    protected File model = null;
+    protected String featureMode;
     protected Map<String, String> integer2OutcomeMapping;
     protected Map<String, String> stringValue2IntegerMapping;
 
     Integer maxStringId = -1;
 
-    private String learningMode;
+    protected String learningMode;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
@@ -100,7 +100,7 @@ public class VowpalWabbitLoadModelConnector
 
     }
 
-    private void determineTheMaxStringsIntIdValue()
+    protected void determineTheMaxStringsIntIdValue()
     {
         OptionalInt max = stringValue2IntegerMapping.keySet().stream().mapToInt(Integer::parseInt)
                 .max();
@@ -109,7 +109,7 @@ public class VowpalWabbitLoadModelConnector
         }
     }
 
-    private String loadProperty(File file, String key) throws IOException
+    protected String loadProperty(File file, String key) throws IOException
     {
         String value = null;
         try (FileInputStream fis = new FileInputStream(file)) {
@@ -125,7 +125,7 @@ public class VowpalWabbitLoadModelConnector
         return value;
     }
 
-    private Map<String, String> loadMapping(File tcModelLocation, String key) throws IOException
+    protected Map<String, String> loadMapping(File tcModelLocation, String key) throws IOException
     {
         if (isRegression()) {
             return new HashMap<>();
@@ -140,7 +140,7 @@ public class VowpalWabbitLoadModelConnector
         return map;
     }
 
-    private boolean isRegression()
+    protected boolean isRegression()
     {
         return learningMode.equals(Constants.LM_REGRESSION);
     }
@@ -176,7 +176,7 @@ public class VowpalWabbitLoadModelConnector
 
     }
 
-    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas aJCas)
+    protected List<TextClassificationOutcome> getOutcomeAnnotations(JCas aJCas)
     {
         return new ArrayList<TextClassificationOutcome>(
                 JCasUtil.select(aJCas, TextClassificationOutcome.class));
@@ -210,7 +210,7 @@ public class VowpalWabbitLoadModelConnector
         return predict;
     }
 
-    private File createInputFile(JCas aJCas, boolean isSequenceMod)
+    protected File createInputFile(JCas aJCas, boolean isSequenceMod)
         throws AnalysisEngineProcessException
     {
         File tempFile = null;
@@ -262,7 +262,7 @@ public class VowpalWabbitLoadModelConnector
         return tempFile;
     }
 
-    private String mapStringValues(FeatureType featureType, String value)
+    protected String mapStringValues(FeatureType featureType, String value)
     {
         if (featureType == FeatureType.STRING || featureType == FeatureType.NOMINAL) {
             String string = stringValue2IntegerMapping.get(value);
@@ -275,7 +275,7 @@ public class VowpalWabbitLoadModelConnector
         return value;
     }
 
-    private boolean isSequence()
+    protected boolean isSequence()
     {
         return featureMode.equals(FM_SEQUENCE);
     }

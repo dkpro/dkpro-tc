@@ -44,9 +44,9 @@ public class VowpalWabbitSerializeModelConnector
 {
 
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArguments;
+    protected List<Object> classificationArguments;
 
-    boolean trainModel = true;
+    protected boolean trainModel = true;
 
     @Override
     public void execute(TaskContext aContext) throws Exception
@@ -70,14 +70,14 @@ public class VowpalWabbitSerializeModelConnector
         copyMapping(aContext, outputFolder, VowpalWabbitDataWriter.OUTCOME_MAPPING);
     }
 
-    private void copyMapping(TaskContext aContext, File outputFolder, String key) throws IOException
+    protected void copyMapping(TaskContext aContext, File outputFolder, String key) throws IOException
     {
         File folder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA, AccessMode.READONLY);
         File file = new File(folder, key);
         FileUtils.copyFile(file, new File(outputFolder, file.getName()));
     }
 
-    private void copyAlreadyTrainedModel(TaskContext aContext) throws Exception
+    protected void copyAlreadyTrainedModel(TaskContext aContext) throws Exception
     {
         File file = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
 
@@ -88,7 +88,7 @@ public class VowpalWabbitSerializeModelConnector
         }
     }
 
-    private void trainAndStoreModel(TaskContext aContext) throws Exception
+    protected void trainAndStoreModel(TaskContext aContext) throws Exception
     {
         File model = new File(outputFolder, MODEL_CLASSIFIER);
 
@@ -105,7 +105,7 @@ public class VowpalWabbitSerializeModelConnector
         trainer.train(train, model, parameters);
     }
 
-    private List<String> getParameters(List<Object> subList)
+    protected List<String> getParameters(List<Object> subList)
     {
         List<String> s = new ArrayList<>();
 

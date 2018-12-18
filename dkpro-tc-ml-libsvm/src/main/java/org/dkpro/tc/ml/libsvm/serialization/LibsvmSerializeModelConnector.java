@@ -42,7 +42,7 @@ public class LibsvmSerializeModelConnector extends LibsvmDataFormatSerializeMode
 		writeModelAdapterInformation(outputFolder, LibsvmAdapter.class.getName());
 	}
 
-	private String[] buildParameters(File fileTrain, File model) {
+	protected String[] buildParameters(File fileTrain, File model) {
 		List<String> parameters = new ArrayList<>();
 		if (classificationArguments != null) {
 			for (int i = 1; i < classificationArguments.size(); i++) {

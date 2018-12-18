@@ -17,8 +17,9 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.liblinear;
 
-import java.io.BufferedReader;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +29,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -36,7 +36,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatTestTask;
 import org.dkpro.tc.ml.liblinear.core.LiblinearPredictor;
 import org.dkpro.tc.ml.liblinear.core.LiblinearTrainer;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -112,11 +111,8 @@ public class LiblinearTestTask
             boolean writeHeader)
         throws Exception
     {
-        BufferedWriter writer = null;
-
-        try {
-            writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(predictionsFile), UTF_8));
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(predictionsFile), UTF_8))) {
             if (writeHeader) {
                 writer.append("#PREDICTION;GOLD" + "\n");
             }
@@ -125,10 +121,6 @@ public class LiblinearTestTask
                 writer.write(s);
                 writer.write("\n");
             }
-
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
         }
     }
 

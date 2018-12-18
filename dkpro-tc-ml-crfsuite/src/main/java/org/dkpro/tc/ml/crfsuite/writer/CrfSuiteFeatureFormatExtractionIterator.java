@@ -30,9 +30,9 @@ import org.dkpro.tc.api.features.Instance;
 public class CrfSuiteFeatureFormatExtractionIterator
     implements Iterator<StringBuilder>
 {
-    static final String idInitVal = "ü+Ü**'?=?=)(ÖÄ:";
-    int insIdx;
-    private List<Instance> instances;
+    protected static final String idInitVal = "ü+Ü**'?=?=)(ÖÄ:";
+    protected int insIdx;
+    protected List<Instance> instances;
 
     public CrfSuiteFeatureFormatExtractionIterator(List<Instance> instances)
     {

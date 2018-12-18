@@ -69,9 +69,9 @@ public class SvmhmmLoadModelConnector
         return prediction;
     }
 
-    int currSeqId = 0;
-    int lastId = -1;
-    static final String TAB = "\t";
+    protected int currSeqId = 0;
+    protected int lastId = -1;
+    protected static final String TAB = "\t";
 
     @Override
     protected String injectSequenceId(Instance instance)

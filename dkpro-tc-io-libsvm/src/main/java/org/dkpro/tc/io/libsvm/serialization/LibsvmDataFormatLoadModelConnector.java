@@ -85,7 +85,8 @@ public abstract class LibsvmDataFormatLoadModelConnector
 
     }
 
-    private Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation) throws IOException
+    protected Map<String, Integer> loadFeature2IntegerMapping(File tcModelLocation)
+        throws IOException
     {
         Map<String, Integer> map = new HashMap<>();
         List<String> readLines = FileUtils.readLines(
@@ -97,7 +98,8 @@ public abstract class LibsvmDataFormatLoadModelConnector
         return map;
     }
 
-    private Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation) throws IOException
+    protected Map<String, String> loadInteger2OutcomeMapping(File tcModelLocation)
+        throws IOException
     {
         if (isRegression()) {
             return new HashMap<>();
@@ -113,7 +115,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
         return map;
     }
 
-    private boolean isRegression()
+    protected boolean isRegression()
     {
         return learningMode.equals(Constants.LM_REGRESSION);
     }
@@ -153,12 +155,12 @@ public abstract class LibsvmDataFormatLoadModelConnector
 
     }
 
-    private List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
+    protected List<TextClassificationOutcome> getOutcomeAnnotations(JCas jcas)
     {
         return new ArrayList<>(JCasUtil.select(jcas, TextClassificationOutcome.class));
     }
 
-    private void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
+    protected void checkErrorConditionNumberOfOutcomesEqualsNumberOfPredictions(
             List<TextClassificationOutcome> outcomes, List<String> readLines)
     {
         if (outcomes.size() != readLines.size()) {
@@ -169,32 +171,33 @@ public abstract class LibsvmDataFormatLoadModelConnector
 
     protected abstract File runPrediction(File tempFile) throws Exception;
 
-    private File createInputFile(JCas jcas) throws Exception
+    protected File createInputFile(JCas jcas) throws Exception
     {
         File tempFile = FileUtil.createTempFile("libsvm", ".txt");
         tempFile.deleteOnExit();
 
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(tempFile), UTF_8));
+        try (BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(tempFile), UTF_8))) {
 
-        InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors, true);
-        List<Instance> instances = extractor.getInstances(jcas, true);
+            InstanceExtractor extractor = new InstanceExtractor(featureMode, featureExtractors,
+                    true);
+            List<Instance> instances = extractor.getInstances(jcas, true);
 
-        for (Instance instance : instances) {
-            bw.write(OUTCOME_PLACEHOLDER);
+            for (Instance instance : instances) {
+                bw.write(OUTCOME_PLACEHOLDER);
 
-            bw.write(injectSequenceId(instance));
+                bw.write(injectSequenceId(instance));
 
-            for (Feature f : instance.getFeatures()) {
-                if (!sanityCheckValue(f)) {
-                    continue;
+                for (Feature f : instance.getFeatures()) {
+                    if (!sanityCheckValue(f)) {
+                        continue;
+                    }
+                    bw.write("\t");
+                    bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
                 }
-                bw.write("\t");
-                bw.write(featureMapping.get(f.getName()) + ":" + f.getValue());
+                bw.write("\n");
             }
-            bw.write("\n");
         }
-        bw.close();
 
         return tempFile;
     }
@@ -207,7 +210,7 @@ public abstract class LibsvmDataFormatLoadModelConnector
         return "";
     }
 
-    private boolean sanityCheckValue(Feature f)
+    protected boolean sanityCheckValue(Feature f)
     {
         if (f.getValue() instanceof Number) {
             return true;

@@ -33,8 +33,7 @@ import de.bwaldvogel.liblinear.Model;
 public class LiblinearLoadModelConnector
     extends LibsvmDataFormatLoadModelConnector
 {
-
-    private Model liblinearModel;
+    protected Model liblinearModel;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException

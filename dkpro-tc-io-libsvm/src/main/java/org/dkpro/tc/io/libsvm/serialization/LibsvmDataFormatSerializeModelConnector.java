@@ -46,7 +46,7 @@ public abstract class LibsvmDataFormatSerializeModelConnector
         writeModelConfiguration(aContext);
     }
 
-    private void trainAndStoreModel(TaskContext aContext) throws Exception
+    protected void trainAndStoreModel(TaskContext aContext) throws Exception
     {
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
@@ -64,7 +64,7 @@ public abstract class LibsvmDataFormatSerializeModelConnector
 
     protected abstract void trainModel(TaskContext aContext, File fileTrain) throws Exception;
 
-    private void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException
+    protected void copyOutcomeMappingToThisFolder(TaskContext aContext) throws IOException
     {
 
         if (isRegression()) {
@@ -78,12 +78,12 @@ public abstract class LibsvmDataFormatSerializeModelConnector
         FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
     }
 
-    private boolean isRegression()
+    protected boolean isRegression()
     {
         return learningMode.equals(Constants.LM_REGRESSION);
     }
 
-    private void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException
+    protected void copyFeatureNameMappingToThisFolder(TaskContext aContext) throws IOException
     {
         File trainDataFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);
@@ -92,7 +92,7 @@ public abstract class LibsvmDataFormatSerializeModelConnector
         FileUtils.copyFile(new File(trainDataFolder, mapping), new File(outputFolder, mapping));
     }
 
-    private File getTrainFile(TaskContext aContext)
+    protected File getTrainFile(TaskContext aContext)
     {
         File trainFolder = aContext.getFolder(TEST_TASK_INPUT_KEY_TRAINING_DATA,
                 AccessMode.READONLY);

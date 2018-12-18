@@ -35,21 +35,26 @@ import org.dkpro.tc.ml.libsvm.api._Prediction;
 import libsvm.svm;
 import libsvm.svm_model;
 
-public class LibsvmLoadModelConnector extends LibsvmDataFormatLoadModelConnector {
+public class LibsvmLoadModelConnector
+    extends LibsvmDataFormatLoadModelConnector
+{
 
-	private svm_model model;
+    private svm_model model;
 
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		
-		try {
-			model = svm.svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
+    @Override
+    public void initialize(UimaContext context) throws ResourceInitializationException
+    {
+        super.initialize(context);
 
-	}
+        try {
+            model = svm
+                    .svm_load_model(new File(tcModelLocation, MODEL_CLASSIFIER).getAbsolutePath());
+        }
+        catch (Exception e) {
+            throw new ResourceInitializationException(e);
+        }
+
+    }
 
     @Override
     protected File runPrediction(File tempFile) throws Exception
