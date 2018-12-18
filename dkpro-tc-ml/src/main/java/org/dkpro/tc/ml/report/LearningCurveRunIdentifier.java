@@ -27,13 +27,11 @@ import java.util.Map;
 class LearningCurveRunIdentifier
 {
     String md5;
-    Map<String, String> configMap;
     String configAsString;
 
     public LearningCurveRunIdentifier(Map<String,String> configMap)
         throws NoSuchAlgorithmException
     {
-        this.configMap = configMap;
         StringBuilder sb = new StringBuilder();
         configMap.forEach((x,y)-> sb.append(x+"=" + y+", "));
         configAsString = sb.toString();
@@ -54,6 +52,7 @@ class LearningCurveRunIdentifier
         return result;
     }
 
+    @Override
     public boolean equals(Object other)
     {
         if (other == null)

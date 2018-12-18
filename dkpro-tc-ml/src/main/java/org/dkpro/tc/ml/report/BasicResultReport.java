@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.storage.StorageService;
 import org.dkpro.lab.storage.impl.PropertiesAdapter;
@@ -41,8 +40,6 @@ public class BasicResultReport
     extends TcAbstractReport
     implements Constants
 {
-    public static boolean printResultsToSysout = true;
-
     private static String OUTPUT_FILE = "results.txt";
     
     public BasicResultReport()
@@ -87,13 +84,8 @@ public class BasicResultReport
     {
         StorageService store = getContext().getStorageService();
         File key = store.locateKey(getContext().getId(), OUTPUT_FILE);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(key);
+        try(FileOutputStream fos = new FileOutputStream(key)){
             pa.store(fos, "Results");
-        }
-        finally {
-            IOUtils.closeQuietly(fos);
         }
     }
 
@@ -122,22 +114,29 @@ public class BasicResultReport
             pa.setProperty(e.getKey(), e.getValue());
         }
 
-		if (printResultsToSysout) {
-		    String id = getContext().getId();
-			System.out.println("\n[" + getContext().getId() + "/" + getMLSetup(id)+ "]");
-			for (Entry<String, String> e : resultMap.entrySet()) {
-				System.out.println("\t" + e.getKey() + ": " + e.getValue());
-			}
-			System.out.println("\n");
-		} else {
-		    String id = getContext().getId();
-			StringBuilder logMsg = new StringBuilder();
-			logMsg.append("Run [" + getContext().getId() + "/" + getMLSetup(id) + "]: ");
-			resultMap.keySet().forEach(x -> logMsg.append(x + "=" + resultMap.get(x) + " |"));
-			LogFactory.getLog(getClass()).info(logMsg.toString());
-        }
-
+        sysoutResults(resultMap);
+        logResults(resultMap);
+        
         return pa;
+    }
+
+    private void logResults(Map<String, String> resultMap) throws Exception
+    {
+        String id = getContext().getId();
+        StringBuilder logMsg = new StringBuilder();
+        logMsg.append("Run [" + getContext().getId() + "/" + getMLSetup(id) + "]: ");
+        resultMap.keySet().forEach(x -> logMsg.append(x + "=" + resultMap.get(x) + " |"));
+        LogFactory.getLog(getClass()).info(logMsg.toString());        
+    }
+
+    private void sysoutResults(Map<String, String> resultMap) throws Exception
+    {
+        String id = getContext().getId();
+        System.out.println("\n[" + getContext().getId() + "/" + getMLSetup(id)+ "]");
+        for (Entry<String, String> e : resultMap.entrySet()) {
+            System.out.println("\t" + e.getKey() + ": " + e.getValue());
+        }
+        System.out.println("\n");        
     }
 
     private String getMLSetup(String id) throws Exception {

@@ -52,11 +52,6 @@ public class CrossValidationReport
     private static final String SEP = "\t";
     private static final String FILE_ENDING = ".tsv";
     
-    /**
-     * This switch turns off the sysout printing 
-     */
-    public static boolean printResultsToSysout = true;
-
     public CrossValidationReport()
     {
         // required by groovy
@@ -94,7 +89,6 @@ public class CrossValidationReport
     {
 
         StringBuilder sb = new StringBuilder();
-
         boolean writeHeader = true;
 
         for (String id : idPool) {
@@ -146,18 +140,8 @@ public class CrossValidationReport
                         learningMode);
                 r.writeResults(fscoreFile);
 
-				if (printResultsToSysout) {
-					System.out.println("\n\nRESULT SUMMARY CROSSVALIDATION\n[" + id
-							+ "/" + getMLSetup(id) + "]");
-					results.keySet().forEach(x -> System.out.println("\t\t" + x + ": " + results.get(x)));
-					System.out.println("\nAccumulated results per category:\n" + r.getResults());
-					System.out.println("\n");
-				} else {
-					StringBuilder logMsg = new StringBuilder();
-					logMsg.append("[" + id + "/" + getMLSetup(id) + "]: ");
-					results.keySet().forEach(x -> logMsg.append(x + "=" + results.get(x)+ " |"));
-					LogFactory.getLog(getClass()).info(logMsg.toString());
-				}
+                sysoutResults(id, r, results);
+                logResults(id, results);
             }
 
         }
@@ -174,6 +158,23 @@ public class CrossValidationReport
 
         FileUtils.writeStringToFile(targetFile, sb.toString(), "utf-8");
 
+    }
+
+    private void logResults(String id, Map<String, String> results) throws Exception
+    {
+        StringBuilder logMsg = new StringBuilder();
+        logMsg.append("[" + id + "/" + getMLSetup(id) + "]: ");
+        results.keySet().forEach(x -> logMsg.append(x + "=" + results.get(x)+ " |"));
+        LogFactory.getLog(getClass()).info(logMsg.toString());        
+    }
+
+    private void sysoutResults(String id, ResultPerCategoryCalculator r, Map<String, String> results) throws Exception
+    {
+        System.out.println("\n\nRESULT SUMMARY CROSSVALIDATION\n[" + id
+                + "/" + getMLSetup(id) + "]");
+        results.keySet().forEach(x -> System.out.println("\t\t" + x + ": " + results.get(x)));
+        System.out.println("\nAccumulated results per category:\n" + r.getResults());
+        System.out.println("\n");        
     }
 
     private String getMLSetup(String id) throws Exception

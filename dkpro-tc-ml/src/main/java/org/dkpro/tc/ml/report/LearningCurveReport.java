@@ -64,7 +64,6 @@ import de.unidue.ltl.evaluation.measures.correlation.SpearmanCorrelation;
 
 /**
  * Collects the final evaluation results in a cross validation setting.
- * 
  */
 public class LearningCurveReport
     extends TcAbstractReport
@@ -548,43 +547,4 @@ public class LearningCurveReport
         return learningMode;
     }
 
-    class CategoricalPerformance
-    {
-        static final String PRECISION = "PRECISION";
-        static final String RECALL = "RECALL";
-        static final String FSCORE = "FSCORE";
-        String categoryName;
-        double precision;
-        double recall;
-        double fscore;
-
-        public CategoricalPerformance(String categoryName, double precision, double recall,
-                double fscore)
-        {
-            this.categoryName = categoryName;
-            this.precision = precision;
-            this.recall = recall;
-            this.fscore = fscore;
-        }
-
-        double getValue(String key)
-        {
-            switch (key) {
-            case PRECISION:
-                return precision;
-            case RECALL:
-                return recall;
-            case FSCORE:
-                return fscore;
-            }
-
-            throw new IllegalArgumentException(
-                    "The key [" + key + "] is unknown as categorical measure");
-        }
-
-        public String toString()
-        {
-            return String.format("%s/%.3f/%.3f/%.3f", categoryName, precision, recall, fscore);
-        }
-    }
 }

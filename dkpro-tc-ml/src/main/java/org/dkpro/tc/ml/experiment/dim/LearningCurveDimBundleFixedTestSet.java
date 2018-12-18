@@ -20,7 +20,6 @@ package org.dkpro.tc.ml.experiment.dim;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +106,7 @@ public class LearningCurveDimBundleFixedTestSet extends DimensionBundle<Collecti
 			}
 
 			for (List<Integer> train : s) {
-				LearningCurveDimBundleFixedTestSet.TrainSet trainSet = new TrainSet(train);
+				TrainSet trainSet = new TrainSet(train);
 				LogFactory.getLog(getClass()).debug(trainSet.toString());
 				runs.add(trainSet);
 			}
@@ -177,7 +176,7 @@ public class LearningCurveDimBundleFixedTestSet extends DimensionBundle<Collecti
 	public Map<String, Collection<String>> current() {
 		List<String> trainingData = new ArrayList<String>();
 		List<String> usedBucketSet = new ArrayList<>();
-		LearningCurveDimBundleFixedTestSet.TrainSet learningCurveRun = runs.get(numFoldsIdx);
+		TrainSet learningCurveRun = runs.get(numFoldsIdx);
 
 		for (Integer idx : learningCurveRun.train) {
 			trainingData.addAll(buckets[idx]);
@@ -196,28 +195,5 @@ public class LearningCurveDimBundleFixedTestSet extends DimensionBundle<Collecti
 		if (foldedDimension instanceof DynamicDimension) {
 			((DynamicDimension) foldedDimension).setConfiguration(aConfig);
 		}
-	}
-
-	class TrainSet {
-		List<Integer> train;
-
-		TrainSet(List<Integer> train) {
-			this.train = train;
-			Collections.sort(this.train);
-		}
-
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("[Train: (");
-			for (int i = 0; i < train.size(); i++) {
-				sb.append(train.get(i));
-				if (i + 1 < train.size()) {
-					sb.append(" ");
-				}
-			}
-			sb.append(")]");
-			return sb.toString();
-		}
-
 	}
 }

@@ -115,7 +115,7 @@ public class LearningCurveDimBundleCrossValidation
                 }
                 
                 for (List<Integer> train : s) {
-                    LearningCurveDimBundleCrossValidation.TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
+                    TrainTestSplit trainTestSplit = new TrainTestSplit(train, validationBucket);
                     LogFactory.getLog(getClass()).debug(trainTestSplit.toString());
                     runs.add(trainTestSplit);
                 }
@@ -192,7 +192,7 @@ public class LearningCurveDimBundleCrossValidation
     {
         List<String> trainingData = new ArrayList<String>();
         List<String> usedBucketSet= new ArrayList<>();
-        LearningCurveDimBundleCrossValidation.TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
+        TrainTestSplit learningCurveRun = runs.get(numFoldsIdx);
         
         for(Integer idx : learningCurveRun.train) {
             trainingData.addAll(buckets[idx]);
@@ -215,28 +215,4 @@ public class LearningCurveDimBundleCrossValidation
         }
     }
     
-    class TrainTestSplit{
-        Integer test;
-        List<Integer> train;
-
-        TrainTestSplit(List<Integer> train, Integer test){
-            this.train = train;
-            Collections.sort(this.train);
-            this.test = test;
-        }
-        
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("[Train: (");
-            for(int i=0; i < train.size(); i++) {
-                sb.append(train.get(i));
-                if (i+1 < train.size()) {
-                    sb.append(" ");
-                }
-            }
-            sb.append("), Test: ("+test+")]");
-            return sb.toString();
-        }
-    
-    }
 }
