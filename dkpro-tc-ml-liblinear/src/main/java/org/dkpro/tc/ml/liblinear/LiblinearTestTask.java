@@ -87,7 +87,7 @@ public class LiblinearTestTask
 
     }
 
-    private List<String> mergeWithGold(List<String> predictions, File fileTest) throws Exception
+    protected List<String> mergeWithGold(List<String> predictions, File fileTest) throws Exception
     {
         List<String> gold = new ArrayList<>();
 

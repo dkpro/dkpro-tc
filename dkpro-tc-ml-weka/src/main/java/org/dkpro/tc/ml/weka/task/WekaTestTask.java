@@ -155,7 +155,7 @@ public class WekaTestTask
         FileUtils.moveFile(arffDummy, predictionFile);
     }
 
-    private void createWekaEvaluationObject(Classifier classifier, File evalOutput,
+    protected void createWekaEvaluationObject(Classifier classifier, File evalOutput,
             Instances trainData, Instances testData)
         throws Exception
     {
@@ -166,7 +166,7 @@ public class WekaTestTask
 
     }
 
-    private List<String> getParameters(List<Object> classificationArguments)
+    protected List<String> getParameters(List<Object> classificationArguments)
     {
         List<String> o = new ArrayList<>();
 
@@ -212,7 +212,7 @@ public class WekaTestTask
         return testData;
     }
 
-    private Result getEvaluationMultilabel(Classifier cl, Instances trainData, Instances testData,
+    protected Result getEvaluationMultilabel(Classifier cl, Instances trainData, Instances testData,
             String threshold)
         throws Exception
     {
@@ -221,7 +221,7 @@ public class WekaTestTask
         return r;
     }
 
-    private void writeMlResultToFile(MultilabelResult result, File file)
+    protected void writeMlResultToFile(MultilabelResult result, File file)
         throws FileNotFoundException, IOException
     {
         ObjectOutputStream stream = null;
@@ -282,7 +282,7 @@ public class WekaTestTask
      * @throws Exception
      *             an exception
      */
-    private double[] getMekaThreshold(String threshold, Result r, Instances data) throws Exception
+    protected double[] getMekaThreshold(String threshold, Result r, Instances data) throws Exception
     {
         double[] t = new double[r.L];
         if (threshold.equals("PCut1")) {

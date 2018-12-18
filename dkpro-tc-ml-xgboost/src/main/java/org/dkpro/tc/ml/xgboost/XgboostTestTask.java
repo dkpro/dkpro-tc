@@ -39,6 +39,7 @@ import org.dkpro.tc.ml.xgboost.core.XgboostPredictor;
 import org.dkpro.tc.ml.xgboost.core.XgboostTrainer;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
+
 public class XgboostTestTask
     extends LibsvmDataFormatTestTask
     implements Constants
@@ -78,14 +79,14 @@ public class XgboostTestTask
 
         List<String> parameters = getClassificationParameters(aContext, classificationArguments,
                 learningMode);
-        
+
         XgboostTrainer trainer = new XgboostTrainer();
         trainer.train(fileTrain, model, parameters);
 
         return model;
     }
 
-    private void catchWindows32BitUsers()
+    protected void catchWindows32BitUsers()
     {
         PlatformDetector pd = new PlatformDetector();
         if (pd.getOs().equals(PlatformDetector.OS_WINDOWS)
@@ -99,14 +100,14 @@ public class XgboostTestTask
     protected void runPrediction(TaskContext aContext, Object model) throws Exception
     {
         File testFile = getTestFile(aContext);
-        
+
         XgboostPredictor predictor = new XgboostPredictor();
         List<String> prediction = predictor.predict(testFile, (File) model);
-        
+
         mergePredictionWithGold(aContext, prediction);
     }
 
-    private void mergePredictionWithGold(TaskContext aContext, List<String> prediction)
+    protected void mergePredictionWithGold(TaskContext aContext, List<String> prediction)
         throws Exception
     {
 
@@ -129,7 +130,7 @@ public class XgboostTestTask
         }
     }
 
-    private void checkNoDataCondition(List<String> l, File source)
+    protected void checkNoDataCondition(List<String> l, File source)
     {
         if (l.isEmpty()) {
             throw new IllegalStateException(
@@ -137,7 +138,7 @@ public class XgboostTestTask
         }
     }
 
-    private List<String> readGoldValues(File f) throws Exception
+    protected List<String> readGoldValues(File f) throws Exception
     {
         List<String> goldValues = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(

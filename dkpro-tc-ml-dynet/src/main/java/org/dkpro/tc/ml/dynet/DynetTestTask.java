@@ -38,40 +38,40 @@ public class DynetTestTask
 	extends TcClassifierTaskBase implements DeepLearningConstants
 {
 
-    private static final String DEFAULT_SEED = "123456789";
+    protected static final String DEFAULT_SEED = "123456789";
 
     @Discriminator(name = DIM_PYTHON_INSTALLATION)
-    private String python;
+    protected String python;
 
     @Discriminator(name = DIM_SEED_VALUE)
-    private String randomSeed;
+    protected String randomSeed;
 
     @Discriminator(name = DIM_RAM_WORKING_MEMORY)
-    private String workingMemory;
+    protected String workingMemory;
     
     @Discriminator(name = DIM_CLASSIFICATION_ARGS)
-    private List<Object> classificationArgs;
+    protected List<Object> classificationArgs;
 
     @Discriminator(name = DIM_MAXIMUM_LENGTH)
-    private Integer maximumLength;
+    protected Integer maximumLength;
 
     @Discriminator(name = DIM_DICTIONARY_PATHS)
-    private List<String> dictionaries;
+    protected List<String> dictionaries;
 
     @Discriminator(name = DIM_VECTORIZE_TO_INTEGER)
-    private boolean intVectorization;
+    protected boolean intVectorization;
 
     @Discriminator(name = DyNetConstants.DIM_DYNET_DEVICES)
-    private String deviceIds;
+    protected String deviceIds;
 
     @Discriminator(name = DyNetConstants.DIM_DYNET_AUTOBATCH)
-    private Integer autoBatch;
+    protected Integer autoBatch;
 
     @Discriminator(name = DyNetConstants.DIM_DYNET_GPUS)
-    private Integer numGpus;
+    protected Integer numGpus;
 
     @Discriminator(name = DIM_BIPARTITION_THRESHOLD)
-    private double threshold;
+    protected double threshold;
 
     @Override
     public void execute(TaskContext aContext) throws Exception
@@ -83,7 +83,7 @@ public class DynetTestTask
         train(command);
     }
 
-    private void dumpDebug(TaskContext aContext, List<String> command) throws Exception
+    protected void dumpDebug(TaskContext aContext, List<String> command) throws Exception
     {
 
         StringBuilder sb = new StringBuilder();
@@ -100,19 +100,19 @@ public class DynetTestTask
         }
     }
 
-    private File getResultLocation(TaskContext aContext)
+    protected File getResultLocation(TaskContext aContext)
     {
-        return aContext.getFile(DeepLearningConstants.FILENAME_PREDICTION_OUT,
+        return aContext.getFile(FILENAME_PREDICTION_OUT,
                 AccessMode.READWRITE);
     }
 
-    private void train(List<String> command) throws Exception
+    protected void train(List<String> command) throws Exception
     {
         Process process = new ProcessBuilder().inheritIO().command(command).start();
         process.waitFor();
     }
 
-    private List<String> buildTrainCommand(TaskContext aContext, File resultOut) throws Exception
+    protected List<String> buildTrainCommand(TaskContext aContext, File resultOut) throws Exception
     {
         File trainDataVector = getDataVector(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
         File trainOutcomeVector = getDataOutcome(aContext, TEST_TASK_INPUT_KEY_TRAINING_DATA);
@@ -195,7 +195,7 @@ public class DynetTestTask
      * 
      * @return dictionary paths
      */
-    private List<String> retrieveDictionaryPaths(TaskContext aContext)
+    protected List<String> retrieveDictionaryPaths(TaskContext aContext)
     {
 
         List<String> dicts = new ArrayList<>();
@@ -227,7 +227,7 @@ public class DynetTestTask
      * @throws IOException
      *             in case a read error occurs
      */
-    private String getMaximumLength(TaskContext aContext) throws IOException
+    protected String getMaximumLength(TaskContext aContext) throws IOException
     {
         if (maximumLength != null) {
             return maximumLength.toString();
@@ -236,42 +236,42 @@ public class DynetTestTask
         File folder = aContext.getFolder(TcDeepLearningAdapter.PREPARATION_FOLDER,
                 AccessMode.READONLY);
         String maxLenFromFile = FileUtils.readFileToString(
-                new File(folder, DeepLearningConstants.FILENAME_MAXIMUM_LENGTH), UTF_8);
+                new File(folder, FILENAME_MAXIMUM_LENGTH), UTF_8);
 
         return maxLenFromFile;
     }
 
-    private File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException
+    protected File getDataOutcome(TaskContext aContext, String key) throws FileNotFoundException
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
-        File vector = new File(folder, DeepLearningConstants.FILENAME_OUTCOME_VECTOR);
+        File vector = new File(folder, FILENAME_OUTCOME_VECTOR);
 
         if (!vector.exists()) {
             throw new FileNotFoundException(
-                    "Could not locate file [" + DeepLearningConstants.FILENAME_OUTCOME_VECTOR
+                    "Could not locate file [" + FILENAME_OUTCOME_VECTOR
                             + "] in folder [" + folder.getAbsolutePath() + "]");
         }
         return vector;
     }
 
-    private File getDataVector(TaskContext aContext, String key) throws FileNotFoundException
+    protected File getDataVector(TaskContext aContext, String key) throws FileNotFoundException
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
-        File vector = new File(folder, DeepLearningConstants.FILENAME_INSTANCE_VECTOR);
+        File vector = new File(folder, FILENAME_INSTANCE_VECTOR);
 
         if (!vector.exists()) {
             throw new FileNotFoundException(
-                    "Could not locate file [" + DeepLearningConstants.FILENAME_INSTANCE_VECTOR
+                    "Could not locate file [" + FILENAME_INSTANCE_VECTOR
                             + "] in folder [" + folder.getAbsolutePath() + "]");
         }
         return vector;
     }
 
-    private File getEmbedding(TaskContext aContext)
+    protected File getEmbedding(TaskContext aContext)
     {
         File folder = aContext.getFolder(TcDeepLearningAdapter.EMBEDDING_FOLDER,
                 AccessMode.READONLY);
-        File embedding = new File(folder, DeepLearningConstants.FILENAME_PRUNED_EMBEDDING);
+        File embedding = new File(folder, FILENAME_PRUNED_EMBEDDING);
 
         if (!embedding.exists()) {
             LogFactory.getLog(getClass()).debug(

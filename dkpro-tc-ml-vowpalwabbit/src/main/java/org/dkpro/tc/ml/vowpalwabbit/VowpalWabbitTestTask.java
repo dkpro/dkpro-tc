@@ -18,6 +18,8 @@
 
 package org.dkpro.tc.ml.vowpalwabbit;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
 import org.dkpro.lab.engine.TaskContext;
@@ -40,16 +41,16 @@ import org.dkpro.tc.ml.vowpalwabbit.core.VowpalWabbitTrainer;
 
 import de.tudarmstadt.ukp.dkpro.core.api.resources.PlatformDetector;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
-import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class VowpalWabbitTestTask
     extends TcShallowClassifierTaskBase
 {
 
     @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
+    protected String learningMode;
 
     @Discriminator(name = DIM_FEATURE_MODE)
-    private String featureMode;
+    protected String featureMode;
 
     @Override
     public void execute(TaskContext aContext) throws Exception
@@ -58,8 +59,7 @@ public class VowpalWabbitTestTask
         boolean multiLabel = learningMode.equals(Constants.LM_MULTI_LABEL);
 
         if (multiLabel) {
-            throw new TextClassificationException(
-                    "Multi-label requested, but not supported.");
+            throw new TextClassificationException("Multi-label requested, but not supported.");
         }
 
         File model = trainModel(aContext);
@@ -69,7 +69,7 @@ public class VowpalWabbitTestTask
 
     }
 
-    private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
+    protected void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
         throws Exception
     {
         File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS,
@@ -101,25 +101,20 @@ public class VowpalWabbitTestTask
 
         File trainDestFile = new File(tmpLocation, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
 
-        InputStream is = null;
-        try {
-            is = new FileInputStream(srcFile);
+        try (InputStream is = new FileInputStream(srcFile)) {
             FileUtils.copyInputStreamToFile(is, trainDestFile);
-        }
-        finally {
-            IOUtils.closeQuietly(is);
         }
 
         return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
     }
 
-    private static boolean isWindows()
+    protected static boolean isWindows()
     {
         return VowpalWabbit.getPlatformDetector().getPlatformId()
                 .startsWith(PlatformDetector.OS_WINDOWS);
     }
 
-    private File trainModel(TaskContext aContext) throws Exception
+    protected File trainModel(TaskContext aContext) throws Exception
     {
         VowpalWabbitTrainer trainer = new VowpalWabbitTrainer();
 
@@ -233,7 +228,7 @@ public class VowpalWabbitTestTask
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }
 
-    private List<String> getParameters(List<Object> subList)
+    protected List<String> getParameters(List<Object> subList)
     {
         List<String> s = new ArrayList<>();
 
@@ -244,7 +239,7 @@ public class VowpalWabbitTestTask
         return s;
     }
 
-    private List<String> testModel(TaskContext aContext, File model) throws Exception
+    protected List<String> testModel(TaskContext aContext, File model) throws Exception
     {
         File executable = new VowpalWabbit().getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
@@ -253,12 +248,10 @@ public class VowpalWabbitTestTask
         VowpalWabbitPredictor predictor = new VowpalWabbitPredictor();
         List<String> prediction = predictor.predict(testFile, model);
 
-        // deleteTmpFeatureFileIfCreated(aContext, testFile, TEST_TASK_INPUT_KEY_TEST_DATA);
-
         return prediction;
     }
 
-    private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
+    protected void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
         File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
@@ -268,16 +261,11 @@ public class VowpalWabbitTestTask
         }
     }
 
-    private File writeModel(TaskContext aContext, File model) throws Exception
+    protected File writeModel(TaskContext aContext, File model) throws Exception
     {
 
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(model);
+        try (FileInputStream fis = new FileInputStream(model)) {
             aContext.storeBinary(MODEL_CLASSIFIER, fis);
-        }
-        finally {
-            IOUtils.closeQuietly(fis);
         }
         File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
         FileUtils.deleteQuietly(model);

@@ -45,7 +45,7 @@ public class CrfSuiteTestTask
     extends TcShallowClassifierTaskBase
 {
     @Discriminator(name = DIM_LEARNING_MODE)
-    private String learningMode;
+    protected String learningMode;
 
     @Override
     public void execute(TaskContext aContext) throws Exception
@@ -65,7 +65,7 @@ public class CrfSuiteTestTask
 
     }
 
-    private void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
+    protected void writeFileWithPredictedLabels(TaskContext aContext, List<String> predictionValues)
         throws Exception
     {
         File predictionsFile = aContext.getFile(Constants.FILENAME_PREDICTIONS,
@@ -115,13 +115,13 @@ public class CrfSuiteTestTask
         return ResourceUtils.getUrlAsFile(trainDestFile.toURI().toURL(), true);
     }
 
-    private static boolean isWindows()
+    protected static boolean isWindows()
     {
         return CrfSuite.getPlatformDetector().getPlatformId()
                 .startsWith(PlatformDetector.OS_WINDOWS);
     }
 
-    private File trainModel(TaskContext aContext) throws Exception
+    protected File trainModel(TaskContext aContext) throws Exception
     {
         CrfSuiteTrainer trainer = new CrfSuiteTrainer();
 
@@ -139,7 +139,7 @@ public class CrfSuiteTestTask
         return writeModel(aContext, modelLocation);
     }
 
-    private List<String> getParameters(List<Object> subList)
+    protected List<String> getParameters(List<Object> subList)
     {
         List<String> s = new ArrayList<>();
         
@@ -150,7 +150,7 @@ public class CrfSuiteTestTask
         return s;
     }
 
-    private List<String> testModel(TaskContext aContext, File model) throws Exception
+    protected List<String> testModel(TaskContext aContext, File model) throws Exception
     {
         File executable = new CrfSuite().getExecutable();
         File testFile = loadAndPrepareFeatureDataFile(aContext, executable.getParentFile(),
@@ -164,7 +164,7 @@ public class CrfSuiteTestTask
         return prediction;
     }
 
-    private void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
+    protected void deleteTmpFeatureFileIfCreated(TaskContext aContext, File input, String key)
     {
         File folder = aContext.getFolder(key, AccessMode.READONLY);
         File f = new File(folder, FILENAME_DATA_IN_CLASSIFIER_FORMAT);
@@ -174,17 +174,13 @@ public class CrfSuiteTestTask
         }
     }
 
-    private File writeModel(TaskContext aContext, File model) throws Exception
+    protected File writeModel(TaskContext aContext, File model) throws Exception
     {
 
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(model);
+        try(FileInputStream fis = new FileInputStream(model)){
             aContext.storeBinary(MODEL_CLASSIFIER, fis);
         }
-        finally {
-            IOUtils.closeQuietly(fis);
-        }
+        
         File modelLocation = aContext.getFile(MODEL_CLASSIFIER, AccessMode.READONLY);
         FileUtils.deleteQuietly(model);
         return modelLocation;

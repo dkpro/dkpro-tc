@@ -41,7 +41,7 @@ public class SvmHmmTestTask
     implements Constants
 {
 
-    private void combinePredictionAndExpectedGoldLabels(List<String> dataWithGoldLabel,
+    protected void combinePredictionAndExpectedGoldLabels(List<String> dataWithGoldLabel,
             List<String> predictions, File predictionOutFile)
         throws Exception
     {
@@ -58,7 +58,7 @@ public class SvmHmmTestTask
 
     }
 
-    private void merge(List<String> dataWithGoldLabel, List<String> predictions,
+    protected void merge(List<String> dataWithGoldLabel, List<String> predictions,
             BufferedWriter writer)
         throws IOException
     {
@@ -100,7 +100,7 @@ public class SvmHmmTestTask
         return modelFile;
     }
 
-    private List<String> getParameters()
+    protected List<String> getParameters()
     {
         List<String> stringArgs = new ArrayList<>();
         for (int i = 1; i < classificationArguments.size(); i++) {
