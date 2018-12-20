@@ -384,11 +384,6 @@ public class ExperimentBuilder extends AbstractBuilder {
 	}
 
 	@Override
-	public void run() throws Exception {
-		super.run();
-	}
-
-	@Override
 	public ExperimentBuilder outputFolder(String filePath) {
 		super.outputFolder(filePath);
 		return this;

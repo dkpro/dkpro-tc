@@ -69,7 +69,7 @@ public class LearningCurveReport
     implements Constants
 {
     int maxNumberFolds = -1;
-	public static final String MD5_MAPPING_FILE = "md5Mapping.txt";
+	static final String MD5_MAPPING_FILE = "md5Mapping.txt";
 
     @Override
     public void execute() throws Exception
@@ -82,7 +82,7 @@ public class LearningCurveReport
                 store, idPool);
 
         if (isSingleLabelMode(learningMode)) {
-            writeCategoricalResults(store, dataMap);
+            writeCategoricalResults(dataMap);
         }
 
     }
@@ -319,11 +319,9 @@ public class LearningCurveReport
         return learningMode.equals(Constants.LM_SINGLE_LABEL);
     }
 
-    private void writeCategoricalResults(StorageService store,
-            Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap)
+    private void writeCategoricalResults(Map<LearningCurveRunIdentifier, Map<Integer, List<File>>> dataMap)
         throws Exception
     {
-        
         for(Entry<LearningCurveRunIdentifier, Map<Integer, List<File>>> e : dataMap.entrySet()) {
             List<List<CategoricalPerformance>> stageAvg = averagePerStageCategorical(e.getValue());
             writeCategoricalPlots(e.getKey().md5, stageAvg, maxNumberFolds);

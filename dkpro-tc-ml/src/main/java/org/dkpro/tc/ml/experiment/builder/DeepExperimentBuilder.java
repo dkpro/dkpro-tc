@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
-import org.dkpro.lab.Lab;
 import org.dkpro.lab.reporting.ReportBase;
 import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.ParameterSpace;
@@ -375,18 +374,6 @@ public class DeepExperimentBuilder
         setReports();
 
         return experiment;
-    }
-
-    /**
-     * Executes the experiment
-     * 
-     * @throws Exception
-     *             In case of an invalid configuration or missing mandatory values
-     */
-    public void run() throws Exception
-    {
-        Experiment_ImplBase build = build();
-        Lab.getInstance().run(build);
     }
 
     /**
