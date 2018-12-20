@@ -25,12 +25,11 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
-
-import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
-import de.tudarmstadt.ukp.dkpro.core.frequency.tfidf.model.DfModel;
 import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.meta.MetaDependent;
 import org.dkpro.tc.api.features.util.FeatureUtil;
+
+import de.tudarmstadt.ukp.dkpro.core.api.frequency.util.FrequencyDistribution;
 
 @TypeCapability(inputs = { "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence",
         "de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token" })
@@ -64,7 +63,6 @@ public abstract class NGramFeatureExtractorBase
 
     protected Set<String> stopwords;
     protected FrequencyDistribution<String> topKSet;
-    protected DfModel dfStore;
     protected String prefix;
 
     protected abstract String getFieldName();

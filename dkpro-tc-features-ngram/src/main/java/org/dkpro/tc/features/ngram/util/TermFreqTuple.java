@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.dkpro.tc.features.ngram.util;
 
+/**
+ * This implementation of {@link #compareTo(TermFreqTuple)} uses a natural ordering, which is
+ * inconsistent with the implementation of {@link #equals(Object)}.
+ */
 public class TermFreqTuple
     implements Comparable<TermFreqTuple>
 {
