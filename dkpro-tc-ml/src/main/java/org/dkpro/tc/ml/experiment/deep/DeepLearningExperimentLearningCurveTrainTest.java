@@ -108,6 +108,7 @@ public class DeepLearningExperimentLearningCurveTrainTest
             int aStageLimit)
         throws TextClassificationException
     {
+        this.stageLimit = aStageLimit;
         setExperimentName(aExperimentName);
         setNumFolds(aNumFolds);
         // set name of overall batch task
