@@ -69,7 +69,7 @@ public class LearningCurveReport
     implements Constants
 {
     int maxNumberFolds = -1;
-	static final String MD5_MAPPING_FILE = "md5Mapping.txt";
+	public static final String MD5_MAPPING_FILE = "md5Mapping.txt";
 
     @Override
     public void execute() throws Exception
