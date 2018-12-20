@@ -22,6 +22,8 @@ import groovy.lang.GroovyObject;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.commons.io.IOUtils;
 
@@ -29,7 +31,7 @@ import org.apache.commons.io.IOUtils;
  * Java wrapper class for the execution of Groovy scripts. It is needed to avoid the pre-compilation
  * of Groovy scripts.
  */
-public class ExperimentStarter
+public class ExperimentStarter 
 {
     /**
      * Method which executes Groovy script provided in the pathToScript.
@@ -50,7 +52,14 @@ public class ExperimentStarter
         throws InstantiationException, IllegalAccessException, IOException
     {
         ClassLoader parent = ExperimentStarter.class.getClassLoader();
-        GroovyClassLoader loader = new GroovyClassLoader(parent);
+        GroovyClassLoader loader = AccessController
+                .doPrivileged(new PrivilegedAction<GroovyClassLoader>()
+                {
+                    public GroovyClassLoader run()
+                    {
+                        return new GroovyClassLoader(parent);
+                    }
+                });
 
         StringWriter writer = new StringWriter();
         IOUtils.copy(parent.getResourceAsStream(pathToScript), writer, "UTF-8");

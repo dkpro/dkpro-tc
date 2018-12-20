@@ -37,7 +37,7 @@ class LearningCurveRunIdentifier
         configAsString = sb.toString();
 
         MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] digest = md.digest((configAsString).getBytes(UTF_8));
+        byte[] digest = md.digest(configAsString.getBytes(UTF_8));
         BigInteger bigInt = new BigInteger(1, digest);
         String md5 = bigInt.toString(16);
         this.md5 = md5;

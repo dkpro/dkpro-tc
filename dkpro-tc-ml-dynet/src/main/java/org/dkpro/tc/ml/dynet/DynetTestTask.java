@@ -128,7 +128,7 @@ public class DynetTestTask
         command.add(new File(classificationArgs.get(1).toString()).getAbsolutePath());
 
         command.add(DyNetConstants.DYNET_SEED);
-        command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));
+        command.add(randomSeed == null ? DEFAULT_SEED : randomSeed);
 
         if (workingMemory != null && !workingMemory.equals("")) {
             command.add(DyNetConstants.DYNET_MEMORY);
@@ -151,7 +151,7 @@ public class DynetTestTask
         }
 
         command.add(PythonConstants.SEED);
-        command.add((randomSeed == null ? DEFAULT_SEED : randomSeed));
+        command.add(randomSeed == null ? DEFAULT_SEED : randomSeed);
         command.add(PythonConstants.TRAIN_DATA);
         command.add(trainDataVector.getAbsolutePath());
         command.add(PythonConstants.TRAIN_OUTCOME);

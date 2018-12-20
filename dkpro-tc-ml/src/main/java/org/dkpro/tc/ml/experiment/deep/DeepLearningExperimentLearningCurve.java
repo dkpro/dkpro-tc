@@ -338,15 +338,4 @@ public class DeepLearningExperimentLearningCurve
         this.numFolds = numFolds;
     }
 
-    /**
-     * Sets a comparator
-     * 
-     * @param aComparator
-     *            the comparator
-     */
-    public void setComparator(Comparator<String> aComparator)
-    {
-        comparator = aComparator;
-    }
-
 }

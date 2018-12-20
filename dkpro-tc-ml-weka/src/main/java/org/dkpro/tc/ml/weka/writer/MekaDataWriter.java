@@ -18,6 +18,8 @@
  */
 package org.dkpro.tc.ml.weka.writer;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
@@ -50,7 +53,6 @@ import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.Saver;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Datawriter for the Weka machine learning tool.
@@ -59,6 +61,8 @@ public class MekaDataWriter
     implements DataWriter, Constants
 {
     public static final String RELATION_NAME = "dkpro-tc-generated";
+    
+    protected Logger logger = Logger.getLogger(MekaDataWriter.class);
 
     BufferedWriter bw = null;
     Gson gson = new Gson();
@@ -131,15 +135,15 @@ public class MekaDataWriter
     @Override
     public void transformFromGeneric() throws Exception
     {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), UTF_8));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new FileInputStream(new File(outputFolder, GENERIC_FEATURE_FILE)), UTF_8))) {
 
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            Instance[] restoredInstance = gson.fromJson(line, Instance[].class);
-            writeClassifierFormat(Arrays.asList(restoredInstance));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                Instance[] restoredInstance = gson.fromJson(line, Instance[].class);
+                writeClassifierFormat(Arrays.asList(restoredInstance));
+            }
         }
-        reader.close();
 
         FileUtils.deleteQuietly(new File(outputFolder, GENERIC_FEATURE_FILE));
     }
@@ -211,7 +215,7 @@ public class MekaDataWriter
                 }
             }
             catch (NullPointerException e) {
-                // ignore unseen attributes
+                logger.debug("Feature name [" + feature.getName() + "] unknown - ignored");
             }
         }
         return featureValues;

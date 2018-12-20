@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.dkpro.tc.api.exception.TextClassificationException;
 import org.dkpro.tc.api.features.Feature;
@@ -57,7 +58,7 @@ public class WekaDataWriter
     implements DataWriter, Constants
 {
     public static final String RELATION_NAME = "dkpro-tc-generated";
-    
+    protected Logger logger = Logger.getLogger(WekaDataWriter.class);
     BufferedWriter bw = null;
     Gson gson = new Gson();
     private boolean useSparse;
@@ -109,11 +110,9 @@ public class WekaDataWriter
 
     private void createFolder(File arffTarget) throws IOException
     {
-        if (!arffTarget.exists()) {
-            if (!arffTarget.mkdirs()) {
-                throw new IllegalStateException("Could not create folder(s) ["
-                        + arffTarget.getParentFile().getAbsolutePath() + "]");
-            }
+        if (!arffTarget.exists() && !arffTarget.mkdirs()) {
+            throw new IllegalStateException("Could not create folder(s) ["
+                    + arffTarget.getParentFile().getAbsolutePath() + "]");
         }
     }
 
@@ -230,7 +229,7 @@ public class WekaDataWriter
                 }
             }
             catch (NullPointerException e) {
-                // ignore unseen attributes
+                logger.debug("Feature name [" + feature.getName() + "] unknown - ignored");
             }
         }
         return featureValues;

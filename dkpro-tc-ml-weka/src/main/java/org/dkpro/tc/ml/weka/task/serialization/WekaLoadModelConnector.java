@@ -365,7 +365,7 @@ public class WekaLoadModelConnector
                 }
             }
             catch (NullPointerException e) {
-                // ignore unseen attributes
+                logger.debug("Feature name [" + feature.getName() + "] unknown - ignored");
             }
         }
         return featureValues;

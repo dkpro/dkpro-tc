@@ -52,7 +52,7 @@ public class ID2OutcomeCombiner<T>
     // where the lowest index might be > 0, we track the lowest value we see explicitly.
     int startIdx=0;
     
-    static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public ID2OutcomeCombiner(String mode)
     {

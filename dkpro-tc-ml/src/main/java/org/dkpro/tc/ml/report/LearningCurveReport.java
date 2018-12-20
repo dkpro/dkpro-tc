@@ -34,7 +34,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.reporting.ChartUtil;
 import org.dkpro.lab.storage.StorageService;
@@ -210,13 +209,8 @@ public class LearningCurveReport
     {
         Properties p = new Properties();
         File locateKey = store.locateKey(sId, TaskBase.DISCRIMINATORS_KEY);
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(locateKey);
+        try(FileInputStream fis = new FileInputStream(locateKey)){
             p.load(fis);
-        }
-        finally {
-            IOUtils.closeQuietly(fis);
         }
 
         Map<String, String> m = new HashMap<>();
@@ -244,9 +238,8 @@ public class LearningCurveReport
 
         Properties p = new Properties();
         File locateKey = store.locateKey(sId, CONFIGURATION_DKPRO_LAB);
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(locateKey);
+
+        try (FileInputStream fis = new FileInputStream(locateKey)) {
             p.load(fis);
             String foldValue = p.getProperty(DIM_NUM_TRAINING_FOLDS);
 
@@ -260,10 +253,6 @@ public class LearningCurveReport
                 String[] split = foldValue.split(",");
                 return split.length;
             }
-
-        }
-        finally {
-            IOUtils.closeQuietly(fis);
         }
 
         return 1;

@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
@@ -34,6 +33,8 @@ public abstract class ModelSerialization_ImplBase
     extends JCasAnnotator_ImplBase
     implements ConnectorConstants, Constants, ModelVersionIO
 {
+    
+    protected Logger logger = Logger.getLogger(ModelSerialization_ImplBase.class);
 
     public static final String PARAM_OUTPUT_DIRECTORY = "outputDirectory";
     @ConfigurationParameter(name = PARAM_OUTPUT_DIRECTORY, mandatory = true)
@@ -62,7 +63,7 @@ public abstract class ModelSerialization_ImplBase
         if (loadedVersion.equals(currentVersion)) {
             return;
         }
-        Logger.getLogger(class1).warn("The model was created under version [" + loadedVersion
+        logger.warn("The model was created under version [" + loadedVersion
                 + "], you are using [" + currentVersion + "]");
     }
 
@@ -71,14 +72,8 @@ public abstract class ModelSerialization_ImplBase
         File file = new File(modelFolder, MODEL_TC_VERSION);
         Properties prop = new Properties();
 
-        FileInputStream fis = null;
-
-        try {
-            fis = new FileInputStream(file);
+        try(FileInputStream fis = new FileInputStream(file)){
             prop.load(fis);
-        }
-        finally {
-            IOUtils.closeQuietly(fis);
         }
 
         return prop.getProperty(ModelSerializationTask.TCVERSION);

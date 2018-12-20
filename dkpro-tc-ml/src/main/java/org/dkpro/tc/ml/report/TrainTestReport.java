@@ -123,7 +123,7 @@ public class TrainTestReport
 
         String value = taskMapping.get(id);
         if (value == null) {
-            value = maxId < 100 ? (maxId < 10 ? "00" + maxId : "0" + maxId) : "" + maxId;
+            value = maxId < 100 ? maxId < 10 ? "00" + maxId : "0" + maxId : "" + maxId;
             taskMapping.put(id, value);
             maxId++;
         }
