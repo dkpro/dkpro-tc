@@ -58,15 +58,15 @@ public interface TcShallowLearningAdapter
      * assigns the majority class to all instances, in case of regression the mean value of all
      * regression values encountered during training.
      * 
-     * @return a report in the same format as {@link getOutcomeIdReportClass()}.
+     * @return a report in the same format as {@link #getOutcomeIdReportClass()}.
      */
     Class<? extends ReportBase> getMajorityClassBaselineIdReportClass();
 
     /**
      * This report is always added to provide a random baseline. A uniformly distributed value is
-     * generated as prediciton.
+     * generated as prediction.
      * 
-     * @return a report in the same format as {@link getOutcomeIdReportClass()}.
+     * @return a report in the same format as {@link #getOutcomeIdReportClass()}.
      */
     Class<? extends ReportBase> getRandomBaselineIdReportClass();
 
@@ -96,6 +96,9 @@ public interface TcShallowLearningAdapter
     
     /**
      * Returns the name of the machine learning backend
+     * 
+     * @return
+     *      the name
      */
     String getName();
 }
