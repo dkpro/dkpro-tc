@@ -81,7 +81,7 @@ public class ComboUtils
         return documentComboNGrams;
     }
 
-    public static FrequencyDistribution<String> getMultipleViewNgrams(List<JCas> jcases,
+    public static FrequencyDistribution<String> getMultipleViewNgrams(List<JCas> JCases,
             Annotation preSetTarget, boolean ngramLowerCase, boolean filterPartialStopwords,
             int ngramMinN, int ngramMaxN, Set<String> stopwords)
         throws TextClassificationException
@@ -89,16 +89,16 @@ public class ComboUtils
 
         FrequencyDistribution<String> viewNgramsTotal = new FrequencyDistribution<String>();
 
-        for (JCas view : jcases) {
-            FrequencyDistribution<String> oneViewsNgrams = new FrequencyDistribution<String>();
-            TextClassificationTarget aTarget = JCasUtil.selectSingle(view,
+        for (JCas jCas : JCases) {
+            
+            TextClassificationTarget aTarget = JCasUtil.selectSingle(jCas,
                     TextClassificationTarget.class);
-            if (preSetTarget == null) {
-                oneViewsNgrams = NGramUtils.getDocumentNgrams(view, aTarget, ngramLowerCase,
-                        filterPartialStopwords, ngramMinN, ngramMaxN, stopwords, Token.class);
-            }
-            else {
-                oneViewsNgrams = NGramUtils.getAnnotationNgrams(view, preSetTarget,
+            
+            FrequencyDistribution<String> oneViewsNgrams = NGramUtils.getDocumentNgrams(jCas, aTarget, ngramLowerCase,
+                    filterPartialStopwords, ngramMinN, ngramMaxN, stopwords, Token.class);
+            
+            if (preSetTarget != null) {
+                oneViewsNgrams = NGramUtils.getAnnotationNgrams(jCas, preSetTarget,
                         ngramLowerCase, filterPartialStopwords, ngramMinN, ngramMaxN, stopwords);
             }
             // This is a hack because there's no method to combine 2 FD's

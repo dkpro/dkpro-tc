@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
@@ -90,7 +91,7 @@ public class NewsIterator
         }
     }
 
-    public static Builder Builder()
+    public static Builder builder()
     {
         return new Builder();
     }
@@ -263,11 +264,10 @@ public class NewsIterator
             this.totalNews++;
         }
 
-        for (String k : m.keySet()) {
-            Pair<String, List<String>> tempPair = Pair.of(k, m.get(k));
+        for(Entry<String, List<String>> k: m.entrySet()) {
+            Pair<String, List<String>> tempPair = Pair.of(k.getKey(), k.getValue());
             this.categoryData.add(tempPair);
         }
-
     }
 
     @Override
