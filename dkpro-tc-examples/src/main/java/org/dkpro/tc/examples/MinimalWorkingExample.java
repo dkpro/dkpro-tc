@@ -1,6 +1,6 @@
 package org.dkpro.tc.examples;
 /**
- * Copyright 2018
+ * Copyright 2019
  * Ubiquitous Knowledge Processing (UKP) Lab
  * Technische Universität Darmstadt
  *

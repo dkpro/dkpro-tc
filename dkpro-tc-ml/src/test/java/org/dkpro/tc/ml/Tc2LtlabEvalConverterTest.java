@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2018
+ * Copyright 2019
  * Language Technology Lab
  * University of Duisburg-Essen
  *
