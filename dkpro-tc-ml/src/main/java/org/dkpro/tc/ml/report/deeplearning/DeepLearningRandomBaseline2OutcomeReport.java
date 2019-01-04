@@ -99,11 +99,21 @@ public class DeepLearningRandomBaseline2OutcomeReport
                 continue;
             }
             String[] split = p.split("\t");
-            Integer idx = random.nextInt(pool.size() - 1);
+            Integer idx = getIdx();
             out.add(split[0] + "\t" + pool.get(idx));
         }
 
         return out;
+    }
+
+    private Integer getIdx()
+    {
+        if(pool.size() > 1) {
+            return random.nextInt(pool.size() - 1);
+        }
+        
+        //only one value no randomness possible
+        return random.nextInt(0);
     }
 
 }
