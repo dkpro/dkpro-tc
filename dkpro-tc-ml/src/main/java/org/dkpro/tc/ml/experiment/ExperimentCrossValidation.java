@@ -19,12 +19,10 @@ package org.dkpro.tc.ml.experiment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.storage.StorageService.AccessMode;
@@ -32,6 +30,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
+import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -100,7 +99,7 @@ public class ExperimentCrossValidation
         // set name of overall batch task
         setType("Evaluation-" + experimentName);
     }
-
+    
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the
@@ -142,39 +141,14 @@ public class ExperimentCrossValidation
 
                 File xmiPathRoot = aContext.getFolder(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
-                Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
-                        true);
-                String[] fileNames = new String[files.size()];
-                int i = 0;
-                for (File f : files) {
-                    // adding file paths, not names
-                    fileNames[i] = f.getAbsolutePath();
-                    i++;
-                }
-                Arrays.sort(fileNames);
-                if (aNumFolds == LEAVE_ONE_OUT) {
-                    aNumFolds = fileNames.length;
-                }
-
-                // is executed if we have less CAS than requested folds and manual mode is turned
-                // off
-                if (!useCrossValidationManualFolds && fileNames.length < aNumFolds) {
-                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length,
-                            featureMode);
-                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
-                    fileNames = new String[files.size()];
-                    i = 0;
-                    for (File f : files) {
-                        // adding file paths, not names
-                        fileNames[i] = f.getAbsolutePath();
-                        i++;
-                    }
-                }
-                // don't change any names!!
-                FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
+                
+                String[] fileNames = setupBatchTask(aContext, xmiPathRoot,
+                        useCrossValidationManualFolds, featureMode);
+                
+                DimensionBundle<Collection<String>> bundle = getFoldDim(fileNames);
                 Dimension<File> filesRootDim = Dimension.create(DIM_FILES_ROOT, xmiPathRoot);
 
-                ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
+                ParameterSpace pSpace = new ParameterSpace(bundle, filesRootDim);
                 setParameterSpace(pSpace);
             }
 
@@ -269,7 +243,7 @@ public class ExperimentCrossValidation
      *            the file names
      * @return fold dimension bundle
      */
-    protected FoldDimensionBundle<String> getFoldDim(String[] fileNames)
+    protected DimensionBundle<Collection<String>> getFoldDim(String[] fileNames)
     {
         if (comparator != null) {
             return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames),

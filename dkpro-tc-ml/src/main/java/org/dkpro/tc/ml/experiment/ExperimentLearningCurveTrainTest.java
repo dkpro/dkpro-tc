@@ -183,18 +183,6 @@ public class ExperimentLearningCurveTrainTest
                 setParameterSpace(pSpace);
             }
 
-            /**
-             * 
-             * @param fileNames
-             *            the file names
-             * @return fold dimension bundle
-             */
-            protected LearningCurveDimBundleFixedTestSet getFoldDim(String[] fileNames)
-            {
-                return new LearningCurveDimBundleFixedTestSet("files",
-                        Dimension.create("", fileNames), aNumFolds, limitPerStage);
-            }
-
         };
 
         // init the test part of the experiment
@@ -280,5 +268,17 @@ public class ExperimentLearningCurveTrainTest
         addTask(initTaskTrain);
         addTask(initTaskTest);
         addTask(crossValidationTask);
+    }
+    
+    /**
+     * 
+     * @param fileNames
+     *            the file names
+     * @return fold dimension bundle
+     */
+    protected LearningCurveDimBundleFixedTestSet getFoldDim(String[] fileNames)
+    {
+        return new LearningCurveDimBundleFixedTestSet("files",
+                Dimension.create("", fileNames), aNumFolds, limitPerStage);
     }
 }
