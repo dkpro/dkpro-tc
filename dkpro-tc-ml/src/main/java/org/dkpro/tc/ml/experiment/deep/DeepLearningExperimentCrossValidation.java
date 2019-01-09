@@ -19,12 +19,10 @@ package org.dkpro.tc.ml.experiment.deep;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
 import org.dkpro.lab.reporting.Report;
 import org.dkpro.lab.reporting.ReportBase;
@@ -33,6 +31,7 @@ import org.dkpro.lab.task.Dimension;
 import org.dkpro.lab.task.Discriminator;
 import org.dkpro.lab.task.ParameterSpace;
 import org.dkpro.lab.task.impl.DefaultBatchTask;
+import org.dkpro.lab.task.impl.DimensionBundle;
 import org.dkpro.lab.task.impl.FoldDimensionBundle;
 import org.dkpro.lab.task.impl.TaskBase;
 import org.dkpro.tc.api.exception.TextClassificationException;
@@ -43,21 +42,15 @@ import org.dkpro.tc.core.task.deep.EmbeddingTask;
 import org.dkpro.tc.core.task.deep.InitTaskDeep;
 import org.dkpro.tc.core.task.deep.PreparationTask;
 import org.dkpro.tc.core.task.deep.VectorizationTask;
-import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.Experiment_ImplBase;
+import org.dkpro.tc.ml.experiment.AbstractCrossValidation;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
-/**
- * Crossvalidation setup
- * 
- */
 public class DeepLearningExperimentCrossValidation
-    extends Experiment_ImplBase
+    extends AbstractCrossValidation
 {
 
     protected Comparator<String> comparator;
-    protected int numFolds = 10;
 
     protected InitTaskDeep initTask;
     protected PreparationTask preparationTask;
@@ -131,10 +124,10 @@ public class DeepLearningExperimentCrossValidation
             throw new IllegalStateException("You must set an experiment name");
         }
 
-        if (numFolds < 2 && numFolds != -1) {
+        if (aNumFolds < 2 && aNumFolds != -1) {
         	throw new IllegalStateException(
                     "Number of folds is not configured correctly. Number of folds needs to be at "
-                            + "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
+                            + "least [2] or [-1 (leave one out cross validation)] but was [" + aNumFolds + "]");
         }
 
         // initialize the setup
@@ -160,96 +153,17 @@ public class DeepLearningExperimentCrossValidation
 
                 File xmiPathRoot = aContext.getFolder(InitTask.OUTPUT_KEY_TRAIN,
                         AccessMode.READONLY);
-                Collection<File> files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" },
-                        true);
-                String[] fileNames = new String[files.size()];
-                int i = 0;
-                for (File f : files) {
-                    // adding file paths, not names
-                    fileNames[i] = f.getAbsolutePath();
-                    i++;
-                }
-                Arrays.sort(fileNames);
-                if (numFolds == LEAVE_ONE_OUT) {
-                    numFolds = fileNames.length;
-                }
-
-                // is executed if we have less CAS than requested folds and
-                // manual mode is turned off
-                if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
-                    xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length,
-                            featureMode);
-                    files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
-                    fileNames = new String[files.size()];
-                    i = 0;
-                    for (File f : files) {
-                        // adding file paths, not names
-                        fileNames[i] = f.getAbsolutePath();
-                        i++;
-                    }
-                }
-                // don't change any names!!
-                FoldDimensionBundle<String> foldDim = getFoldDim(fileNames);
+                
+                String[] fileNames = setupBatchTask(aContext, xmiPathRoot,
+                        useCrossValidationManualFolds, featureMode);
+                
+                DimensionBundle<Collection<String>> bundle = getFoldDim(fileNames);
                 Dimension<File> filesRootDim = Dimension.create(DIM_FILES_ROOT, xmiPathRoot);
 
-                ParameterSpace pSpace = new ParameterSpace(foldDim, filesRootDim);
+                ParameterSpace pSpace = new ParameterSpace(bundle, filesRootDim);
                 setParameterSpace(pSpace);
             }
 
-            /**
-             * creates required number of CAS
-             * 
-             * @param xmiPathRoot
-             *            input path
-             * @param numAvailableJCas
-             *            all CAS
-             * @param featureMode
-             *            the feature mode
-             * @return a file
-             */
-            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas,
-                    String featureMode)
-            {
-
-                try {
-                    File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
-                            numFolds, numAvailableJCas, FM_SEQUENCE.equals(featureMode));
-
-                    if (outputFolder == null) {
-                        throw new NullPointerException("Output folder is null");
-                    }
-
-                    verfiyThatNeededNumberOfCasWasCreated(outputFolder);
-
-                    return outputFolder;
-                }
-                catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-
-            private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
-            {
-                int numCas = 0;
-
-                File[] listFiles = outputFolder.listFiles();
-                if (listFiles == null) {
-                    throw new NullPointerException(
-                            "Retrieving files in folder led to a NullPointer");
-                }
-
-                for (File f : listFiles) {
-                    if (f.getName().contains(".bin")) {
-                        numCas++;
-                    }
-                }
-
-                if (numCas < numFolds) {
-                    throw new IllegalStateException(
-                            "Not enough TextClassificationUnits found to create at least ["
-                                    + numFolds + "] folds");
-                }
-            }
         };
 
         // ================== SUBTASKS OF THE INNER BATCH TASK
@@ -301,42 +215,6 @@ public class DeepLearningExperimentCrossValidation
             }
         }
         
-//        // test task operating on the models of the feature extraction train and
-//        // test tasks
-//        learningTask = mlAdapter.getTestTask();
-//        learningTask.setType(learningTask.getType() + "-" + experimentName);
-//        learningTask.setAttribute(TC_TASK_TYPE, TcTaskType.MACHINE_LEARNING_ADAPTER.toString());
-//
-//        if (innerReports != null) {
-//            for (Class<? extends Report> report : innerReports) {
-//                learningTask.addReport(report);
-//            }
-//        }
-//
-//        // // always add OutcomeIdReport
-//        learningTask.addReport(mlAdapter.getOutcomeIdReportClass());
-//        learningTask.addReport(mlAdapter.getMajorityBaselineIdReportClass());
-//        learningTask.addReport(mlAdapter.getRandomBaselineIdReportClass());
-//        learningTask.addReport(mlAdapter.getMetaCollectionReport());
-//        learningTask.addReport(BasicResultReport.class);
-//        learningTask.addImport(preparationTask, PreparationTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.PREPARATION_FOLDER);
-//        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-//                Constants.TEST_TASK_INPUT_KEY_TRAINING_DATA);
-//        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-//                Constants.TEST_TASK_INPUT_KEY_TEST_DATA);
-//
-//        learningTask.addImport(embeddingTask, EmbeddingTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.EMBEDDING_FOLDER);
-//        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.VECTORIZIATION_TRAIN_OUTPUT);
-//        learningTask.addImport(vectorizationTrainTask, VectorizationTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.TARGET_ID_MAPPING_TRAIN);
-//
-//        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.VECTORIZIATION_TEST_OUTPUT);
-//        learningTask.addImport(vectorizationTestTask, VectorizationTask.OUTPUT_KEY,
-//                TcDeepLearningAdapter.TARGET_ID_MAPPING_TEST);
 
         // ================== CONFIG OF THE INNER BATCH TASK
         // =======================
@@ -371,20 +249,9 @@ public class DeepLearningExperimentCrossValidation
     {
         if (comparator != null) {
             return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames),
-                    numFolds, comparator);
+                    aNumFolds, comparator);
         }
-        return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
-    }
-
-    /**
-     * sets the number of folds
-     * 
-     * @param numFolds
-     *            folds
-     */
-    public void setNumFolds(int numFolds)
-    {
-        this.numFolds = numFolds;
+        return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), aNumFolds);
     }
 
     /**
