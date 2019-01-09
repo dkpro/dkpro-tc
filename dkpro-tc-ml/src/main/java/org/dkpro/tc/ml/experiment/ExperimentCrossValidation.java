@@ -42,23 +42,15 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 
 /**
  * Crossvalidation setup
- * 
  */
 public class ExperimentCrossValidation
-    extends Experiment_ImplBase
-    implements Constants
+    extends AbstractCrossValidation
 {
-
-    protected Comparator<String> comparator;
-    protected int numFolds = 10;
-
     protected InitTask initTask;
     protected OutcomeCollectionTask collectionTask;
     protected MetaInfoTask metaTask;
@@ -186,60 +178,6 @@ public class ExperimentCrossValidation
                 setParameterSpace(pSpace);
             }
 
-            /**
-             * creates required number of CAS
-             * 
-             * @param xmiPathRoot
-             *            input path
-             * @param numAvailableJCas
-             *            all CAS
-             * @param featureMode
-             *            the feature mode
-             * @return a file
-             */
-            private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas,
-                    String featureMode)
-            {
-
-                try {
-                    File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(),
-                            numFolds, numAvailableJCas, FM_SEQUENCE.equals(featureMode));
-
-                    verfiyThatNeededNumberOfCasWasCreated(outputFolder);
-
-                    return outputFolder;
-                }
-                catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-
-            private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder)
-            {
-                int numCas = 0;
-                
-                if (outputFolder == null) {
-                    throw new NullPointerException("Output folder is null");
-                }
-
-                File[] listFiles = outputFolder.listFiles();
-                if (listFiles == null) {
-                    throw new NullPointerException(
-                            "Retrieving files in folder led to a NullPointer");
-                }
-
-                for (File f : listFiles) {
-                    if (f.getName().contains(".bin")) {
-                        numCas++;
-                    }
-                }
-
-                if (numCas < numFolds) {
-                    throw new IllegalStateException(
-                            "Not enough TextClassificationUnits found to create at least ["
-                                    + numFolds + "] folds");
-                }
-            }
         };
 
         // ================== SUBTASKS OF THE INNER BATCH TASK =======================
@@ -338,28 +276,6 @@ public class ExperimentCrossValidation
                     numFolds, comparator);
         }
         return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
-    }
-
-    /**
-     * sets the number of folds
-     * 
-     * @param numFolds
-     *            folds
-     */
-    public void setNumFolds(int numFolds)
-    {
-        this.numFolds = numFolds;
-    }
-
-    /**
-     * Sets a comparator
-     * 
-     * @param aComparator
-     *            the comparator
-     */
-    public void setComparator(Comparator<String> aComparator)
-    {
-        comparator = aComparator;
     }
 
 }
