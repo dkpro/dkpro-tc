@@ -20,7 +20,6 @@ package org.dkpro.tc.ml.experiment;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 
 import org.apache.commons.io.FileUtils;
 import org.dkpro.lab.engine.TaskContext;
@@ -35,7 +34,6 @@ public abstract class AbstractCrossValidation
     implements Constants
 {
     protected int aNumFolds = 10;
-    protected Comparator<String> comparator;
 
     /**
      * Sets the number of folds
@@ -48,17 +46,6 @@ public abstract class AbstractCrossValidation
         this.aNumFolds = numFolds;
     }
     
-    /**
-     * Sets a comparator
-     * 
-     * @param aComparator
-     *            the comparator
-     */
-    public void setComparator(Comparator<String> aComparator)
-    {
-        comparator = aComparator;
-    }
-
     /**
      * creates required number of CAS
      * 

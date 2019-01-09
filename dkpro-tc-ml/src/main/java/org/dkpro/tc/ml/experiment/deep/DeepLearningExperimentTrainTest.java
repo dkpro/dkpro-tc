@@ -41,7 +41,6 @@ import org.dkpro.tc.ml.report.BasicResultReport;
 public class DeepLearningExperimentTrainTest
     extends Experiment_ImplBase
 {
-
     protected InitTaskDeep initTaskTrain;
     protected InitTaskDeep initTaskTest;
     protected PreparationTask preparationTask;

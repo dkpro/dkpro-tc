@@ -20,7 +20,6 @@ package org.dkpro.tc.ml.experiment.deep;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.dkpro.lab.engine.TaskContext;
@@ -49,8 +48,6 @@ import org.dkpro.tc.ml.report.deeplearning.DeepLearningInnerReport;
 public class DeepLearningExperimentLearningCurve
     extends AbstractCrossValidation
 {
-
-    protected Comparator<String> comparator;
     protected int numFolds = 10;
 
     protected InitTaskDeep initTask;

@@ -52,7 +52,6 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 public class ExperimentLearningCurveTrainTest
     extends AbstractCrossValidation
 {
-
     protected InitTask initTaskTrain;
     protected InitTask initTaskTest;
     protected OutcomeCollectionTask collectionTask;
@@ -269,7 +268,7 @@ public class ExperimentLearningCurveTrainTest
         addTask(initTaskTest);
         addTask(crossValidationTask);
     }
-    
+
     /**
      * 
      * @param fileNames
@@ -278,7 +277,7 @@ public class ExperimentLearningCurveTrainTest
      */
     protected LearningCurveDimBundleFixedTestSet getFoldDim(String[] fileNames)
     {
-        return new LearningCurveDimBundleFixedTestSet("files",
-                Dimension.create("", fileNames), aNumFolds, limitPerStage);
+        return new LearningCurveDimBundleFixedTestSet("files", Dimension.create("", fileNames),
+                aNumFolds, limitPerStage);
     }
 }

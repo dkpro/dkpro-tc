@@ -50,6 +50,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 public class ExperimentCrossValidation
     extends AbstractCrossValidation
 {
+    protected Comparator<String> comparator;
     protected InitTask initTask;
     protected OutcomeCollectionTask collectionTask;
     protected MetaInfoTask metaTask;
@@ -100,6 +101,11 @@ public class ExperimentCrossValidation
         setType("Evaluation-" + experimentName);
     }
     
+    private void setComparator(Comparator<String> aComparator)
+    {
+        this.comparator = aComparator;        
+    }
+
     /**
      * Initializes the experiment. This is called automatically before execution. It's not done
      * directly in the constructor, because we want to be able to use setters instead of the

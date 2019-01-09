@@ -48,7 +48,6 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
 public class DeepLearningExperimentLearningCurveTrainTest
     extends AbstractCrossValidation
 {
-
     protected InitTaskDeep initTask;
     protected PreparationTask preparationTask;
     protected EmbeddingTask embeddingTask;
