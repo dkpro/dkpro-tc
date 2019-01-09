@@ -29,7 +29,7 @@ public abstract class AbstractCrossValidation
     extends Experiment_ImplBase
     implements Constants
 {
-    protected int numFolds = 10;
+    protected int aNumFolds = 10;
     protected Comparator<String> comparator;
 
     /**
@@ -40,7 +40,7 @@ public abstract class AbstractCrossValidation
      */
     public void setNumFolds(int numFolds)
     {
-        this.numFolds = numFolds;
+        this.aNumFolds = numFolds;
     }
     
     /**
@@ -70,7 +70,7 @@ public abstract class AbstractCrossValidation
     {
 
         try {
-            File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), numFolds,
+            File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), aNumFolds,
                     numAvailableJCas, FM_SEQUENCE.equals(featureMode));
 
             verfiyThatNeededNumberOfCasWasCreated(outputFolder);
@@ -97,10 +97,10 @@ public abstract class AbstractCrossValidation
                     }
                 }
 
-                if (numCas < numFolds) {
+                if (numCas < aNumFolds) {
                     throw new IllegalStateException(
                             "Not enough " + TextClassificationTarget.class.getSimpleName()
-                                    + " found to create at least [" + numFolds + "] folds");
+                                    + " found to create at least [" + aNumFolds + "] folds");
                 }
             }
             else {

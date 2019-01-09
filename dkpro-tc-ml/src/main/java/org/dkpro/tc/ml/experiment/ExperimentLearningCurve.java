@@ -40,8 +40,6 @@ import org.dkpro.tc.core.task.InitTask;
 import org.dkpro.tc.core.task.MetaInfoTask;
 import org.dkpro.tc.core.task.OutcomeCollectionTask;
 import org.dkpro.tc.core.task.TcTaskType;
-import org.dkpro.tc.ml.FoldUtil;
-import org.dkpro.tc.ml.base.Experiment_ImplBase;
 import org.dkpro.tc.ml.experiment.dim.LearningCurveDimBundleCrossValidation;
 import org.dkpro.tc.ml.report.BasicResultReport;
 import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
@@ -53,9 +51,7 @@ import org.dkpro.tc.ml.report.shallowlearning.InnerReport;
  * test set against which a learning curve shall be run, then use
  * {@link ExperimentLearningCurveTrainTest}
  */
-public class ExperimentLearningCurve extends Experiment_ImplBase {
-
-	protected int aNumFolds = 10;
+public class ExperimentLearningCurve extends AbstractCrossValidation {
 
 	protected InitTask initTask;
 	protected OutcomeCollectionTask collectionTask;
@@ -167,51 +163,6 @@ public class ExperimentLearningCurve extends Experiment_ImplBase {
 				setParameterSpace(pSpace);
 			}
 
-			/**
-			 * creates required number of CAS
-			 * 
-			 * @param xmiPathRoot      input path
-			 * @param numAvailableJCas all CAS
-			 * @param featureMode      the feature mode
-			 * @return a file
-			 */
-			private File createRequestedNumberOfCas(File xmiPathRoot, int numAvailableJCas, String featureMode) {
-
-				try {
-					File outputFolder = FoldUtil.createMinimalSplit(xmiPathRoot.getAbsolutePath(), aNumFolds,
-							numAvailableJCas, FM_SEQUENCE.equals(featureMode));
-
-					if (outputFolder == null) {
-						throw new NullPointerException("Output folder is null");
-					}
-
-					verfiyThatNeededNumberOfCasWasCreated(outputFolder);
-
-					return outputFolder;
-				} catch (Exception e) {
-					throw new IllegalStateException(e);
-				}
-			}
-
-			private void verfiyThatNeededNumberOfCasWasCreated(File outputFolder) {
-				int numCas = 0;
-
-				File[] listFiles = outputFolder.listFiles();
-				if (listFiles == null) {
-					throw new NullPointerException("Retrieving files in folder led to a NullPointer");
-				}
-
-				for (File f : listFiles) {
-					if (f.getName().contains(".bin")) {
-						numCas++;
-					}
-				}
-
-				if (numCas < aNumFolds) {
-					throw new IllegalStateException(
-							"Not enough TextClassificationUnits found to create at least [" + aNumFolds + "] folds");
-				}
-			}
 		};
 
 		// ================== SUBTASKS OF THE INNER BATCH TASK =======================
@@ -297,15 +248,6 @@ public class ExperimentLearningCurve extends Experiment_ImplBase {
 	 */
 	protected LearningCurveDimBundleCrossValidation getFoldDim(String[] fileNames) {
 		return new LearningCurveDimBundleCrossValidation("files", Dimension.create("", fileNames), aNumFolds, aLimitPerStage);
-	}
-
-	/**
-	 * sets the number of folds
-	 * 
-	 * @param numFolds folds
-	 */
-	public void setNumFolds(int numFolds) {
-		this.aNumFolds = numFolds;
 	}
 
 }

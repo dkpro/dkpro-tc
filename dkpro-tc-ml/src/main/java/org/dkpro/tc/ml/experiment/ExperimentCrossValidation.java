@@ -113,10 +113,10 @@ public class ExperimentCrossValidation
             throw new IllegalStateException("You must set an experiment name");
         }
 
-        if (numFolds < 2 && numFolds != -1) {
+        if (aNumFolds < 2 && aNumFolds != -1) {
             throw new IllegalStateException(
                     "Number of folds is not configured correctly. Number of folds needs to be at "
-                            + "least [2] or [-1 (leave one out cross validation)] but was [" + numFolds + "]");
+                            + "least [2] or [-1 (leave one out cross validation)] but was [" + aNumFolds + "]");
         }
 
         // initialize the setup
@@ -152,13 +152,13 @@ public class ExperimentCrossValidation
                     i++;
                 }
                 Arrays.sort(fileNames);
-                if (numFolds == LEAVE_ONE_OUT) {
-                    numFolds = fileNames.length;
+                if (aNumFolds == LEAVE_ONE_OUT) {
+                    aNumFolds = fileNames.length;
                 }
 
                 // is executed if we have less CAS than requested folds and manual mode is turned
                 // off
-                if (!useCrossValidationManualFolds && fileNames.length < numFolds) {
+                if (!useCrossValidationManualFolds && fileNames.length < aNumFolds) {
                     xmiPathRoot = createRequestedNumberOfCas(xmiPathRoot, fileNames.length,
                             featureMode);
                     files = FileUtils.listFiles(xmiPathRoot, new String[] { "bin" }, true);
@@ -273,9 +273,9 @@ public class ExperimentCrossValidation
     {
         if (comparator != null) {
             return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames),
-                    numFolds, comparator);
+                    aNumFolds, comparator);
         }
-        return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), numFolds);
+        return new FoldDimensionBundle<String>("files", Dimension.create("", fileNames), aNumFolds);
     }
 
 }
