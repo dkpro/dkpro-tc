@@ -200,14 +200,14 @@ public class RegressionModeTest
         assertEquals("#ID=PREDICTION;GOLDSTANDARD;THRESHOLD", lines.get(0));
         assertEquals("#labels", lines.get(1).trim());
         // line at idx=2 is a timestamp which is always different
-        assertTrue(lines.get(3).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(4).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(5).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(6).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(7).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(8).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(9).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
-        assertTrue(lines.get(10).matches("[A-Za-z0-9_]+=[0-9\\.]+;[0-9\\.]+;.*"));
+        assertTrue(lines.get(3).matches("[A-Za-z0-9_]+=[0-9\\.]+;1[\\.0-9]*;-1"));
+        assertTrue(lines.get(4).matches("[A-Za-z0-9_]+=[0-9\\.]+;1[\\.0-9]*;-1"));
+        assertTrue(lines.get(5).matches("[A-Za-z0-9_]+=[0-9\\.]+;7[\\.0-9]*;-1"));
+        assertTrue(lines.get(6).matches("[A-Za-z0-9_]+=[0-9\\.]+;3[\\.0-9]*;-1"));
+        assertTrue(lines.get(7).matches("[A-Za-z0-9_]+=[0-9\\.]+;2[\\.0-9]*;-1"));
+        assertTrue(lines.get(8).matches("[A-Za-z0-9_]+=[0-9\\.]+;2[\\.0-9]*;-1"));
+        assertTrue(lines.get(9).matches("[A-Za-z0-9_]+=[0-9\\.]+;2[\\.0-9]*;-1"));
+        assertTrue(lines.get(10).matches("[A-Za-z0-9_]+=[0-9\\.]+;1[\\.0-9]*;-1"));
     }
 
     private File getId2outcomeFile(List<File> id2outcomeFiles, String k)

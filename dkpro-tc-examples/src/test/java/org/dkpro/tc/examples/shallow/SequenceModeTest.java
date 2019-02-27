@@ -89,11 +89,11 @@ public class SequenceModeTest
                 lines.get(1));
         // 2nd line time stamp
 
-        assertTrue(lines.get(3).matches(".*=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(4).matches(".*=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(5).matches(".*=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(6).matches(".*=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(7).matches(".*=[0-9]+;[0-9]+;-1"));           
+        assertTrue(lines.get(3).matches(".*=[0-9]+;2;-1"));
+        assertTrue(lines.get(4).matches(".*=[0-9]+;11;-1"));
+        assertTrue(lines.get(5).matches(".*=[0-9]+;21;-1"));
+        assertTrue(lines.get(6).matches(".*=[0-9]+;20;-1"));
+        assertTrue(lines.get(7).matches(".*=[0-9]+;13;-1"));           
     }
 
     private void verifyCrfSuite(File f) throws Exception
@@ -107,11 +107,11 @@ public class SequenceModeTest
                 lines.get(1));
         // 2nd line time stamp
 
-        assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;[0-9]+;-1"));
-        assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;[0-9]+;-1"));        
+        assertTrue(lines.get(3).matches("0000_0000_0000_The=[0-9]+;16;-1"));
+        assertTrue(lines.get(4).matches("0000_0000_0001_bill=[0-9]+;0;-1"));
+        assertTrue(lines.get(5).matches("0000_0000_0002_,=[0-9]+;2;-1"));
+        assertTrue(lines.get(6).matches("0000_0000_0003_which=[0-9]+;7;-1"));
+        assertTrue(lines.get(7).matches("0000_0000_0004_Daniel=[0-9]+;4;-1"));        
     }
 
     private void runExperiment() throws Exception
