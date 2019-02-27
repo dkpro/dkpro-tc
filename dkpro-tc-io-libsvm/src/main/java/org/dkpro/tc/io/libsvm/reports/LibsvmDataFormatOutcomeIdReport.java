@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.io.libsvm.reports;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +37,6 @@ import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.io.libsvm.AdapterFormat;
 import org.dkpro.tc.io.libsvm.LibsvmDataFormatWriter;
 import org.dkpro.tc.ml.report.TcAbstractReport;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class LibsvmDataFormatOutcomeIdReport
     extends TcAbstractReport
@@ -133,7 +134,7 @@ public class LibsvmDataFormatOutcomeIdReport
 
     private Map<String, String> getMapping(boolean isUnit) throws IOException
     {
-
+        
         File f;
         if (isUnit) {
             f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
@@ -146,7 +147,7 @@ public class LibsvmDataFormatOutcomeIdReport
 
         Map<String, String> m = new HashMap<>();
 
-        int idx = 0;
+        int lineId = 0;
         for (String l : FileUtils.readLines(f, UTF_8)) {
             if (l.startsWith("#")) {
                 continue;
@@ -156,14 +157,22 @@ public class LibsvmDataFormatOutcomeIdReport
             }
             String[] split = l.split("\t");
             
+            String key = null;
+            if (isUnit) {
+                key = split[0];
+            }
+            else {
+                key = lineId + "";
+            }
+            
             //not title set in the reader that could be retrieved
             String value="";
             if(split.length >= 2) {
                 value = split[1];
             }
 
-            m.put(idx + "", value.isEmpty() ? idx + "" : value);
-            idx++;
+            m.put(key, value.isEmpty() ? lineId + "" : value);
+            lineId++;
         }
         return m;
     }

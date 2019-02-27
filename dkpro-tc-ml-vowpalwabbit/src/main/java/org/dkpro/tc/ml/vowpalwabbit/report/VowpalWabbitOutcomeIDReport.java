@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.dkpro.tc.ml.vowpalwabbit.report;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +40,6 @@ import org.dkpro.lab.storage.StorageService.AccessMode;
 import org.dkpro.tc.core.Constants;
 import org.dkpro.tc.ml.report.TcAbstractReport;
 import org.dkpro.tc.ml.vowpalwabbit.writer.VowpalWabbitDataWriter;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Writes a instanceId / outcome data for each classification instance.
@@ -150,7 +151,7 @@ public class VowpalWabbitOutcomeIDReport
 
     private Map<String, String> getMapping(boolean isUnit) throws IOException
     {
-
+        
         File f;
         if (isUnit) {
             f = new File(getContext().getFolder(TEST_TASK_INPUT_KEY_TEST_DATA, AccessMode.READONLY),
@@ -163,7 +164,7 @@ public class VowpalWabbitOutcomeIDReport
 
         Map<String, String> m = new HashMap<>();
 
-        int idx = 0;
+        int lineId = 0;
         for (String l : FileUtils.readLines(f, UTF_8)) {
             if (l.startsWith("#")) {
                 continue;
@@ -172,15 +173,23 @@ public class VowpalWabbitOutcomeIDReport
                 continue;
             }
             String[] split = l.split("\t");
-
-            // not title set in the reader that could be retrieved
-            String value = "";
-            if (split.length >= 2) {
+            
+            String key = null;
+            if (isUnit) {
+                key = split[0];
+            }
+            else {
+                key = lineId + "";
+            }
+            
+            //not title set in the reader that could be retrieved
+            String value="";
+            if(split.length >= 2) {
                 value = split[1];
             }
 
-            m.put(idx + "", value.isEmpty() ? idx + "" : value);
-            idx++;
+            m.put(key, value.isEmpty() ? lineId + "" : value);
+            lineId++;
         }
         return m;
     }
