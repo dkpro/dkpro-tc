@@ -16,7 +16,7 @@ DKPro TC comes with
   * many generic feature extractors, e.g. n-grams, POS-tags etc.
   * convenient parameter optimization capabilities
   * comprehensive reporting with support for many standard performance measures
-  * support for single- and multi-label classification, and regression in various frameworks, e.g. [CRFsuite][CRFSUITE], [DyNet][DYNET], [DeepLearning4j][DL4J], [LibLinear][LIBLINEAR], [LibSvm][LIBSVM], [Keras][KERAS], [SvmHmm][SVMHMM], [Weka][WEKA] and [XGBoost][XGBOOST], 
+  * support for single- and multi-label classification, and regression in various frameworks, e.g. [CRFsuite][CRFSUITE], [DyNet][DYNET], [DeepLearning4j][DL4J], [LibLinear][LIBLINEAR], [LibSvm][LIBSVM], [Keras][KERAS], [SvmHmm][SVMHMM], VowpalWabbit[VOWPALWABBIT], [Weka][WEKA] and [XGBoost][XGBOOST], 
 
 If you want to use the latest (snapshot) version of DKPro TC, please mind that the project is subject to constant change. 
 
