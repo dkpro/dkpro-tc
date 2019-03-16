@@ -49,6 +49,7 @@ This project was initiated under the auspices of Prof. Iryna Gurevych, [Ubiquito
 [LIBSVM]: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
 [SVMHMM]: https://www.cs.cornell.edu/people/tj/svm_light/svm_hmm.html
 [WEKA]: http://www.cs.waikato.ac.nz/ml/weka
+[VOWPALWABBIT]: https://github.com/VowpalWabbit/vowpal_wabbit/wiki
 [XGBOOST]: https://github.com/dmlc/xgboost
 [ACL_2014]: http://anthology.aclweb.org//P/P14/P14-5011.pdf
 [ACL_2014_BIB]: http://anthology.aclweb.org/P/P14/P14-5011.bib
