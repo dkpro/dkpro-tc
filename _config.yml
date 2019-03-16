@@ -16,7 +16,7 @@ slogan: "DKPro Text Classification Framework"
 
 
 # The description is used on homepage and in the footer to quickly describe your website. Use a maximum of 150 characters for SEO-purposes.
-description: "DKPro TC is a UIMA-based text classification frameworkf for supervised machine learning experiments with any kind of textual data."
+description: "DKPro TC is a UIMA-based text classification framework for supervised machine learning experiments with any kind of textual data."
 
 
 # This URL is the main adresse. Don't include a slash at the end.
