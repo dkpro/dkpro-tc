@@ -59,7 +59,7 @@ public class ModelProviderConversionFeatureTest
         		PreTrainedModelProviderSequenceMode.PARAM_ADD_TC_BACKEND_ANNOTATION, true,
         		PreTrainedModelProviderSequenceMode.PARAM_NAME_SEQUENCE_ANNOTATION, Sentence.class.getName(),
         		PreTrainedModelProviderSequenceMode.PARAM_NAME_TARGET_ANNOTATION, Token.class.getName(),
-        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, "src/test/resources/TcAnnotatorTestModelDummy",
+        		PreTrainedModelProviderSequenceMode.PARAM_TC_MODEL_LOCATION, "src/test/resources/ModelDummy",
         		PreTrainedModelProviderSequenceMode.PARAM_CONVERTION_ANNOTATOR, converter, 
         		PreTrainedModelProviderSequenceMode.PARAM_RETAIN_TARGETS, false);
         tcAnno.process(aJCas);
