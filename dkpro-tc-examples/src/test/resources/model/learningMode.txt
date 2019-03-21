@@ -1,3 +1,0 @@
-#Learning mode used to train this model
-#Thu Jan 28 19:49:07 CET 2016
-learningMode=singleLabel

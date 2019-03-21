@@ -44,7 +44,7 @@ import org.dkpro.tc.api.features.FeatureExtractorResource_ImplBase;
 import org.dkpro.tc.api.features.FeatureType;
 import org.dkpro.tc.api.type.TextClassificationTarget;
 
-public class BrownClusterFeature
+public class BrownFeat
     extends FeatureExtractorResource_ImplBase
     implements FeatureExtractor
 {
@@ -90,20 +90,20 @@ public class BrownClusterFeature
      */
     private void someOperationsOnInnerClassUsingAnonymousClasses()
     {
-        List<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo> l = new ArrayList<>();
-        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
-        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
-        l.add(new PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo());
+        List<AInner> l = new ArrayList<>();
+        l.add(new AInner());
+        l.add(new AInner());
+        l.add(new AInner());
 
         // This will create an anonymous inner class xxxx$1
         Collections.sort(l,
-                new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
+                new Comparator<AInner>()
                 {
 
                     @Override
                     public int compare(
-                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o1,
-                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o2)
+                            AInner o1,
+                            AInner o2)
                     {
                         if (o1.a > o2.a) {
                             return 1;
@@ -119,13 +119,13 @@ public class BrownClusterFeature
 
         // This will create an anonymous inner class xxxx$2
         Collections.sort(l,
-                new Comparator<PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo>()
+                new Comparator<AInner>()
                 {
 
                     @Override
                     public int compare(
-                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o1,
-                            PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo o2)
+                            AInner o1,
+                            AInner o2)
                     {
                         if (o1.a < o2.a) {
                             return 1;
@@ -206,31 +206,31 @@ public class BrownClusterFeature
         return new BufferedReader(isr);
     }
 
-    class PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo
+    class AInner
     {
         int a;
         int few;
         int variables;
-        private AnotherOne x;
+        private B x;
 
-        PointlessInnerClassToEnsureThatInnerClassesAreProperlySerializedAndLoadedToo()
+        AInner()
         {
             this.a = new Random().nextInt();
             this.few = 23;
             this.variables = 2;
-            this.x = new AnotherOne();
+            this.x = new B();
 
-            List<AnotherOne> o = new ArrayList<>();
+            List<B> o = new ArrayList<>();
             o.add(x);
-            o.add(new AnotherOne());
-            o.add(new AnotherOne());
-            o.add(new AnotherOne());
+            o.add(new B());
+            o.add(new B());
+            o.add(new B());
 
-            Collections.sort(o, new Comparator<AnotherOne>()
+            Collections.sort(o, new Comparator<B>()
             {
 
                 @Override
-                public int compare(AnotherOne o1, AnotherOne o2)
+                public int compare(B o1, B o2)
                 {
                     if (o1.y > o2.y) {
                         return -1;
@@ -244,11 +244,11 @@ public class BrownClusterFeature
 
         }
 
-        class AnotherOne
+        class B
         {
             int y = 0;
 
-            public AnotherOne()
+            public B()
             {
                 y = new Random().nextInt();
             }

@@ -132,7 +132,7 @@ public class CRFSuiteSaveAndLoadModelTest
                         CrfSuiteAdapter.ALGORITHM_ADAPTIVE_REGULARIZATION_OF_WEIGHT_VECTOR,
                         "max_iterations=2" });
         config.put(DIM_DATA_WRITER, new CrfSuiteAdapter().getDataWriterClass());
-        config.put(DIM_FEATURE_USE_SPARSE, new WekaAdapter().useSparseFeatures());
+        config.put(DIM_FEATURE_USE_SPARSE, new CrfSuiteAdapter().useSparseFeatures());
         Dimension<Map<String, Object>> mlas = Dimension.createBundle("config", config);
 
         File modelFolder = folder.newFolder();
@@ -207,8 +207,8 @@ public class CRFSuiteSaveAndLoadModelTest
                         // feature in here
                         // to ensure that this functionality is covered by a test case
                         // :)
-                        TcFeatureFactory.create(BrownClusterFeature.class,
-                                BrownClusterFeature.PARAM_BROWN_CLUSTERS_LOCATION,
+                        TcFeatureFactory.create(BrownFeat.class,
+                                BrownFeat.PARAM_BROWN_CLUSTERS_LOCATION,
                                 "src/test/resources/brownCluster/enTweetBrownC1000F40"),
                         TcFeatureFactory.create(TokenRatioPerDocument.class)));
 
