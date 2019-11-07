@@ -30,7 +30,7 @@
   </organization>
   <properties>
     <dkpro.core.version>1.10.0</dkpro.core.version>
-    <lucene.version>4.4.0</lucene.version>
+    <lucene.version>8.3.0</lucene.version>
     <uima.version>2.10.2</uima.version>
     <uimafit.version>2.4.0</uimafit.version>
     <organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
