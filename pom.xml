@@ -34,7 +34,7 @@
     <uima.version>2.10.2</uima.version>
     <uimafit.version>2.4.0</uimafit.version>
     <organisation.name>Ubiquitous Knowledge Processing (UKP) Lab</organisation.name>
-    <spring.version>3.2.16.RELEASE</spring.version>
+    <spring.version>5.2.21.RELEASE</spring.version>
     <dkpro.lab.version>0.14.0</dkpro.lab.version>
     <deeplearning4j>0.9.1</deeplearning4j>
     <nd4j.version>0.9.1</nd4j.version>
