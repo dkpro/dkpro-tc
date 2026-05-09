@@ -1,8 +1,3 @@
-#- name: Twitter
-#  url: https://twitter.com/PROJECT_X
-#  class: icon-twitter
-#  title: "Twitter: @PROJECT_X"
-
 #- name: Facebook
 #  url: http://www.facebook.com/phlow.media
 #  class: icon-facebook
